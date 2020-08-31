@@ -1,0 +1,5 @@
+.idea/
+__pycache__/
+docs/*
+conversation_history/*
+data_and_config/data/slot_values.json

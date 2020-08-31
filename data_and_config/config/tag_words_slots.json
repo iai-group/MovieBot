@@ -1,0 +1,71 @@
+{	
+	"user_reveal":{
+		"imdb_rating":{
+			"better" : ">"
+		},
+		"year":{
+			"older" : "<",
+			"old" : "<",
+			"earlier" : "<",
+			"before": "<",
+			"new" : ">", 
+			"latest": ">",
+			"later": ">",
+			"after": ">"
+		}
+	},
+	"user_inquire":{
+		"duration":[
+			"long",
+			"length",
+			"duration"
+		],
+		"imdb_rating":[
+			"imdb score",
+			"score",
+			"rating"
+		],
+		"genres":[
+			"genre",
+			"type",
+			"category",
+			"kind"
+		],
+		"plot":[
+			"plot",
+			"story"
+		],
+		"imdb_link":[
+			"link",
+			"url"
+		],
+		"more_info":[
+			"description",
+			"summary",
+			"tell me more",
+			"more info"
+		]
+	},
+	"user_reveal_inquire":{
+		"directors":[
+			"directed",
+			"director",
+			"directors"
+		],
+		"actors":[
+			"actor names",
+			"acted",
+			"actor",
+			"stars",
+			"star",
+			"starring",
+			"casting",
+			"cast"
+		],
+		"year":[
+			"released",
+			"release",
+			"year"
+		]
+	}
+}

@@ -1,0 +1,34 @@
+{
+    "system_requestable": [
+        "genres",
+        "keywords"
+    ],
+    "user_requestable": [
+        "genres",
+        "imdb_rating",
+        "duration",
+        "actors",
+        "directors",
+        "plot",
+        "year"
+    ],
+    "slots_not_required_NLU": [
+        "imdb_rating",
+        "imdb_votes",
+        "duration",
+        "cover",
+        "plot",
+        "imdb_link"
+    ],
+    "slots_annotation": [
+        "genres",
+        "keywords",
+        "actors",
+        "directors",
+        "year",
+        "title"
+    ],
+    "multiple_values": [
+        "genres"
+    ]
+}
