@@ -6,10 +6,10 @@ __author__ = "Javeria Habib"
 import sqlite3
 from copy import deepcopy
 
-from iaibot.dialogue_manager.dialogue_state import DialogueState
-from iaibot.ontology.ontology import Ontology
-from iaibot.dialogue_manager.slots import Slots
-from iaibot.dialogue_manager.values import Values
+from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.ontology.ontology import Ontology
+from moviebot.dialogue_manager.slots import Slots
+from moviebot.dialogue_manager.values import Values
 
 
 class DataBase:

@@ -9,9 +9,9 @@ from copy import deepcopy
 from nltk import ngrams
 from nltk.corpus import stopwords
 
-from iaibot.dialogue_manager.item_constraint import ItemConstraint
-from iaibot.dialogue_manager.operator import Operator
-from iaibot.dialogue_manager.slots import Slots
+from moviebot.dialogue_manager.item_constraint import ItemConstraint
+from moviebot.dialogue_manager.operator import Operator
+from moviebot.dialogue_manager.slots import Slots
 
 
 class SlotAnnotator:

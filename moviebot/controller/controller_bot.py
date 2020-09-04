@@ -13,8 +13,8 @@ import yaml
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, ConversationHandler)
 
-from iaibot.agent.agent import Agent
-from iaibot.controller.controller import Controller
+from moviebot.agent.agent import Agent
+from moviebot.controller.controller import Controller
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

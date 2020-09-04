@@ -8,7 +8,7 @@ __author__ = "Javeria Habib"
 
 from copy import deepcopy
 
-from iaibot.ontology.ontology import Ontology
+from moviebot.ontology.ontology import Ontology
 
 
 class DialogueState:

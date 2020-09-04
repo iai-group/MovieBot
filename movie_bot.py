@@ -7,8 +7,8 @@ import sys
 
 import yaml
 
-from iaibot.controller.controller_bot import ControllerBot
-from iaibot.controller.controller_terminal import ControllerTerminal
+from moviebot.controller.controller_bot import ControllerBot
+from moviebot.controller.controller_terminal import ControllerTerminal
 
 
 def _validate_file(file_name, file_type):
@@ -46,7 +46,7 @@ def arg_parse(args=None):
 
     if len(argv) < 3:
         print('WARNING: Configuration file is not provided.')
-        config_file = r'data_and_config/config/moviebot_config.yaml'
+        config_file = r'config/moviebot_config.yaml'
         print(f'Default configuration file selected is \'{config_file}\'')
     else:
         config_file = argv[2]
@@ -69,7 +69,7 @@ def arg_parse(args=None):
 
 
 if __name__ == '__main__':
-    # Usage: python iai_bot.py -c <path_to_config.yaml>
+    # Usage: python movie_bot.py -c <path_to_config.yaml>
     # Version: Python 3.6
     CONFIGURATION, BOT = arg_parse()
     if BOT:

@@ -6,14 +6,14 @@ __author__ = "Javeria Habib"
 import random
 from copy import deepcopy
 
-from iaibot.dialogue_manager.dialogue_act import DialogueAct
-from iaibot.dialogue_manager.dialogue_state import DialogueState
-from iaibot.dialogue_manager.item_constraint import ItemConstraint
-from iaibot.dialogue_manager.operator import Operator
-from iaibot.intents.agent_intents import AgentIntents
-from iaibot.intents.user_intents import UserIntents
-from iaibot.ontology.ontology import Ontology
-from iaibot.dialogue_manager.slots import Slots
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.dialogue_manager.item_constraint import ItemConstraint
+from moviebot.dialogue_manager.operator import Operator
+from moviebot.intents.agent_intents import AgentIntents
+from moviebot.intents.user_intents import UserIntents
+from moviebot.ontology.ontology import Ontology
+from moviebot.dialogue_manager.slots import Slots
 
 
 class DialoguePolicy:

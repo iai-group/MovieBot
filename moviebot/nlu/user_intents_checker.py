@@ -10,14 +10,14 @@ import wikipedia
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-from iaibot.dialogue_manager.dialogue_act import DialogueAct
-from iaibot.dialogue_manager.item_constraint import ItemConstraint
-from iaibot.dialogue_manager.operator import Operator
-from iaibot.intents.user_intents import UserIntents
-from iaibot.nlu.data_loader import DataLoader
-from iaibot.nlu.slot_annotator import SlotAnnotator
-from iaibot.dialogue_manager.slots import Slots
-from iaibot.dialogue_manager.values import Values
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.dialogue_manager.item_constraint import ItemConstraint
+from moviebot.dialogue_manager.operator import Operator
+from moviebot.intents.user_intents import UserIntents
+from moviebot.nlu.data_loader import DataLoader
+from moviebot.nlu.slot_annotator import SlotAnnotator
+from moviebot.dialogue_manager.slots import Slots
+from moviebot.dialogue_manager.values import Values
 
 
 class UserIntentsChecker:

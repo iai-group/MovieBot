@@ -5,12 +5,12 @@ Dialogue manager also access the database and ontology to carry on the conversat
 
 __author__ = "Javeria Habib"
 
-from iaibot.dialogue_manager.dialogue_act import DialogueAct
-from iaibot.dialogue_manager.dialogue_policy import DialoguePolicy
-from iaibot.dialogue_manager.dialogue_state_tracker import DialogueStateTracker
-from iaibot.dialogue_manager.item_constraint import ItemConstraint
-from iaibot.dialogue_manager.operator import Operator
-from iaibot.intents.agent_intents import AgentIntents
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
+from moviebot.dialogue_manager.dialogue_state_tracker import DialogueStateTracker
+from moviebot.dialogue_manager.item_constraint import ItemConstraint
+from moviebot.dialogue_manager.operator import Operator
+from moviebot.intents.agent_intents import AgentIntents
 
 
 class DialogueManager:

@@ -3,7 +3,7 @@ parameters mentioned in the conversation"""
 
 __author__ = "Javeria Habib"
 
-from iaibot.dialogue_manager.operator import Operator
+from moviebot.dialogue_manager.operator import Operator
 
 
 class ItemConstraint:

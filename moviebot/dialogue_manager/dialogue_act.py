@@ -2,8 +2,8 @@
 
 __author__ = "Javeria Habib"
 
-from iaibot.intents.agent_intents import AgentIntents
-from iaibot.intents.user_intents import UserIntents
+from moviebot.intents.agent_intents import AgentIntents
+from moviebot.intents.user_intents import UserIntents
 
 
 class DialogueAct:

@@ -3,8 +3,8 @@ user interacts with the agent using python console"""
 
 __author__ = "Javeria Habib"
 
-from iaibot.agent.agent import Agent
-from iaibot.controller.controller import Controller
+from moviebot.agent.agent import Agent
+from moviebot.controller.controller import Controller
 
 
 class ControllerTerminal(Controller):

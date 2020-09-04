@@ -4,13 +4,13 @@ __author__ = "Javeria Habib"
 
 import os
 
-from iaibot.database.database import DataBase
-from iaibot.dialogue_manager.dialogue_manager import DialogueManager
-from iaibot.nlg.nlg import NLG
-from iaibot.nlu.nlu import NLU
-from iaibot.ontology.ontology import Ontology
-from iaibot.recorder.dialogue_recorder import DialogueRecorder
-from iaibot.recorder.recorder_bot import RecorderBot
+from moviebot.database.database import DataBase
+from moviebot.dialogue_manager.dialogue_manager import DialogueManager
+from moviebot.nlg.nlg import NLG
+from moviebot.nlu.nlu import NLU
+from moviebot.ontology.ontology import Ontology
+from moviebot.recorder.dialogue_recorder import DialogueRecorder
+from moviebot.recorder.recorder_bot import RecorderBot
 
 
 def _get_ontology(ontology_path):
