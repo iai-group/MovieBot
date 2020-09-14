@@ -10,7 +10,7 @@
 
 IAI MovieBot
 ===================
-.. automodule:: movie_bot
+.. automodule:: run_bot
    :members:
 
 Controller
