@@ -1,5 +1,5 @@
 .idea/
 __pycache__/
-docs/*
+doc/build/*
 conversation_history/*
 data/slot_values.json
