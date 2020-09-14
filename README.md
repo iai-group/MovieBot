@@ -81,6 +81,6 @@ Create a folder named `conversation_history`. The conversational logs will be sa
 	   
 ## Running *IAI MovieBot*
 
-       python movie_bot.py -c <path_to_config.yaml>
+       python run_bot.py -c <path_to_config.yaml>
        
 Note: To create Slot-Values, execute the code once by setting `BOT: False` n the configuration file.

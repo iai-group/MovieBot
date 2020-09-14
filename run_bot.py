@@ -69,7 +69,7 @@ def arg_parse(args=None):
 
 
 if __name__ == '__main__':
-    # Usage: python movie_bot.py -c <path_to_config.yaml>
+    # Usage: python run_bot.py -c <path_to_config.yaml>
     # Version: Python 3.6
     CONFIGURATION, BOT = arg_parse()
     if BOT:
