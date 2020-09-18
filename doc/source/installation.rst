@@ -18,13 +18,18 @@ Python Libraries
 
 - Execute the following commands to install necessary libraries for *IAI MovieBot*
 
-    pip install pyyaml
-    pip install python-telegram-bot --upgrade
-    pip install wikipedia
-    pip install nltk
+
+.. code-block:: shell
+
+    $ pip install pyyaml
+    $ pip install python-telegram-bot --upgrade
+    $ pip install wikipedia
+    $ pip install nltk
        
 nltk Resources
 --------------
+
+.. code-block:: python
 
     nltk.download('punkt')
     nltk.download('wordnet')
