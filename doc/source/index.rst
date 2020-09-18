@@ -17,7 +17,7 @@ In specific, intent recognition in NLU identifies users' intent based on prefere
    installation
    usage
    architecture
-   Python package documentation <moviebot/main>
+   Python package documentation <api/main>
    contact
 
 

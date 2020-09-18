@@ -11,7 +11,7 @@ In specific, intent recognition in NLU identifies users' intent based on prefere
 The main architecture is shown in the figure below. A multi-turn conversation is initiated and terminated by the users. The users' response is processed by the NLU. The DM receives the users' dialogue acts from the NLU and generates the agent's dialogue acts. Based on the act from DM, the NLG generates a natural response to the users. This loop happens for each turn in the conversation.
 
 
-![A sample dialogue in IAI MovieBot](doc/_static/Blueprint_MovieBot.png)
+![A sample dialogue in IAI MovieBot](doc/source/_static/Blueprint_MovieBot.png)
 
 ## Main Components in *IAI MovieBot*:
 - [Controller](moviebot/controller/controller.py)
