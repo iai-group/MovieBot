@@ -11,22 +11,23 @@ from copy import deepcopy
 
 import yaml
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
-from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, ConversationHandler)
+from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
+                          ConversationHandler)
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
 
 # Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO)
 logger = logging.getLogger(__name__)
 CONTINUE = range(1)
 
 
 class ControllerBot(Controller):
     """This is the Controller class which controls the flow of the conversation while the user
-    interacts with the agent using telegram.
-    """
+    interacts with the agent using telegram."""
 
     def __init__(self):
         """Initializes some basic structs for the Controller.
@@ -41,8 +42,13 @@ class ControllerBot(Controller):
 
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
+        
+        :return: the token of the Telegram Bot
 
-        :return: the token of the Telegram Bot"""
+        Args:
+            bot_token_path: 
+
+        """
         if isinstance(bot_token_path, str):
             if os.path.isfile(bot_token_path):
                 with open(bot_token_path, 'r') as file:
@@ -50,95 +56,134 @@ class ControllerBot(Controller):
                     if 'BOT_TOKEN' in token_config:
                         return token_config['BOT_TOKEN']
                     else:
-                        raise ValueError(f'The token for Telegram bot is not found in the file '
-                                         f'{bot_token_path}')
+                        raise ValueError(
+                            f'The token for Telegram bot is not found in the file '
+                            f'{bot_token_path}')
             else:
                 raise FileNotFoundError(f'File {bot_token_path} not found')
         else:
             raise ValueError('Unacceptable type of Token file name')
 
-
     def start(self, update, context):
         """Starts the conversation. This indicates initializing the components and start the
         conversation from scratch and identifying if the users are new or have used this system
         before.
+
+        Args:
+            update: 
+            context: 
+
         """
         # create a new agent
         user_id = str(update.effective_user['id'])
-        if user_id not in self.configuration['new_user'] or self.configuration['new_user'].get(
-                user_id):
-            self.configuration['new_user'].update({user_id: self.new_user(user_id)})
+        if user_id not in self.configuration['new_user'] or self.configuration[
+                'new_user'].get(user_id):
+            self.configuration['new_user'].update(
+                {user_id: self.new_user(user_id)})
         self.agent[user_id] = Agent(self.configuration)
         self.user_options[user_id] = {}
         self.agent[user_id].initialize(user_id)
-        print(f"Conversation is starting for user id = {user_id} and user name = '"
-              f"{update.effective_user['first_name']}'")
+        print(
+            f"Conversation is starting for user id = {user_id} and user name = '"
+            f"{update.effective_user['first_name']}'")
         self.response[user_id], self.record_data_agent[user_id], _ = self.agent[
             user_id].start_dialogue(
-            user_fname=
-            update.effective_user[
-                'first_name'])
+                user_fname=update.effective_user['first_name'])
         if self.configuration['new_user'][user_id]:
-            update.message.reply_text(self._instruction(), parse_mode=ParseMode.MARKDOWN)
-        update.message.reply_text(self.response[user_id], reply_markup=ReplyKeyboardRemove(),
+            update.message.reply_text(self._instruction(),
+                                      parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(self.response[user_id],
+                                  reply_markup=ReplyKeyboardRemove(),
                                   parse_mode=ParseMode.MARKDOWN)
         # record the conversation
         if self.agent[user_id].bot_recorder:
-            self.record_data[user_id] = {"Timestamp": str(update.message.date),
-                                         "User_Input": update.message.text}
+            self.record_data[user_id] = {
+                "Timestamp": str(update.message.date),
+                "User_Input": update.message.text
+            }
             self.record_data[user_id].update(self.record_data_agent[user_id])
-            self.agent[user_id].bot_recorder.record_user_data(user_id, self.record_data[user_id])
+            self.agent[user_id].bot_recorder.record_user_data(
+                user_id, self.record_data[user_id])
         return CONTINUE
 
     def help(self, update, context):
-        """Sends the users the instructions if they ask for help"""
-        update.message.reply_text(self._instruction(help=True), parse_mode=ParseMode.MARKDOWN)
+        """Sends the users the instructions if they ask for help
+
+        Args:
+            update: 
+            context: 
+
+        """
+        update.message.reply_text(self._instruction(help=True),
+                                  parse_mode=ParseMode.MARKDOWN)
         return CONTINUE
 
     def restart(self, update, context):
         """Restarts the conversation. This is similar to start function. However, it starts the
-        conversation with a welcome message and elicits the uses to begin with."""
+        conversation with a welcome message and elicits the uses to begin with.
+
+        Args:
+            update: 
+            context: 
+
+        """
         # create a new agent
         user_id = str(update.effective_user['id'])
-        if user_id not in self.configuration['new_user'] or self.configuration['new_user'].get(
-                user_id):
-            self.configuration['new_user'].update({user_id: self.new_user(user_id)})
+        if user_id not in self.configuration['new_user'] or self.configuration[
+                'new_user'].get(user_id):
+            self.configuration['new_user'].update(
+                {user_id: self.new_user(user_id)})
         self.agent[user_id] = Agent(self.configuration)
         self.user_options[user_id] = {}
         self.agent[user_id].initialize(user_id)
-        print(f"Conversation is starting for user id = {user_id} and user name = '"
-              f"{update.effective_user['first_name']}'")
+        print(
+            f"Conversation is starting for user id = {user_id} and user name = '"
+            f"{update.effective_user['first_name']}'")
         self.response[user_id], self.record_data_agent[user_id], _ = self.agent[
-            user_id].start_dialogue(user_fname=
-                                    update.effective_user[
-                                        'first_name'],
-                                    restart=True)
-        if self.configuration['new_user'][user_id]: update.message.reply_text(self._instruction(),
-                                                                              parse_mode=ParseMode.MARKDOWN)
-        update.message.reply_text(self.response[user_id], reply_markup=ReplyKeyboardRemove())
+            user_id].start_dialogue(
+                user_fname=update.effective_user['first_name'], restart=True)
+        if self.configuration['new_user'][user_id]:
+            update.message.reply_text(self._instruction(),
+                                      parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(self.response[user_id],
+                                  reply_markup=ReplyKeyboardRemove())
         # record the conversation
         if self.agent[user_id].bot_recorder:
-            self.record_data[user_id] = {"Timestamp": str(update.message.date),
-                                         "User_Input": update.message.text}
+            self.record_data[user_id] = {
+                "Timestamp": str(update.message.date),
+                "User_Input": update.message.text
+            }
             self.record_data[user_id].update(self.record_data_agent[user_id])
-            self.agent[user_id].bot_recorder.record_user_data(user_id, self.record_data[user_id])
+            self.agent[user_id].bot_recorder.record_user_data(
+                user_id, self.record_data[user_id])
         return CONTINUE
 
     def continue_conv(self, update, context):
-        """Continues the conversation until the users want to restart of exit."""
+        """Continues the conversation until the users want to restart of exit.
+
+        Args:
+            update: 
+            context: 
+
+        """
         user_id = str(update.effective_user['id'])
-        if user_id not in self.configuration['new_user'] or self.configuration['new_user'].get(
-                user_id):
-            self.configuration['new_user'].update({user_id: self.new_user(user_id)})
+        if user_id not in self.configuration['new_user'] or self.configuration[
+                'new_user'].get(user_id):
+            self.configuration['new_user'].update(
+                {user_id: self.new_user(user_id)})
         if user_id not in self.agent:
             self.agent[user_id] = Agent(self.configuration)
             self.user_options[user_id] = {}
             self.agent[user_id].initialize(user_id)
-            self.agent[user_id].dialogue_manager.dialogue_state_tracker.dialogue_state.initialize()
             self.agent[
-                user_id].dialogue_manager.dialogue_state_tracker.dialogue_context.initialize()
-            print(f"Conversation is starting for user id = {user_id} and user name = '"
-                  f"{update.effective_user['first_name']}'")
+                user_id].dialogue_manager.dialogue_state_tracker.dialogue_state.initialize(
+                )
+            self.agent[
+                user_id].dialogue_manager.dialogue_state_tracker.dialogue_context.initialize(
+                )
+            print(
+                f"Conversation is starting for user id = {user_id} and user name = '"
+                f"{update.effective_user['first_name']}'")
         start = time.time()
         self.response[user_id], self.record_data_agent[user_id], self.user_options[user_id] = \
             self.agent[user_id].continue_dialogue(
@@ -150,26 +195,31 @@ class ControllerBot(Controller):
             reply_keyboard = self._recheck_user_options(
                 deepcopy(list(self.user_options[user_id].values())))
             resize = True
-            if len(self.user_options[user_id]) > 3: resize = False
+            if len(self.user_options[user_id]) > 3:
+                resize = False
             markup = ReplyKeyboardMarkup(reply_keyboard,
                                          resize_keyboard=resize,
                                          one_time_keyboard=True)
         else:
             markup = ReplyKeyboardRemove()
         end = time.time()
-        if self.configuration['new_user'][user_id]: update.message.reply_text(self._instruction(),
-                                                                              parse_mode=ParseMode.MARKDOWN)
-        update.message.reply_text(self.response[user_id], reply_markup=markup,
+        if self.configuration['new_user'][user_id]:
+            update.message.reply_text(self._instruction(),
+                                      parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(self.response[user_id],
+                                  reply_markup=markup,
                                   parse_mode=ParseMode.MARKDOWN)
         # record the conversation
         if self.agent[user_id].bot_recorder:
             record_data = {"Timestamp": str(update.message.date)}
             record_data.update(self.record_data_agent[user_id])
             record_data.update({"Execution_Time": str(round(end - start, 3))})
-            self.agent[user_id].bot_recorder.record_user_data(user_id, record_data)
+            self.agent[user_id].bot_recorder.record_user_data(
+                user_id, record_data)
         if self.agent[user_id].terminated_dialogue():
-            print(f"Conversation is ending for user id = {user_id} and user name = '"
-                  f"{update.effective_user['first_name']}'")
+            print(
+                f"Conversation is ending for user id = {user_id} and user name = '"
+                f"{update.effective_user['first_name']}'")
             del self.agent[user_id]
             feedback = 'Help me improve myself. Give me a feedback [here](' \
                        'https://forms.gle/hK9CrHu37dL89r1H6).'
@@ -179,20 +229,32 @@ class ControllerBot(Controller):
             return CONTINUE
 
     def exit(self, update, context):
-        """Exit the conversation."""
+        """Exit the conversation.
+
+        Args:
+            update: 
+            context: 
+
+        """
         user_id = str(update.effective_user['id'])
-        self.response[user_id] = 'You are exiting. I hope you found a movie. Bye.'
-        update.message.reply_text(self.response[user_id], reply_markup=ReplyKeyboardRemove(),
+        self.response[
+            user_id] = 'You are exiting. I hope you found a movie. Bye.'
+        update.message.reply_text(self.response[user_id],
+                                  reply_markup=ReplyKeyboardRemove(),
                                   parse_mode=ParseMode.MARKDOWN)
         # record the conversation
         user_id = str(update.effective_user['id'])
-        print(f"Conversation is ending for user id = {user_id} and user name = '"
-              f"{update.effective_user['first_name']}'")
+        print(
+            f"Conversation is ending for user id = {user_id} and user name = '"
+            f"{update.effective_user['first_name']}'")
         if self.agent[user_id].bot_recorder:
-            record_data = {"Timestamp": str(update.message.date),
-                           "User_Input": update.message.text,
-                           "Agent": self.response[user_id]}
-            self.agent[user_id].bot_recorder.record_user_data(user_id, record_data)
+            record_data = {
+                "Timestamp": str(update.message.date),
+                "User_Input": update.message.text,
+                "Agent": self.response[user_id]
+            }
+            self.agent[user_id].bot_recorder.record_user_data(
+                user_id, record_data)
             del self.agent[user_id]
             feedback = 'Help me improve myself. Give me a feedback [here](' \
                        'https://forms.gle/hK9CrHu37dL89r1H6).'
@@ -200,14 +262,23 @@ class ControllerBot(Controller):
         return ConversationHandler.END
 
     def error(self, update, context):
-        """Log Errors caused by Updates."""
-        logger.warning(f'Error {context.error} is caused by update {str(update)}.')
+        """Log Errors caused by Updates.
+
+        Args:
+            update: 
+            context: 
+
+        """
+        logger.warning(
+            f'Error {context.error} is caused by update {str(update)}.')
 
     def execute_agent(self, configuration):
         """Runs the conversational agent and executes the dialogue by calling the basic components
         of IAI MovieBot.
 
-        :param configuration: the settings for the agent
+        Args:
+            configuration: the settings for the agent
+
         """
         self.configuration = configuration
         self.configuration['new_user'] = {}
@@ -218,19 +289,22 @@ class ControllerBot(Controller):
 
         # Add conversation hadler with states START, CONTINUE_RECOMMENDATION and END
         conv_handler = ConversationHandler(
-            entry_points=[CommandHandler('start', self.start),
-                          CommandHandler('restart', self.start),
-                          CommandHandler('help', self.help),
-                          MessageHandler(Filters.text, self.continue_conv)],
+            entry_points=[
+                CommandHandler('start', self.start),
+                CommandHandler('restart', self.start),
+                CommandHandler('help', self.help),
+                MessageHandler(Filters.text, self.continue_conv)
+            ],
             states={
-                CONTINUE: [CommandHandler('start', self.start),
-                           CommandHandler('restart', self.restart),
-                           CommandHandler('help', self.help),
-                           CommandHandler('exit', self.exit),
-                           MessageHandler(Filters.text, self.continue_conv)]
+                CONTINUE: [
+                    CommandHandler('start', self.start),
+                    CommandHandler('restart', self.restart),
+                    CommandHandler('help', self.help),
+                    CommandHandler('exit', self.exit),
+                    MessageHandler(Filters.text, self.continue_conv)
+                ]
             },
-            fallbacks=[CommandHandler('exit', self.exit)]
-        )
+            fallbacks=[CommandHandler('exit', self.exit)])
 
         dp.add_handler(conv_handler)
         # dp.add_error_handler(self.error)
@@ -241,14 +315,20 @@ class ControllerBot(Controller):
         # SIGTERM or SIGABRT. This should be used most of the time, since
         # start_polling() is non-blocking and will stop the controller gracefully.
         updater.idle()
-        print('The components for the conversation are initialized successfully.')
+        print(
+            'The components for the conversation are initialized successfully.')
         print('The users can access IAI MovieBot using Telegram.')
 
     def new_user(self, user_id):
-        """ Checks if the users are new or they have already conversed with the system before.
+        """Checks if the users are new or they have already conversed with the system before.
 
-        :param user_id: ID of the user
-        :return: Flag indication if users are new"""
+        Args:
+            user_id: ID of the user
+
+        Returns:
+            Flag indication if users are new
+
+        """
         file_path = 'conversation_history/user_list.json'
         if not os.path.isfile(file_path):
             # create a new file with first user
@@ -267,7 +347,12 @@ class ControllerBot(Controller):
                     return True
 
     def _recheck_user_options(self, options):
-        """Filters the keyboard options for a more elegant view."""
+        """Filters the keyboard options for a more elegant view.
+
+        Args:
+            options: 
+
+        """
         final_options = []
         row = []
         list_row = []
@@ -300,7 +385,12 @@ class ControllerBot(Controller):
         return final_options
 
     def _instruction(self, help=False):
-        """Instructions for new user"""
+        """Instructions for new user
+
+        Args:
+            help:  (Default value = False)
+
+        """
         response = ''
         if not help:
             response = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \

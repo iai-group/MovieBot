@@ -7,17 +7,17 @@ from moviebot.dialogue_manager.operator import Operator
 
 
 class ItemConstraint:
-    """
-    The Item Constraint models the parameter of a DialogueAct and is a
-    triplet of (slot, operator, value).
-    """
+    """The Item Constraint models the parameter of a DialogueAct and is a
+    triplet of (slot, operator, value)."""
 
     def __init__(self, slot, op, value):
         """Initializes a Dialogue Act Item (slot - operator - value)
 
-        :param slot: a string, representing the slot
-        :param op: an Operator
-        :param value: the value of the slot
+        Args:
+            slot: a string, representing the slot
+            op: an Operator
+            value: the value of the slot
+            
         """
         if isinstance(slot, str):
             self.slot = slot
@@ -34,7 +34,8 @@ class ItemConstraint:
     def __str__(self):
         """Prints the DAct Item to debug the agent
 
-        :return: string having "<slot> <op> <value>"
+        Returns:
+            string having "<slot> <op> <value>"
         """
         opr = str(self.op)
 
