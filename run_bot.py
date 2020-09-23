@@ -39,7 +39,7 @@ def arg_parse(args=None):
 
     :param args: configuration file for the dialogue
     :return: a dictionary containing the settings in the configuration file and a boolean
-    variable identifying if the conversation is in Telegram
+        variable identifying if the conversation is in Telegram
     """
     argv = args if args else sys.argv
     cfg_parser = None
@@ -57,15 +57,19 @@ def arg_parse(args=None):
     elif file_val == 'ValueError':
         raise ValueError('Unacceptable type of configuration file name')
     elif file_val == 'FileNotFoundError':
-        raise FileNotFoundError('Configuration file {} not found'.format(config_file))
+        raise FileNotFoundError(
+            'Configuration file {} not found'.format(config_file))
     elif file_val.startswith('ValueErrorType'):
-        raise ValueError(f'Unknown file type {file_val.split(":")[-1]} for configuration file')
+        raise ValueError(
+            f'Unknown file type {file_val.split(":")[-1]} for configuration file'
+        )
 
     if cfg_parser:
         print(f'Configuration file "{config_file}" is loaded.')
         return cfg_parser, cfg_parser['BOT']
     else:
-        raise ValueError('The configuration file does not contain the correct format.')
+        raise ValueError(
+            'The configuration file does not contain the correct format.')
 
 
 if __name__ == '__main__':
