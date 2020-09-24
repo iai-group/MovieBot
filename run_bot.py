@@ -14,9 +14,13 @@ from moviebot.controller.controller_terminal import ControllerTerminal
 def _validate_file(file_name, file_type):
     """Checks if the file is valid and is present
 
-    :param file_name: name/path of the file provided
-    :param file_type: the type/extension of the file
-    :return: error and details
+    Args:
+      file_name: name/path of the file provided
+      file_type: the type/extension of the file
+
+    Returns:
+      error and details
+
     """
     if isinstance(file_name, str):
         if os.path.isfile(file_name):
@@ -35,11 +39,15 @@ def _validate_file(file_name, file_type):
 
 
 def arg_parse(args=None):
-    """ Parses the arguments in the configuration file
+    """Parses the arguments in the configuration file
 
-    :param args: configuration file for the dialogue
-    :return: a dictionary containing the settings in the configuration file and a boolean
-        variable identifying if the conversation is in Telegram
+    Args:
+      args: configuration file for the dialogue (Default value = None)
+
+    Returns:
+      a dictionary containing the settings in the configuration file and a boolean
+      variable identifying if the conversation is in Telegram
+
     """
     argv = args if args else sys.argv
     cfg_parser = None

@@ -9,8 +9,8 @@ from enum import Enum
 
 class Operator(Enum):
     """The Operator class defines acceptable operators.
-    It will be used to identify dialogue act item operator
-    """
+    It will be used to identify dialogue act item operator"""
+
     EQ = 1
     NE = 2
     LT = 3
@@ -27,7 +27,9 @@ class Operator(Enum):
         """
         Prints the Operator
 
-        :return: a string representation of the Operator
+        Returns:
+            a string representation of the Operator
+            
         """
         opr = 'UNK'
         if self.name == 'EQ':

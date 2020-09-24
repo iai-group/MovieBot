@@ -49,6 +49,14 @@ class SlotAnnotator:
             self.person_names.update(deepcopy(self.slot_values[slot]))
 
     def slot_annotation(self, slot, utterance, raw_utterance):
+        """
+
+        Args:
+            slot: 
+            utterance: 
+            raw_utterance: 
+
+        """
         # utterance = utterance.replace('?','')
         if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
             params = self._person_name_annotator(utterance)
@@ -67,6 +75,13 @@ class SlotAnnotator:
         return params
 
     def _genres_annotator(self, slot, utterance):
+        """
+
+        Args:
+            slot: 
+            utterance: 
+
+        """
         param = None
         values = self.slot_values[slot]
         for value, lem_value in values.items():
@@ -86,7 +101,13 @@ class SlotAnnotator:
 
     def _title_annotator(self, slot, utterance):
         """This annotator is used to check the movie title.
-        Sometimes the user can just enter a part of the name."""
+        Sometimes the user can just enter a part of the name.
+
+        Args:
+            slot: 
+            utterance: 
+
+        """
         values = self.slot_values[slot]
         processed_values = set(values.values())
         # split into n-grams
@@ -127,7 +148,13 @@ class SlotAnnotator:
 
     def _keywords_annotator(self, slot, utterance):
         """This annotator is used to check the movie keywords.
-        If the ngram has only keywords, it will be ignored."""
+        If the ngram has only keywords, it will be ignored.
+
+        Args:
+            slot: 
+            utterance: 
+
+        """
         values = self.slot_values[slot]
         for ngram_size in range(
                 min(self.ngram_size[slot], len(utterance.split())), 0, -1):
@@ -143,15 +170,21 @@ class SlotAnnotator:
                                                    gram.strip())
                             return [param]
                         elif (ngram_size == 1 and gram == lem_value) or (
-                                ngram_size > 1 and
-                                f' {gram} ' in f' {lem_value} '):
+                                ngram_size > 1
+                                and f' {gram} ' in f' {lem_value} '):
                             param = ItemConstraint(slot, Operator.EQ,
                                                    gram.strip())
                             return [param]
 
     def _person_name_annotator(self, utterance, slots=None):
         """This annotator is used to check the movie actor nams.
-        Sometimes the user can just enter a part of the name."""
+        Sometimes the user can just enter a part of the name.
+
+        Args:
+            utterance: 
+            slots:  (Default value = None)
+
+        """
 
         if not slots:
             slots = [Slots.ACTORS.value, Slots.DIRECTORS.value]
@@ -176,13 +209,21 @@ class SlotAnnotator:
                 return params
 
     def _year_annotator(self, slot, raw_utterance, utterance):
+        """
+
+        Args:
+            slot: 
+            raw_utterance: 
+            utterance: 
+
+        """
         # fitst option is to find if any value is in the possible values
         possible_years = [
             int(val) for val in re.findall(r'\b\d+', raw_utterance)
         ]
         for year in possible_years:
             _year = str(year)
-            if _year + 's' in raw_utterance:  # check if it's 1990s instead of
+            if _year + 's' in raw_utterance:    # check if it's 1990s instead of
                 # 1990 or 90s
                 if len(_year) == 4:
                     if year % 10 == 0:
@@ -213,7 +254,7 @@ class SlotAnnotator:
                             ]
                         else:
                             return [ItemConstraint(slot, Operator.EQ, _year)]
-            elif _year + 'th' in raw_utterance:  # it can be string like 19th, 20th
+            elif _year + 'th' in raw_utterance:    # it can be string like 19th, 20th
                 if len(_year) == 2:
                     return [
                         ItemConstraint(slot, Operator.BETWEEN, f'{_year}00 AND'
@@ -228,6 +269,14 @@ class SlotAnnotator:
             return [ItemConstraint(slot, Operator.LT, '2010')]
 
     def find_in_raw_utterance(self, raw_utterance, gram, ngram_size):
+        """
+
+        Args:
+            raw_utterance: 
+            gram: 
+            ngram_size: 
+
+        """
         n_grams = ngrams(raw_utterance.split(), ngram_size)
         for _gram in n_grams:
             gramR = " ".join(_gram)

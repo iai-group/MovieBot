@@ -4,7 +4,7 @@ Dialogue Manager
 .. automodule:: moviebot.dialogue_manager.dialogue_manager
    :members:
 
-   Dialogue State Tracker
+Dialogue State Tracker
 -------------------------
 .. automodule:: moviebot.dialogue_manager.dialogue_state_tracker
    :members:

@@ -36,6 +36,7 @@ release = u'0.1'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
     #'sphinx.ext.coverage',  # in ll
     #'sphinx.ext.ifconfig',
     #'sphinx.ext.viewcode',

@@ -8,8 +8,7 @@ from abc import ABC, abstractmethod
 
 class Controller(ABC):
     """This is the main class that controls the other components of the IAI MovieBot.
-    The controller executes the conversational agent.
-    """
+    The controller executes the conversational agent."""
 
     def __init__(self):
         """Initializes some basic structs for the Controller.
@@ -20,6 +19,8 @@ class Controller(ABC):
         """Runs the conversational agent and executes the dialogue by calling the basic components
         of IAI MovieBot
 
-        :param configuration: the settings for the agent
+        Args:
+            configuration: the settings for the agent
+
         """
         pass

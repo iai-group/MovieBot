@@ -20,8 +20,11 @@ class DialogueStateTracker:
     def __init__(self, config, isBot):
         """Loads the database and ontology and creates an initial dialogue state.
 
-        :param config: the set of parameters to initialize the state tracker
-        :param isBot: if the conversation is via bot or not """
+        Args:
+            config: the set of parameters to initialize the state tracker
+            isBot: if the conversation is via bot or not 
+        
+        """
         self.ontology = config['ontology']
         self.database = config['database']
         self.slots = config['slots']
@@ -33,14 +36,18 @@ class DialogueStateTracker:
     def initialize(self, config):
         """Loads the database results and initialize the dialogue state and context.
         This function also initializes the state if dialogue needs to run from scratch.
-        :param config: the database and ontology to load for further use
+
+        Args:
+            config: the database and ontology to load for further use
+
         """
 
     def _add_year_CIN(self, param):
         """
 
-        :type param: ItemConstraint
-        :return:
+        Args:
+            param: 
+
         """
         if param.value in Values.__dict__.values():
             return param.value
@@ -65,7 +72,10 @@ class DialogueStateTracker:
 
     def update_state_user(self, user_dacts):
         """Updates the current dialogue state and context based on user DActs
-        :param user_dacts: (dialogue acts) which is the output of NLU.
+
+        Args:
+            user_dacts: dialogue acts) which is the output of NLU.
+
         """
         # re-filtering the dacts
         user_dacts_copy = deepcopy(user_dacts)
@@ -137,7 +147,7 @@ class DialogueStateTracker:
                                         self.dialogue_state.frame_CIN[
                                             param.slot].append(param.value)
                             else:
-                                if f'.NOT.{param.value}' in self.dialogue_state.frame_CIN[ \
+                                if f'.NOT.{param.value}' in self.dialogue_state.frame_CIN[
                                         param.slot]:
                                     self.dialogue_state.frame_CIN[
                                         param.slot].remove(
@@ -191,7 +201,7 @@ class DialogueStateTracker:
             # remove from user requestables when user asks for anything
             if user_dact.intent == UserIntents.INQUIRE:
                 if not self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                    print(self.dialogue_state)  # debuggig here
+                    print(self.dialogue_state)    # debuggig here
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                 if name in self.dialogue_context.movies_recommended:
                     if 'inquire' not in self.dialogue_context.movies_recommended[
@@ -248,7 +258,9 @@ class DialogueStateTracker:
     def update_state_agent(self, agent_dacts):
         """Updates the current dialogue state and context based on agent DActs
 
-        :param agent_dacts: (dialogue acts) which is the output of dialogue policy.
+        Args:
+            agent_dacts: dialogue acts) which is the output of dialogue policy.
+
         """
         # re-filtering the dacts
         agent_dacts_copy = deepcopy(agent_dacts)
@@ -277,9 +289,13 @@ class DialogueStateTracker:
     def update_state_db(self, database_result=None, backup_results=None):
         """Updates the state based on  the results fetched from the database
 
-        :param database_result: the database results based on user information needs
-        :param remove_title_from_CIN: flag indicating that agent removed the name from CIN as
-            there were no results"""
+        Args:
+            database_result: the database results based on user information needs (Default value = None)
+            remove_title_from_CIN: flag indicating that agent removed the name from CIN as
+                there were no result
+            backup_results:  (Default value = None)
+
+        """
 
         item_found = False
         self.dialogue_state.items_in_context = False
@@ -287,8 +303,8 @@ class DialogueStateTracker:
             # get slots that have no value and can be a next elicit
             CIN_slots = [
                 key for key in self.dialogue_state.frame_CIN.keys()
-                if not self.dialogue_state.frame_CIN[key] and
-                key != Slots.TITLE.value
+                if not self.dialogue_state.frame_CIN[key]
+                and key != Slots.TITLE.value
             ]
             self.dialogue_state.database_result = database_result
 
@@ -338,14 +354,18 @@ class DialogueStateTracker:
 
     def get_state(self):
         """Returns the current dialogue state.
+        
+        Returns:
+            the current dialogue state
 
-        :return: the current dialogue state
         """
         return self.dialogue_state
 
     def get_context(self):
         """Returns the history for a specific user
 
-        :return: the current user context
+        Returns:
+            the current user context
+            
         """
         # return self.dialogue_context
