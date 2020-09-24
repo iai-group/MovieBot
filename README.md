@@ -4,13 +4,17 @@
 
 IAI MovieBot is an open-source, conversational movie recommender system.
 
-It features a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences.
+It features a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences.
+
+## Demo
 
 IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/IAI_MovieBot).
+
 
 ## Installation and documentation
 
 The installation instructions and documentation can be found on [Read the Docs](https://iai-moviebot.readthedocs.io/).
+
 
 ## Publication
 
