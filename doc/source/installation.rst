@@ -10,13 +10,13 @@ Telegram Bot Token
 Conversation History folder
 ---------------------------
 
-Create a folder named `conversation_history`. The conversational logs will be saved in this folder if allowed in the config file. These logs will be created when the *IAI MovieBot* is being executed on Telegram.
+Create a folder named `conversation_history`. The conversational logs will be saved in this folder if allowed in the config file. These logs will be created when the IAI MovieBot is being executed on Telegram.
 
 
 Python Libraries
 ----------------
 
-- Execute the following commands to install necessary libraries for *IAI MovieBot*
+- Execute the following commands to install necessary libraries for IAI MovieBot
 
 
 .. code-block:: shell
