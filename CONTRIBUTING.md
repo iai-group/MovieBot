@@ -26,11 +26,12 @@ We usually recommend opening an issue before a pull request if there isn’t alr
 Changes to IAI MovieBot should conform to
 [IAI Python Style Guide](https://github.com/iai-group/styleguide/tree/master/python)
 
-Use `pylint` to check your Python changes. To install `pylint` and check a file
+Use `pylint` to check your Python changes. You will also need `pylint-quotes` to check for single quote rule in the guidelines. To install `pylint` and check a file
 with `pylint` against IAI MovieBot's custom style definition:
 
 ```bash
 pip install pylint
+pip install pylint-quotes
 pylint --rcfile=.pylintrc myfile.py
 ```
 
