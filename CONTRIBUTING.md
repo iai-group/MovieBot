@@ -1,6 +1,6 @@
 # Contributing guidelines
 
-## Pull Request Checklist
+### Pull Request Checklist
 
 Before sending your pull requests, make sure you followed this list.
 
@@ -15,7 +15,9 @@ Before sending your pull requests, make sure you followed this list.
 Before sending your pull request for
 [review](https://github.com/iai-group/moviebot/pulls),
 make sure your changes are consistent with the guidelines and follow the
-IAI group coding style.
+[IAI group styles](https://github.com/iai-group/styleguide).
+
+We usually recommend opening an issue before a pull request if there isn’t already an issue for the problem you’d like to solve. This helps facilitate a discussion before deciding on an implementation. 
 
 ### Contributing code
 
