@@ -5,7 +5,7 @@
 Before sending your pull requests, make sure you followed this list.
 
 - Read [contributing guidelines](https://github.com/iai-group/moviebot/blob/master/CONTRIBUTING.md#contribution-guidelines).
-- Check that changes are consistent with the [Coding Style](https://github.com/iai-group/moviebot/blob/master/CONTRIBUTING.md#c-coding-style).
+- Check that changes are consistent with the [Coding Style](https://github.com/iai-group/moviebot/blob/master/CONTRIBUTING.md#python-coding-style).
 - Run [Unit Tests](https://github.com/iai-group/moviebot/blob/master/CONTRIBUTING.md#running-unit-tests).
 
 
