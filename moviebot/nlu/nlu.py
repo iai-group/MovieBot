@@ -1,8 +1,8 @@
-"""NLU (Natural Language Understander) is a main component of Dialogue Systems. NLU understands
-the user requirements and intents for the system to generate an appropriate response.
-"""
+"""NLU (Natural Language Understander) is a main component of Dialogue Systems.
+NLU understands the user requirements and intents for the system to generate an
+appropriate response."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
@@ -15,10 +15,11 @@ from moviebot.dialogue_manager.values import Values
 
 
 class NLU:
-    """NLU is a basic natural language understander to generate DActs for the Conversational Agent.
-    Implementation of this NLU is designed to work for Slot-Filling applications. The purpose of
-    this class is to provide a quick way of running Conversational Agents, sanity checks,
-    and to aid debugging."""
+    """NLU is a basic natural language understander to generate DActs for the
+    Conversational Agent. Implementation of this NLU is designed to work for
+    Slot-Filling applications. The purpose of this class is to provide a quick
+    way of running Conversational Agents, sanity checks, and to aid debugging.
+    """
 
     def __init__(self, config):
         """Loads the ontology and database, and preprocess
@@ -41,25 +42,28 @@ class NLU:
                       options,
                       dialogue_state=None,
                       dialogue_context=None):
-        """Processes the utterance according to dialogue state and context and generate a user
-        dialogue act for Agent to understand.
+        """Processes the utterance according to dialogue state and context and
+        generate a user dialogue act for Agent to understand.
 
         Args:
-            raw_utterance: 
+            raw_utterance:
             utterance: a string containing user input
             options: a list of options provided to the user to choose from
-            dialogue_state: the current dialogue state, if available (Default value = None)
-            dialogue_context: the current dialogue context, if available (Default value = None)
+            dialogue_state: the current dialogue state, if available
+                (Default value = None)
+            dialogue_context: the current dialogue context, if available
+                (Default value = None)
 
         Returns:
             a list of dialogue acts
 
         """
-        # this is the top priority. The agent must check if user selected any option
+        # this is the top priority. The agent must check if user selected
+        # any option
         if options:
             for dact, value in options.items():
-                if (isinstance(value, list) and value[0] == raw_utterance) or value == \
-                        raw_utterance:
+                if (isinstance(value, list) and value[0] == raw_utterance) or \
+                    value == raw_utterance:
                     if dact.intent == UserIntents.CONTINUE_RECOMMENDATION:
                         dact.params = self.intents_checker.generate_params_continue_recommendation(
                             dialogue_state.item_in_focus)

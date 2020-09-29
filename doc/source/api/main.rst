@@ -5,14 +5,19 @@ IAI MovieBot
    :members:
 
 .. toctree::
-    :caption: Contents:
+    :caption: Core:
+
+    agent
+
+.. toctree::
+    :caption: Chat Interface:
 
     controller
-    agent
+
+.. toctree::
+    :caption: Helpers:
+
     database
     ontology
-    dialogue_manager
-    nlu
-    nlg
     intents
     recorder
