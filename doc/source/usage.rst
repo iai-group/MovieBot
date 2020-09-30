@@ -1,7 +1,7 @@
 Usage
 =====
 
-Running *IAI MovieBot*
+Running IAI MovieBot
 ----------------------
 
 .. code-block:: shell
