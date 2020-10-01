@@ -1,4 +1,5 @@
-"""This file contains the Utterance abstract class. 
+"""Utterance abstract class.
+------------------------------
 """
 from abc import ABC
 import datetime

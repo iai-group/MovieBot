@@ -1,14 +1,20 @@
-"""This file contains the user utterance. In addition to the raw utterance
-this class stores the preprocessed utterance as well.
+"""The user utterance class.
+-----------------------------
 """
 from moviebot.utterance.utterance import Utterance
+from typing import List
 
 
 class UserUtterance(Utterance):
     """Expands the base class with preprocessed and tokenized version of
-    the utterance 
+    the utterance.
     """
 
-    def get_preprocessed_utterance(self):
+    def get_preprocessed_utterance(self) -> List[str]:
+        """Preprocesses the utterance and returns a list of tokens.
+
+        Returns:
+            List[str]: List of tokens from the utterance.
+        """
         # TODO(Ivica Kostric): make logic for preprocessing.
         return self.utterance().split()

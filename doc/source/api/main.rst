@@ -16,3 +16,4 @@ IAI MovieBot
     nlg
     intents
     recorder
+    utterance

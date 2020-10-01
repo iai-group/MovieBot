@@ -1,4 +1,5 @@
-"""This file contains the agent utterance.
+"""The agent utterance class.
+-------------------------------
 """
 from moviebot.utterance.utterance import Utterance
 
