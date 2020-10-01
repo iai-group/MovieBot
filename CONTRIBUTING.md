@@ -52,7 +52,7 @@ pylint --rcfile=.pylintrc myfile.py
 
 #### Running unit tests
 
-For any code you write, you should also write its unit tests. If you write a new file foo.py, you should place its unit tests in tests/unit/foo_test.py and submit it within the same change. 
+For any code you write, you should also write its unit tests. If you write a new file foo.py for some module, you should place its unit tests in tests/module/foo_test.py and submit it within the same change. 
 
 ```bash
 pip install pytest
