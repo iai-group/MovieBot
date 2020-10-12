@@ -72,6 +72,18 @@ class TextProcess:
     def remove_stopwords(self,
                          word_tokens: List[str],
                          additional_stop_words: List[str] = None) -> List[str]:
+        """Removes stopwords from a list of words. Stopwords are the most common
+        used words contained in english corpus in nltk package. Additionally,
+        it is possible to add a custom list of words to remove from the text.
+
+        Args:
+            word_tokens (List[str]): List of tokens
+            additional_stop_words (List[str], optional): Custom words to remove
+                from the list of tokens. Defaults to None.
+
+        Returns:
+            List[str]: List of tokens without stopwords.
+        """
 
         stop_words = stopwords.words('english')
         if additional_stop_words:
