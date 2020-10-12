@@ -71,7 +71,7 @@ class Agent:
         self.nlu = None
         self.nlg = None
         self.isBot = False
-        self.new_user = False    # a parameter for Bot
+        self.new_user = False  # a parameter for Bot
         self.bot_recorder = None
 
         # Dialogue component agent controls

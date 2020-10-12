@@ -5,7 +5,7 @@ __author__ = "Javeria Habib"
 import json
 import os
 
-from moviebot.dialogue_manager.slots import Slots
+from moviebot.nlu.annotators.slots import Slots
 
 
 class DataLoader:

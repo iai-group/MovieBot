@@ -9,12 +9,12 @@ from typing import List
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
+from moviebot.nlu.annotators.item_constraint import ItemConstraint
+from moviebot.nlu.annotators.operator import Operator
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotators.slots import Slots
+from moviebot.nlu.annotators.values import Values
 
 
 class NLG:
@@ -482,13 +482,13 @@ class NLG:
             DialogueAct(UserIntents.REJECT, [
                 ItemConstraint('reason', Operator.EQ, 'watched')
             ]): ['I have already watched it.'],
-        # [random.choice(['I have already watched it.',
-        #                 'I have seen this already.'])],
+            # [random.choice(['I have already watched it.',
+            #                 'I have seen this already.'])],
             DialogueAct(UserIntents.REJECT, [
                 ItemConstraint('reason', Operator.EQ, 'dont_like')
             ]): ['Recommend me something else please.'],
-        # [random.choice(['I don\'t like this recommendation.',
-        #                 'Recommend me something else please.'])],
+            # [random.choice(['I don\'t like this recommendation.',
+            #                 'Recommend me something else please.'])],
             DialogueAct(UserIntents.ACCEPT, []): [
                 'I like this recommendation.'
             ],
@@ -517,7 +517,7 @@ class NLG:
             for param in params:
                 negative = False
                 if value.startswith('.NOT.'):
-                    negative = True    # TODO. Add changes here
+                    negative = True  # TODO. Add changes here
                     value = value.replace('.NOT.', '')
                 _a_an = 'an' if value[0] in ['a', 'e', 'i', 'o', 'u'] else 'a'
                 param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])
@@ -638,8 +638,8 @@ class NLG:
             DialogueAct(UserIntents.REJECT, [
                 ItemConstraint('reason', Operator.EQ, 'dont_like')
             ]): ['I don\'t like this recommendation.'],
-        # [random.choice(['I don\'t like this recommendation.',
-        #                 'Recommend me something else please.'])],
+            # [random.choice(['I don\'t like this recommendation.',
+            #                 'Recommend me something else please.'])],
             DialogueAct(UserIntents.ACCEPT, []): [
                 'I like this recommendation.'
             ],
@@ -683,7 +683,7 @@ class NLG:
             value = deepcopy(param.value)
             negative = False
             if value.startswith('.NOT.'):
-                negative = True    # TODO. Add changes here
+                negative = True  # TODO. Add changes here
                 value = value.replace('.NOT.', '')
             _a_an = 'an' if value[0] in ['a', 'e', 'i', 'o', 'u'] else 'a'
             param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])

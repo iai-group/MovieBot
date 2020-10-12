@@ -1,6 +1,6 @@
 """This file contains a class which can be used to annotate slot values in the user utterance."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import re
 import string
@@ -9,9 +9,9 @@ from copy import deepcopy
 from nltk import ngrams
 from nltk.corpus import stopwords
 
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
-from moviebot.dialogue_manager.slots import Slots
+from moviebot.nlu.annotators.item_constraint import ItemConstraint
+from moviebot.nlu.annotators.operator import Operator
+from moviebot.nlu.annotators.slots import Slots
 
 
 class SlotAnnotator:
@@ -223,7 +223,7 @@ class SlotAnnotator:
         ]
         for year in possible_years:
             _year = str(year)
-            if _year + 's' in raw_utterance:    # check if it's 1990s instead of
+            if _year + 's' in raw_utterance:  # check if it's 1990s instead of
                 # 1990 or 90s
                 if len(_year) == 4:
                     if year % 10 == 0:
@@ -254,7 +254,7 @@ class SlotAnnotator:
                             ]
                         else:
                             return [ItemConstraint(slot, Operator.EQ, _year)]
-            elif _year + 'th' in raw_utterance:    # it can be string like 19th, 20th
+            elif _year + 'th' in raw_utterance:  # it can be string like 19th, 20th
                 if len(_year) == 2:
                     return [
                         ItemConstraint(slot, Operator.BETWEEN, f'{_year}00 AND'

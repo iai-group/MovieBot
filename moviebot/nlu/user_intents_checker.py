@@ -11,13 +11,13 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
+from moviebot.nlu.annotators.item_constraint import ItemConstraint
+from moviebot.nlu.annotators.operator import Operator
 from moviebot.intents.user_intents import UserIntents
 from moviebot.nlu.data_loader import DataLoader
 from moviebot.nlu.slot_annotator import SlotAnnotator
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotators.slots import Slots
+from moviebot.nlu.annotators.values import Values
 
 
 class UserIntentsChecker:
@@ -60,7 +60,7 @@ class UserIntentsChecker:
             remove_ques:  (Default value = True)
 
         """
-        punctuation = string.punctuation    # .replace('-', '')
+        punctuation = string.punctuation  # .replace('-', '')
         if not remove_ques:
             punctuation = punctuation.replace('?', '')
         self.punctuation_remover = str.maketrans(punctuation,
@@ -328,7 +328,7 @@ class UserIntentsChecker:
             if any([value for value in values if value in utterance]):
                 dact.intent = UserIntents.INQUIRE
                 dact.params.append(ItemConstraint(slot, Operator.EQ, ""))
-        if dact.intent == UserIntents.UNK:    # and self._is_question(raw_utterance):
+        if dact.intent == UserIntents.UNK:  # and self._is_question(raw_utterance):
             for slot, values in self.tag_words_user_reveal_inquire.items():
                 if any([value for value in values if value in utterance]):
                     dact.intent = UserIntents.INQUIRE
