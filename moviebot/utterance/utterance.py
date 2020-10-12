@@ -6,7 +6,7 @@ import datetime
 
 
 class Utterance(ABC):
-    """This is an abstract class for storring utterances. It contains
+    """This is an abstract class for storing utterances. It contains
     relevant information about the utterance like what was said, who said
     it and when.
     """
@@ -20,7 +20,7 @@ class Utterance(ABC):
                 the time of initialization if not provided.
         """
         self._utterance = utterance
-        self._timestamp = self._get_timestamp(timestamp)
+        self._timestamp = self._set_timestamp(timestamp)
 
     def utterance(self) -> str:
         """Returns the original utterance.
@@ -53,7 +53,7 @@ class Utterance(ABC):
 
     def __str__(self):
         return '{} - {}:\n\t{}'.format(
-            self._timestamp(),
+            self.timestamp(),
             self.source(),
             self.utterance(),
         )

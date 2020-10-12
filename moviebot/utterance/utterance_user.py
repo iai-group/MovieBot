@@ -2,6 +2,7 @@
 -----------------------------
 """
 from moviebot.utterance.utterance import Utterance
+from moviebot.nlu.text_processing import TextProcess
 from typing import List
 
 
@@ -16,5 +17,8 @@ class UserUtterance(Utterance):
         Returns:
             List[str]: List of tokens from the utterance.
         """
-        # TODO(Ivica Kostric): make logic for preprocessing.
-        return self.utterance().split()
+        if not hasattr(self, '_preprocessed_utterance'):
+            self._preprocessed_utterance = TextProcess().process_text(
+                self._utterance)
+
+        return self._preprocessed_utterance
