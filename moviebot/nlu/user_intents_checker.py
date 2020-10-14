@@ -15,7 +15,7 @@ from moviebot.nlu.annotators.item_constraint import ItemConstraint
 from moviebot.nlu.annotators.operator import Operator
 from moviebot.intents.user_intents import UserIntents
 from moviebot.nlu.data_loader import DataLoader
-from moviebot.nlu.slot_annotator import SlotAnnotator
+from moviebot.nlu.annotators.slot_annotator import SlotAnnotator
 from moviebot.nlu.annotators.slots import Slots
 from moviebot.nlu.annotators.values import Values
 
