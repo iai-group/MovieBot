@@ -21,3 +21,4 @@ IAI MovieBot
     ontology
     intents
     recorder
+    utterance
