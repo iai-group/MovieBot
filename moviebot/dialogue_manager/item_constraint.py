@@ -1,7 +1,7 @@
-"""The Dialogue Act Item defines the parameters for a Dialogue Act. It comprises ot the
-parameters mentioned in the conversation"""
+"""The Dialogue Act Item defines the parameters for a Dialogue Act.
+It comprises ot the parameters mentioned in the conversation"""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 from moviebot.dialogue_manager.operator import Operator
 
@@ -17,7 +17,6 @@ class ItemConstraint:
             slot: a string, representing the slot
             op: an Operator
             value: the value of the slot
-            
         """
         if isinstance(slot, str):
             self.slot = slot

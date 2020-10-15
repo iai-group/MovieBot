@@ -1,6 +1,6 @@
 """ This file contains the main functions for checking the user intents."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import re
 import string
@@ -15,15 +15,16 @@ from moviebot.dialogue_manager.item_constraint import ItemConstraint
 from moviebot.dialogue_manager.operator import Operator
 from moviebot.intents.user_intents import UserIntents
 from moviebot.nlu.data_loader import DataLoader
-from moviebot.nlu.slot_annotator import SlotAnnotator
+from moviebot.nlu.rule_based_annotator import RBAnnotator
 from moviebot.dialogue_manager.slots import Slots
 from moviebot.dialogue_manager.values import Values
 
 
 class UserIntentsChecker:
-    """CheckUserIntents is a class to detect the intents for the class NLU. It receives the
-    utterance and matches it to the patterns created. If required, CheckUserIntents calls
-    annotators to check which slot user refers to."""
+    """CheckUserIntents is a class to detect the intents for the class NLU.
+    It receives the utterance and matches it to the patterns created. If
+    required, CheckUserIntents calls annotators to check which slot user refers
+    to."""
 
     def __init__(self, config):
         """ Initialize the Intents checker and load database, tag words etc
@@ -48,19 +49,20 @@ class UserIntentsChecker:
             'user_reveal_inquire']
         # Load the components for intent detection
         self._intent_patterns()
-        self.slot_annotator = SlotAnnotator(self._process_utterance,
-                                            self._lemmatize_value,
-                                            self.slot_values)
+        self.slot_annotator = RBAnnotator(self._process_utterance,
+                                          self._lemmatize_value,
+                                          self.slot_values)
         self._lemmatize_value('temp')
 
     def _punctuation_remover(self, remove_ques=True):
-        """Defines a patterns of punctuation marks to remove/keep in the utterance
+        """Defines a patterns of punctuation marks to remove/keep in the
+        utterance
 
         Args:
             remove_ques:  (Default value = True)
 
         """
-        punctuation = string.punctuation    # .replace('-', '')
+        punctuation = string.punctuation  # .replace('-', '')
         if not remove_ques:
             punctuation = punctuation.replace('?', '')
         self.punctuation_remover = str.maketrans(punctuation,
@@ -71,16 +73,17 @@ class UserIntentsChecker:
 
         Args:
             value: a string containing user input or values
-            last_sys_act: the previous DAct by the Conversational Agent (Default value = None)
+            last_sys_act: the previous DAct by the Conversational Agent
+                (Default value = None)
 
         Returns:
             string having the processed utterance
 
         """
         value = value.rstrip().lower()
-        value = value.replace("'", "")
+        value = value.replace('\'', '')
         value = value.translate(self.punctuation_remover)
-        value = " " + value + " "
+        value = ' ' + value + ' '
         return value
 
     def _lemmatize_value(self, value, skip_number=False):
@@ -92,32 +95,32 @@ class UserIntentsChecker:
 
         """
         value = self._process_utterance(value)
-        return " ".join(
+        return ' '.join(
             [self.lemmatizer.lemmatize(word) for word in word_tokenize(value)])
 
     def _intent_patterns(self):
         """Designing some patterns to understand the utterance better"""
-        self.acknowledge_pattern = ["yes", "okay", "fine", "sure"]
+        self.acknowledge_pattern = ['yes', 'okay', 'fine', 'sure']
         self.hi_pattern = ['hi', 'hello', 'hey', 'howdy']
-        self.deny_pattern = ["no", "nope", "nah", "not"]
+        self.deny_pattern = ['no', 'nope', 'nah', 'not']
         self.dont_care_pattern = [
-            "anything", "any", "dont know", "i do not care", "i dont care",
-            "dont care", "dontcare", "it does not matter", "it doesnt matter",
-            "does not matter", "doesnt matter", "no one", "no body", "nobody",
-            "nothing", "none"
+            'anything', 'any', 'dont know', 'i do not care', 'i dont care',
+            'dont care', 'dontcare', 'it does not matter', 'it doesnt matter',
+            'does not matter', 'doesnt matter', 'no one', 'no body', 'nobody',
+            'nothing', 'none'
         ]
-        self.bye_pattern = ["bye", "goodbye", "quit", "exit"]
+        self.bye_pattern = ['bye', 'goodbye', 'quit', 'exit']
         # Patterns to check if offer or partial offer is made
         self.question_pattern = [
-            "who", "what", "when", "which", "can", "could", "is", "are"
+            'who', 'what', 'when', 'which', 'can', 'could', 'is', 'are'
         ]
         self.dontlike_movie_pattern = [
             'something else', 'anything else', 'dont like it', 'not this',
             'another'
         ]
         self.dontwant_pattern = [
-            "dont", "not", "nothing", "wont", 'shouldnt', "dont need",
-            "dont want", "no", "not"
+            'dont', 'not', 'nothing', 'wont', 'shouldnt', 'dont need',
+            'dont want', 'no', 'not'
         ]
         self.watched_pattern = [
             'watched', 'seen', 'yes', 'I have', 'yup', 'yea'
@@ -186,10 +189,10 @@ class UserIntentsChecker:
         """
 
         Args:
-            utterance: 
+            utterance:
 
         """
-        # checking for intent = "bye"
+        # checking for intent = 'bye'
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         if any([
@@ -236,7 +239,8 @@ class UserIntentsChecker:
                     continue
                 else:
                     person_name_checks = True
-            # if slot == Slots.TITLE.value and dact.intent!= UserIntents.UNK: continue
+            # if slot == Slots.TITLE.value and dact.intent!= UserIntents.UNK:
+            # continue
             params = self.slot_annotator.slot_annotation(
                 slot, utterance, raw_utterance)
             if params:
@@ -253,8 +257,8 @@ class UserIntentsChecker:
         return user_dacts
 
     def check_reveal_intent(self, utterance, raw_utterance, last_agent_dact):
-        """This function is only called if the intent of agent is ELicit to see if user has
-        answered the query
+        """This function is only called if the intent of agent is ELicit to see
+        if user has answered the query
 
         Args:
             utterance: 
@@ -295,7 +299,7 @@ class UserIntentsChecker:
             utterance: 
 
         """
-        # checking for intent = "reject"
+        # checking for intent = 'reject'
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         if any([
@@ -321,18 +325,19 @@ class UserIntentsChecker:
             utterance: 
 
         """
-        # matching intents to "list", "Summarize", "Subset", "Compare" and "Similar"
+        # matching intents to 'list', 'Summarize', 'Subset', 'Compare' and
+        # 'Similar'
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         for slot, values in self.tag_words_user_inquire.items():
             if any([value for value in values if value in utterance]):
                 dact.intent = UserIntents.INQUIRE
-                dact.params.append(ItemConstraint(slot, Operator.EQ, ""))
-        if dact.intent == UserIntents.UNK:    # and self._is_question(raw_utterance):
+                dact.params.append(ItemConstraint(slot, Operator.EQ, ''))
+        if dact.intent == UserIntents.UNK:  # and self._is_question(raw_utterance):
             for slot, values in self.tag_words_user_reveal_inquire.items():
                 if any([value for value in values if value in utterance]):
                     dact.intent = UserIntents.INQUIRE
-                    dact.params.append(ItemConstraint(slot, Operator.EQ, ""))
+                    dact.params.append(ItemConstraint(slot, Operator.EQ, ''))
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts
@@ -381,11 +386,10 @@ class UserIntentsChecker:
                 return
 
     def _filter_dact(self, dact, raw_utterance):
-        """This algortihm filters the DActs parameters and remove if one is a sub-string of
-        another.
-        More filters are applied to remove the params or change slots in a specified sequence if
-        these qualify
-        specific conditions
+        """This algorithm filters the DActs parameters and remove if one is
+        a sub-string of another. More filters are applied to remove the params
+        or change slots in a specified sequence if these qualify specific
+        conditions
 
         Args:
             dact: 
@@ -408,7 +412,8 @@ class UserIntentsChecker:
                     self._remove_param(param, dact)
                     continue
                 if param.slot == Slots.KEYWORDS.value:
-                    # remove the plot_keyword if it is also in other slot values or is a sub-string
+                    # remove the plot_keyword if it is also in other slot
+                    # values or is a sub-string
                     if param.value in [
                             p.value for p in dact.params if p.slot != param.slot
                     ]:
@@ -418,12 +423,13 @@ class UserIntentsChecker:
                         Slots.ACTORS.value, Slots.DIRECTORS.value
                 ]:
                     # remove genre if it is a sub-string of any other value
-                    values = param.value.strip().split() if param.slot == Slots.GENRES.value \
-                        else [param.value]
+                    values = param.value.strip().split() if param.slot == \
+                        Slots.GENRES.value else [param.value]
                     for value in values:
                         for p in dact.params:
-                            if p.slot != param.slot and value in p.value.split() and \
-                                    len(p.value.split()) != len(value.split()):
+                            if p.slot != param.slot and value in \
+                                p.value.split() and len(p.value.split()) != \
+                                    len(value.split()):
                                 self._remove_param(param, dact)
                 if param.slot == Slots.TITLE.value:
                     # remove the title if it is also in other slot values
@@ -508,7 +514,8 @@ class UserIntentsChecker:
         return dual_values
 
     def _get_annotation_relevance(self, dact, raw_utterance, dual_person):
-        """Get the relevance if user really want a preference or wants to remove it from the list
+        """Get the relevance if user really want a preference or wants to remove
+        it from the list
 
         Args:
             dact: 
