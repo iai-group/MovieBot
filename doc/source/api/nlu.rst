@@ -1,14 +1,20 @@
 NLU
-============
+===========
 
 .. automodule:: moviebot.nlu.nlu
    :members:
 .. automodule:: moviebot.nlu.data_loader
    :members:
-.. automodule:: moviebot.nlu.user_intents_checker
-   :members:
-.. automodule:: moviebot.nlu.slot_annotator
-   :members:
+   
+.. toctree::
+    :caption: Slot Annotators:
+
+    nlu.annotators
+
+.. toctree::
+    :caption: Intent Detection:
+
+    nlu.intent_checker
 
 Item constraint
 -----------------

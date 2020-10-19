@@ -1,8 +1,5 @@
-Controller
-===================
-
 Abstract Controller Class
----------------------------
+===========================
 .. automodule:: moviebot.controller.controller
    :members:
 
