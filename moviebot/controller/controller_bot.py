@@ -119,8 +119,9 @@ class ControllerBot(Controller):
         return CONTINUE
 
     def restart(self, update, context):
-        """Restarts the conversation. This is similar to start function. However, it starts the
-        conversation with a welcome message and elicits the uses to begin with.
+        """Restarts the conversation. This is similar to start function.
+        However, it starts the conversation with a welcome message and elicits
+        the uses to begin with.
 
         Args:
             update: 
@@ -273,8 +274,8 @@ class ControllerBot(Controller):
             f'Error {context.error} is caused by update {str(update)}.')
 
     def execute_agent(self, configuration):
-        """Runs the conversational agent and executes the dialogue by calling the basic components
-        of IAI MovieBot.
+        """Runs the conversational agent and executes the dialogue by calling
+        the basic components of IAI MovieBot.
 
         Args:
             configuration: the settings for the agent
@@ -287,7 +288,8 @@ class ControllerBot(Controller):
         updater = Updater(self.token, use_context=True)
         dp = updater.dispatcher
 
-        # Add conversation hadler with states START, CONTINUE_RECOMMENDATION and END
+        # Add conversation handler with states START, CONTINUE_RECOMMENDATION
+        # and END
         conv_handler = ConversationHandler(
             entry_points=[
                 CommandHandler('start', self.start),

@@ -1,6 +1,6 @@
 """Types of conversational agents are available here."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import os
 
@@ -47,8 +47,9 @@ def _get_db(db_path):
 
 
 class Agent:
-    """The class Agent controls all the components of the basic architecture of IAI MovieBot.
-    Initially the Conversational Agent is able to interact with human users via text."""
+    """The class Agent controls all the components of the basic architecture of
+    IAI MovieBot. Initially the Conversational Agent is able to interact with
+    human users via text."""
 
     def __init__(self, config=None):
         """Initializes the internal structure of the agent and other components.
@@ -71,14 +72,15 @@ class Agent:
         self.nlu = None
         self.nlg = None
         self.isBot = False
-        self.new_user = False    # a parameter for Bot
+        self.new_user = False  # a parameter for Bot
         self.bot_recorder = None
 
         # Dialogue component agent controls
         self.dialogue_manager = None
 
     def initialize(self, user_id=None):
-        """Initializes the components and set their values as on the configuration
+        """Initializes the components and set their values as on the
+        configuration
 
         Args:
             ser_id:  (Default value = None)
@@ -159,24 +161,25 @@ class Agent:
         else:
             record_data = self.dialogue_manager.dialogue_state_tracker.dialogue_state._dict(
             )
-            record_data.update({"Agent_Output": agent_response})
+            record_data.update({'Agent_Output': agent_response})
             record_data.update({
-                "Context":
+                'Context':
                     self.dialogue_manager.dialogue_state_tracker.
                     dialogue_context.movies_recommended
             })
             return agent_response, record_data, options
 
     def continue_dialogue(self, user_utterance, user_options, user_fname=None):
-        """Performs the next dialogue according to user response and current state of dialogue
+        """Performs the next dialogue according to user response and current
+        state of dialogue
 
         Args:
-            ser_utterance: The input received from the user
-            ser_options: 
-            ser_fname:  (Default value = None)
+            user_utterance: The input received from the user
+            user_options: 
+            user_fname:  (Default value = None)
 
         Returns:
-            he agent response
+            The agent response
 
         """
         self.dialogue_manager.dialogue_state_tracker.dialogue_state.user_utterance = user_utterance
@@ -197,12 +200,12 @@ class Agent:
                     dialogue_context))
             return agent_response, options
         else:
-            record_data = {"User_Input": user_utterance}
+            record_data = {'User_Input': user_utterance}
             record_data.update(self.dialogue_manager.dialogue_state_tracker.
                                dialogue_state._dict())
-            record_data.update({"Agent_Output": agent_response})
+            record_data.update({'Agent_Output': agent_response})
             record_data.update({
-                "Context":
+                'Context':
                     self.dialogue_manager.dialogue_state_tracker.
                     dialogue_context.movies_recommended
             })
@@ -211,7 +214,7 @@ class Agent:
                 for key, val in _options.items():
                     if isinstance(val, list):
                         _options[key] = val[0]
-                record_data.update({"Agent_Options": str(_options)})
+                record_data.update({'Agent_Options': str(_options)})
             return agent_response, record_data, options
 
     def end_dialogue(self):
@@ -219,8 +222,8 @@ class Agent:
         # TODO: Save the experience
 
     def terminated_dialogue(self):
-        """Checks if the dialogue is terminated by either user or the number of dialogues have
-        reached a maximum limit
+        """Checks if the dialogue is terminated by either user or the number of
+        dialogues have reached a maximum limit
 
         Returns:
             True or False
