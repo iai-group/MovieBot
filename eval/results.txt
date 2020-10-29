@@ -1,0 +1,24 @@
+
+Scores for genres: 
+
+	Precision (micro-averaged): 0.55814
+	Recall (micro-averaged): 0.69565
+	F1: 0.61935
+
+Annotation took 0.003 minutes
+
+Scores for actors: 
+
+	Precision (micro-averaged): 0.26866
+	Recall (micro-averaged): 0.81818
+	F1: 0.40449
+
+Annotation took 13.664 minutes
+
+Scores for title: 
+
+	Precision (micro-averaged): 0.34307
+	Recall (micro-averaged): 0.85455
+	F1: 0.48958
+
+Annotation took 2.778 minutes
