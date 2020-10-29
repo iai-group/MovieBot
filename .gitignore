@@ -3,3 +3,5 @@ __pycache__/
 doc/build/*
 conversation_history/*
 data/slot_values.json
+
+eval/data
