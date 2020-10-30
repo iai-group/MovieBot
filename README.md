@@ -2,9 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/iai-moviebot/badge/?version=latest)](https://iai-moviebot.readthedocs.io/en/latest/?badge=latest)
 
-IAI MovieBot is an open-source, conversational movie recommender system.
-
-It features a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences.
+IAI MovieBot is a conversational recommender system for movies.  It follows a standard task-oriented dialogue system architecture, comprising of natural language understanding (NLU), dialogue manager (DM), and natural language generation (NLG) components.  The distinctive features of IAI MovieBot include a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences.  While our current focus is limited to movies, the system aims to be a reusable development framework that can support users in accomplishing recommendation-related goals via multi-turn conversations.
 
 ## Demo
 
@@ -18,15 +16,20 @@ The installation instructions and documentation can be found on [Read the Docs](
 
 ## Publication
 
-The system is described in a demo paper that is to appear at CIKM'20 (see [arXiv version](https://arxiv.org/abs/2009.03668)).
+The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/2009.03668.pdf)]. 
 
 ```
 @inproceedings{Habib:2020:IMC,
-	author = {Habib, Javeria and Zhang, Shuo and Balog, Krisztian},
-	title = {IAI {MovieBot}: {A} Conversational Movie Recommender System},
-	year = {2020},
-	booktitle = {Proceedings of the 29th ACM International Conference on Information and Knowledge Management},
-	series = {CIKM '20}
+    author = {Habib, Javeria and Zhang, Shuo and Balog, Krisztian},
+    title = {IAI {MovieBot}: {A} Conversational Movie Recommender System},
+    year = {2020},
+    booktitle = {Proceedings of the 29th ACM International Conference on Information and Knowledge Management},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    pages = {3405--3408},
+    url = {https://doi.org/10.1145/3340531.3417433},
+    doi = {10.1145/3340531.3417433},
+    series = {CIKM '20}
 }
 ```
 
