@@ -8,8 +8,8 @@ from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.ontology.ontology import Ontology
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 
 
 class DataBase:
@@ -25,9 +25,9 @@ class DataBase:
         """
         self.db_file_path = path
         self.sql_connection = sqlite3.connect(
-            self.db_file_path)    # SQL connection required to
+            self.db_file_path)  # SQL connection required to
         # access the database
-        self.db_table_name = self._get_table_name()    # name of the table
+        self.db_table_name = self._get_table_name()  # name of the table
         self.current_CIN = None
         self.backup_db_results = None
 
@@ -42,12 +42,12 @@ class DataBase:
             the results of the SQL query
 
         """
-        if dialogue_state.isBot:    # restart the SQL connection if the app is running as a
+        if dialogue_state.isBot:  # restart the SQL connection if the app is running as a
             # client-server app
             self.sql_connection = sqlite3.connect(
-                self.db_file_path)    # SQL connection required
+                self.db_file_path)  # SQL connection required
             # to access the database
-            self.db_table_name = self._get_table_name()    # name of the table
+            self.db_table_name = self._get_table_name()  # name of the table
 
         sql_cursor = self.sql_connection.cursor()
         sql_command = f'SELECT * FROM {self.db_table_name}'
@@ -61,7 +61,7 @@ class DataBase:
                     args.append(f'{Slots.TITLE.value} = "{title}"')
                 condition = ' OR '.join(args) if len(args) > 0 else None
             if len(args) == 0:
-                return []    # return no result if nothing similar found
+                return []  # return no result if nothing similar found
         else:
             args = []
             for slot, values in dialogue_state.frame_CIN.items():
@@ -103,7 +103,7 @@ class DataBase:
         if not dialogue_state.agent_should_offer_similar:
             self.backup_db_results = result
 
-        return result    # , remove_title_from_CIN
+        return result  # , remove_title_from_CIN
 
     def _remove_title_from_CIN(self, query_result, condition, args):
         """

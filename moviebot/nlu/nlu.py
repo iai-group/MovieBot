@@ -11,7 +11,7 @@ from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
 from moviebot.ontology.ontology import Ontology
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotation.values import Values
 
 
 class NLU:

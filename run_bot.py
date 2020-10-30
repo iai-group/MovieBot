@@ -1,6 +1,6 @@
 """This code is executed to run IAI MovieBot"""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import os
 import sys
@@ -45,8 +45,8 @@ def arg_parse(args=None):
       args: configuration file for the dialogue (Default value = None)
 
     Returns:
-      a dictionary containing the settings in the configuration file and a boolean
-      variable identifying if the conversation is in Telegram
+      a dictionary containing the settings in the configuration file and a
+      boolean variable identifying if the conversation is in Telegram.
 
     """
     argv = args if args else sys.argv
@@ -68,9 +68,9 @@ def arg_parse(args=None):
         raise FileNotFoundError(
             'Configuration file {} not found'.format(config_file))
     elif file_val.startswith('ValueErrorType'):
+        file_type = file_val.split(':')[-1]
         raise ValueError(
-            f'Unknown file type {file_val.split(":")[-1]} for configuration file'
-        )
+            f'Unknown file type {file_type} for configuration file')
 
     if cfg_parser:
         print(f'Configuration file "{config_file}" is loaded.')

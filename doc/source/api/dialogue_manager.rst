@@ -22,11 +22,3 @@ Dialogue Act
 -------------------------
 .. automodule:: moviebot.dialogue_manager.dialogue_act
    :members:
-.. automodule:: moviebot.dialogue_manager.item_constraint
-   :members:
-.. automodule:: moviebot.dialogue_manager.slots
-   :members:
-.. automodule:: moviebot.dialogue_manager.operator
-   :members:
-.. automodule:: moviebot.dialogue_manager.values
-   :members:
