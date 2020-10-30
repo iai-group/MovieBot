@@ -10,9 +10,7 @@ Dialogue Act
 
 User and agent utterances are modeled as :py:class:`DialogueActs <moviebot.dialogue_manager.dialogue_act>`, which are machine-understandable representations of the natural language text.
 
-A dialogue act is mathematically represented as *intent((slot_1, op_1, value_1), ... (slot_n, op_n, value_n))*, where *intents* are possible user/agent actions and operators (=, !=, <, >, >=, <=) specify the relationship between for each slot and its corresponding value.
-
-.. warning:: add list of intents
+A dialogue act is mathematically represented as *intent((slot_1, op_1, value_1), ... (slot_n, op_n, value_n))*, where *intents* are the recognized :py:class:`AgentIntents <moviebot.intents.agent_intents>` and :py:class:`UserIntents <moviebot.intents.user_intents>`, and operators (=, !=, <, >, >=, <=) specify the relationship between for each slot and its corresponding value.
 
 
 Information Need
