@@ -1,8 +1,13 @@
-"""Utterance abstract class.
-------------------------------
+"""Utterance classes
+=======================
+
+Classes that contain basic information about the utterance.
 """
+from typing import Text, List
 from abc import ABC
 import datetime
+
+from moviebot.nlu.text_processing import Token, TextProcess
 
 
 class Utterance(ABC):
@@ -11,7 +16,7 @@ class Utterance(ABC):
     it and when.
     """
 
-    def __init__(self, utterance: str, timestamp: str = None):
+    def __init__(self, utterance: Text, timestamp: Text = None):
         """Initializes the Utterance class with an utterance and a timestamp.
 
         Args:
@@ -19,26 +24,10 @@ class Utterance(ABC):
             timestamp (str, optional): Timestamp of the utterance. It is set to
                 the time of initialization if not provided.
         """
-        self._utterance = utterance
-        self._timestamp = self._set_timestamp(timestamp)
+        self.utterance = utterance
+        self.timestamp = self._set_timestamp(timestamp)
 
-    def utterance(self) -> str:
-        """Returns the original utterance.
-
-        Returns:
-            str: The original utterance
-        """
-        return self._utterance
-
-    def timestamp(self) -> str:
-        """Returns the timestamp of the utterance.
-
-        Returns:
-            str: timestamp
-        """
-        return self._timestamp
-
-    def source(self) -> str:
+    def source(self) -> Text:
         """Returns the name of the inherited class which represents the source
         of the utterance.
 
@@ -47,13 +36,36 @@ class Utterance(ABC):
         """
         return self.__class__.__name__
 
-    def _set_timestamp(self, timestamp: str = None):
+    def _set_timestamp(self, timestamp: Text = None):
         return timestamp if timestamp else str(
             datetime.datetime.now(datetime.timezone.utc))
 
     def __str__(self):
         return '{} - {}:\n\t{}'.format(
-            self.timestamp(),
+            self.timestamp,
             self.source(),
-            self.utterance(),
+            self.utterance,
         )
+
+
+class UserUtterance(Utterance):
+    """Expands the base class with preprocessed and tokenized version of
+    the utterance.
+    """
+
+    def get_tokens(self) -> List[Token]:
+        """Preprocesses the utterance and returns a list of tokens.
+
+        Returns:
+            List[str]: List of tokens from the utterance.
+        """
+        if not hasattr(self, '_tokens'):
+            self._tokens = TextProcess().process_text(self.utterance)
+
+        return self._tokens
+
+
+class AgentUtterance(Utterance):
+    """Stores the utterance that the agent returns.
+    """
+    pass

@@ -44,8 +44,6 @@ class Operator(Enum):
             opr = '>'
         elif self.name == 'GE':
             opr = '>='
-        elif self.name == 'BETWEEN':
-            opr = 'BETWEEN'
         elif self.name in ['AND', 'OR', 'NOT', 'IN', 'BETWEEN']:
             opr = self.name
 

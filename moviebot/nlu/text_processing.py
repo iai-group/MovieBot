@@ -1,39 +1,93 @@
 """This module is used for preprocessing user inputs before further analysis.
+The user utterance is broken into tokens which contain additional information
+about the token.
 """
+from typing import Text, List, Optional
 
 import string
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-from typing import List
+
+class Token:
+    """Subpart of an utterance. Contains mapping of start and end positions in
+    the original utterance. In addition it stores the lemmatized version of
+    the token and whether it is a stopword or not.
+    """
+
+    def __init__(self,
+                 text: Text,
+                 start: int,
+                 end: Optional[int] = None,
+                 lemma: Optional[Text] = None,
+                 is_stopword: Optional[bool] = False) -> None:
+        self.text = text
+
+        self.start = start
+        self.end = end if end else len(text)
+
+        self.lemma = lemma if lemma else text
+        self.is_stopword = is_stopword
+
+    def overlaps(self, other) -> bool:
+        """Checks whether two tokens overlap in the original utterance.
+
+        Args:
+            other (Token): Token to compare against
+
+        Returns:
+            bool: True if there is overlap.
+        """
+        return (self.start < other.start
+                and self.end >= other.start) or (other.start < self.start
+                                                 and other.end >= self.start)
+
+    def __lt__(self, other):
+        return (self.start, self.end) < (other.start, other.end)
+
+    def __add__(self, other):
+        sorted_tokens = sorted((self, other))
+        text = ' '.join(token.text for token in sorted_tokens)
+        lemma = ' '.join(token.lemma for token in sorted_tokens)
+
+        return Token(text, sorted_tokens[0].start, sorted_tokens[1].end, lemma)
+
+    def __radd__(self, other):
+        if other == 0:
+            return self
+        else:
+            return self.__add__(other)
 
 
 class TextProcess:
     """This class contains methods needed for preprocessing sentences.
     """
 
-    def process_text(self, text: str) -> List[str]:
-        processed_text = self.remove_punctuation(text)
-        processed_text = self.to_lower(processed_text)
-        processed_text = self.tokenize(processed_text)
-        processed_text = self.lemmatize_tokens(processed_text)
-        processed_text = self.remove_stopwords(processed_text)
+    def __init__(self, additional_stop_words: List[Text] = None):
+        stop_words = stopwords.words('english')
+        if additional_stop_words:
+            stop_words.extend(additional_stop_words)
 
-        return processed_text
+        self._stop_words = set(stop_words)
+        self._lemmatizer = WordNetLemmatizer()
 
-    def to_lower(self, text: str) -> str:
-        """Returns sentence without capital letters.
+    def process_text(self, text: Text) -> List[Token]:
+        """Processes given text. The text is split into tokens which can be
+        mapped back to the original text.
 
         Args:
-            text (str): Sentence.
+            text (Text): Input text, user utterance.
 
         Returns:
-            str: Same sentence without capital letters.
+            List[Token]: List of Tokens
         """
-        return text.lower()
+        processed_text = self.remove_punctuation(text)
+        word_tokens = word_tokenize(processed_text)
 
-    def remove_punctuation(self, text: str) -> str:
+        return self.tokenize(word_tokens, text)
+
+    def remove_punctuation(self, text: Text) -> Text:
         """Defines patterns of punctuation marks to remove in the
         utterance.
 
@@ -46,7 +100,7 @@ class TextProcess:
         return ''.join(
             ch if ch not in string.punctuation else ' ' for ch in text)
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, word_tokens: List[Text], text: Text) -> List[Token]:
         """Returns a tokenized copy of text.
 
         Args:
@@ -55,39 +109,13 @@ class TextProcess:
         Returns:
             List[str]: List of tokens.
         """
-        return word_tokenize(text)
+        end = 0
+        tokens = []
+        for word in word_tokens:
+            start = text.index(word, end)
+            end = start + len(word)
+            lemma = self._lemmatizer.lemmatize(word.lower())
+            is_stopword = word in self._stop_words
 
-    def lemmatize_tokens(self, word_tokens: List[str]) -> List[str]:
-        """Returns lemmatized (inflected) forms of words.
-
-        Args:
-            word_tokens (List[str]): list of tokens.
-
-        Returns:
-            List[str]: list of lemmatized tokens.
-        """
-
-        return [WordNetLemmatizer().lemmatize(word) for word in word_tokens]
-
-    def remove_stopwords(self,
-                         word_tokens: List[str],
-                         additional_stop_words: List[str] = None) -> List[str]:
-        """Removes stopwords from a list of words. Stopwords are the most common
-        used words contained in english corpus in nltk package. Additionally,
-        it is possible to add a custom list of words to remove from the text.
-
-        Args:
-            word_tokens (List[str]): List of tokens
-            additional_stop_words (List[str], optional): Custom words to remove
-                from the list of tokens. Defaults to None.
-
-        Returns:
-            List[str]: List of tokens without stopwords.
-        """
-
-        stop_words = stopwords.words('english')
-        if additional_stop_words:
-            stop_words.extend(additional_stop_words)
-
-        stop_words = set(stop_words)
-        return [word for word in word_tokens if word not in stop_words]
+            tokens.append(Token(word, start, end, lemma, is_stopword))
+        return tokens
