@@ -6,10 +6,10 @@ from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.nlu.annotators.item_constraint import ItemConstraint
-from moviebot.nlu.annotators.operator import Operator
-from moviebot.nlu.annotators.slots import Slots
-from moviebot.nlu.annotators.values import Values
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 

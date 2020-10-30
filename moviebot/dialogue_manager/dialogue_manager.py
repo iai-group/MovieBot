@@ -9,8 +9,8 @@ from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
 from moviebot.dialogue_manager.dialogue_state_tracker import DialogueStateTracker
 from moviebot.intents.agent_intents import AgentIntents
-from moviebot.nlu.annotators.item_constraint import ItemConstraint
-from moviebot.nlu.annotators.operator import Operator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 
 
 class DialogueManager:

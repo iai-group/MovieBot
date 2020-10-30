@@ -8,12 +8,12 @@ from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.nlu.annotators.item_constraint import ItemConstraint
-from moviebot.nlu.annotators.operator import Operator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 from moviebot.ontology.ontology import Ontology
-from moviebot.nlu.annotators.slots import Slots
+from moviebot.nlu.annotation.slots import Slots
 
 
 class DialoguePolicy:

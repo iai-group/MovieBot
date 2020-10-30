@@ -3,7 +3,7 @@ It comprises ot the parameters mentioned in the conversation"""
 
 __author__ = 'Javeria Habib'
 
-from moviebot.nlu.annotators.operator import Operator
+from moviebot.nlu.annotation.operator import Operator
 
 
 class ItemConstraint:

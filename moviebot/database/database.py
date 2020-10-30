@@ -8,8 +8,8 @@ from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.ontology.ontology import Ontology
-from moviebot.nlu.annotators.slots import Slots
-from moviebot.nlu.annotators.values import Values
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 
 
 class DataBase:

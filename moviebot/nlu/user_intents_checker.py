@@ -11,13 +11,13 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.nlu.annotators.item_constraint import ItemConstraint
-from moviebot.nlu.annotators.operator import Operator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 from moviebot.intents.user_intents import UserIntents
 from moviebot.nlu.data_loader import DataLoader
-from moviebot.nlu.annotators.rule_based_annotator import RBAnnotator
-from moviebot.nlu.annotators.slots import Slots
-from moviebot.nlu.annotators.values import Values
+from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 
 
 class UserIntentsChecker:

@@ -5,7 +5,7 @@ from typing import Text
 from enum import Enum
 
 from moviebot.nlu.text_processing import Token
-from moviebot.nlu.annotators.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
 
 
 class AnnotationType(Enum):

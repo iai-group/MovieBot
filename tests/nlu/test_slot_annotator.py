@@ -1,4 +1,4 @@
-from moviebot.nlu.annotators.slot_annotator import SlotAnnotator
+from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
 
 from unittest.mock import patch
 import pytest
