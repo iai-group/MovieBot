@@ -6,10 +6,10 @@ from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 
@@ -201,7 +201,7 @@ class DialogueStateTracker:
             # remove from user requestables when user asks for anything
             if user_dact.intent == UserIntents.INQUIRE:
                 if not self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                    print(self.dialogue_state)    # debuggig here
+                    print(self.dialogue_state)  # debuggig here
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                 if name in self.dialogue_context.movies_recommended:
                     if 'inquire' not in self.dialogue_context.movies_recommended[

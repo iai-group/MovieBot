@@ -80,10 +80,10 @@ class Agent:
 
     def initialize(self, user_id=None):
         """Initializes the components and set their values as on the
-        configuration
+        configuration.
 
         Args:
-            ser_id:  (Default value = None)
+            user_id:  (Default value = None)
 
         """
         if 'CONVERSATION_LOGS' in self.config and self.config[
@@ -171,7 +171,7 @@ class Agent:
 
     def continue_dialogue(self, user_utterance, user_options, user_fname=None):
         """Performs the next dialogue according to user response and current
-        state of dialogue
+        state of dialogue.
 
         Args:
             user_utterance: The input received from the user

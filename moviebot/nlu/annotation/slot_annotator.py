@@ -17,6 +17,8 @@ class SlotAnnotator(abc.ABC):
         """ Given utterance and a slot return a list of triplets of
         (slot, operator, value).
 
+        IMPORTANT: This will be changed to return semantic annotations instead!
+
         Args:
             slot: Slot for which to annotate utterance
             utterance: Preprocessed utterance to use for annotation

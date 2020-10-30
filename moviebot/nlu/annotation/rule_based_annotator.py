@@ -10,10 +10,10 @@ from copy import deepcopy
 from nltk import ngrams
 from nltk.corpus import stopwords
 
-from moviebot.nlu.slot_annotator import SlotAnnotator
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
-from moviebot.dialogue_manager.slots import Slots
+from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
+from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):

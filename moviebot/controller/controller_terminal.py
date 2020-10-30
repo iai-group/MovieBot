@@ -8,8 +8,8 @@ from moviebot.controller.controller import Controller
 
 
 class ControllerTerminal(Controller):
-    """This is the main class that controls the other components of the IAI
-    MovieBot. The controller executes the conversational agent."""
+    """This is the main class that controls the other components of the
+    IAI MovieBot. The controller executes the conversational agent."""
 
     def __init__(self):
         """Initializes some basic structs for the Controller.
