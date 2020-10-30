@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'IAI MovieBot'
-copyright = '2020, Javeria Habib, Krisztian Balog'
+copyright = '2020, IAI group, University of Stavanger'
 author = 'Javeria Habib, Krisztian Balog'
 
 # The short X.Y version.
