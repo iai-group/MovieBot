@@ -25,7 +25,7 @@ class Utterance(ABC):
 
         """
         self._utterance = message.get('text', '')
-        self._timestamp = message.get('date', self._set_timestamp())
+        self._timestamp = self._set_timestamp(message.get('date'))
 
     def get_source(self) -> Text:
         """Returns the name of the inherited class which represents the source
@@ -40,9 +40,11 @@ class Utterance(ABC):
         return self._utterance
 
     def get_timestamp(self) -> Text:
-        return str(self.timestamp)
+        return str(self._timestamp)
 
-    def _set_timestamp(self):
+    def _set_timestamp(self, timestamp: int = None) -> datetime.datetime:
+        if timestamp:
+            return datetime.datetime.fromtimestamp(timestamp)
         return datetime.datetime.now(datetime.timezone.utc)
 
     def __str__(self):

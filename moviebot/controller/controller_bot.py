@@ -187,7 +187,7 @@ class ControllerBot(Controller):
                 f"Conversation is starting for user id = {user_id} and user name = '"
                 f"{update.effective_user['first_name']}'")
         start = time.time()
-        user_utterance = UserUtterance(update.message)
+        user_utterance = UserUtterance(update.message.to_dict())
         self.response[user_id], self.record_data_agent[user_id], self.user_options[user_id] = \
             self.agent[user_id].continue_dialogue(
                 user_utterance, self.user_options[user_id], user_fname=update.effective_user[
