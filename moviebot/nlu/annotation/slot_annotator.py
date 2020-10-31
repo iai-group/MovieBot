@@ -1,29 +1,34 @@
 """This file contains a class which can be used to annotate slot values in the
 user utterance."""
 
+from typing import List
 import abc
+
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.utterance.utterance import UserUtterance
 
 
 class SlotAnnotator(abc.ABC):
-    """This class can be used to annotate slot values in the user utterance."""
-
-    def __init__(self):
-        """Initializes SlotAnnotator.
-        """
-        pass
+    """This class is used to annotate slot values in the user utterance."""
 
     @abc.abstractmethod
-    def slot_annotation(self, slot, utterance, raw_utterance):
-        """ Given utterance and a slot return a list of triplets of
+    def slot_annotation(self, slot: Slots,
+                        utterance: UserUtterance) -> List[ItemConstraint]:
+        """Given utterance and a slot return a list of triplets of
         (slot, operator, value).
 
         IMPORTANT: This will be changed to return semantic annotations instead!
 
         Args:
-            slot: Slot for which to annotate utterance
-            utterance: Preprocessed utterance to use for annotation
+            slot (Slots): Slot for which to annotate
+            utterance (UserUtterance): User utterance class which contains both
+                original utterance and utterance tokens.
+
+        Raises:
+            NotImplementedError: Must be overridden
 
         Returns:
-            list(ItemConstraint)
+            List[ItemConstraint]: List of constraints
         """
-        return None
+        raise NotImplementedError

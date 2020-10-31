@@ -200,7 +200,7 @@ class Agent:
                     dialogue_context))
             return agent_response, options
         else:
-            record_data = {'User_Input': user_utterance}
+            record_data = {'User_Input': user_utterance.get_text()}
             record_data.update(self.dialogue_manager.dialogue_state_tracker.
                                dialogue_state._dict())
             record_data.update({'Agent_Output': agent_response})
