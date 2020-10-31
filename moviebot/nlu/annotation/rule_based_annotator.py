@@ -17,12 +17,12 @@ from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):
-    """This is a rule based annotator. It uses regex and kayword matching
+    """This is a rule based annotator. It uses regex and keyword matching
     for annotation."""
 
-    def __init__(self, _process_value, _lemmatize_value, slot_values):
-        self._process_value = _process_value
-        self._lemmatize_value = _lemmatize_value
+    def __init__(self, process_value, lemmatize_value, slot_values):
+        self._process_value = process_value
+        self._lemmatize_value = lemmatize_value
         self.slot_values = slot_values
         self.ngram_size = {
             Slots.TITLE.value: 8,
@@ -51,7 +51,7 @@ class RBAnnotator(SlotAnnotator):
         for slot in [Slots.ACTORS.value, Slots.DIRECTORS.value]:
             self.person_names.update(deepcopy(self.slot_values[slot]))
 
-    def slot_annotation(self, slot, utterance, raw_utterance):
+    def slot_annotation(self, slot, user_utterance):
         """
 
         Args:
@@ -62,22 +62,21 @@ class RBAnnotator(SlotAnnotator):
         """
         # utterance = utterance.replace('?','')
         if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
-            params = self._person_name_annotator(utterance)
+            params = self._person_name_annotator(user_utterance)
         else:
             func = getattr(self, '_' + slot + '_annotator')
             if slot == Slots.YEAR.value:
-                params = func(slot, self._process_value(raw_utterance),
-                              utterance)
+                params = func(slot, user_utterance)
                 if params:
                     for p in params:
                         if p.op != Operator.EQ:
                             p.value = f'{str(p.op)} {p.value}'
                             p.op = Operator.EQ
             else:
-                params = func(slot, utterance)
+                params = func(slot, user_utterance)
         return params
 
-    def _genres_annotator(self, slot, utterance):
+    def _genres_annotator(self, slot, user_utterance):
         """
 
         Args:
@@ -87,6 +86,8 @@ class RBAnnotator(SlotAnnotator):
         """
         param = None
         values = self.slot_values[slot]
+        tokens = user_utterance.get_tokens()
+        utterance = sum(tokens).lemma if tokens else ''
         for value, lem_value in values.items():
             if lem_value in utterance:
                 if not param:
@@ -102,7 +103,7 @@ class RBAnnotator(SlotAnnotator):
         if param:
             return [param]
 
-    def _title_annotator(self, slot, utterance):
+    def _title_annotator(self, slot, user_utterance):
         """This annotator is used to check the movie title.
         Sometimes the user can just enter a part of the name.
 
@@ -111,22 +112,27 @@ class RBAnnotator(SlotAnnotator):
             utterance: 
 
         """
+        tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
         processed_values = set(values.values())
         # split into n-grams
-        for ngram_size in range(
-                min(self.ngram_size[slot], len(utterance.split())), 0, -1):
-            n_grams = ngrams(utterance.split(), ngram_size)
+        for ngram_size in range(min(self.ngram_size[slot], len(tokens)), 0, -1):
             options = {}
-            for _gram in n_grams:
-                gram = ' '.join(_gram)
+            for gram_list in ngrams(tokens, ngram_size):
+                gram = sum(gram_list).lemma
                 for processed_value in processed_values:
                     if processed_value == gram and len([
-                            x for x in _gram if x in self.stop_words
+                            x.lemma
+                            for x in gram_list
+                            if x.lemma in self.stop_words
                     ]) < ngram_size:
-                        param = ItemConstraint(slot, Operator.EQ, gram.strip())
+                        # TODO (Ivica Kostric): This is ready to be converted to
+                        # the SemanticAnnotation class
+                        param = ItemConstraint(slot, Operator.EQ, gram)
                         return [param]
-                if len([x for x in _gram if x in self.stop_words]) == 0 and len(
+                if len([
+                        x.lemma for x in gram_list if x.lemma in self.stop_words
+                ]) == 0 and len(
                     [int(val) for val in re.findall(r'\b\d+', gram)]) == 0:
                     # check if
                     # all words are in the list of stop words and no numbers
@@ -150,7 +156,7 @@ class RBAnnotator(SlotAnnotator):
                     param = ItemConstraint(slot, Operator.EQ, gram.strip())
                     return [param]
 
-    def _keywords_annotator(self, slot, utterance):
+    def _keywords_annotator(self, slot, user_utterance):
         """This annotator is used to check the movie keywords.
         If the ngram has only keywords, it will be ignored.
 
@@ -159,38 +165,47 @@ class RBAnnotator(SlotAnnotator):
             utterance: 
 
         """
+        tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
-        for ngram_size in range(
-                min(self.ngram_size[slot], len(utterance.split())), 0, -1):
-            n_grams = ngrams(utterance.split(), ngram_size)
-            options = {}
-            for _gram in n_grams:
-                gram = ' '.join(_gram)
-                if len([int(val) for val in re.findall(r'\b\d+', gram)
-                       ]) == 0 and len(
-                           [x for x in _gram if x in self.stop_words]) == 0:
+        for ngram_size in range(min(self.ngram_size[slot], len(tokens)), 0, -1):
+            for gram_list in ngrams(tokens, ngram_size):
+                gram = sum(gram_list).lemma
+
+                # TODO (Ivica Kostric): maybe 'no numbers' should be changed
+                # since there are some numbers in keywords (.44, 007, age).
+                # Same goes for stopwords. There are some stopwords as part of
+                # keywords.
+                # Alternatively, there is possibility to put a stopword flag
+                # directly on tokens beforehand.
+
+                if len([
+                        int(val) for val in re.findall(r'\b\d+', gram)
+                ]) == 0 and len([
+                        x.lemma for x in gram_list if x.lemma in self.stop_words
+                ]) == 0:
+
                     for value, lem_value in values.items():
+                        # TODO (Ivica Kostric): This is ready to be converted to
+                        # SemanticAnnotation class
                         if lem_value == gram:
-                            param = ItemConstraint(slot, Operator.EQ,
-                                                   gram.strip())
+                            param = ItemConstraint(slot, Operator.EQ, gram)
                             return [param]
                         elif (ngram_size == 1 and gram == lem_value) or (
                                 ngram_size > 1
                                 and f' {gram} ' in f' {lem_value} '):
-                            param = ItemConstraint(slot, Operator.EQ,
-                                                   gram.strip())
+                            param = ItemConstraint(slot, Operator.EQ, gram)
                             return [param]
 
-    def _person_name_annotator(self, utterance, slots=None):
-        """This annotator is used to check the movie actor names.
-        Sometimes the user can just enter a part of the name.
+    def _person_name_annotator(self, user_utterance, slots=None):
+        """This annotator is used to check the movie actor and/or director
+        names. Sometimes the user can just enter a part of the name.
 
         Args:
             utterance: 
             slots:  (Default value = None)
 
         """
-
+        tokens = user_utterance.get_tokens()
         if not slots:
             slots = [Slots.ACTORS.value, Slots.DIRECTORS.value]
             person_names = self.person_names
@@ -199,9 +214,8 @@ class RBAnnotator(SlotAnnotator):
             person_names = self.slot_values[slots]
         params = []
         for ngram_size in range(self.ngram_size['person'], 0, -1):
-            n_grams = ngrams(utterance.split(), ngram_size)
-            for _gram in n_grams:
-                gram = ' '.join(_gram)
+            for gram_list in ngrams(tokens, ngram_size):
+                gram = sum(gram_list).lemma
                 for value, lem_value in person_names.items():
                     if f' {gram} ' in f' {lem_value} ' and \
                         gram not in self.stop_words:
@@ -210,21 +224,28 @@ class RBAnnotator(SlotAnnotator):
                         #                                   gram)
                         for slot in slots:
                             if gram in self.slot_values[slot].values():
+
+                                # TODO (Ivica Kostric): This is ready to be
+                                # converted to the SemanticAnnotation class
+
                                 params.append(
                                     ItemConstraint(slot, Operator.EQ, gram))
                         break
             if len(params) > 0:
                 return params
 
-    def _year_annotator(self, slot, raw_utterance, utterance):
+    def _year_annotator(self, slot, user_utterance):
         """
 
         Args:
             slot: 
-            raw_utterance: 
+            user_utterance: 
             utterance: 
 
         """
+        raw_utterance = user_utterance.get_text()
+        tokens = user_utterance.get_tokens()
+        utterance = sum(tokens).lemma if tokens else ''
         # fitst option is to find if any value is in the possible values
         possible_years = [
             int(val) for val in re.findall(r'\b\d+', raw_utterance)

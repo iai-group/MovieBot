@@ -1,7 +1,8 @@
 """This module is used for preprocessing user inputs before further analysis.
 The user utterance is broken into tokens which contain additional information
-about the token.
+about the it.
 """
+
 from typing import Text, List, Optional
 
 import string
@@ -64,7 +65,7 @@ class TextProcess:
     """This class contains methods needed for preprocessing sentences.
     """
 
-    def __init__(self, additional_stop_words: List[Text] = None):
+    def __init__(self, additional_stop_words: List[Text] = None) -> None:
         stop_words = stopwords.words('english')
         if additional_stop_words:
             stop_words.extend(additional_stop_words)
@@ -97,6 +98,7 @@ class TextProcess:
         Returns:
             str: Sentence without punctuation.
         """
+        text = text.replace('\'', '')
         return ''.join(
             ch if ch not in string.punctuation else ' ' for ch in text)
 

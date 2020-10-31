@@ -518,6 +518,9 @@ class NLG:
         for value, params in dual_params.items():
             for param in params:
                 negative = False
+                # TODO (Ivica Kostric): Look into this. Looks like a bug.
+                # value is not a string in some (all?) cases. It can be
+                # of class Values.
                 if value.startswith('.NOT.'):
                     negative = True  # TODO. Add changes here
                     value = value.replace('.NOT.', '')
