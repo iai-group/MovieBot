@@ -174,12 +174,12 @@ class Agent:
         state of dialogue.
 
         Args:
-            ser_utterance: The input received from the user
-            ser_options: 
-            ser_fname:  (Default value = None)
+            user_utterance: The input received from the user
+            user_options: 
+            user_fname:  (Default value = None)
 
         Returns:
-            he agent response
+            The agent response
 
         """
         self.dialogue_manager.dialogue_state_tracker.dialogue_state.user_utterance = user_utterance
@@ -200,7 +200,7 @@ class Agent:
                     dialogue_context))
             return agent_response, options
         else:
-            record_data = {'User_Input': user_utterance}
+            record_data = {'User_Input': user_utterance.get_text()}
             record_data.update(self.dialogue_manager.dialogue_state_tracker.
                                dialogue_state._dict())
             record_data.update({'Agent_Output': agent_response})

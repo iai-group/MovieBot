@@ -164,13 +164,15 @@ class NLG:
                 if user_dact.intent == UserIntents.REVEAL:
                     for param in user_dact.params:
                         if param.value == Values.NOT_FOUND:
-                            if len(dialogue_state.user_utterance.split()) <= 3:
+                            if len(dialogue_state.user_utterance.get_tokens()
+                                  ) <= 3:
                                 not_found_response = random.choice(
                                     self.slot_not_found[param.slot])
                                 utterance.append(
                                     not_found_response.replace(
                                         '__replace__',
-                                        dialogue_state.user_utterance))
+                                        dialogue_state.user_utterance.get_text(
+                                        )))
                             else:
                                 utterance.append(
                                     random.choice(
@@ -516,6 +518,9 @@ class NLG:
         for value, params in dual_params.items():
             for param in params:
                 negative = False
+                # TODO (Ivica Kostric): Look into this. Looks like a bug.
+                # value is not a string in some (all?) cases. It can be
+                # of class Values.
                 if value.startswith('.NOT.'):
                     negative = True  # TODO. Add changes here
                     value = value.replace('.NOT.', '')

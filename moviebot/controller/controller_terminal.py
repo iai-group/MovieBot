@@ -5,6 +5,7 @@ __author__ = 'Javeria Habib'
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
+from moviebot.utterance.utterance import UserUtterance
 
 
 class ControllerTerminal(Controller):
@@ -31,7 +32,8 @@ class ControllerTerminal(Controller):
         agent_response, user_options = agent.start_dialogue()
         print(f'AGENT: {agent_response}')
         while not agent.terminated_dialogue():
-            user_utterance = input('User: ')
+            utterance = input('User: ')
+            user_utterance = UserUtterance({'text': utterance})
             agent_response, user_options = agent.continue_dialogue(
                 user_utterance, user_options)
             print(f'AGENT: {agent_response}')

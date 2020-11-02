@@ -16,6 +16,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
+from moviebot.utterance.utterance import UserUtterance
 
 # Enable logging
 logging.basicConfig(
@@ -119,8 +120,9 @@ class ControllerBot(Controller):
         return CONTINUE
 
     def restart(self, update, context):
-        """Restarts the conversation. This is similar to start function. However, it starts the
-        conversation with a welcome message and elicits the uses to begin with.
+        """Restarts the conversation. This is similar to start function.
+        However, it starts the conversation with a welcome message and elicits
+        the uses to begin with.
 
         Args:
             update: 
@@ -185,9 +187,10 @@ class ControllerBot(Controller):
                 f"Conversation is starting for user id = {user_id} and user name = '"
                 f"{update.effective_user['first_name']}'")
         start = time.time()
+        user_utterance = UserUtterance(update.message.to_dict())
         self.response[user_id], self.record_data_agent[user_id], self.user_options[user_id] = \
             self.agent[user_id].continue_dialogue(
-                update.message.text, self.user_options[user_id], user_fname=update.effective_user[
+                user_utterance, self.user_options[user_id], user_fname=update.effective_user[
                     'first_name'])
         if self.user_options[user_id]:
             # d = {str(key):val for key,val in self.user_options[user_id].items()}
@@ -211,7 +214,7 @@ class ControllerBot(Controller):
                                   parse_mode=ParseMode.MARKDOWN)
         # record the conversation
         if self.agent[user_id].bot_recorder:
-            record_data = {"Timestamp": str(update.message.date)}
+            record_data = {"Timestamp": user_utterance.get_timestamp()}
             record_data.update(self.record_data_agent[user_id])
             record_data.update({"Execution_Time": str(round(end - start, 3))})
             self.agent[user_id].bot_recorder.record_user_data(
@@ -273,8 +276,8 @@ class ControllerBot(Controller):
             f'Error {context.error} is caused by update {str(update)}.')
 
     def execute_agent(self, configuration):
-        """Runs the conversational agent and executes the dialogue by calling the basic components
-        of IAI MovieBot.
+        """Runs the conversational agent and executes the dialogue by calling
+        the basic components of IAI MovieBot.
 
         Args:
             configuration: the settings for the agent
@@ -287,7 +290,8 @@ class ControllerBot(Controller):
         updater = Updater(self.token, use_context=True)
         dp = updater.dispatcher
 
-        # Add conversation hadler with states START, CONTINUE_RECOMMENDATION and END
+        # Add conversation handler with states START, CONTINUE_RECOMMENDATION
+        # and END
         conv_handler = ConversationHandler(
             entry_points=[
                 CommandHandler('start', self.start),

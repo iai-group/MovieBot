@@ -3,7 +3,7 @@
 
 Classes that contain basic information about the utterance.
 """
-from typing import Text, List
+from typing import Text, List, Dict, Any
 from abc import ABC
 import datetime
 
@@ -16,18 +16,18 @@ class Utterance(ABC):
     it and when.
     """
 
-    def __init__(self, utterance: Text, timestamp: Text = None):
+    def __init__(self, message: Dict[Text, Any]) -> None:
         """Initializes the Utterance class with an utterance and a timestamp.
 
         Args:
-            utterance (str): The string to store as utterance
-            timestamp (str, optional): Timestamp of the utterance. It is set to
-                the time of initialization if not provided.
-        """
-        self.utterance = utterance
-        self.timestamp = self._set_timestamp(timestamp)
+            message (Dict[Text, Any]): Dictionary should contain text and date
+                fields.
 
-    def source(self) -> Text:
+        """
+        self._utterance = message.get('text', '')
+        self._timestamp = self._set_timestamp(message.get('date'))
+
+    def get_source(self) -> Text:
         """Returns the name of the inherited class which represents the source
         of the utterance.
 
@@ -36,15 +36,22 @@ class Utterance(ABC):
         """
         return self.__class__.__name__
 
-    def _set_timestamp(self, timestamp: Text = None):
-        return timestamp if timestamp else str(
-            datetime.datetime.now(datetime.timezone.utc))
+    def get_text(self) -> Text:
+        return self._utterance
+
+    def get_timestamp(self) -> Text:
+        return str(self._timestamp)
+
+    def _set_timestamp(self, timestamp: int = None) -> datetime.datetime:
+        if timestamp:
+            return datetime.datetime.fromtimestamp(timestamp)
+        return datetime.datetime.now(datetime.timezone.utc)
 
     def __str__(self):
         return '{} - {}:\n\t{}'.format(
-            self.timestamp,
-            self.source(),
-            self.utterance,
+            self.get_timestamp(),
+            self.get_source(),
+            self.get_text(),
         )
 
 
@@ -57,10 +64,10 @@ class UserUtterance(Utterance):
         """Preprocesses the utterance and returns a list of tokens.
 
         Returns:
-            List[str]: List of tokens from the utterance.
+            List[Token]: List of tokens from the utterance.
         """
         if not hasattr(self, '_tokens'):
-            self._tokens = TextProcess().process_text(self.utterance)
+            self._tokens = TextProcess().process_text(self._utterance)
 
         return self._tokens
 
