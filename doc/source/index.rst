@@ -11,7 +11,7 @@ IAI MovieBot is a conversational recommender system for movies.  It follows a st
    usage
    architecture
    dialogue
-   Python package documentation <api/main>
+   Python package documentation <api/moviebot>
    contact
 
 

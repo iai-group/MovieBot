@@ -8,6 +8,11 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = source
 BUILDDIR      = build
 
+SPHINXAPIDOC  = sphinx-apidoc
+SOURCEAPI     = source/api/
+MOVIEBOT	  = ../moviebot
+ALLAPIDOCOPTS = -e -M --tocfile moviebot --implicit-namespaces -o
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
@@ -18,3 +23,15 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+.PHONY: rst
+rst:
+	$(SPHINXAPIDOC) $(ALLAPIDOCOPTS) $(SOURCEAPI) $(MOVIEBOT)
+	@echo
+	@echo "rst API documentation files generated. The .rst files are in $(SOURCEAPI)."
+
+.PHONY: rstf
+rstf:
+	$(SPHINXAPIDOC) -f $(ALLAPIDOCOPTS) $(SOURCEAPI) $(MOVIEBOT)
+	@echo
+	@echo "rst API documentation files generated. The .rst files are in $(SOURCEAPI)."
