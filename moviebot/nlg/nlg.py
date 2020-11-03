@@ -11,8 +11,8 @@ from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
-from moviebot.intents.agent_intents import AgentIntents
-from moviebot.intents.user_intents import UserIntents
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
 

@@ -6,7 +6,7 @@ import abc
 
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.slots import Slots
-from moviebot.utterance.utterance import UserUtterance
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
 
 class SlotAnnotator(abc.ABC):

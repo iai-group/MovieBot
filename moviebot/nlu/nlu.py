@@ -7,8 +7,8 @@ __author__ = 'Javeria Habib'
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.intents.agent_intents import AgentIntents
-from moviebot.intents.user_intents import UserIntents
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
 from moviebot.ontology.ontology import Ontology
 from moviebot.nlu.annotation.values import Values

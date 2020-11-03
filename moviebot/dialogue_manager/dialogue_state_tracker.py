@@ -10,8 +10,8 @@ from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
-from moviebot.intents.agent_intents import AgentIntents
-from moviebot.intents.user_intents import UserIntents
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 
 
 class DialogueStateTracker:

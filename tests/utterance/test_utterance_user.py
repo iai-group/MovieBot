@@ -1,4 +1,4 @@
-from moviebot.utterance.utterance_user import UserUtterance
+from moviebot.core.shared.utterance.utterance_user import UserUtterance
 
 import pytest
 
