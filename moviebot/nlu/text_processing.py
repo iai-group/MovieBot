@@ -72,6 +72,7 @@ class TextProcess:
 
         self._stop_words = set(stop_words)
         self._lemmatizer = WordNetLemmatizer()
+        self._punctuation = set(string.punctuation.replace('\'', ''))
 
     def process_text(self, text: Text) -> List[Token]:
         """Processes given text. The text is split into tokens which can be
@@ -84,7 +85,7 @@ class TextProcess:
             List[Token]: List of Tokens
         """
         processed_text = self.remove_punctuation(text)
-        word_tokens = word_tokenize(processed_text)
+        word_tokens = processed_text.split()  #word_tokenize(processed_text)
 
         return self.tokenize(word_tokens, text)
 
@@ -98,9 +99,20 @@ class TextProcess:
         Returns:
             str: Sentence without punctuation.
         """
-        text = text.replace('\'', '')
         return ''.join(
-            ch if ch not in string.punctuation else ' ' for ch in text)
+            ch if ch not in self._punctuation else ' ' for ch in text)
+
+    def lemmatize_text(self, text: Text) -> Text:
+        """Returns string lemma.
+
+        Args:
+            text (Text): Input text.
+
+        Returns:
+            Text: Lemmatized string.
+        """
+        text = text.replace('\'', '')
+        return self._lemmatizer.lemmatize(text.lower())
 
     def tokenize(self, word_tokens: List[Text], text: Text) -> List[Token]:
         """Returns a tokenized copy of text.
@@ -116,7 +128,7 @@ class TextProcess:
         for word in word_tokens:
             start = text.index(word, end)
             end = start + len(word)
-            lemma = self._lemmatizer.lemmatize(word.lower())
+            lemma = self.lemmatize_text(word)
             is_stopword = word in self._stop_words
 
             tokens.append(Token(word, start, end, lemma, is_stopword))
