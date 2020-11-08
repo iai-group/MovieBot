@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 CONTINUE = range(1)
 
 
-class ControllerBot(Controller):
+class ControllerTelegram(Controller):
     """This is the Controller class which controls the flow of the conversation while the user
     interacts with the agent using telegram."""
 

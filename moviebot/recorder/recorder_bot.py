@@ -2,7 +2,7 @@
 If required, it also saves the dialogue acts.
 """
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import json
 import os
@@ -32,7 +32,7 @@ class RecorderBot:
 
         Args:
             user_id: Id of the use
-            record_data: 
+            record_data:
 
         """
         user_history_path = self.path + 'user_' + user_id + '.json'
@@ -111,7 +111,7 @@ class RecorderBot:
         Args:
             bot_id: Id of the bot
             user_id: Id of the use
-            record_data: 
+            record_data:
 
         """
         previous_record = self.previous_dialogue_record[bot_id][user_id]
