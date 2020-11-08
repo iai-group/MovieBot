@@ -27,8 +27,8 @@ CONTINUE = range(1)
 
 
 class ControllerTelegram(Controller):
-    """This is the Controller class which controls the flow of the conversation while the user
-    interacts with the agent using telegram."""
+    """This is the Controller class which controls the flow of the conversation
+    while the user interacts with the agent using telegram."""
 
     def __init__(self):
         """Initializes some basic structs for the Controller.
