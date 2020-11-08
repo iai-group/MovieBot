@@ -1,7 +1,7 @@
-"""This file contains the Controller class which controls the flow of the conversation while the
-user interacts with the agent using Telegram."""
+"""This file contains the Controller class which controls the flow of the
+conversation while the user interacts with the agent using Telegram."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import json
 import logging
@@ -43,11 +43,11 @@ class ControllerTelegram(Controller):
 
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
-        
+
         :return: the token of the Telegram Bot
 
         Args:
-            bot_token_path: 
+            bot_token_path:
 
         """
         if isinstance(bot_token_path, str):
@@ -66,13 +66,13 @@ class ControllerTelegram(Controller):
             raise ValueError('Unacceptable type of Token file name')
 
     def start(self, update, context):
-        """Starts the conversation. This indicates initializing the components and start the
-        conversation from scratch and identifying if the users are new or have used this system
-        before.
+        """Starts the conversation. This indicates initializing the components
+        and start the conversation from scratch and identifying if the users are
+        new or have used this system before.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         # create a new agent
@@ -99,8 +99,8 @@ class ControllerTelegram(Controller):
         # record the conversation
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
-                "Timestamp": str(update.message.date),
-                "User_Input": update.message.text
+                'Timestamp': str(update.message.date),
+                'User_Input': update.message.text
             }
             self.record_data[user_id].update(self.record_data_agent[user_id])
             self.agent[user_id].bot_recorder.record_user_data(
@@ -111,8 +111,8 @@ class ControllerTelegram(Controller):
         """Sends the users the instructions if they ask for help
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         update.message.reply_text(self._instruction(help=True),
@@ -125,8 +125,8 @@ class ControllerTelegram(Controller):
         the uses to begin with.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         # create a new agent
@@ -152,8 +152,8 @@ class ControllerTelegram(Controller):
         # record the conversation
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
-                "Timestamp": str(update.message.date),
-                "User_Input": update.message.text
+                'Timestamp': str(update.message.date),
+                'User_Input': update.message.text
             }
             self.record_data[user_id].update(self.record_data_agent[user_id])
             self.agent[user_id].bot_recorder.record_user_data(
@@ -164,8 +164,8 @@ class ControllerTelegram(Controller):
         """Continues the conversation until the users want to restart of exit.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         user_id = str(update.effective_user['id'])
@@ -235,8 +235,8 @@ class ControllerTelegram(Controller):
         """Exit the conversation.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         user_id = str(update.effective_user['id'])
@@ -252,9 +252,9 @@ class ControllerTelegram(Controller):
             f"{update.effective_user['first_name']}'")
         if self.agent[user_id].bot_recorder:
             record_data = {
-                "Timestamp": str(update.message.date),
-                "User_Input": update.message.text,
-                "Agent": self.response[user_id]
+                'Timestamp': str(update.message.date),
+                'User_Input': update.message.text,
+                'Agent': self.response[user_id]
             }
             self.agent[user_id].bot_recorder.record_user_data(
                 user_id, record_data)
@@ -268,8 +268,8 @@ class ControllerTelegram(Controller):
         """Log Errors caused by Updates.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         logger.warning(
@@ -324,7 +324,8 @@ class ControllerTelegram(Controller):
         print('The users can access IAI MovieBot using Telegram.')
 
     def new_user(self, user_id):
-        """Checks if the users are new or they have already conversed with the system before.
+        """Checks if the users are new or they have already conversed with the
+        system before.
 
         Args:
             user_id: ID of the user
