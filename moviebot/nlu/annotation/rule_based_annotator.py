@@ -25,6 +25,7 @@ class RBAnnotator(SlotAnnotator):
         self._lemmatize_value = lemmatize_value
         self.slot_values = slot_values
         self.ngram_size = {
+            Slots.GENRES.value: 2,
             Slots.TITLE.value: 8,
             Slots.KEYWORDS.value: 8,
             'person': 3
@@ -87,21 +88,52 @@ class RBAnnotator(SlotAnnotator):
         param = None
         values = self.slot_values[slot]
         tokens = user_utterance.get_tokens()
-        utterance = sum(tokens).lemma if tokens else ''
-        for value, lem_value in values.items():
-            if lem_value in utterance:
-                if not param:
-                    param = ItemConstraint(slot, Operator.EQ, value.lower())
-                else:
-                    param.value += ' ' + value.lower()
-        for key, value in self.genres_alternatives.items():
-            if self._process_value(key) in utterance:
-                if not param:
-                    param = ItemConstraint(slot, Operator.EQ, key.lower())
-                else:
-                    param.value += ' ' + key.lower()
+        for i, token in enumerate(tokens):
+            for value, lem_value in values.items():
+                len_lem_value = len(lem_value.split())
+                if len_lem_value > 1:
+                    token = sum(tokens[i:i + len_lem_value])
+
+                    # TODO (Ivica Kostric): This is ready to be converted to
+                    # the SemanticAnnotation class
+
+                if token.lemma.startswith(lem_value):
+                    if not param:
+                        param = ItemConstraint(slot, Operator.EQ, value.lower())
+                    else:
+                        param.value += ' ' + value.lower()
+
+            # TODO(Ivica Kostric): This could be merged with the main genre
+            # dictionary at initialization time.
+            for key, value in self.genres_alternatives.items():
+                len_key = len(key.split())
+                if len_key > 1:
+                    token = sum(tokens[i:i + len_key])
+
+                if token.lemma.startswith(self._process_value(key)):
+                    if not param:
+                        param = ItemConstraint(slot, Operator.EQ, key.lower())
+                    else:
+                        param.value += ' ' + key.lower()
+
         if param:
             return [param]
+
+        # utterance = sum(tokens).lemma if tokens else ''
+        # for value, lem_value in values.items():
+        #     if lem_value in utterance:
+        #         if not param:
+        #             param = ItemConstraint(slot, Operator.EQ, value.lower())
+        #         else:
+        #             param.value += ' ' + value.lower()
+        # for key, value in self.genres_alternatives.items():
+        #     if self._process_value(key) in utterance:
+        #         if not param:
+        #             param = ItemConstraint(slot, Operator.EQ, key.lower())
+        #         else:
+        #             param.value += ' ' + key.lower()
+        # if param:
+        #     return [param]
 
     def _title_annotator(self, slot, user_utterance):
         """This annotator is used to check the movie title.
@@ -238,68 +270,122 @@ class RBAnnotator(SlotAnnotator):
         """
 
         Args:
-            slot: 
-            user_utterance: 
-            utterance: 
+            slot:
+            user_utterance:
+            utterance:
 
         """
-        raw_utterance = user_utterance.get_text()
         tokens = user_utterance.get_tokens()
-        utterance = sum(tokens).lemma if tokens else ''
-        # fitst option is to find if any value is in the possible values
-        possible_years = [
-            int(val) for val in re.findall(r'\b\d+', raw_utterance)
-        ]
-        for year in possible_years:
-            _year = str(year)
-            if _year + 's' in raw_utterance:  # check if it's 1990s instead of
-                # 1990 or 90s
-                if len(_year) == 4:
-                    if year % 10 == 0:
-                        return [
-                            ItemConstraint(slot, Operator.BETWEEN,
-                                           f'{_year} AND {str(year + 10)}')
-                        ]
-                    else:
-                        return [ItemConstraint(slot, Operator.EQ, _year)]
-                elif len(_year) == 2:
-                    if year <= 20:
-                        _year = '20' + _year
-                        if year % 10 == 0:
-                            return [
-                                ItemConstraint(
-                                    slot, Operator.BETWEEN, f'{_year} AND'
-                                    f' {str(int(_year) + 10)}')
-                            ]
-                        else:
-                            return [ItemConstraint(slot, Operator.EQ, _year)]
-                    else:
-                        _year = '19' + _year
-                        if year % 10 == 0:
-                            return [
-                                ItemConstraint(
-                                    slot, Operator.BETWEEN, f'{_year} AND'
-                                    f' {str(int(_year) + 10)}')
-                            ]
-                        else:
-                            return [ItemConstraint(slot, Operator.EQ, _year)]
-            elif _year + 'th' in raw_utterance:
-                # it can be string like 19th, 20th
-                if len(_year) == 2:
+        potential_item_constraint = []
+        for token in tokens:
+            if token.lemma.startswith(('new', 'latest')):
+                potential_item_constraint.append(
+                    ItemConstraint(slot, Operator.GT, '2010'))
+            if token.lemma.startswith('old'):
+                potential_item_constraint.append(
+                    ItemConstraint(slot, Operator.LT, '2010'))
+
+            if not token.lemma[:2].isdigit():
+                continue
+
+            if token.text[-1] == 's':
+                year = token.text[:-1]
+                if not year.isdigit():
+                    continue
+
+                # check if its for example 90s or 1990s
+                if len(year) == 2:
+                    year = '20' + year if int(year) <= 20 else '19' + year
+                elif len(year) != 4:
+                    continue
+
+                # TODO (Ivica Kostric): This is ready to be
+                # converted to the SemanticAnnotation class
+
+                if year[-1] == '0':
                     return [
-                        ItemConstraint(slot, Operator.BETWEEN, f'{_year}00 AND'
-                                       f' {str(year + 1)}00')
+                        ItemConstraint(slot, Operator.BETWEEN,
+                                       f'{year} AND {str(int(year) + 10)}')
                     ]
-            if len(_year) == 4:
-                return [ItemConstraint(slot, Operator.EQ, _year)]
-        # adding a few more elements
-        if 'new' in utterance or 'latest' in utterance:
-            return [ItemConstraint(slot, Operator.GT, '2010')]
-        if 'old' in utterance:
-            return [ItemConstraint(slot, Operator.LT, '2010')]
+                else:
+                    return [ItemConstraint(slot, Operator.EQ, year)]
+
+            if token.text[-2:] == 'th':
+                year = token.text[:-2]
+                if year.isdigit() and len(year) == 2:
+                    return [
+                        ItemConstraint(
+                            slot, Operator.BETWEEN, f'{year}00 AND'
+                            f' {str(int(year) + 1)}00')
+                    ]
+
+            if token.text.isdigit() and len(token.text) == 4:
+                return [ItemConstraint(slot, Operator.EQ, token.text)]
+
+        return potential_item_constraint[:1]
+
+        # raw_utterance = user_utterance.get_text()
+        # utterance = sum(tokens).lemma if tokens else ''
+        # # fastest option is to find if any value is in the possible values
+        # possible_years = [
+        #     int(val) for val in re.findall(r'\b\d+', raw_utterance)
+        # ]
+
+        # for year in possible_years:
+        #     _year = str(year)
+        #     if _year + 's' in raw_utterance:  # check if it's 1990s instead of
+        #         # 1990 or 90s
+        #         if len(_year) == 4:
+        #             if year % 10 == 0:
+        #                 return [
+        #                     ItemConstraint(slot, Operator.BETWEEN,
+        #                                    f'{_year} AND {str(year + 10)}')
+        #                 ]
+        #             else:
+        #                 return [ItemConstraint(slot, Operator.EQ, _year)]
+        #         elif len(_year) == 2:
+        #             if year <= 20:
+        #                 _year = '20' + _year
+        #                 if year % 10 == 0:
+        #                     return [
+        #                         ItemConstraint(
+        #                             slot, Operator.BETWEEN, f'{_year} AND'
+        #                             f' {str(int(_year) + 10)}')
+        #                     ]
+        #                 else:
+        #                     return [ItemConstraint(slot, Operator.EQ, _year)]
+        #             else:
+        #                 _year = '19' + _year
+        #                 if year % 10 == 0:
+        #                     return [
+        #                         ItemConstraint(
+        #                             slot, Operator.BETWEEN, f'{_year} AND'
+        #                             f' {str(int(_year) + 10)}')
+        #                     ]
+        #                 else:
+        #                     return [ItemConstraint(slot, Operator.EQ, _year)]
+        #     elif _year + 'th' in raw_utterance:
+        #         # it can be string like 19th, 20th
+        #         if len(_year) == 2:
+        #             return [
+        #                 ItemConstraint(slot, Operator.BETWEEN, f'{_year}00 AND'
+        #                                f' {str(year + 1)}00')
+        #             ]
+        #     if len(_year) == 4:
+        #         return [ItemConstraint(slot, Operator.EQ, _year)]
+        # # adding a few more elements
+        # if 'new' in utterance or 'latest' in utterance:
+        #     return [ItemConstraint(slot, Operator.GT, '2010')]
+        # if 'old' in utterance:
+        #     return [ItemConstraint(slot, Operator.LT, '2010')]
 
     def find_in_raw_utterance(self, raw_utterance, gram, ngram_size):
         """
+
+        TODO (Ivica Kostric): There are cases where this method fails when,
+        for example user doesn't use space after punctuation or writes
+        'kung-fu' instead of 'kung fu'. This leads to problem later since it
+        sets the value parameter of ItemConstraint to None.
 
         Args:
             raw_utterance: 
