@@ -18,4 +18,4 @@ class Values(Enum):
     NOT_FOUND = 'not_found'
 
     def __str__(self):
-        return self.value
+        return str(self.value)

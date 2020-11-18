@@ -93,7 +93,7 @@ class UserIntentsChecker:
         return value
 
     def _lemmatize_value(self, value, skip_number=False):
-        """ 
+        """
         TODO (Ivica Kostric) This should be removed. Move all preprocessing
         operations to moviebot.nlu.text_processing.TextProcess
 
