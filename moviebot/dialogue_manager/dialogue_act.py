@@ -1,14 +1,15 @@
-"""Dialogue Act defines the action user or agent takes during the conversation."""
+"""Dialogue Act defines the action user or agent takes during the conversation.
+"""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 
 
 class DialogueAct:
-    """The DialogueAct comprises of an intent with a list of parameters (DialogueActItem) for a
-    particular dialogue."""
+    """The DialogueAct comprises of an intent with a list of parameters
+    (DialogueActItem) for a particular dialogue."""
 
     def __init__(self, intent=None, params=None):
         """Initialises a Dialogue Act.
@@ -25,16 +26,14 @@ class DialogueAct:
         else:
             raise ValueError('Unacceptable dialogue act type: %s ' % intent)
 
-        self.params = params
-        if self.params is None:
-            self.params = []
+        self.params = params or []
 
     def __str__(self):
         """Prints a dialogue act to debug the agent.
 
         Returns:
             string representation of the Dialogue Act
-            
+
         """
         if self.intent:
             return str(self.intent) + \

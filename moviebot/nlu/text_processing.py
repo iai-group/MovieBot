@@ -26,7 +26,7 @@ class Token:
         self.text = text
 
         self.start = start
-        self.end = end if end else len(text)
+        self.end = end if end else start + len(text)
 
         self.lemma = lemma if lemma else text
         self.is_stopword = is_stopword
