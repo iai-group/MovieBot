@@ -1,14 +1,17 @@
-Abstract Controller Class
-===========================
-.. automodule:: moviebot.controller.controller
-   :members:
+controller package
+==================
 
-Controller for Telegram Bot
------------------------------
-.. automodule:: moviebot.controller.controller_bot
+.. automodule:: controller
    :members:
+   :undoc-members:
+   :show-inheritance:
 
-Controller for Console Testing
--------------------------------
-.. automodule:: moviebot.controller.controller_terminal
-   :members:
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   controller.controller
+   controller.controller_telegram
+   controller.controller_terminal

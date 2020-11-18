@@ -1,17 +1,26 @@
-NLU
+nlu package
 ===========
 
-.. automodule:: moviebot.nlu.nlu
+.. automodule:: nlu
    :members:
-.. automodule:: moviebot.nlu.data_loader
-   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
 
 .. toctree::
-    :caption: Slot Annotators:
+   :maxdepth: 4
 
-    nlu.annotators
+   nlu.annotation
+
+Submodules
+----------
 
 .. toctree::
-    :caption: Intent Detection:
+   :maxdepth: 4
 
-    nlu.intent_checker
+   nlu.data_loader
+   nlu.nlu
+   nlu.text_processing
+   nlu.user_intents_checker

@@ -9,12 +9,12 @@ from typing import List
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 
 
 class NLG:
@@ -164,13 +164,15 @@ class NLG:
                 if user_dact.intent == UserIntents.REVEAL:
                     for param in user_dact.params:
                         if param.value == Values.NOT_FOUND:
-                            if len(dialogue_state.user_utterance.split()) <= 3:
+                            if len(dialogue_state.user_utterance.get_tokens()
+                                  ) <= 3:
                                 not_found_response = random.choice(
                                     self.slot_not_found[param.slot])
                                 utterance.append(
                                     not_found_response.replace(
                                         '__replace__',
-                                        dialogue_state.user_utterance))
+                                        dialogue_state.user_utterance.get_text(
+                                        )))
                             else:
                                 utterance.append(
                                     random.choice(
@@ -373,7 +375,7 @@ class NLG:
             if difference == 10:
                 return str(years[0])[-2:] + 's'
             elif difference == 100:
-                return str(years[0])[:1] + 'th century'
+                return str(years[0])[:2] + 'th century'
         else:
             return f'year {"not " if negate else " "}' + value
 
@@ -482,13 +484,13 @@ class NLG:
             DialogueAct(UserIntents.REJECT, [
                 ItemConstraint('reason', Operator.EQ, 'watched')
             ]): ['I have already watched it.'],
-        # [random.choice(['I have already watched it.',
-        #                 'I have seen this already.'])],
+            # [random.choice(['I have already watched it.',
+            #                 'I have seen this already.'])],
             DialogueAct(UserIntents.REJECT, [
                 ItemConstraint('reason', Operator.EQ, 'dont_like')
             ]): ['Recommend me something else please.'],
-        # [random.choice(['I don\'t like this recommendation.',
-        #                 'Recommend me something else please.'])],
+            # [random.choice(['I don\'t like this recommendation.',
+            #                 'Recommend me something else please.'])],
             DialogueAct(UserIntents.ACCEPT, []): [
                 'I like this recommendation.'
             ],
@@ -516,8 +518,11 @@ class NLG:
         for value, params in dual_params.items():
             for param in params:
                 negative = False
+                # TODO (Ivica Kostric): Look into this. Looks like a bug.
+                # value is not a string in some (all?) cases. It can be
+                # of class Values.
                 if value.startswith('.NOT.'):
-                    negative = True    # TODO. Add changes here
+                    negative = True  # TODO. Add changes here
                     value = value.replace('.NOT.', '')
                 _a_an = 'an' if value[0] in ['a', 'e', 'i', 'o', 'u'] else 'a'
                 param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])
@@ -638,8 +643,8 @@ class NLG:
             DialogueAct(UserIntents.REJECT, [
                 ItemConstraint('reason', Operator.EQ, 'dont_like')
             ]): ['I don\'t like this recommendation.'],
-        # [random.choice(['I don\'t like this recommendation.',
-        #                 'Recommend me something else please.'])],
+            # [random.choice(['I don\'t like this recommendation.',
+            #                 'Recommend me something else please.'])],
             DialogueAct(UserIntents.ACCEPT, []): [
                 'I like this recommendation.'
             ],
@@ -683,7 +688,7 @@ class NLG:
             value = deepcopy(param.value)
             negative = False
             if value.startswith('.NOT.'):
-                negative = True    # TODO. Add changes here
+                negative = True  # TODO. Add changes here
                 value = value.replace('.NOT.', '')
             _a_an = 'an' if value[0] in ['a', 'e', 'i', 'o', 'u'] else 'a'
             param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])

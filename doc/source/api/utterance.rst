@@ -1,12 +1,15 @@
-Utterance
-===================
+utterance package
+=================
 
-
-.. automodule:: moviebot.utterance.utterance
+.. automodule:: utterance
    :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: moviebot.utterance.utterance_user
-   :members:
+Submodules
+----------
 
-.. automodule:: moviebot.utterance.utterance_agent
-   :members:
+.. toctree::
+   :maxdepth: 4
+
+   utterance.utterance

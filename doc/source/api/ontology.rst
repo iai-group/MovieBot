@@ -1,5 +1,15 @@
-Ontology
-===================
+ontology package
+================
 
-.. automodule:: moviebot.ontology.ontology
+.. automodule:: ontology
    :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   ontology.ontology

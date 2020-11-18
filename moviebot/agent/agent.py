@@ -1,6 +1,6 @@
 """Types of conversational agents are available here."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import os
 
@@ -11,6 +11,7 @@ from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
+from moviebot.utterance.utterance import AgentUtterance
 
 
 def _get_ontology(ontology_path):
@@ -47,8 +48,9 @@ def _get_db(db_path):
 
 
 class Agent:
-    """The class Agent controls all the components of the basic architecture of IAI MovieBot.
-    Initially the Conversational Agent is able to interact with human users via text."""
+    """The class Agent controls all the components of the basic architecture of
+    IAI MovieBot. Initially the Conversational Agent is able to interact with
+    human users via text."""
 
     def __init__(self, config=None):
         """Initializes the internal structure of the agent and other components.
@@ -71,17 +73,18 @@ class Agent:
         self.nlu = None
         self.nlg = None
         self.isBot = False
-        self.new_user = False    # a parameter for Bot
+        self.new_user = False  # a parameter for Bot
         self.bot_recorder = None
 
         # Dialogue component agent controls
         self.dialogue_manager = None
 
     def initialize(self, user_id=None):
-        """Initializes the components and set their values as on the configuration
+        """Initializes the components and set their values as on the
+        configuration.
 
         Args:
-            ser_id:  (Default value = None)
+            user_id:  (Default value = None)
 
         """
         if 'CONVERSATION_LOGS' in self.config and self.config[
@@ -115,7 +118,7 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config['slots'] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if 'BOT' in self.config and self.config['BOT']:
+        if self.config.get('TELEGRAM', False):
             self.isBot = True
             self.new_user = self.config['new_user'][user_id]
 
@@ -148,6 +151,8 @@ class Agent:
             agent_dacts = self.dialogue_manager.generate_output(restart)
         agent_response, options = self.nlg.generate_output(
             agent_dacts, user_fname=user_fname)
+        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+            AgentUtterance({'text': agent_response}))
         if not self.isBot:
             print(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
@@ -159,27 +164,30 @@ class Agent:
         else:
             record_data = self.dialogue_manager.dialogue_state_tracker.dialogue_state._dict(
             )
-            record_data.update({"Agent_Output": agent_response})
+            record_data.update({'Agent_Output': agent_response})
             record_data.update({
-                "Context":
+                'Context':
                     self.dialogue_manager.dialogue_state_tracker.
                     dialogue_context.movies_recommended
             })
             return agent_response, record_data, options
 
     def continue_dialogue(self, user_utterance, user_options, user_fname=None):
-        """Performs the next dialogue according to user response and current state of dialogue
+        """Performs the next dialogue according to user response and current
+        state of dialogue.
 
         Args:
-            ser_utterance: The input received from the user
-            ser_options: 
-            ser_fname:  (Default value = None)
+            user_utterance: The input received from the user
+            user_options: 
+            user_fname:  (Default value = None)
 
         Returns:
-            he agent response
+            The agent response
 
         """
         self.dialogue_manager.dialogue_state_tracker.dialogue_state.user_utterance = user_utterance
+        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+            user_utterance)
         user_dacts = self.nlu.generate_dact(user_utterance, user_options,
                                             self.dialogue_manager.get_state(),
                                             self.dialogue_manager.get_context())
@@ -188,6 +196,8 @@ class Agent:
         dialogue_state = self.dialogue_manager.dialogue_state_tracker.dialogue_state
         agent_response, options = self.nlg.generate_output(
             agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname)
+        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+            AgentUtterance({'text': agent_response}))
         if not self.isBot:
             print(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
@@ -197,12 +207,12 @@ class Agent:
                     dialogue_context))
             return agent_response, options
         else:
-            record_data = {"User_Input": user_utterance}
+            record_data = {'User_Input': user_utterance.get_text()}
             record_data.update(self.dialogue_manager.dialogue_state_tracker.
                                dialogue_state._dict())
-            record_data.update({"Agent_Output": agent_response})
+            record_data.update({'Agent_Output': agent_response})
             record_data.update({
-                "Context":
+                'Context':
                     self.dialogue_manager.dialogue_state_tracker.
                     dialogue_context.movies_recommended
             })
@@ -211,7 +221,7 @@ class Agent:
                 for key, val in _options.items():
                     if isinstance(val, list):
                         _options[key] = val[0]
-                record_data.update({"Agent_Options": str(_options)})
+                record_data.update({'Agent_Options': str(_options)})
             return agent_response, record_data, options
 
     def end_dialogue(self):
@@ -219,8 +229,8 @@ class Agent:
         # TODO: Save the experience
 
     def terminated_dialogue(self):
-        """Checks if the dialogue is terminated by either user or the number of dialogues have
-        reached a maximum limit
+        """Checks if the dialogue is terminated by either user or the number of
+        dialogues have reached a maximum limit
 
         Returns:
             True or False

@@ -1,15 +1,15 @@
 """Dialogue State Tracker updates the current dialogue state."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 
@@ -18,12 +18,12 @@ class DialogueStateTracker:
     """Dialogue State Tracker updates the current dialogue state."""
 
     def __init__(self, config, isBot):
-        """Loads the database and ontology and creates an initial dialogue state.
+        """Loads the database and ontology and creates an initial dialogue
+        state.
 
         Args:
             config: the set of parameters to initialize the state tracker
-            isBot: if the conversation is via bot or not 
-        
+            isBot: if the conversation is via bot or not
         """
         self.ontology = config['ontology']
         self.database = config['database']
@@ -34,8 +34,9 @@ class DialogueStateTracker:
         self.dialogue_context = DialogueContext()
 
     def initialize(self, config):
-        """Loads the database results and initialize the dialogue state and context.
-        This function also initializes the state if dialogue needs to run from scratch.
+        """Loads the database results and initialize the dialogue state and
+        context. This function also initializes the state if dialogue needs to
+        run from scratch.
 
         Args:
             config: the database and ontology to load for further use
@@ -46,12 +47,12 @@ class DialogueStateTracker:
         """
 
         Args:
-            param: 
+            param:
 
         """
         if param.value in Values.__dict__.values():
             return param.value
-        value = str(param.op) + " " + param.value
+        value = str(param.op) + ' ' + param.value
         if value not in Values.__dict__.values():
             value = value.strip()
         time_value = self.dialogue_state.frame_CIN[param.slot]
@@ -90,7 +91,8 @@ class DialogueStateTracker:
 
         self.dialogue_state.last_user_dacts = user_dacts
         for user_dact in user_dacts:
-            # makes a back-up of current info needs if user wants to refine those
+            # makes a back-up of current info needs if user wants to refine
+            # those
             if user_dact.intent in [
                     UserIntents.REMOVE_PREFERENCE, UserIntents.REVEAL
             ]:
@@ -201,7 +203,7 @@ class DialogueStateTracker:
             # remove from user requestables when user asks for anything
             if user_dact.intent == UserIntents.INQUIRE:
                 if not self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                    print(self.dialogue_state)    # debuggig here
+                    print(self.dialogue_state)  # debuggig here
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                 if name in self.dialogue_context.movies_recommended:
                     if 'inquire' not in self.dialogue_context.movies_recommended[
@@ -233,7 +235,8 @@ class DialogueStateTracker:
             if user_dact.intent == UserIntents.BYE:
                 self.dialogue_state.at_terminal_state = True
 
-        # checks if all CIN slots are filled, database is accessed to get a recommendation
+        # checks if all CIN slots are filled, database is accessed to get a
+        # recommendation
         if not self.dialogue_state.agent_req_filled:
             self.dialogue_state.agent_req_filled = True
             for slot in self.dialogue_state.agent_requestable:
@@ -241,7 +244,8 @@ class DialogueStateTracker:
                     self.dialogue_state.agent_req_filled = False
                     break
 
-        # check if the agent can make any offer without asking any further question
+        # check if the agent can make any offer without asking any further
+        # question
         if not self.dialogue_state.agent_can_lookup:
             for value in self.dialogue_state.frame_CIN.values():
                 if isinstance(value, list):
@@ -290,9 +294,8 @@ class DialogueStateTracker:
         """Updates the state based on  the results fetched from the database
 
         Args:
-            database_result: the database results based on user information needs (Default value = None)
-            remove_title_from_CIN: flag indicating that agent removed the name from CIN as
-                there were no result
+            database_result: the database results based on user information
+                needs (Default value = None)
             backup_results:  (Default value = None)
 
         """
@@ -354,7 +357,7 @@ class DialogueStateTracker:
 
     def get_state(self):
         """Returns the current dialogue state.
-        
+
         Returns:
             the current dialogue state
 
@@ -366,6 +369,6 @@ class DialogueStateTracker:
 
         Returns:
             the current user context
-            
+
         """
         # return self.dialogue_context

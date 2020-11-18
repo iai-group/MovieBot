@@ -1,7 +1,7 @@
-"""This file contains the Controller class which controls the flow of the conversation while the
-user interacts with the agent using Telegram."""
+"""This file contains the Controller class which controls the flow of the
+conversation while the user interacts with the agent using Telegram."""
 
-__author__ = "Javeria Habib"
+__author__ = 'Javeria Habib'
 
 import json
 import logging
@@ -16,6 +16,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
+from moviebot.utterance.utterance import UserUtterance
 
 # Enable logging
 logging.basicConfig(
@@ -25,9 +26,9 @@ logger = logging.getLogger(__name__)
 CONTINUE = range(1)
 
 
-class ControllerBot(Controller):
-    """This is the Controller class which controls the flow of the conversation while the user
-    interacts with the agent using telegram."""
+class ControllerTelegram(Controller):
+    """This is the Controller class which controls the flow of the conversation
+    while the user interacts with the agent using telegram."""
 
     def __init__(self):
         """Initializes some basic structs for the Controller.
@@ -42,11 +43,11 @@ class ControllerBot(Controller):
 
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
-        
+
         :return: the token of the Telegram Bot
 
         Args:
-            bot_token_path: 
+            bot_token_path:
 
         """
         if isinstance(bot_token_path, str):
@@ -65,13 +66,13 @@ class ControllerBot(Controller):
             raise ValueError('Unacceptable type of Token file name')
 
     def start(self, update, context):
-        """Starts the conversation. This indicates initializing the components and start the
-        conversation from scratch and identifying if the users are new or have used this system
-        before.
+        """Starts the conversation. This indicates initializing the components
+        and start the conversation from scratch and identifying if the users are
+        new or have used this system before.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         # create a new agent
@@ -98,8 +99,8 @@ class ControllerBot(Controller):
         # record the conversation
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
-                "Timestamp": str(update.message.date),
-                "User_Input": update.message.text
+                'Timestamp': str(update.message.date),
+                'User_Input': update.message.text
             }
             self.record_data[user_id].update(self.record_data_agent[user_id])
             self.agent[user_id].bot_recorder.record_user_data(
@@ -110,8 +111,8 @@ class ControllerBot(Controller):
         """Sends the users the instructions if they ask for help
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         update.message.reply_text(self._instruction(help=True),
@@ -119,12 +120,13 @@ class ControllerBot(Controller):
         return CONTINUE
 
     def restart(self, update, context):
-        """Restarts the conversation. This is similar to start function. However, it starts the
-        conversation with a welcome message and elicits the uses to begin with.
+        """Restarts the conversation. This is similar to start function.
+        However, it starts the conversation with a welcome message and elicits
+        the uses to begin with.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         # create a new agent
@@ -150,8 +152,8 @@ class ControllerBot(Controller):
         # record the conversation
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
-                "Timestamp": str(update.message.date),
-                "User_Input": update.message.text
+                'Timestamp': str(update.message.date),
+                'User_Input': update.message.text
             }
             self.record_data[user_id].update(self.record_data_agent[user_id])
             self.agent[user_id].bot_recorder.record_user_data(
@@ -162,8 +164,8 @@ class ControllerBot(Controller):
         """Continues the conversation until the users want to restart of exit.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         user_id = str(update.effective_user['id'])
@@ -185,9 +187,10 @@ class ControllerBot(Controller):
                 f"Conversation is starting for user id = {user_id} and user name = '"
                 f"{update.effective_user['first_name']}'")
         start = time.time()
+        user_utterance = UserUtterance(update.message.to_dict())
         self.response[user_id], self.record_data_agent[user_id], self.user_options[user_id] = \
             self.agent[user_id].continue_dialogue(
-                update.message.text, self.user_options[user_id], user_fname=update.effective_user[
+                user_utterance, self.user_options[user_id], user_fname=update.effective_user[
                     'first_name'])
         if self.user_options[user_id]:
             # d = {str(key):val for key,val in self.user_options[user_id].items()}
@@ -211,7 +214,7 @@ class ControllerBot(Controller):
                                   parse_mode=ParseMode.MARKDOWN)
         # record the conversation
         if self.agent[user_id].bot_recorder:
-            record_data = {"Timestamp": str(update.message.date)}
+            record_data = {"Timestamp": user_utterance.get_timestamp()}
             record_data.update(self.record_data_agent[user_id])
             record_data.update({"Execution_Time": str(round(end - start, 3))})
             self.agent[user_id].bot_recorder.record_user_data(
@@ -232,8 +235,8 @@ class ControllerBot(Controller):
         """Exit the conversation.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         user_id = str(update.effective_user['id'])
@@ -249,9 +252,9 @@ class ControllerBot(Controller):
             f"{update.effective_user['first_name']}'")
         if self.agent[user_id].bot_recorder:
             record_data = {
-                "Timestamp": str(update.message.date),
-                "User_Input": update.message.text,
-                "Agent": self.response[user_id]
+                'Timestamp': str(update.message.date),
+                'User_Input': update.message.text,
+                'Agent': self.response[user_id]
             }
             self.agent[user_id].bot_recorder.record_user_data(
                 user_id, record_data)
@@ -265,16 +268,16 @@ class ControllerBot(Controller):
         """Log Errors caused by Updates.
 
         Args:
-            update: 
-            context: 
+            update:
+            context:
 
         """
         logger.warning(
             f'Error {context.error} is caused by update {str(update)}.')
 
     def execute_agent(self, configuration):
-        """Runs the conversational agent and executes the dialogue by calling the basic components
-        of IAI MovieBot.
+        """Runs the conversational agent and executes the dialogue by calling
+        the basic components of IAI MovieBot.
 
         Args:
             configuration: the settings for the agent
@@ -287,7 +290,8 @@ class ControllerBot(Controller):
         updater = Updater(self.token, use_context=True)
         dp = updater.dispatcher
 
-        # Add conversation hadler with states START, CONTINUE_RECOMMENDATION and END
+        # Add conversation handler with states START, CONTINUE_RECOMMENDATION
+        # and END
         conv_handler = ConversationHandler(
             entry_points=[
                 CommandHandler('start', self.start),
@@ -320,7 +324,8 @@ class ControllerBot(Controller):
         print('The users can access IAI MovieBot using Telegram.')
 
     def new_user(self, user_id):
-        """Checks if the users are new or they have already conversed with the system before.
+        """Checks if the users are new or they have already conversed with the
+        system before.
 
         Args:
             user_id: ID of the user

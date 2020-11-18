@@ -11,13 +11,13 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 from moviebot.intents.user_intents import UserIntents
 from moviebot.nlu.data_loader import DataLoader
-from moviebot.nlu.rule_based_annotator import RBAnnotator
-from moviebot.dialogue_manager.slots import Slots
-from moviebot.dialogue_manager.values import Values
+from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
+from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.annotation.values import Values
 
 
 class UserIntentsChecker:
@@ -58,6 +58,9 @@ class UserIntentsChecker:
         """Defines a patterns of punctuation marks to remove/keep in the
         utterance
 
+        TODO (Ivica Kostric) This should be removed. Move all preprocessing
+        operations to moviebot.nlu.text_processing.TextProcess
+
         Args:
             remove_ques:  (Default value = True)
 
@@ -70,6 +73,9 @@ class UserIntentsChecker:
 
     def _process_utterance(self, value, last_sys_act=None):
         """Preprocesses the user input to get a raw sentence.
+
+        TODO (Ivica Kostric) This should be removed. Move all preprocessing
+        operations to moviebot.nlu.text_processing.TextProcess
 
         Args:
             value: a string containing user input or values
@@ -88,9 +94,11 @@ class UserIntentsChecker:
 
     def _lemmatize_value(self, value, skip_number=False):
         """
+        TODO (Ivica Kostric) This should be removed. Move all preprocessing
+        operations to moviebot.nlu.text_processing.TextProcess
 
         Args:
-            value: 
+            value [str]: value to lemmatize
             skip_number:  (Default value = False)
 
         """
@@ -100,16 +108,20 @@ class UserIntentsChecker:
 
     def _intent_patterns(self):
         """Designing some patterns to understand the utterance better"""
-        self.acknowledge_pattern = ['yes', 'okay', 'fine', 'sure']
-        self.hi_pattern = ['hi', 'hello', 'hey', 'howdy']
-        self.deny_pattern = ['no', 'nope', 'nah', 'not']
+
+        self.basic_patterns = {
+            UserIntents.ACKNOWLEDGE: ['yes', 'okay', 'fine', 'sure'],
+            UserIntents.DENY: ['no', 'nope', 'nah', 'not'],
+            UserIntents.HI: ['hi', 'hello', 'hey', 'howdy'],
+            UserIntents.BYE: ['bye', 'goodbye', 'quit', 'exit']
+        }
+
         self.dont_care_pattern = [
             'anything', 'any', 'dont know', 'i do not care', 'i dont care',
             'dont care', 'dontcare', 'it does not matter', 'it doesnt matter',
             'does not matter', 'doesnt matter', 'no one', 'no body', 'nobody',
             'nothing', 'none'
         ]
-        self.bye_pattern = ['bye', 'goodbye', 'quit', 'exit']
         # Patterns to check if offer or partial offer is made
         self.question_pattern = [
             'who', 'what', 'when', 'which', 'can', 'could', 'is', 'are'
@@ -126,17 +138,23 @@ class UserIntentsChecker:
             'watched', 'seen', 'yes', 'I have', 'yup', 'yea'
         ]
 
-    def is_dontcare(self, utterance):
+    def is_dontcare(self, user_utterance):
         """
+
+        TODO (Ivica Kostric): This can be partially merged with
+        check_basic_intent. Regex can be dropped since we are only looking for
+        complete tokens anyway.
 
         Args:
             utterance: 
 
         """
-        for pattern in self.dont_care_pattern:
-            match = re.search(r'\b{0}\b'.format(pattern), utterance)
-            if match:
-                return True
+        for token in user_utterance.get_tokens():
+            for pattern in self.dont_care_pattern:
+                match = re.search(r'\b{0}\b'.format(pattern), token.lemma)
+                if match:
+                    return True
+        return False
 
     def _is_question(self, utterance):
         """
@@ -151,42 +169,78 @@ class UserIntentsChecker:
         else:
             return False
 
-    def check_acknowledge_intent(self, utterance):
-        """
+    def check_basic_intent(self, user_utterance, intent):
+        """Given intent and list of intent patterns checks if any token in
+        user utterance match the pattern.
 
         Args:
-            utterance: 
+            user_utterance (UserUtterance): class containing raw utterance and
+                processed tokens
+            intent (UserIntents): Intent for which to compare patterns.
+
+        Returns:
+            List[DialogueAct]: If pattern exists returns that intents dialogue
+                act
+        """
+        user_dacts = []
+        dact = DialogueAct(UserIntents.UNK, [])
+        for token in user_utterance.get_tokens():
+            if any([
+                    re.search(r'\b{0}\b'.format(pattern), token.lemma)
+                    for pattern in self.basic_patterns.get(intent, [])
+            ]):
+                dact.intent = intent
+        if dact.intent != UserIntents.UNK:
+            user_dacts.append(dact)
+        return user_dacts
+
+    def check_acknowledge_intent(self, utterance):
+        """
+        TODO (Ivica Kostric): This is not needed anymore and should be removed.
+        Handling of basic intents is merged into a single method
+        (check_basic_intent) due to similarities.
+
+        Args:
+            utterance:
 
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
-        for pattern in self.acknowledge_pattern:
-            match = re.search(r'\b{0}\b'.format(pattern), utterance)
-            if match:
-                dact.intent = UserIntents.ACKNOWLEDGE
+        for token in utterance.get_tokens():
+            for pattern in self.acknowledge_pattern:
+                match = re.search(r'\b{0}\b'.format(pattern), token.lemma)
+                if match:
+                    dact.intent = UserIntents.ACKNOWLEDGE
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts
 
     def check_deny_intent(self, utterance):
         """
+        TODO (Ivica Kostric): This is not needed anymore and should be removed.
+        Handling of basic intents is merged into a single method
+        (check_basic_intent) due to similarities.
 
         Args:
-            utterance: 
+            utterance:
 
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
-        for pattern in self.deny_pattern:
-            match = re.search(r'\b{0}\b'.format(pattern), utterance)
-            if match:
-                dact.intent = UserIntents.DENY
+        for token in utterance.get_tokens():
+            for pattern in self.deny_pattern:
+                match = re.search(r'\b{0}\b'.format(pattern), token.lemma)
+                if match:
+                    dact.intent = UserIntents.DENY
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts
 
     def check_bye_intent(self, utterance):
         """
+        TODO (Ivica Kostric): This is not needed anymore and should be removed.
+        Handling of basic intents is merged into a single method
+        (check_basic_intent) due to similarities.
 
         Args:
             utterance:
@@ -195,11 +249,12 @@ class UserIntentsChecker:
         # checking for intent = 'bye'
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
-        if any([
-                re.search(r'\b{0}\b'.format(pattern), utterance)
-                for pattern in self.bye_pattern
-        ]):
-            dact.intent = UserIntents.BYE
+        for token in utterance.get_tokens():
+            if any([
+                    re.search(r'\b{0}\b'.format(pattern), token.lemma)
+                    for pattern in self.bye_pattern
+            ]):
+                dact.intent = UserIntents.BYE
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts
@@ -207,22 +262,27 @@ class UserIntentsChecker:
     def check_hi_intent(self, utterance):
         """Checking for a starting message
 
+        TODO (Ivica Kostric): This is not needed anymore and should be removed.
+        Handling of basic intents is merged into a single method
+        (check_basic_intent) due to similarities.
+
         Args:
-            utterance: 
+            utterance:
 
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
-        if any([
-                re.search(r'\b{0}\b'.format(pattern), utterance)
-                for pattern in self.hi_pattern
-        ]):
-            dact.intent = UserIntents.HI
+        for token in utterance.get_tokens():
+            if any([
+                    re.search(r'\b{0}\b'.format(pattern), token.lemma)
+                    for pattern in self.hi_pattern
+            ]):
+                dact.intent = UserIntents.HI
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts
 
-    def check_reveal_voluntary_intent(self, utterance, raw_utterance):
+    def check_reveal_voluntary_intent(self, user_utterance):
         """
 
         Args:
@@ -241,8 +301,7 @@ class UserIntentsChecker:
                     person_name_checks = True
             # if slot == Slots.TITLE.value and dact.intent!= UserIntents.UNK:
             # continue
-            params = self.slot_annotator.slot_annotation(
-                slot, utterance, raw_utterance)
+            params = self.slot_annotator.slot_annotation(slot, user_utterance)
             if params:
                 dact.intent = UserIntents.REVEAL
                 dact.params.extend(params)
@@ -250,13 +309,13 @@ class UserIntentsChecker:
                 # return user_dacts
         if dact.intent != UserIntents.UNK:
             # print(f'All Dacts\n{dact}')
-            self._filter_dact(dact, raw_utterance)
+            self._filter_dact(dact, user_utterance.get_text())
             # print(f'Filtered Dacts\n{dact}')
             if len(dact.params) > 0:
                 user_dacts.append(dact)
         return user_dacts
 
-    def check_reveal_intent(self, utterance, raw_utterance, last_agent_dact):
+    def check_reveal_intent(self, user_utterance, last_agent_dact):
         """This function is only called if the intent of agent is ELicit to see
         if user has answered the query
 
@@ -270,18 +329,18 @@ class UserIntentsChecker:
         for param in last_agent_dact.params:
             dact = DialogueAct(UserIntents.UNK, [])
             slot = param.slot
-            params = self.slot_annotator.slot_annotation(
-                slot, utterance, raw_utterance)
+            params = self.slot_annotator.slot_annotation(slot, user_utterance)
             if params:
                 dact.intent = UserIntents.REVEAL
                 dact.params.extend(params)
-            if dact.intent == UserIntents.UNK and self.is_dontcare(utterance):
+            if dact.intent == UserIntents.UNK and self.is_dontcare(
+                    user_utterance):
                 dact.intent = UserIntents.REVEAL
                 dact.params.append(
                     ItemConstraint(param.slot, Operator.EQ, Values.DONT_CARE))
             if dact.intent != UserIntents.UNK:
                 # print(f'All Dacts\n{dact}')
-                self._filter_dact(dact, raw_utterance)
+                self._filter_dact(dact, user_utterance.get_text())
                 # print(f'Filtered Dacts\n{dact}')
                 if len(dact.params) > 0:
                     user_dacts.append(dact)
@@ -292,7 +351,7 @@ class UserIntentsChecker:
                 user_dacts.append(dact)
         return user_dacts
 
-    def check_reject_intent(self, utterance):
+    def check_reject_intent(self, user_utterance):
         """
 
         Args:
@@ -300,6 +359,8 @@ class UserIntentsChecker:
 
         """
         # checking for intent = 'reject'
+        tokens = user_utterance.get_tokens()
+        utterance = sum(tokens).lemma if tokens else ''
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         if any([
@@ -318,7 +379,7 @@ class UserIntentsChecker:
             user_dacts.append(dact)
         return user_dacts
 
-    def check_inquire_intent(self, utterance):
+    def check_inquire_intent(self, user_utterance):
         """
 
         Args:
@@ -327,6 +388,8 @@ class UserIntentsChecker:
         """
         # matching intents to 'list', 'Summarize', 'Subset', 'Compare' and
         # 'Similar'
+        tokens = user_utterance.get_tokens()
+        utterance = sum(tokens).lemma if tokens else ''
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         for slot, values in self.tag_words_user_inquire.items():
@@ -407,7 +470,8 @@ class UserIntentsChecker:
                 if any([
                         re.search(r'\b{0}\b'.format(pattern), param.value)
                         for pattern in self.dont_care_pattern +
-                        self.acknowledge_pattern + self.deny_pattern
+                        self.basic_patterns[UserIntents.ACKNOWLEDGE] +
+                        self.basic_patterns[UserIntents.DENY]
                 ]):
                     self._remove_param(param, dact)
                     continue

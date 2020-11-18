@@ -1,7 +1,16 @@
-Recorder
-============
+recorder package
+================
 
-.. automodule:: moviebot.recorder.recorder_bot
+.. automodule:: recorder
    :members:
-.. automodule:: moviebot.recorder.dialogue_recorder
-   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   recorder.dialogue_recorder
+   recorder.recorder_bot

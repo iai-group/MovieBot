@@ -1,14 +1,7 @@
-.. IAI MovieBot documentation master file, created by
-   sphinx-quickstart on Fri Sep 11 14:52:48 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 IAI MovieBot |release| documentation
 =====================================
 
-IAI MovieBot is an open-source, conversational movie recommender system which models users' preferences dynamically and supports user initiatives and multi-turn recommendations.
-IAI MovieBot equips with a scalable structure for future amendments. It facilities the standardized components.
-In specific, intent recognition in NLU identifies users' intent based on preferences and recognizes entities (movies and attributes) for users' utterances, NLG generates natural language responses based on templates, and dialogue policy in the dialogue manager adapts to the users' requirements in the conversation.
+IAI MovieBot is a conversational recommender system for movies.  It follows a standard task-oriented dialogue system architecture, comprising of natural language understanding (NLU), dialogue manager (DM), and natural language generation (NLG) components.  The distinctive features of IAI MovieBot include a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences.  While our current focus is limited to movies, the system aims to be a reusable development framework that can support users in accomplishing recommendation-related goals via multi-turn conversations.
 
 .. toctree::
    :maxdepth: 1
@@ -17,7 +10,8 @@ In specific, intent recognition in NLU identifies users' intent based on prefere
    installation
    usage
    architecture
-   Python package documentation <api/main>
+   dialogue
+   Python package documentation <api/moviebot>
    contact
 
 

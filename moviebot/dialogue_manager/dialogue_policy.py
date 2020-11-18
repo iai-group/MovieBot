@@ -8,12 +8,12 @@ from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.dialogue_manager.item_constraint import ItemConstraint
-from moviebot.dialogue_manager.operator import Operator
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 from moviebot.intents.agent_intents import AgentIntents
 from moviebot.intents.user_intents import UserIntents
 from moviebot.ontology.ontology import Ontology
-from moviebot.dialogue_manager.slots import Slots
+from moviebot.nlu.annotation.slots import Slots
 
 
 class DialoguePolicy:
@@ -94,7 +94,7 @@ class DialoguePolicy:
                     return agent_dacts
 
             # deciding between intent "elicit" or "recommend"
-            if dialogue_state.agent_made_partial_offer:    # agent will inform about number of
+            if dialogue_state.agent_made_partial_offer:  # agent will inform about number of
                 CIN_slots = [
                     key for key in dialogue_state.frame_CIN.keys()
                     if not dialogue_state.frame_CIN[key]
@@ -102,7 +102,7 @@ class DialoguePolicy:
                 ]
                 if len(
                         CIN_slots
-                ) >= dialogue_state.slot_left_unasked:    # if there is a scope of
+                ) >= dialogue_state.slot_left_unasked:  # if there is a scope of
                     # further questioning
                     # results and will ask next question
                     agent_dact.intent = AgentIntents.COUNT_RESULTS

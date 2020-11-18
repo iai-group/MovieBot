@@ -1,7 +1,16 @@
-Intents
-============
+intents package
+===============
 
-.. automodule:: moviebot.intents.agent_intents
+.. automodule:: intents
    :members:
-.. automodule:: moviebot.intents.user_intents
-   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   intents.agent_intents
+   intents.user_intents

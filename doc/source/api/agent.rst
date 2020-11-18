@@ -1,12 +1,15 @@
-Agent
-==============
+agent package
+=============
 
-.. automodule:: moviebot.agent.agent
+.. automodule:: agent
    :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
 
 .. toctree::
-    :caption: Components:
+   :maxdepth: 4
 
-    nlu
-    dialogue_manager
-    nlg
+   agent.agent
