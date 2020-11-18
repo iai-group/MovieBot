@@ -209,8 +209,6 @@ class RBAnnotator(SlotAnnotator):
                 ]) == 0:
 
                     for _, lem_value in values.items():
-                        # TODO (Ivica Kostric): This is ready to be converted to
-                        # SemanticAnnotation class
                         if lem_value == gram:
                             annotation = SemanticAnnotation.from_token(
                                 sum(gram_list), AnnotationType.KEYWORD)
