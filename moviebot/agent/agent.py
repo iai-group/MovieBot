@@ -118,7 +118,7 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config['slots'] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if 'BOT' in self.config and self.config['BOT']:
+        if self.config.get('TELEGRAM', False):
             self.isBot = True
             self.new_user = self.config['new_user'][user_id]
 

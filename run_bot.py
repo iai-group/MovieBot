@@ -7,7 +7,7 @@ import sys
 
 import yaml
 
-from moviebot.controller.controller_bot import ControllerBot
+from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 
 
@@ -74,7 +74,7 @@ def arg_parse(args=None):
 
     if cfg_parser:
         print(f'Configuration file "{config_file}" is loaded.')
-        return cfg_parser, cfg_parser['BOT']
+        return cfg_parser, cfg_parser['TELEGRAM']
     else:
         raise ValueError(
             'The configuration file does not contain the correct format.')
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # Version: Python 3.6
     CONFIGURATION, BOT = arg_parse()
     if BOT:
-        CONTROLLER = ControllerBot()
+        CONTROLLER = ControllerTelegram()
     else:
         CONTROLLER = ControllerTerminal()
     CONTROLLER.execute_agent(CONFIGURATION)
