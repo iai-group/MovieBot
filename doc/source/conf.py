@@ -40,7 +40,8 @@ extensions = [
     #'sphinx.ext.coverage',  # in ll
     #'sphinx.ext.ifconfig',
     #'sphinx.ext.viewcode',
-    #'sphinx.ext.todo'
+    #'sphinx.ext.todo',
+    'autoapi.extension',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -72,5 +73,13 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
+# so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
+
+# Auto api
+autoapi_type = 'python'
+autoapi_dirs = ['../../moviebot']
+autoapi_ignore = ['*tests/*']
+autoapi_options = [
+    'members', 'undoc-members', 'show-inheritance', 'show-module-summary'
+]
