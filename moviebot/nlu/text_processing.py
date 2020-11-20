@@ -40,9 +40,17 @@ class Token:
         Returns:
             bool: True if there is overlap.
         """
-        return (self.start < other.start
-                and self.end >= other.start) or (other.start < self.start
-                                                 and other.end >= self.start)
+        return (self.start <= other.start
+                and self.end > other.start) or (other.start <= self.start
+                                                and other.end > self.start)
+
+    def __eq__(self, other):
+        return (self.start, self.end, self.text, self.lemma) == (
+            other.start,
+            other.end,
+            other.text,
+            other.lemma,
+        )
 
     def __lt__(self, other):
         return (self.start, self.end) < (other.start, other.end)

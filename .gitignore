@@ -5,4 +5,4 @@ conversation_history/*
 data/slot_values.json
 
 # evaluation data
-eval/data/*
+eval/data/extras/*
