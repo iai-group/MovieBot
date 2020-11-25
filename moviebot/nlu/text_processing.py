@@ -11,48 +11,45 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 
-class Token:
+class Span:
     """Subpart of an utterance. Contains mapping of start and end positions in
-    the original utterance. In addition it stores the lemmatized version of
-    the token and whether it is a stopword or not.
+    the original utterance.
     """
 
     def __init__(self,
                  text: Text,
                  start: int,
                  end: Optional[int] = None,
-                 lemma: Optional[Text] = None,
-                 is_stopword: Optional[bool] = False) -> None:
+                 lemma: Optional[Text] = None) -> None:
         self.text = text
 
         self.start = start
         self.end = end if end else start + len(text)
 
         self.lemma = lemma if lemma else text
-        self.is_stopword = is_stopword
 
     def overlaps(self, other) -> bool:
-        """Checks whether two tokens overlap in the original utterance.
+        """Checks whether two spans overlap in the original utterance.
 
         Args:
-            other (Token): Token to compare against
+            other (Span): Span to compare against
 
         Returns:
             bool: True if there is overlap.
         """
-        return (self.start < other.start
-                and self.end >= other.start) or (other.start < self.start
-                                                 and other.end >= self.start)
+        return (self.start <= other.start
+                and self.end > other.start) or (other.start <= self.start
+                                                and other.end > self.start)
 
     def __lt__(self, other):
         return (self.start, self.end) < (other.start, other.end)
 
     def __add__(self, other):
-        sorted_tokens = sorted((self, other))
-        text = ' '.join(token.text for token in sorted_tokens)
-        lemma = ' '.join(token.lemma for token in sorted_tokens)
+        sorted_spans = sorted((self, other))
+        text = ' '.join(span.text for span in sorted_spans)
+        lemma = ' '.join(span.lemma for span in sorted_spans)
 
-        return Token(text, sorted_tokens[0].start, sorted_tokens[1].end, lemma)
+        return Span(text, sorted_spans[0].start, sorted_spans[1].end, lemma)
 
     def __radd__(self, other):
         if other == 0:
@@ -61,7 +58,24 @@ class Token:
             return self.__add__(other)
 
 
-class TextProcess:
+class Token(Span):
+    """Token is a smaller unit than Span. While Span can stretch over several
+    words, Token contains only single words. Token stores additional
+    information about the word.
+    """
+
+    def __init__(self,
+                 text: Text,
+                 start: int,
+                 end: Optional[int] = None,
+                 lemma: Optional[Text] = None,
+                 is_stop: Optional[bool] = False) -> None:
+
+        super().__init__(text, start, end, lemma)
+        self.is_stop = is_stop
+
+
+class Tokenizer:
     """This class contains methods needed for preprocessing sentences.
     """
 
