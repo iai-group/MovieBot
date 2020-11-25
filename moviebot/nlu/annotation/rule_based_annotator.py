@@ -98,7 +98,7 @@ class RBAnnotator(SlotAnnotator):
                     tokens[i:i + len_lem_value])
 
                 if token.lemma.startswith(lem_value):
-                    annotation = SemanticAnnotation.from_token(
+                    annotation = SemanticAnnotation.from_span(
                         token, AnnotationType.NAMED_ENTITY, EntityType.GENRES)
                     if param:
                         param.add_value(value.lower(), annotation)
@@ -114,7 +114,7 @@ class RBAnnotator(SlotAnnotator):
                                                                   len_key])
 
                 if token.lemma.startswith(self._process_value(key)):
-                    annotation = SemanticAnnotation.from_token(
+                    annotation = SemanticAnnotation.from_span(
                         token, AnnotationType.NAMED_ENTITY, EntityType.GENRES)
                     if param:
                         param.add_value(key.lower(), annotation)
@@ -148,7 +148,7 @@ class RBAnnotator(SlotAnnotator):
                             for x in gram_list
                             if x.lemma in self.stop_words
                     ]) < ngram_size:
-                        annotation = SemanticAnnotation.from_token(
+                        annotation = SemanticAnnotation.from_span(
                             sum(gram_list), AnnotationType.NAMED_ENTITY,
                             EntityType.TITLE)
                         param = ItemConstraint(slot, Operator.EQ, gram,
@@ -210,7 +210,7 @@ class RBAnnotator(SlotAnnotator):
 
                     for _, lem_value in values.items():
                         if lem_value == gram:
-                            annotation = SemanticAnnotation.from_token(
+                            annotation = SemanticAnnotation.from_span(
                                 sum(gram_list), AnnotationType.KEYWORD)
                             param = ItemConstraint(slot, Operator.EQ, gram,
                                                    annotation)
@@ -219,7 +219,7 @@ class RBAnnotator(SlotAnnotator):
                         elif (ngram_size == 1 and gram == lem_value) or (
                                 ngram_size > 1
                                 and f' {gram} ' in f' {lem_value} '):
-                            annotation = SemanticAnnotation.from_token(
+                            annotation = SemanticAnnotation.from_span(
                                 sum(gram_list), AnnotationType.KEYWORD)
                             param = ItemConstraint(slot, Operator.EQ, gram,
                                                    annotation)
@@ -253,7 +253,7 @@ class RBAnnotator(SlotAnnotator):
                         #                                   gram)
                         for slot in slots:
                             if gram in self.slot_values[slot].values():
-                                annotation = SemanticAnnotation.from_token(
+                                annotation = SemanticAnnotation.from_span(
                                     sum(gram_list), AnnotationType.NAMED_ENTITY)
                                 params.append(
                                     ItemConstraint(slot, Operator.EQ, gram,
@@ -274,8 +274,8 @@ class RBAnnotator(SlotAnnotator):
         tokens = user_utterance.get_tokens()
         potential_item_constraint = []
         for token in tokens:
-            annotation = SemanticAnnotation.from_token(token,
-                                                       AnnotationType.TEMPORAL)
+            annotation = SemanticAnnotation.from_span(token,
+                                                      AnnotationType.TEMPORAL)
             if token.lemma.startswith(('new', 'latest')):
                 potential_item_constraint.append(
                     ItemConstraint(slot, Operator.GT, '2010', annotation))

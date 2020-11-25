@@ -7,7 +7,7 @@ from typing import Text, List, Dict, Any
 from abc import ABC
 import datetime
 
-from moviebot.nlu.text_processing import Token, TextProcess
+from moviebot.nlu.text_processing import Token, Tokenizer
 
 
 class Utterance(ABC):
@@ -67,7 +67,7 @@ class UserUtterance(Utterance):
             List[Token]: List of tokens from the utterance.
         """
         if not hasattr(self, '_tokens'):
-            self._tokens = TextProcess().process_text(self._utterance)
+            self._tokens = Tokenizer().process_text(self._utterance)
 
         return self._tokens
 

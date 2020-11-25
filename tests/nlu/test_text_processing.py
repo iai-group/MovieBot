@@ -1,4 +1,4 @@
-from moviebot.nlu.text_processing import TextProcess
+from moviebot.nlu.text_processing import Tokenizer
 
 import pytest
 
@@ -10,7 +10,7 @@ import pytest
 ])
 def test_process_text(utterance, expected):
     # Setup
-    tp = TextProcess()
+    tp = Tokenizer()
 
     # Exercise
     result = tp.process_text(utterance)
