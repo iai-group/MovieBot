@@ -59,7 +59,7 @@ class UserIntentsChecker:
         utterance
 
         TODO (Ivica Kostric) This should be removed. Move all preprocessing
-        operations to moviebot.nlu.text_processing.TextProcess
+        operations to moviebot.nlu.text_processing.Tokenizer
 
         Args:
             remove_ques:  (Default value = True)
@@ -75,7 +75,7 @@ class UserIntentsChecker:
         """Preprocesses the user input to get a raw sentence.
 
         TODO (Ivica Kostric) This should be removed. Move all preprocessing
-        operations to moviebot.nlu.text_processing.TextProcess
+        operations to moviebot.nlu.text_processing.Tokenizer
 
         Args:
             value: a string containing user input or values
@@ -95,7 +95,7 @@ class UserIntentsChecker:
     def _lemmatize_value(self, value, skip_number=False):
         """
         TODO (Ivica Kostric) This should be removed. Move all preprocessing
-        operations to moviebot.nlu.text_processing.TextProcess
+        operations to moviebot.nlu.text_processing.Tokenizer
 
         Args:
             value [str]: value to lemmatize

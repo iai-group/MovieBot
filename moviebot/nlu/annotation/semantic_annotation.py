@@ -4,7 +4,7 @@ text can have many such annotatins. """
 from typing import Text, Optional
 from enum import Enum
 
-from moviebot.nlu.text_processing import Token
+from moviebot.nlu.text_processing import Span
 
 
 class AnnotationType(Enum):
@@ -24,8 +24,8 @@ class EntityType(Enum):
     PERSON = 2
 
 
-class SemanticAnnotation(Token):
-    """Stores annotation type, token and item constraint. Token stores
+class SemanticAnnotation(Span):
+    """Stores annotation type, span and item constraint. Span stores
     information about what section of the text is used in this annotation.
     Item constraint tells us how this annotation is relevant. In the case of
     named entity it holds entity type, and in the case of temporal annotation
@@ -56,17 +56,17 @@ class SemanticAnnotation(Token):
         return (self.annotation_type.name + entity_type).lower()
 
     @classmethod
-    def from_token(
+    def from_span(
         cls,
-        token: Token,
+        span: Span,
         annotation_type: AnnotationType,
         entity_type: Optional[EntityType] = None,
     ):
-        """Create semantic annotation from already existing token. This is the
-        most common way to create new annotation.
+        """Create semantic annotation from already existing span or token. This
+        is the most common way to create new annotation.
 
         Args:
-            token (Token): token with text, start and end
+            span (Span): span with text, start and end
             annotation_type (AnnotationType): Type of annotation
             entity_type (Optional[EntityType], optional): Type of entity for
                 AnnotationType.NAMED_ENTITY. Defaults to None.
@@ -74,4 +74,9 @@ class SemanticAnnotation(Token):
         Returns:
             [type]: [description]
         """
-        return SemanticAnnotation(annotation_type, entity_type, **(vars(token)))
+        return SemanticAnnotation(annotation_type,
+                                  entity_type,
+                                  text=span.text,
+                                  start=span.start,
+                                  end=span.end,
+                                  lemma=span.lemma)

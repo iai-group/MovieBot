@@ -226,6 +226,7 @@ class ControllerTelegram(Controller):
             del self.agent[user_id]
             feedback = 'Help me improve myself. Give me a feedback [here](' \
                        'https://forms.gle/hK9CrHu37dL89r1H6).'
+            feedback += f"\nLastly, please remember to take a note of your user id: {user_id}"
             update.message.reply_text(feedback, parse_mode=ParseMode.MARKDOWN)
             return ConversationHandler.END
         else:
@@ -261,6 +262,7 @@ class ControllerTelegram(Controller):
             del self.agent[user_id]
             feedback = 'Help me improve myself. Give me a feedback [here](' \
                        'https://forms.gle/hK9CrHu37dL89r1H6).'
+            feedback += f"\nPlease remember to take a note of your user id: {user_id}"
             update.message.reply_text(feedback, parse_mode=ParseMode.MARKDOWN)
         return ConversationHandler.END
 
