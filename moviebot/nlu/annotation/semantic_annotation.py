@@ -21,8 +21,7 @@ class EntityType(Enum):
 
     TITLE = 0
     GENRES = 1
-    ACTORS = 2
-    DIRECTORS = 3
+    PERSON = 2
 
 
 class SemanticAnnotation(Span):
