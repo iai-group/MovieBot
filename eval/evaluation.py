@@ -1,5 +1,8 @@
-import sys
-import os
+import sys, os
+if os.getcwd().endswith('eval'):
+    os.chdir('..')
+    sys.path.insert(1, os.getcwd())
+
 import json
 import time
 from copy import deepcopy
@@ -11,29 +14,37 @@ from moviebot.utterance.utterance import UserUtterance
 
 
 def get_data_path(filename):
+    """Returns path for the filename located in the eval/data folder.
+
+    Args:
+        filename (Text): Filename for which to retrieve the path.
+
+    Returns:
+        Text: Full path for the filename.
+    """
     return os.path.join(os.getcwd(), 'eval', 'data', filename)
 
 
 def load_json(filename):
-    """Load contents of a json file.
+    """Loads the contents of a json file from the data folder.
     """
     try:
         with open(get_data_path(filename), 'r') as f:
             return json.load(f)
     except FileNotFoundError:
         print(f'File \'{filename}\' not found.')
-        return None
+        return []
 
 
 def save_json(data, filename):
-    """Save contents of data to json file.
+    """Saves contents of data to json file to the data folder.
     """
     with open(get_data_path(filename), '+w') as f:
         json.dump(data, f)
 
 
 def load_config(filename=None):
-    """Load config from file using same parser as moviebot.
+    """Loads config from a file using the same parser as moviebot.
 
     Args:
         filename (Text, optional): path to config. Defaults to None.
@@ -48,10 +59,10 @@ def load_config(filename=None):
 
 
 def parse_ccpem_collection(collection):
-    """Parse CCPEM collection.
+    """Parses the CCPEM collection.
 
     Args:
-        conversations (List(dict)): collection of conversations.
+        collection (List[dict]): collection of conversations.
 
     Returns:
         List[Dict]: Text and segments parts of the collection.
@@ -65,10 +76,10 @@ def parse_ccpem_collection(collection):
 
 
 def get_conversations(collection):
-    """Get only utterances grouped by conversation.
+    """Given collection returns utterances grouped by conversation.
 
     Args:
-        collection (List(dict)): collection of conversations.
+        collection (List[dict]): collection of conversations.
 
     Returns:
         List[List]: List of utterances in a list of conversations
@@ -79,12 +90,12 @@ def get_conversations(collection):
 
 
 def get_segments(collection, annotationTypes=None):
-    """Given annotation types return all semantic annotations of that type for
+    """Given annotation types returns all semantic annotations of that type for
     all utterances.
 
     Args:
         collection (List(dict)): List of conversations.
-        annotationTypes (dict, optional): Dictionary with annotation tye -
+        annotationTypes (dict, optional): Dictionary with annotation type -
         entity type pairs. Defaults to None.
 
     Returns:
@@ -116,7 +127,8 @@ def get_segments(collection, annotationTypes=None):
 
 
 def get_annotation_types(collection):
-    """Get all annotation types that exist in the evaluation set.
+    """Given collection returns a dictionary with all annotation types that
+    exist in the evaluation set.
 
     Args:
         collection (List(Dict)): Collection of conversations.
@@ -135,13 +147,13 @@ def get_annotation_types(collection):
 
 
 def get_slot_annotator(config):
-    """Load an agent with a given config.
+    """Loads an agent with a given config.
 
     Args:
         config (Dict): Contents of a configuration file.
 
     Returns:
-        SlotAnnotator: Returns instance of SlotAnnotator.
+        SlotAnnotator: Returns a SlotAnnotator instance.
     """
     agent = Agent(config)
     agent.initialize()
@@ -149,7 +161,7 @@ def get_slot_annotator(config):
 
 
 def annotate_slot_utterance(annotator, slot, utterance):
-    """Annotates single utterance for single slot.
+    """Annotates single utterance for a single slot.
 
     Args:
         annotator (SlotAnnotator): Annotator used for annotation.
@@ -172,7 +184,8 @@ def annotate_slot_utterance(annotator, slot, utterance):
 
 
 def remove_non_seriasable(d):
-    """ Converts AnnotationType and EntityType classes to string
+    """ Converts AnnotationType and EntityType classes to strings. This is
+    needed when saving to a file.
     """
     return {
         k: str(val.name).lower() if k in ('annotation_type',
@@ -181,7 +194,7 @@ def remove_non_seriasable(d):
     }
 
 
-def annotate_conversation_for_slot(annotator, slot, conversation, i=-1):
+def annotate_conversation_for_slot(annotator, slot, conversation, i=None):
     """Annotates conversation for a single slot.
 
     Args:
@@ -192,7 +205,7 @@ def annotate_conversation_for_slot(annotator, slot, conversation, i=-1):
     Returns:
         List[List[Dict]]: List of semantic annotations for conversation.
     """
-    if i >= 0:
+    if i:
         print(f'Annotating conversation {i} for slot \'{slot}\'')
     return [
         annotate_slot_utterance(annotator, slot, utterance)
@@ -201,7 +214,7 @@ def annotate_conversation_for_slot(annotator, slot, conversation, i=-1):
 
 
 def remove_duplicates(annotations):
-    """Remove duplicate annotations. This is mostly used for persons when same
+    """Removes duplicate annotations. This is mostly used for persons when same
     person can be both actor and director.
 
     Args:
@@ -216,8 +229,8 @@ def remove_duplicates(annotations):
     ]
 
 
-def overlaps(annotation, truth):
-    """Check whether two annotations overlap.
+def is_match(annotation, truth):
+    """Checks whether annotations from the system and ground truth overlap.
     """
     return (annotation['start'] <= truth['startIndex']
             and annotation['end'] > truth['startIndex']) or (
@@ -237,7 +250,7 @@ def get_matches(annotations, true_annotations):
         int: Number of matching annotations.
     """
     return sum(
-        overlaps(annotation, truth)
+        is_match(annotation, truth)
         for annotation in annotations
         for truth in true_annotations)
 
@@ -271,7 +284,11 @@ def evaluate(conversations, truth_segments):
     p_micro = total_matches / total_num_annotations if total_num_annotations else 0
     r_micro = total_matches / total_num_truth if total_num_truth else 0
     f1 = 2 * p_micro * r_micro / (p_micro + r_micro)
-    return p_micro, r_micro, f1
+    return {
+        'precision': p_micro,
+        'recall': r_micro,
+        'f1': f1,
+    }
 
 
 def get_annotations(slots, entity_types, force=False):
@@ -308,11 +325,47 @@ def get_annotations(slots, entity_types, force=False):
             for i, utterances in enumerate(conversations)
         ]
         results[slot]['duration'] = time.time() - start
-        results[slot]['annotations'] = annotations
         results[slot]['metrics'] = evaluate(annotations, segments)
+        results[slot]['errors'] = get_errors(annotations, segments,
+                                             conversations)
+        results[slot]['annotations'] = annotations
 
     save_json(results, filename)
     return results
+
+
+def get_errors(annotations, truth_segments, conversations):
+    """Returns a list of all mismatches between system annotations and ground
+    truth.
+
+    Args:
+        annotations (List[List[Dict]]): A list of annotated conversations.
+        truth_segments (List[List[Dict]]): A list of lists of true annotations.
+        conversations (List[List[String]]): A list of lists of utterances.
+
+    Returns:
+        List[Dict]: Dictionary containing the original utterance, system
+        annotation and the ground truth for each mismatch.
+    """
+    errors = []
+    for i, conversation in enumerate(conversations):
+        for j, utterance in enumerate(conversation):
+            annotation = annotations[i][j]
+            truth = truth_segments[i][j]
+
+            num_annotations = len(annotation)
+            num_truth = sum(len(ann['annotations']) for ann in truth)
+
+            matches = get_matches(annotation, truth)
+
+            if (num_annotations != num_truth) or (matches != num_truth):
+                errors.append({
+                    'conversation': i,
+                    'utterance': utterance,
+                    'annotations': annotation,
+                    'truth': truth
+                })
+    return errors
 
 
 if __name__ == '__main__':
@@ -322,7 +375,7 @@ if __name__ == '__main__':
     res = get_annotations(slots, entity_types)
 
     for slot in slots:
-        p, r, f1 = res[slot]['metrics']
+        p, r, f1 = res[slot]['metrics'].values()
         print(f'\nScores for {slot}: \n')
         print(f'\tPrecision (micro-averaged): {round(p, 5)}')
         print(f'\tRecall (micro-averaged): {round(r, 5)}')

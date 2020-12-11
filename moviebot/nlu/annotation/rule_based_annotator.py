@@ -253,7 +253,7 @@ class RBAnnotator(SlotAnnotator):
                         #                                   gram)
                         for slot in slots:
                             if gram in self.slot_values[slot].values():
-                                annotation = SemanticAnnotation.from_token(
+                                annotation = SemanticAnnotation.from_span(
                                     sum(gram_list), AnnotationType.NAMED_ENTITY,
                                     EntityType.PERSON)
                                 params.append(
