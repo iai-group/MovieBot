@@ -210,7 +210,7 @@ class ControllerTelegram(Controller):
             update.message.reply_text(self._instruction(),
                                       parse_mode=ParseMode.MARKDOWN)
         update.message.reply_text(self.response[user_id],
-                                  reply_markup=markup,
+                                  # reply_markup=markup,
                                   parse_mode=ParseMode.MARKDOWN)
         # record the conversation
         if self.agent[user_id].bot_recorder:

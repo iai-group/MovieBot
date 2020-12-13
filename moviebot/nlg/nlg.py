@@ -281,7 +281,7 @@ class NLG:
                     f'{"other " if dialogue_state.items_in_context else ""}'
                     f'{self._clarify_CIN(CIN, agent_dact)}.'
                 ])
-                intent_response += ' Please select from the list of options to continue.'
+                # intent_response += ' Please select from the list of options to continue.'
                 utterance.append(intent_response)
                 if dialogue_state.agent_must_clarify:
                     user_options.update(
@@ -297,11 +297,17 @@ class NLG:
                             f'What would you like to know '
                             f'about '
                             f'"{param.value}"?'
+                            f' You can ask me about its genres, rating, duration, actors, director, movie plot, release year, you can also tell me if you like this movie or not. '
+                            f' Do you like it? Want a similar movie?'
+                            f' You can also restart by typing "/restart"!'
                         ])
                     elif param.slot == 'deny':
                         intent_response = random.choice([
                             f'Would you want to know more about '
                             f'"{param.value}"?'
+                            f' You can ask me about its genres, rating, duration, actors, director, movie plot, release year, you can also tell me if you like this movie or not. '
+                            f' Do you like it? Want a similar movie?'
+                            f' You can also restart by typing "/restart"!'
                         ])
                     else:
                         intent_response = random.choice(
