@@ -11,7 +11,7 @@ from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
-from moviebot.utterance.utterance import AgentUtterance
+from moviebot.core.shared.utterance.utterance import AgentUtterance
 
 
 def _get_ontology(ontology_path):
