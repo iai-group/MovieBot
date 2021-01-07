@@ -11,7 +11,7 @@ BUILDDIR      = build
 SPHINXAPIDOC  = sphinx-apidoc
 SOURCEAPI     = source/api/
 MOVIEBOT	  = ../moviebot
-ALLAPIDOCOPTS = -e -M -T --implicit-namespaces -o
+ALLAPIDOCOPTS = -e -M --tocfile moviebot --implicit-namespaces -o
 
 # Put it first so that "make" without argument is like "make help".
 help:
