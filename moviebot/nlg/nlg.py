@@ -375,7 +375,7 @@ class NLG:
             if difference == 10:
                 return str(years[0])[-2:] + 's'
             elif difference == 100:
-                return str(years[0])[:1] + 'th century'
+                return str(years[0])[:2] + 'th century'
         else:
             return f'year {"not " if negate else " "}' + value
 

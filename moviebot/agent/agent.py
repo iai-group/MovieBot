@@ -11,6 +11,7 @@ from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
+from moviebot.utterance.utterance import AgentUtterance
 
 
 def _get_ontology(ontology_path):
@@ -117,7 +118,7 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config['slots'] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if 'BOT' in self.config and self.config['BOT']:
+        if self.config.get('TELEGRAM', False):
             self.isBot = True
             self.new_user = self.config['new_user'][user_id]
 
@@ -150,6 +151,8 @@ class Agent:
             agent_dacts = self.dialogue_manager.generate_output(restart)
         agent_response, options = self.nlg.generate_output(
             agent_dacts, user_fname=user_fname)
+        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+            AgentUtterance({'text': agent_response}))
         if not self.isBot:
             print(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
@@ -183,6 +186,8 @@ class Agent:
 
         """
         self.dialogue_manager.dialogue_state_tracker.dialogue_state.user_utterance = user_utterance
+        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+            user_utterance)
         user_dacts = self.nlu.generate_dact(user_utterance, user_options,
                                             self.dialogue_manager.get_state(),
                                             self.dialogue_manager.get_context())
@@ -191,6 +196,8 @@ class Agent:
         dialogue_state = self.dialogue_manager.dialogue_state_tracker.dialogue_state
         agent_response, options = self.nlg.generate_output(
             agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname)
+        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+            AgentUtterance({'text': agent_response}))
         if not self.isBot:
             print(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)

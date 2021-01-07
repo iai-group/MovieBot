@@ -25,4 +25,4 @@ class Slots(Enum):
     MORE_INFO = 'more_info'
 
     def __str__(self):
-        return self.value
+        return str(self.value)

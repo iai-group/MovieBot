@@ -12,6 +12,9 @@ from nltk.corpus import stopwords
 
 from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.semantic_annotation import SemanticAnnotation
+from moviebot.nlu.annotation.semantic_annotation import AnnotationType
+from moviebot.nlu.annotation.semantic_annotation import EntityType
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 
@@ -25,6 +28,7 @@ class RBAnnotator(SlotAnnotator):
         self._lemmatize_value = lemmatize_value
         self.slot_values = slot_values
         self.ngram_size = {
+            Slots.GENRES.value: 2,
             Slots.TITLE.value: 8,
             Slots.KEYWORDS.value: 8,
             'person': 3
@@ -87,19 +91,37 @@ class RBAnnotator(SlotAnnotator):
         param = None
         values = self.slot_values[slot]
         tokens = user_utterance.get_tokens()
-        utterance = sum(tokens).lemma if tokens else ''
-        for value, lem_value in values.items():
-            if lem_value in utterance:
-                if not param:
-                    param = ItemConstraint(slot, Operator.EQ, value.lower())
-                else:
-                    param.value += ' ' + value.lower()
-        for key, value in self.genres_alternatives.items():
-            if self._process_value(key) in utterance:
-                if not param:
-                    param = ItemConstraint(slot, Operator.EQ, key.lower())
-                else:
-                    param.value += ' ' + key.lower()
+        for i in range(len(tokens)):
+            for value, lem_value in values.items():
+                len_lem_value = len(lem_value.split())
+                token = tokens[i] if len_lem_value == 1 else sum(
+                    tokens[i:i + len_lem_value])
+
+                if token.lemma.startswith(lem_value):
+                    annotation = SemanticAnnotation.from_span(
+                        token, AnnotationType.NAMED_ENTITY, EntityType.GENRES)
+                    if param:
+                        param.add_value(value.lower(), annotation)
+                    else:
+                        param = ItemConstraint(slot, Operator.EQ, value.lower(),
+                                               annotation)
+
+            # TODO(Ivica Kostric): This could be merged with the main genre
+            # dictionary at initialization time.
+            for key, value in self.genres_alternatives.items():
+                len_key = len(key.split())
+                token = tokens[i] if len_key == 1 else sum(tokens[i:i +
+                                                                  len_key])
+
+                if token.lemma.startswith(self._process_value(key)):
+                    annotation = SemanticAnnotation.from_span(
+                        token, AnnotationType.NAMED_ENTITY, EntityType.GENRES)
+                    if param:
+                        param.add_value(key.lower(), annotation)
+                    else:
+                        param = ItemConstraint(slot, Operator.EQ, key.lower(),
+                                               annotation)
+
         if param:
             return [param]
 
@@ -126,14 +148,16 @@ class RBAnnotator(SlotAnnotator):
                             for x in gram_list
                             if x.lemma in self.stop_words
                     ]) < ngram_size:
-                        # TODO (Ivica Kostric): This is ready to be converted to
-                        # the SemanticAnnotation class
-                        param = ItemConstraint(slot, Operator.EQ, gram)
+                        annotation = SemanticAnnotation.from_span(
+                            sum(gram_list), AnnotationType.NAMED_ENTITY,
+                            EntityType.TITLE)
+                        param = ItemConstraint(slot, Operator.EQ, gram,
+                                               annotation)
                         return [param]
-                if len([
-                        x.lemma for x in gram_list if x.lemma in self.stop_words
-                ]) == 0 and len(
-                    [int(val) for val in re.findall(r'\b\d+', gram)]) == 0:
+                if len([x for x in gram_list if x.lemma in self.stop_words
+                       ]) == 0 and len([
+                           int(val) for val in re.findall(r'\b\d+', gram)
+                       ]) == 0:
                     # check if
                     # all words are in the list of stop words and no numbers
                     if ngram_size == 1:
@@ -184,16 +208,21 @@ class RBAnnotator(SlotAnnotator):
                         x.lemma for x in gram_list if x.lemma in self.stop_words
                 ]) == 0:
 
-                    for value, lem_value in values.items():
-                        # TODO (Ivica Kostric): This is ready to be converted to
-                        # SemanticAnnotation class
+                    for _, lem_value in values.items():
                         if lem_value == gram:
-                            param = ItemConstraint(slot, Operator.EQ, gram)
+                            annotation = SemanticAnnotation.from_span(
+                                sum(gram_list), AnnotationType.KEYWORD)
+                            param = ItemConstraint(slot, Operator.EQ, gram,
+                                                   annotation)
+
                             return [param]
                         elif (ngram_size == 1 and gram == lem_value) or (
                                 ngram_size > 1
                                 and f' {gram} ' in f' {lem_value} '):
-                            param = ItemConstraint(slot, Operator.EQ, gram)
+                            annotation = SemanticAnnotation.from_span(
+                                sum(gram_list), AnnotationType.KEYWORD)
+                            param = ItemConstraint(slot, Operator.EQ, gram,
+                                                   annotation)
                             return [param]
 
     def _person_name_annotator(self, user_utterance, slots=None):
@@ -216,7 +245,7 @@ class RBAnnotator(SlotAnnotator):
         for ngram_size in range(self.ngram_size['person'], 0, -1):
             for gram_list in ngrams(tokens, ngram_size):
                 gram = sum(gram_list).lemma
-                for value, lem_value in person_names.items():
+                for _, lem_value in person_names.items():
                     if f' {gram} ' in f' {lem_value} ' and \
                         gram not in self.stop_words:
                         # gramR = self.find_in_raw_utterance(raw_utterance,
@@ -224,12 +253,12 @@ class RBAnnotator(SlotAnnotator):
                         #                                   gram)
                         for slot in slots:
                             if gram in self.slot_values[slot].values():
-
-                                # TODO (Ivica Kostric): This is ready to be
-                                # converted to the SemanticAnnotation class
-
+                                annotation = SemanticAnnotation.from_span(
+                                    sum(gram_list), AnnotationType.NAMED_ENTITY,
+                                    EntityType.PERSON)
                                 params.append(
-                                    ItemConstraint(slot, Operator.EQ, gram))
+                                    ItemConstraint(slot, Operator.EQ, gram,
+                                                   annotation))
                         break
             if len(params) > 0:
                 return params
@@ -238,68 +267,70 @@ class RBAnnotator(SlotAnnotator):
         """
 
         Args:
-            slot: 
-            user_utterance: 
-            utterance: 
+            slot:
+            user_utterance:
+            utterance:
 
         """
-        raw_utterance = user_utterance.get_text()
         tokens = user_utterance.get_tokens()
-        utterance = sum(tokens).lemma if tokens else ''
-        # fitst option is to find if any value is in the possible values
-        possible_years = [
-            int(val) for val in re.findall(r'\b\d+', raw_utterance)
-        ]
-        for year in possible_years:
-            _year = str(year)
-            if _year + 's' in raw_utterance:  # check if it's 1990s instead of
-                # 1990 or 90s
-                if len(_year) == 4:
-                    if year % 10 == 0:
-                        return [
-                            ItemConstraint(slot, Operator.BETWEEN,
-                                           f'{_year} AND {str(year + 10)}')
-                        ]
-                    else:
-                        return [ItemConstraint(slot, Operator.EQ, _year)]
-                elif len(_year) == 2:
-                    if year <= 20:
-                        _year = '20' + _year
-                        if year % 10 == 0:
-                            return [
-                                ItemConstraint(
-                                    slot, Operator.BETWEEN, f'{_year} AND'
-                                    f' {str(int(_year) + 10)}')
-                            ]
-                        else:
-                            return [ItemConstraint(slot, Operator.EQ, _year)]
-                    else:
-                        _year = '19' + _year
-                        if year % 10 == 0:
-                            return [
-                                ItemConstraint(
-                                    slot, Operator.BETWEEN, f'{_year} AND'
-                                    f' {str(int(_year) + 10)}')
-                            ]
-                        else:
-                            return [ItemConstraint(slot, Operator.EQ, _year)]
-            elif _year + 'th' in raw_utterance:
-                # it can be string like 19th, 20th
-                if len(_year) == 2:
+        potential_item_constraint = []
+        for token in tokens:
+            annotation = SemanticAnnotation.from_span(token,
+                                                      AnnotationType.TEMPORAL)
+            if token.lemma.startswith(('new', 'latest')):
+                potential_item_constraint.append(
+                    ItemConstraint(slot, Operator.GT, '2010', annotation))
+            if token.lemma.startswith('old'):
+                potential_item_constraint.append(
+                    ItemConstraint(slot, Operator.LT, '2010', annotation))
+
+            if not token.lemma[:2].isdigit():
+                continue
+
+            if token.text[-1] == 's':
+                year = token.text[:-1]
+                if not year.isdigit():
+                    continue
+
+                # check if its for example 90s or 1990s
+                if len(year) == 2:
+                    year = '20' + year if int(year) <= 20 else '19' + year
+                elif len(year) != 4:
+                    continue
+
+                if year[-1] == '0':
                     return [
-                        ItemConstraint(slot, Operator.BETWEEN, f'{_year}00 AND'
-                                       f' {str(year + 1)}00')
+                        ItemConstraint(slot, Operator.BETWEEN,
+                                       f'{year} AND {str(int(year) + 10)}',
+                                       annotation)
                     ]
-            if len(_year) == 4:
-                return [ItemConstraint(slot, Operator.EQ, _year)]
-        # adding a few more elements
-        if 'new' in utterance or 'latest' in utterance:
-            return [ItemConstraint(slot, Operator.GT, '2010')]
-        if 'old' in utterance:
-            return [ItemConstraint(slot, Operator.LT, '2010')]
+                else:
+                    return [ItemConstraint(slot, Operator.EQ, year, annotation)]
+
+            if token.text[-2:] == 'th':
+                year = token.text[:-2]
+                if year.isdigit() and len(year) == 2:
+                    return [
+                        ItemConstraint(
+                            slot, Operator.BETWEEN,
+                            f'{str(int(year) - 1)}00 AND'
+                            f' {year}00', annotation)
+                    ]
+
+            if token.text.isdigit() and len(token.text) == 4:
+                return [
+                    ItemConstraint(slot, Operator.EQ, token.text, annotation)
+                ]
+
+        return potential_item_constraint[:1]
 
     def find_in_raw_utterance(self, raw_utterance, gram, ngram_size):
         """
+
+        TODO (Ivica Kostric): There are cases where this method fails when,
+        for example user doesn't use space after punctuation or writes
+        'kung-fu' instead of 'kung fu'. This leads to problem later since it
+        sets the value parameter of ItemConstraint to None.
 
         Args:
             raw_utterance: 
