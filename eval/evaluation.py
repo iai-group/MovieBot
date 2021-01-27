@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from run_bot import arg_parse
 from moviebot.agent.agent import Agent
-from moviebot.utterance.utterance import UserUtterance
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
 
 def get_data_path(filename):

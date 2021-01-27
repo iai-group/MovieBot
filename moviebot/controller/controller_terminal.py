@@ -5,7 +5,7 @@ __author__ = 'Javeria Habib'
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
-from moviebot.utterance.utterance import UserUtterance
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
 
 class ControllerTerminal(Controller):

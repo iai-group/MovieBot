@@ -13,7 +13,7 @@ from nltk.tokenize import word_tokenize
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
-from moviebot.intents.user_intents import UserIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.nlu.data_loader import DataLoader
 from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
 from moviebot.nlu.annotation.slots import Slots
