@@ -1,0 +1,9 @@
+pyyaml>=3.13
+python-telegram-bot
+wikipedia
+nltk
+environ
+Flask
+requests
+pymessenger
+gunicorn
