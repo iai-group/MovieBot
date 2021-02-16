@@ -17,6 +17,7 @@ class ControllerMessenger(Controller):
         self.recipient_id = ""
         self.payload = ""
         self.user_options = {}
+        self.agent_response = ""
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
         {"payload": "pbutton", "action": self.postback_button},
@@ -38,13 +39,14 @@ class ControllerMessenger(Controller):
         buttons = self.create_buttons(self.user_options.values())
         print("buttons: ", buttons)
         template = messages.create_template(self.recipient_id, buttons)
+        url = self.find_link(self.agent_response)
+        print("url: ", url)
+        template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
         return requests.post(messages.message, json=template).json()
 
     def create_buttons(self, options):
         buttons = []
         for option in options:
-            print("type: ", type(option))
-        
             for o in option:
                 buttons.append(self.create_button(o))
             if len(buttons) > 2:
@@ -56,25 +58,31 @@ class ControllerMessenger(Controller):
         button = messages.template_button("postback", payload, payload)
         return button
         
+    def find_link(self, response):
+        if "https" in response:
+            start = response.find("https")
+            url = response[int(start):int(response.find(")"))]
+            return url
+
 
     def send_message(self):
         # Agent testing
-        text = messages.text
-        #text['message']['text'] = self.payload
+        
         agent_response, self.user_options = self.agent.start_dialogue()
         user_utterance = UserUtterance({'text': self.payload})
         agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
         )
-        print("agent_respnse: ", agent_response)
+        self.agent_response = agent_response
+        print("agent_respnse: ", agent_response, "type: ", type(agent_response))
+        self.find_link(agent_response)
         if self.user_options:
             self.send_template()
-            for option in self.user_options.values():
-                print("option: ", option)
-            #print(list(user_options.values()))
-        text['recipient']['id'] = self.recipient_id
-        text['message']['text'] = agent_response
-        return requests.post(messages.message, json=text).json()
+        else: 
+            text = messages.text
+            text['recipient']['id'] = self.recipient_id
+            text['message']['text'] = agent_response
+            return requests.post(messages.message, json=text).json()
 
     def get_started(self):
         return requests.post(messages.get_started, json=self.start).json()

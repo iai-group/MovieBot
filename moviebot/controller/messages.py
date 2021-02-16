@@ -133,11 +133,11 @@ image = {
     },
     "message":{
         "attachment":{
-        "type":"image", 
-        "payload":{
-          "is_reusable": True,
-          "url": "https://i.imgur.com/ceuUozR.jpeg"
-        }
+          "type":"image", 
+          "payload":{
+            "is_reusable": True,
+            "url": "https://i.imgur.com/ceuUozR.jpeg"
+          }
         }
     }
 }
