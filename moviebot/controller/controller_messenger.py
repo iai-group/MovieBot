@@ -16,7 +16,7 @@ class ControllerMessenger(Controller):
         self.user_options = {}
         self.recipient_id = ""
         self.payload = ""
-
+        self.user_options = {}
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
         {"payload": "pbutton", "action": self.postback_button},
@@ -35,22 +35,43 @@ class ControllerMessenger(Controller):
         
 
     def send_template(self):
-        template = messages.template
-        template['recipient']['id'] = self.recipient_id
+        buttons = self.create_buttons(self.user_options.values())
+        print("buttons: ", buttons)
+        template = messages.create_template(self.recipient_id, buttons)
         return requests.post(messages.message, json=template).json()
+
+    def create_buttons(self, options):
+        buttons = []
+        for option in options:
+            print("type: ", type(option))
+        
+            for o in option:
+                buttons.append(self.create_button(o))
+            if len(buttons) > 2:
+                return buttons
+        return buttons
+        
+
+    def create_button(self, payload):
+        button = messages.template_button("postback", payload, payload)
+        return button
+        
 
     def send_message(self):
         # Agent testing
         text = messages.text
         #text['message']['text'] = self.payload
-        user_options = {}
-        agent_response, user_options = self.agent.start_dialogue()
+        agent_response, self.user_options = self.agent.start_dialogue()
         user_utterance = UserUtterance({'text': self.payload})
-        agent_response, user_options = self.agent.continue_dialogue(
-            user_utterance, user_options
+        agent_response, self.user_options = self.agent.continue_dialogue(
+            user_utterance, self.user_options
         )
         print("agent_respnse: ", agent_response)
-        print("user_options: ", user_options)
+        if self.user_options:
+            self.send_template()
+            for option in self.user_options.values():
+                print("option: ", option)
+            #print(list(user_options.values()))
         text['recipient']['id'] = self.recipient_id
         text['message']['text'] = agent_response
         return requests.post(messages.message, json=text).json()

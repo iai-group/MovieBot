@@ -13,48 +13,35 @@ text = {
             'message': {}
         }
 
-template = {
-  "recipient":{
-  },
-  "message":{
-    "attachment":{
-      "type":"template",
-      "payload":{
-        "template_type":"generic",
-        "elements":[
-           {
-            "title":"Welcome!",
-            "image_url":"https://m.media-amazon.com/images/M/MV5BODI4NDY2NDM5M15BMl5BanBnXkFtZTgwNzEwOTMxMDE@._V1_FMjpg_UX1000_.jpg",
-            "subtitle":"At the end of his career, a clueless \
-            fashion model is brainwashed to kill the Prime Minister of Malaysia. ",
-            "default_action": {
-              "type": "web_url",
-              "url": "https://www.imdb.com/title/tt0196229/?ref_=hm_tpks_tt_2_pd_tp1_cp",
-              "webview_height_ratio": "tall",
-            },
-            "buttons":[
-              {
-                "type":"web_url",
-                "url":"https://www.nrk.no/",
-                "title":"View Website"
-              },{
-                "type":"postback",
-                "title":"Yes",
-                "payload":"DEVELOPER_DEFINED_PAYLOAD"
+def create_template(recipient_id, buttons):
+  template = {
+    "recipient":{
+      "id": recipient_id
+    },
+    "message":{
+      "attachment":{
+        "type":"template",
+        "payload":{
+          "template_type":"generic",
+          "elements":[
+            {
+              "title":"Welcome!",
+              "image_url":"https://m.media-amazon.com/images/M/MV5BODI4NDY2NDM5M15BMl5BanBnXkFtZTgwNzEwOTMxMDE@._V1_FMjpg_UX1000_.jpg",
+              "subtitle":"At the end of his career, a clueless \
+              fashion model is brainwashed to kill the Prime Minister of Malaysia. ",
+              "default_action": {
+                "type": "web_url",
+                "url": "https://www.imdb.com/title/tt0196229/?ref_=hm_tpks_tt_2_pd_tp1_cp",
+                "webview_height_ratio": "tall",
               },
-              {
-                "type":"postback",
-                "title":"No",
-                "payload":"DEVELOPER_DEFINED_PAYLOAD"
-              }
-                 
-            ]      
-          }
-        ]
+              "buttons": buttons
+            }
+          ]
+        }
       }
     }
   }
-}
+  return template
 
 menu = {
     #"psid": recipient_id,
@@ -132,6 +119,14 @@ def postback_button(recipient_id, text, payload, title):
         }
         }
     return button
+
+def template_button(btype, title, payload):
+  button = {
+    "type": btype,
+    "title": title,
+    "payload": payload
+  }
+  return button
 
 image = {
     "recipient": {
