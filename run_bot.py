@@ -1,12 +1,14 @@
-"""This code is executed to run IAI MovieBot"""
+from flask import Flask, request
+#import requests
+from os import environ
+import tokens
 
-__author__ = 'Javeria Habib'
-
+import run_bot
 import os
 import sys
-
 import yaml
 
+from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 
@@ -83,6 +85,49 @@ def get_config():
     configuration, _, _ = arg_parse()
     return configuration
 
+app = Flask(__name__)
+VERIFY_TOKEN = tokens.VERIFY_TOKEN
+CONTROLLER = ControllerMessenger()
+
+@app.route('/', methods=['GET', 'POST'])
+def receive_message():
+    if request.method == 'GET':
+        token_sent = request.args.get("hub.verify_token")
+        return verify_fb_token(token_sent)
+
+    else:
+        output = request.get_json()
+        print(output)
+        recipient_id = get_id(output)
+        payload = get_message(output)
+        print(CONTROLLER.action(payload, recipient_id))
+        return "Message Processed"
+
+
+def get_message(output):
+    for event in output['entry']:
+        messaging = event['messaging']
+        for message in messaging:
+            if message.get('message'):
+                if message['message'].get('text'): 
+                    m = message['message']['text']
+                    return m
+            if message.get('postback'):
+                return message['postback']['payload']
+
+def get_id(output):
+    for event in output['entry']:
+        messaging = event['messaging']
+        for message in messaging:
+            if message.get('message') or message.get('postback'):
+                recipient_id = message['sender']['id']
+                return recipient_id
+
+def verify_fb_token(token_sent):
+    if token_sent == VERIFY_TOKEN:
+        return request.args.get("hub.challenge")
+    return 'Invalid verification token'
+
 
 if __name__ == '__main__':
     # Usage: python run_bot.py -c <path_to_config.yaml>
@@ -91,8 +136,9 @@ if __name__ == '__main__':
     if BOT:
         CONTROLLER = ControllerTelegram()
     elif MESSENGER:
-        os.system("py app.py")
-        #CONTROLLER = ControllerMessenger()
+        CONTROLLER.execute_agent(CONFIGURATION)  
+        app.run(host='0.0.0.0', port=environ.get("PORT", 5000))
     else:
         CONTROLLER = ControllerTerminal()
     CONTROLLER.execute_agent(CONFIGURATION)
+    
