@@ -26,7 +26,7 @@ def create_template(recipient_id, buttons):
           "elements":[
             {
               "title":"Welcome!",
-              "image_url":"https://m.media-amazon.com/images/M/MV5BODI4NDY2NDM5M15BMl5BanBnXkFtZTgwNzEwOTMxMDE@._V1_FMjpg_UX1000_.jpg",
+              "image_url":"https://www.imdb.com/title/tt0372784/",
               "subtitle":"At the end of his career, a clueless \
               fashion model is brainwashed to kill the Prime Minister of Malaysia. ",
               "default_action": {
