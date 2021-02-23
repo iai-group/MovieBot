@@ -34,7 +34,7 @@ class ControllerMessenger(Controller):
 
     def send_quckreply(self):
         quickreply = messages.qreply(self.recipient_id)
-        return requests.post(messages.qreply(self.recipient_id), json=quickreply).json()
+        return requests.post(messages.quckreply, json=quickreply).json()
 
     def send_template(self):
         buttons = self.create_buttons(self.user_options.values())
