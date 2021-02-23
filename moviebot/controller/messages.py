@@ -7,7 +7,7 @@ media = 'https://graph.facebook.com/v9.0/me/message_attachments?access_token='+A
 message = 'https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN
 get_started = 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN
 images = 'https://graph.facebook.com/v9.0/me/message_attachments?access_token='+ACCESS_TOKEN
-
+quckreply = 'https://graph.facebook.com/v9.0/me/'+ACCESS_TOKEN
 text = {
             'recipient': {},
             'message': {}
@@ -72,6 +72,32 @@ menu = {
     ]
 }
 
+def qreply(self, psid):
+      quickreply= {
+      'messaging_type':'text',
+        'recipient':{'id':psid},
+        'quick_replies':[
+          {
+            'content_type':'text',
+            'title':'*****', #Displayed on button
+            'payload':'AM0I', #Sent back to bot
+            'image_url':'https://www.pinclipart.com/picdir/middle/538-5389478_-mint-plain-green-pastel-circle-color-colour.png'
+          },{
+            'content_type':'text',
+            'title':'*****',
+            'payload':'Not Interested'
+          },{
+            'content_type':'text',
+            'title':'*****',
+            'payload':'Stop',
+            'image_url':'https://lh3.googleusercontent.com/proxy/upsXiwUR9I01YLLfSgp8ZjRkb2ZY1sahIp8lERrxcnwn-M1YTGzNBa45kQd-aZBfCg0341jAE-mrHup2XgiZAKghyplv56k'
+          }
+        ]
+      }
+      return quickreply
+    
+
+
 def url_button(recipient_id, text, url, title):
     button = {
         "recipient":{
@@ -119,6 +145,8 @@ def postback_button(recipient_id, text, payload, title):
         }
         }
     return button
+
+
 
 def buttons_template(recipient_id, buttons):
   buttons = {

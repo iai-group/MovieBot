@@ -1,4 +1,5 @@
 
+import json
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
 from moviebot.utterance.utterance import UserUtterance
@@ -20,7 +21,8 @@ class ControllerMessenger(Controller):
         self.agent_response = ""
         self.buttons = []
         self.action_list = [
-        {"payload": "ubutton", "action": self.url_button}
+        {"payload": "ubutton", "action": self.url_button},
+        {"payload": "quickreply", "action": self.send_quckreply}
         ]
 
         #images.upload_images()
@@ -29,6 +31,10 @@ class ControllerMessenger(Controller):
     def execute_agent(self, configuration):
         self.agent = Agent(configuration)
         self.agent.initialize()
+
+    def send_quckreply(self):
+        quickreply = messages.qreply(self.recipient_id)
+        return requests.post(messages.qreply(self.recipient_id), json=quickreply).json()
 
     def send_template(self):
         buttons = self.create_buttons(self.user_options.values())
@@ -95,6 +101,8 @@ class ControllerMessenger(Controller):
         image = messages.image
         image['recipient']['id'] = self.recipient_id
         return requests.post(messages.images, json=image).json()
+
+    
 
     def url_button(self):
         response = messages.url_button(self.recipient_id, "hello", "https://wikipedia.com", "Title")
