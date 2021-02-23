@@ -120,6 +120,27 @@ def postback_button(recipient_id, text, payload, title):
         }
     return button
 
+def buttons_template(recipient_id, buttons):
+  buttons = {
+      "recipient":{
+    "id": recipient_id
+    },
+    "message":{
+      "attachment":{
+        "type":"template",
+        "payload":{
+          "template_type":"button",
+          "text":"What do you want to do next?",
+          "buttons":buttons
+        }
+      }
+    }
+  }
+  return buttons
+
+  
+   
+
 def template_button(btype, title, payload):
   button = {
     "type": btype,

@@ -91,7 +91,7 @@ if __name__ == '__main__':
     if BOT:
         CONTROLLER = ControllerTelegram()
     elif MESSENGER:
-        pass
+        os.system("py app.py")
         #CONTROLLER = ControllerMessenger()
     else:
         CONTROLLER = ControllerTerminal()

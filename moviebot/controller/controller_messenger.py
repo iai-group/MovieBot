@@ -18,13 +18,9 @@ class ControllerMessenger(Controller):
         self.payload = ""
         self.user_options = {}
         self.agent_response = ""
+        self.buttons = []
         self.action_list = [
-        {"payload": "ubutton", "action": self.url_button},
-        {"payload": "pbutton", "action": self.postback_button},
-        {"payload": "start", "action": self.get_started},
-        {"payload": "m", "action": self.send_image}, #not working
-        {"payload": "aa", "action": self.send_attachment}, #not working
-        {"payload": "imdb", "action": self.send_template}
+        {"payload": "ubutton", "action": self.url_button}
         ]
 
         #images.upload_images()
@@ -33,12 +29,11 @@ class ControllerMessenger(Controller):
     def execute_agent(self, configuration):
         self.agent = Agent(configuration)
         self.agent.initialize()
-        
 
     def send_template(self):
         buttons = self.create_buttons(self.user_options.values())
         print("buttons: ", buttons)
-        template = messages.create_template(self.recipient_id, buttons)
+        template = messages.create_template(self.recipient_id, buttons[0:3])
         url = self.find_link(self.agent_response)
         print("url: ", url)
         template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
@@ -47,13 +42,10 @@ class ControllerMessenger(Controller):
     def create_buttons(self, options):
         buttons = []
         for option in options:
-            for o in option:
-                buttons.append(self.create_button(o))
-            if len(buttons) > 2:
-                return buttons
+            for item in option:
+                buttons.append(self.create_button(item))
         return buttons
         
-
     def create_button(self, payload):
         button = messages.template_button("postback", payload, payload)
         return button
@@ -64,6 +56,9 @@ class ControllerMessenger(Controller):
             url = response[int(start):int(response.find(")"))]
             return url
 
+    def send_buttons(self):
+        buttons = messages.buttons_template(self.recipient_id, self.create_buttons(self.user_options.values()))
+        return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
         # Agent testing
@@ -78,6 +73,7 @@ class ControllerMessenger(Controller):
         self.find_link(agent_response)
         if self.user_options:
             self.send_template()
+            self.send_buttons()
         else: 
             text = messages.text
             text['recipient']['id'] = self.recipient_id
