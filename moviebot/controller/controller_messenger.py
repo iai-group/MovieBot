@@ -34,12 +34,15 @@ class ControllerMessenger(Controller):
 
     def send_quckreply(self):
         quickreply = messages.qreply(self.recipient_id)
+        for reply, button in enumerate(self.buttons[3:]):
+            quickreply['message']['quick_replies'][reply]['title'] = button['title']
+            quickreply['message']['quick_replies'][reply]['payload'] = button['payload']
         return requests.post(messages.quckreply, json=quickreply).json()
 
     def send_template(self):
-        buttons = self.create_buttons(self.user_options.values())
-        print("buttons: ", buttons)
-        template = messages.create_template(self.recipient_id, buttons[0:3])
+        self.buttons = self.create_buttons(self.user_options.values())
+        print("buttons: ", self.buttons)
+        template = messages.create_template(self.recipient_id, self.buttons[0:3])
         url = self.find_link(self.agent_response)
         print("url: ", url)
         template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
@@ -63,23 +66,31 @@ class ControllerMessenger(Controller):
             return url
 
     def send_buttons(self):
-        buttons = messages.buttons_template(self.recipient_id, self.create_buttons(self.user_options.values()))
+        buttons = messages.buttons_template(self.recipient_id, self.buttons[3:])
         return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
         # Agent testing
-        
+        # if True:
+        #     text = messages.text
+        #     text['recipient']['id'] = self.recipient_id
+        #     text['message']['text'] = "heyehey"
+        #     return requests.post(messages.message, json=text).json()
         agent_response, self.user_options = self.agent.start_dialogue()
         user_utterance = UserUtterance({'text': self.payload})
         agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
         )
         self.agent_response = agent_response
-        print("agent_respnse: ", agent_response, "type: ", type(agent_response))
+        print("-----------------------------------------------------")
+        print("options: ", self.user_options)
+        print(self.payload)
+        print("agent_response: ", agent_response, "type: ", type(agent_response))
         self.find_link(agent_response)
         if self.user_options:
             self.send_template()
-            self.send_buttons()
+            #self.send_buttons()
+            self.send_quckreply()
         else: 
             text = messages.text
             text['recipient']['id'] = self.recipient_id
