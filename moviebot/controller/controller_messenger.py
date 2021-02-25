@@ -75,7 +75,7 @@ class ControllerMessenger(Controller):
             user_utterance, self.user_options
         )
         self.agent_response = agent_response
-        print("agent_respnse: ", agent_response, "type: ", type(agent_response))
+        print("agent_respnse: ", agent_response)
         self.find_link(agent_response)
         if self.user_options:
             self.send_template()
@@ -101,8 +101,6 @@ class ControllerMessenger(Controller):
         image = messages.image
         image['recipient']['id'] = self.recipient_id
         return requests.post(messages.images, json=image).json()
-
-    
 
     def url_button(self):
         response = messages.url_button(self.recipient_id, "hello", "https://wikipedia.com", "Title")
