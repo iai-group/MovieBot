@@ -15,7 +15,7 @@ NLU:
 
 TELEGRAM: False # execute the code on Telegram
 
-MESSENGER: False
+MESSENGER: True
 
 BOT_TOKEN_PATH: config/bot_token.yaml
 

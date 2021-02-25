@@ -22,6 +22,7 @@ class ControllerMessenger(Controller):
         self.user_options = {}
         self.agent_response = ""
         self.movie = ""
+        
         self.buttons = []
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
@@ -34,6 +35,7 @@ class ControllerMessenger(Controller):
     def execute_agent(self, configuration):
         self.agent = Agent(configuration)
         self.agent.initialize()
+        self.agent_response, self.user_options = self.agent.start_dialogue()
 
     def send_quickreply(self):
         quickreply = messages.qreply(self.recipient_id)
@@ -43,23 +45,27 @@ class ControllerMessenger(Controller):
         return requests.post(messages.quickreply, json=quickreply).json()
 
     def send_template(self):
-        self.buttons = self.create_buttons(self.user_options.values())
         url = self.find_link(self.agent_response)
         movie_id = self.get_movie_id(self.agent_response)
         self.movie = self.ia.get_movie(movie_id)
-        if self.user_options:
-            print("options: ", list(self.user_options.values()))
-
+        
         template = messages.create_template(self.recipient_id, self.buttons[0:3],
-            self.movie['cover url'], url, self.movie['plot outline'])
-        #template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
+            self.movie['cover url'], url, self.movie['plot outline'], self.movie['original title'],
+            self.movie['rating'])
+        
         return requests.post(messages.message, json=template).json()
 
     def create_buttons(self, options):
         buttons = []
         for option in options:
-            for item in option:
-                buttons.append(self.create_button(item))
+            print("type: ", type(option))
+            if type(option) == type("string"):
+                print("string option: ", option)
+                buttons.append(self.create_button(option))
+            else:
+                for item in option:
+                    print("item: ", item)
+                    buttons.append(self.create_button(item))
         return buttons
         
     def create_button(self, payload):
@@ -75,38 +81,39 @@ class ControllerMessenger(Controller):
     def get_movie_id(self, response):
         if "/tt" in response:
             start = response.find("/tt")
-            movie_id = response[int(start)+3:start+10]
+            movie_id = response[start+3:start+10]
             return movie_id
 
-    def send_buttons(self):
-        buttons = messages.buttons_template(self.recipient_id, self.buttons[3:])
+    def send_buttons(self, num=3):
+        buttons = messages.buttons_template(self.recipient_id, self.buttons[num:])
         return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
         # Agent testing
         # if True:
-        #     text = messages.text
-        #     text['recipient']['id'] = self.recipient_id
-        #     text['message']['text'] = "heyehey"
-        #     return requests.post(messages.message, json=text).json()
-        agent_response, self.user_options = self.agent.start_dialogue()
         user_utterance = UserUtterance({'text': self.payload})
-        agent_response, self.user_options = self.agent.continue_dialogue(
+        self.agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
         )
-        self.agent_response = agent_response
         print("-----------------------------------------------------")
         print(self.payload)
-        print("agent_response: ", agent_response)
-        self.find_link(agent_response)
+        print("agent_response: ", self.agent_response)
+        self.find_link(self.agent_response)
+            
         if self.user_options:
-            self.send_template()
-            #self.send_buttons()
+            print("options: ", list(self.user_options.values()))
+            self.buttons = self.create_buttons(self.user_options.values())
+            print("buttons: ", self.buttons)
+            if "**" in self.agent_response:
+                self.send_template()
+                self.send_buttons()
+            else:
+                self.send_buttons(0)
             #self.send_quickreply()
         else: 
             text = messages.text
             text['recipient']['id'] = self.recipient_id
-            text['message']['text'] = agent_response
+            text['message']['text'] = self.agent_response
             return requests.post(messages.message, json=text).json()
 
     def get_started(self):

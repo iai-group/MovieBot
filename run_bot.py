@@ -103,7 +103,6 @@ def receive_message():
         print(CONTROLLER.action(payload, recipient_id))
         return "Message Processed"
 
-
 def get_message(output):
     for event in output['entry']:
         messaging = event['messaging']

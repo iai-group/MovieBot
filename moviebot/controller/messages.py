@@ -13,7 +13,7 @@ text = {
             'message': {}
         }
 
-def create_template(recipient_id, buttons, poster, url, plot):
+def create_template(recipient_id, buttons, poster, url, plot, title, rating):
   template = {
     "recipient":{
       "id": recipient_id
@@ -25,7 +25,7 @@ def create_template(recipient_id, buttons, poster, url, plot):
           "template_type":"generic",
           "elements":[
             {
-              "title":"Welcome!",
+              "title":title + " " + str(rating) ,
               "image_url":poster,
               "subtitle":plot,
               "default_action": {
@@ -146,7 +146,7 @@ def postback_button(recipient_id, text, payload, title):
             }
             }
         }
-        }
+      }
     return button
 
 
