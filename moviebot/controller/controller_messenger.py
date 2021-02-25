@@ -95,13 +95,9 @@ class ControllerMessenger(Controller):
             user_utterance, self.user_options
         )
         self.agent_response = agent_response
-<<<<<<< HEAD
-        print("agent_respnse: ", agent_response)
-=======
         print("-----------------------------------------------------")
         print(self.payload)
         print("agent_response: ", agent_response)
->>>>>>> f14142b21f50951ee807916418fceb88a8542c7c
         self.find_link(agent_response)
         if self.user_options:
             self.send_template()
