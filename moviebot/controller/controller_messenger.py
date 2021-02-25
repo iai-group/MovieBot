@@ -84,8 +84,8 @@ class ControllerMessenger(Controller):
             movie_id = response[start+3:start+10]
             return movie_id
 
-    def send_buttons(self, num=3):
-        buttons = messages.buttons_template(self.recipient_id, self.buttons[num:])
+    def send_buttons(self, start, end):
+        buttons = messages.buttons_template(self.recipient_id, self.buttons[start:end])
         return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
@@ -106,9 +106,13 @@ class ControllerMessenger(Controller):
             print("buttons: ", self.buttons)
             if "**" in self.agent_response:
                 self.send_template()
-                self.send_buttons()
+                self.send_buttons(3, 5)
             else:
-                self.send_buttons(0)
+                self.send_buttons(0, 3)
+            text = messages.text
+            text['recipient']['id'] = self.recipient_id
+            text['message']['text'] = self.agent_response
+            return requests.post(messages.message, json=text).json()
             #self.send_quickreply()
         else: 
             text = messages.text
