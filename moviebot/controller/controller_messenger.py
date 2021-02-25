@@ -44,14 +44,14 @@ class ControllerMessenger(Controller):
 
     def send_template(self):
         self.buttons = self.create_buttons(self.user_options.values())
-        print("buttons: ", self.buttons)
         url = self.find_link(self.agent_response)
         movie_id = self.get_movie_id(self.agent_response)
         self.movie = self.ia.get_movie(movie_id)
-        print("poster url: ", self.movie['cover url'])
-        print("url: ", url)
+        if self.user_options:
+            print("options: ", list(self.user_options.values()))
+
         template = messages.create_template(self.recipient_id, self.buttons[0:3],
-         self.movie['cover url'], url, self.movie['plot outline'])
+            self.movie['cover url'], url, self.movie['plot outline'])
         #template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
         return requests.post(messages.message, json=template).json()
 
@@ -96,9 +96,8 @@ class ControllerMessenger(Controller):
         )
         self.agent_response = agent_response
         print("-----------------------------------------------------")
-        print("options: ", self.user_options)
         print(self.payload)
-        print("agent_response: ", agent_response, "type: ", type(agent_response))
+        print("agent_response: ", agent_response)
         self.find_link(agent_response)
         if self.user_options:
             self.send_template()
@@ -116,12 +115,10 @@ class ControllerMessenger(Controller):
     def send_attachment(self):
         attachment = images.attachment
         attachment['recipient']['id'] = self.recipient_id
-        print(images.images[0]['attachment_id'])
         attachment['message']['attachment']['payload']['attachment_id'] = images.images[0]['attachment_id']
         return requests.post(messages.images, json=attachment).json()
 
     def send_image(self):
-        print("recipient_id: ", self.recipient_id)
         image = messages.image
         image['recipient']['id'] = self.recipient_id
         return requests.post(messages.images, json=image).json()
