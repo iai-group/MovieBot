@@ -6,6 +6,7 @@ from moviebot.utterance.utterance import UserUtterance
 from flask import Flask, request
 import requests
 from os import environ
+from imdb import IMDb
 #import tokens
 #import app
 from moviebot.controller import messages, messages
@@ -13,16 +14,18 @@ from moviebot.controller import messages, messages
 class ControllerMessenger(Controller):
 
     def __init__(self):
+        self.ia = IMDb()
         self.agent = {}
         self.user_options = {}
         self.recipient_id = ""
         self.payload = ""
         self.user_options = {}
         self.agent_response = ""
+        self.movie = ""
         self.buttons = []
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
-        {"payload": "quickreply", "action": self.send_quckreply}
+        {"payload": "quickreply", "action": self.send_quickreply}
         ]
 
         #images.upload_images()
@@ -32,17 +35,24 @@ class ControllerMessenger(Controller):
         self.agent = Agent(configuration)
         self.agent.initialize()
 
-    def send_quckreply(self):
+    def send_quickreply(self):
         quickreply = messages.qreply(self.recipient_id)
-        return requests.post(messages.quckreply, json=quickreply).json()
+        for reply, button in enumerate(self.buttons[3:]):
+            quickreply['message']['quick_replies'][reply]['title'] = button['title']
+            quickreply['message']['quick_replies'][reply]['payload'] = button['payload']
+        return requests.post(messages.quickreply, json=quickreply).json()
 
     def send_template(self):
-        buttons = self.create_buttons(self.user_options.values())
-        print("buttons: ", buttons)
-        template = messages.create_template(self.recipient_id, buttons[0:3])
+        self.buttons = self.create_buttons(self.user_options.values())
         url = self.find_link(self.agent_response)
-        print("url: ", url)
-        template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
+        movie_id = self.get_movie_id(self.agent_response)
+        self.movie = self.ia.get_movie(movie_id)
+        if self.user_options:
+            print("options: ", list(self.user_options.values()))
+
+        template = messages.create_template(self.recipient_id, self.buttons[0:3],
+            self.movie['cover url'], url, self.movie['plot outline'])
+        #template['message']['attachment']['payload']['elements'][0]['default_action']['url'] = url
         return requests.post(messages.message, json=template).json()
 
     def create_buttons(self, options):
@@ -62,24 +72,41 @@ class ControllerMessenger(Controller):
             url = response[int(start):int(response.find(")"))]
             return url
 
+    def get_movie_id(self, response):
+        if "/tt" in response:
+            start = response.find("/tt")
+            movie_id = response[int(start)+3:start+10]
+            return movie_id
+
     def send_buttons(self):
-        buttons = messages.buttons_template(self.recipient_id, self.create_buttons(self.user_options.values()))
+        buttons = messages.buttons_template(self.recipient_id, self.buttons[3:])
         return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
         # Agent testing
-        
+        # if True:
+        #     text = messages.text
+        #     text['recipient']['id'] = self.recipient_id
+        #     text['message']['text'] = "heyehey"
+        #     return requests.post(messages.message, json=text).json()
         agent_response, self.user_options = self.agent.start_dialogue()
         user_utterance = UserUtterance({'text': self.payload})
         agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
         )
         self.agent_response = agent_response
+<<<<<<< HEAD
         print("agent_respnse: ", agent_response)
+=======
+        print("-----------------------------------------------------")
+        print(self.payload)
+        print("agent_response: ", agent_response)
+>>>>>>> f14142b21f50951ee807916418fceb88a8542c7c
         self.find_link(agent_response)
         if self.user_options:
             self.send_template()
-            self.send_buttons()
+            #self.send_buttons()
+            #self.send_quickreply()
         else: 
             text = messages.text
             text['recipient']['id'] = self.recipient_id
@@ -92,12 +119,10 @@ class ControllerMessenger(Controller):
     def send_attachment(self):
         attachment = images.attachment
         attachment['recipient']['id'] = self.recipient_id
-        print(images.images[0]['attachment_id'])
         attachment['message']['attachment']['payload']['attachment_id'] = images.images[0]['attachment_id']
         return requests.post(messages.images, json=attachment).json()
 
     def send_image(self):
-        print("recipient_id: ", self.recipient_id)
         image = messages.image
         image['recipient']['id'] = self.recipient_id
         return requests.post(messages.images, json=image).json()

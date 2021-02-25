@@ -7,13 +7,13 @@ media = 'https://graph.facebook.com/v9.0/me/message_attachments?access_token='+A
 message = 'https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN
 get_started = 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN
 images = 'https://graph.facebook.com/v9.0/me/message_attachments?access_token='+ACCESS_TOKEN
-quckreply = 'https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN
+quickreply = 'https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN
 text = {
             'recipient': {},
             'message': {}
         }
 
-def create_template(recipient_id, buttons):
+def create_template(recipient_id, buttons, poster, url, plot):
   template = {
     "recipient":{
       "id": recipient_id
@@ -26,12 +26,11 @@ def create_template(recipient_id, buttons):
           "elements":[
             {
               "title":"Welcome!",
-              "image_url":"https://www.imdb.com/title/tt0372784/",
-              "subtitle":"At the end of his career, a clueless \
-              fashion model is brainwashed to kill the Prime Minister of Malaysia. ",
+              "image_url":poster,
+              "subtitle":plot,
               "default_action": {
                 "type": "web_url",
-                "url": "https://www.imdb.com/title/tt0196229/?ref_=hm_tpks_tt_2_pd_tp1_cp",
+                "url": url,
                 "webview_height_ratio": "tall",
               },
               "buttons": buttons
