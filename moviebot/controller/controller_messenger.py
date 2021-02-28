@@ -39,9 +39,14 @@ class ControllerMessenger(Controller):
 
     def send_quickreply(self):
         quickreply = messages.qreply(self.recipient_id)
-        for reply, button in enumerate(self.buttons[3:]):
-            quickreply['message']['quick_replies'][reply]['title'] = button['title']
-            quickreply['message']['quick_replies'][reply]['payload'] = button['payload']
+        quick_replies = []
+        for option in self.user_options.values():
+            if type(option) == type("string"):
+                quick_replies.append(messages.create_reply(option, option))
+            else:
+                for item in option:
+                    quick_replies.append(messages.create_reply(item, item))
+        quickreply['message']['quick_replies'] = quick_replies
         return requests.post(messages.quickreply, json=quickreply).json()
 
     def send_template(self):
@@ -109,11 +114,12 @@ class ControllerMessenger(Controller):
                 self.send_buttons(3, 5)
             else:
                 self.send_buttons(0, 3)
-            text = messages.text
-            text['recipient']['id'] = self.recipient_id
-            text['message']['text'] = self.agent_response
-            return requests.post(messages.message, json=text).json()
-            #self.send_quickreply()
+                self.send_quickreply()
+            # text = messages.text
+            # text['recipient']['id'] = self.recipient_id
+            # text['message']['text'] = self.agent_response
+            # return requests.post(messages.message, json=text).json()
+            
         else: 
             text = messages.text
             text['recipient']['id'] = self.recipient_id

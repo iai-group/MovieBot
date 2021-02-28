@@ -71,29 +71,16 @@ menu = {
     ]
 }
 
+def create_reply(title, payload):
+  return {'content_type': 'text', 'title': title, 'payload': payload, 'image_url': ""}
+
 def qreply(psid):
       quickreply= {
       'messaging_type':'RESPONSE',
         'recipient':{'id':psid},
         'message':{
           'text': "Press a button",
-          'quick_replies':[
-          {
-            'content_type':'text',
-            'title':'*****', #Displayed on button
-            'payload':'AM0I', #Sent back to bot
-            'image_url':'https://www.pinclipart.com/picdir/middle/538-5389478_-mint-plain-green-pastel-circle-color-colour.png'
-          },{
-            'content_type':'text',
-            'title':'*****',
-            'payload':'Not Interested'
-          },{
-            'content_type':'text',
-            'title':'*****',
-            'payload':'Stop',
-            'image_url':'https://lh3.googleusercontent.com/proxy/upsXiwUR9I01YLLfSgp8ZjRkb2ZY1sahIp8lERrxcnwn-M1YTGzNBa45kQd-aZBfCg0341jAE-mrHup2XgiZAKghyplv56k'
-          }
-        ]
+          'quick_replies':[]
         }
         
       }
@@ -153,13 +140,8 @@ def postback_button(recipient_id, text, payload, title):
 
 def buttons_template(recipient_id, buttons):
   buttons = {
-      "recipient":{
-    "id": recipient_id
-    },
-    "message":{
-      "attachment":{
-        "type":"template",
-        "payload":{
+    "recipient":{ "id": recipient_id},
+    "message":{"attachment":{"type":"template","payload":{
           "template_type":"button",
           "text":"What do you want to do next?",
           "buttons":buttons
@@ -169,15 +151,8 @@ def buttons_template(recipient_id, buttons):
   }
   return buttons
 
-  
-   
-
 def template_button(btype, title, payload):
-  button = {
-    "type": btype,
-    "title": title,
-    "payload": payload
-  }
+  button = {"type": btype, "title": title, "payload": payload}
   return button
 
 image = {
