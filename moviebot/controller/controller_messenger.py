@@ -1,5 +1,6 @@
 
 import json
+import sqlite3
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
 from moviebot.utterance.utterance import UserUtterance
@@ -31,6 +32,12 @@ class ControllerMessenger(Controller):
 
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
+
+    def get_cover(self,movie_id):
+        conn = sqlite3.connect('movies_dbase.db')
+        c = conn.cursor()
+        for row in c.execute(f'SELECT cover_image FROM movies_v2 WHERE ID="{movie_id}"'):
+            return row
 
     def execute_agent(self, configuration):
         self.agent = Agent(configuration)
