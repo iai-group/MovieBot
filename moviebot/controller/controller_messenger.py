@@ -11,6 +11,8 @@ from imdb import IMDb
 #import tokens
 #import app
 from moviebot.controller import messages, messages
+from moviebot.database.database import DataBase
+
 
 class ControllerMessenger(Controller):
 
@@ -23,8 +25,10 @@ class ControllerMessenger(Controller):
         self.user_options = {}
         self.agent_response = ""
         self.movie = ""
-        
+        self.movie_id = ""
         self.buttons = []
+        self.configuration = ""
+        self.info = {}
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
         {"payload": "quickreply", "action": self.send_quickreply}
@@ -33,15 +37,34 @@ class ControllerMessenger(Controller):
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
 
-    def get_cover(self,movie_id):
-        conn = sqlite3.connect('movies_dbase.db')
+    def get_info(self, movie_id):
+        for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
+            self.info['title'] = row[1]
+            self.info['rating'] = row[4]
+            self.info['duration'] = row[6]
+            self.info['summary'] = row[10]
+            self.info["image_url"] = row[9]
+            self.info['imdb_link'] = row[12]
+
+    def lookup(self):
+        conn = sqlite3.connect(self.get_db())
         c = conn.cursor()
-        for row in c.execute(f'SELECT cover_image FROM movies_v2 WHERE ID="{movie_id}"'):
-            return row
+        return c
+
+    def strip_tuple(self, element):
+        for e in element:
+            return e
+
+    def get_db(self):
+        db_path = self.configuration['DATA']['db_path']
+        print("path: ", db_path)
+        return db_path
 
     def execute_agent(self, configuration):
+        self.configuration = configuration
         self.agent = Agent(configuration)
         self.agent.initialize()
+        self.get_db()
         self.agent_response, self.user_options = self.agent.start_dialogue()
 
     def send_quickreply(self):
@@ -57,13 +80,13 @@ class ControllerMessenger(Controller):
         return requests.post(messages.quickreply, json=quickreply).json()
 
     def send_template(self):
-        url = self.find_link(self.agent_response)
-        movie_id = self.get_movie_id(self.agent_response)
-        self.movie = self.ia.get_movie(movie_id)
+        self.movie_id = self.get_movie_id(self.agent_response)
+        self.get_info(self.movie_id)
+        #self.movie = self.ia.get_movie(self.movie_id)
         
         template = messages.create_template(self.recipient_id, self.buttons[0:3],
-            self.movie['full-size cover url'], url, self.movie['plot outline'], self.movie['original title'],
-            self.movie['rating'])
+            self.info['image_url'], self.info['imdb_link'], self.info['summary'], self.info['title'],
+            self.info['rating'], self.info['duration'])
         
         return requests.post(messages.message, json=template).json()
 
@@ -83,12 +106,6 @@ class ControllerMessenger(Controller):
     def create_button(self, payload):
         button = messages.template_button("postback", payload, payload)
         return button
-        
-    def find_link(self, response):
-        if "https" in response:
-            start = response.find("https")
-            url = response[int(start):int(response.find(")"))]
-            return url
 
     def get_movie_id(self, response):
         if "/tt" in response:
@@ -102,7 +119,7 @@ class ControllerMessenger(Controller):
 
     def send_message(self):
         # Agent testing
-        # if True:
+
         user_utterance = UserUtterance({'text': self.payload})
         self.agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
@@ -110,23 +127,15 @@ class ControllerMessenger(Controller):
         print("-----------------------------------------------------")
         print(self.payload)
         print("agent_response: ", self.agent_response)
-        self.find_link(self.agent_response)
-            
+        
         if self.user_options:
             print("options: ", list(self.user_options.values()))
             self.buttons = self.create_buttons(self.user_options.values())
             print("buttons: ", self.buttons)
             if "**" in self.agent_response:
                 self.send_template()
-                self.send_buttons(3, 5)
-            else:
-                #self.send_buttons(0, 3)
-                self.send_quickreply()
-            # text = messages.text
-            # text['recipient']['id'] = self.recipient_id
-            # text['message']['text'] = self.agent_response
-            # return requests.post(messages.message, json=text).json()
-            
+                #self.send_buttons(3, 5)
+
         else: 
             text = messages.text
             text['recipient']['id'] = self.recipient_id

@@ -13,7 +13,7 @@ text = {
             'message': {}
         }
 
-def create_template(recipient_id, buttons, poster, url, plot, title, rating):
+def create_template(recipient_id, buttons, poster, url, plot, title, rating, duration):
   template = {
     "recipient":{
       "id": recipient_id
@@ -25,7 +25,7 @@ def create_template(recipient_id, buttons, poster, url, plot, title, rating):
           "template_type":"generic",
           "elements":[
             {
-              "title":title + " " + str(rating) ,
+              "title":title + " " + str(rating) + " " + str(duration) + " min",
               "image_url":poster,
               "subtitle":plot,
               "default_action": {
