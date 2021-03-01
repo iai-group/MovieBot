@@ -55,7 +55,7 @@ class ControllerMessenger(Controller):
         self.movie = self.ia.get_movie(movie_id)
         
         template = messages.create_template(self.recipient_id, self.buttons[0:3],
-            self.movie['cover url'], url, self.movie['plot outline'], self.movie['original title'],
+            self.movie['full-size cover url'], url, self.movie['plot outline'], self.movie['original title'],
             self.movie['rating'])
         
         return requests.post(messages.message, json=template).json()
@@ -113,7 +113,7 @@ class ControllerMessenger(Controller):
                 self.send_template()
                 self.send_buttons(3, 5)
             else:
-                self.send_buttons(0, 3)
+                #self.send_buttons(0, 3)
                 self.send_quickreply()
             # text = messages.text
             # text['recipient']['id'] = self.recipient_id

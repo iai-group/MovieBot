@@ -79,7 +79,7 @@ def qreply(psid):
       'messaging_type':'RESPONSE',
         'recipient':{'id':psid},
         'message':{
-          'text': "Press a button",
+          'text': "More information",
           'quick_replies':[]
         }
         
