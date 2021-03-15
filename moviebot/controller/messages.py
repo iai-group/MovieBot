@@ -13,6 +13,13 @@ text = {
             'message': {}
         }
 
+def create_text(recipient_id, message):
+  text = {
+      'recipient': {'id': recipient_id},
+      'message': {'message': message}
+  }
+  return text
+
 def create_template(recipient_id, buttons, poster, url, plot, title, rating, duration):
   template = {
     "recipient":{
@@ -43,7 +50,7 @@ def create_template(recipient_id, buttons, poster, url, plot, title, rating, dur
   return template
 
 menu = {
-    #"psid": recipient_id,
+    "psid": "",
 
     "persistent_menu": [
         {
@@ -63,7 +70,7 @@ menu = {
                 {
                     "type": "web_url",
                     "title": "Shop now",
-                    "url": "https:/wikipedia.com/",
+                    "url": "https://wikipedia.com/",
                     "webview_height_ratio": "full"
                 }
             ]
@@ -88,29 +95,29 @@ def qreply(psid):
     
 
 
-def url_button(recipient_id, text, url, title):
-    button = {
-        "recipient":{
-            "id": recipient_id
-        },
-        "message":{
-            "attachment":{
-                "type":"template",
-                "payload":{
-                    "template_type":"button",
-                    "text": text,
-                    "buttons":[
-                    {
-                    "type": "web_url",
-                    "url": url,
-                    "title": title
-                    }
-                ]
-            }
-            }
-        }
-    }
-    return button
+# def url_button(recipient_id, text, url, title):
+#     button = {
+#         "recipient":{
+#             "id": recipient_id
+#         },
+#         "message":{
+#             "attachment":{
+#                 "type":"template",
+#                 "payload":{
+#                     "template_type":"button",
+#                     "text": text,
+#                     "buttons":[
+#                     {
+#                     "type": "web_url",
+#                     "url": url,
+#                     "title": title
+#                     }
+#                 ]
+#             }
+#             }
+#         }
+#     }
+#     return button
 
 def postback_button(recipient_id, text, payload, title):
     button = {
@@ -155,16 +162,16 @@ def template_button(btype, title, payload):
   button = {"type": btype, "title": title, "payload": payload}
   return button
 
-image = {
-    "recipient": {
-    },
-    "message":{
-        "attachment":{
-          "type":"image", 
-          "payload":{
-            "is_reusable": True,
-            "url": "https://i.imgur.com/ceuUozR.jpeg"
-          }
-        }
-    }
-}
+# image = {
+#     "recipient": {
+#     },
+#     "message":{
+#         "attachment":{
+#           "type":"image", 
+#           "payload":{
+#             "is_reusable": True,
+#             "url": "https://i.imgur.com/ceuUozR.jpeg"
+#           }
+#         }
+#     }
+# }
