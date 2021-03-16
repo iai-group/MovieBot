@@ -6,8 +6,10 @@ persistent_menu = 'https://graph.facebook.com/v2.6/me/messenger_profile?access_t
 media = 'https://graph.facebook.com/v9.0/me/message_attachments?access_token='+ACCESS_TOKEN
 message = 'https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN
 get_started = 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN
+greet = 'https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+ACCESS_TOKEN
 images = 'https://graph.facebook.com/v9.0/me/message_attachments?access_token='+ACCESS_TOKEN
 quickreply = 'https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN
+
 text = {
             'recipient': {},
             'message': {}
@@ -48,6 +50,27 @@ def create_template(recipient_id, buttons, poster, url, plot, title, rating, dur
     }
   }
   return template
+
+greeting = {
+  "locale": "default",
+  "text": "Hello!"
+}
+
+def typing_on(recipient_id):
+  typing = {
+    "recipient":{
+      "id": recipient_id
+      },
+    "sender_action": "typing_on"
+  }
+  return typing
+
+mark_seen = {
+  "recipient": {
+    "id": ""
+  },
+  "sender_action": "mark_seen"
+}
 
 menu = {
     "psid": "",

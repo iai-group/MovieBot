@@ -29,15 +29,20 @@ class ControllerMessenger(Controller):
         self.info = {}
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
-        {"payload": "start", "action": self.persistent_menu}
+        {"payload": "start", "action": self.send_reply}
         ]
-
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
+        self.greeting()
         self.get_started()
+        
 
     def get_started(self):
         return requests.post(messages.get_started, json=self.start).json()
+
+    def greeting(self):
+        greeting = messages.greeting
+        return requests.post(messages.greet, json=greeting).json()
 
     def send_reply(self):
         text = messages.text
@@ -80,7 +85,18 @@ class ControllerMessenger(Controller):
         self.get_db()
         self.agent_response, self.user_options = self.agent.start_dialogue()
 
+    def typing(self):
+        typing = messages.typing_on(self.recipient_id)
+        print("TYPING: ", typing)
+        return requests.post(messages.button, json=typing).json()
+
+    def mark_seen(self):
+        mark = messages.mark_seen
+        mark['recipient_id'] = self.recipient_id
+        return requests.post(messages.button, json=mark).json()
+
     def send_quickreply(self):
+        
         quickreply = messages.qreply(self.recipient_id)
         quick_replies = []
         for option in self.user_options.values():
@@ -121,8 +137,8 @@ class ControllerMessenger(Controller):
             movie_id = response[start+3:start+10]
             return movie_id
 
-    def send_buttons(self, start, end):
-        buttons = messages.buttons_template(self.recipient_id, self.buttons[start:end])
+    def send_buttons(self):
+        buttons = messages.buttons_template(self.recipient_id)
         return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
@@ -141,8 +157,13 @@ class ControllerMessenger(Controller):
         print("-----------------------------------------------------")
         if self.user_options:
             self.buttons = self.create_buttons(self.user_options.values())
+            print("BUTTONS: ", self.buttons)
             if "**" in self.agent_response:
                 self.send_template()
+            elif "Please choose" in self.agent_response:
+                buttons = messages.buttons_template(self.recipient_id, self.buttons)
+                self.send_buttons(buttons)
+
             else: 
                 text = messages.text
                 text['recipient']['id'] = self.recipient_id
@@ -153,6 +174,9 @@ class ControllerMessenger(Controller):
                 text['recipient']['id'] = self.recipient_id
                 text['message']['text'] = self.agent_response
                 return requests.post(messages.message, json=text).json()
+
+    def send_buttons(self, buttons):
+        return requests.post(messages.button, json=buttons).json()
 
     def get_started(self):
         return requests.post(messages.get_started, json=self.start).json()
@@ -178,6 +202,8 @@ class ControllerMessenger(Controller):
 
     def action(self, payload, recipient_id):
         self.recipient_id = recipient_id
+        self.typing()
+        self.mark_seen()
         self.payload = payload
         #sender_action.sender_action(self.recipient_id)
         for item in self.action_list:

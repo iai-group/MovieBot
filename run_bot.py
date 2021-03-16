@@ -96,12 +96,14 @@ def receive_message():
         return verify_fb_token(token_sent)
 
     else:
+        
         output = request.get_json()
         print(output)
         recipient_id = get_id(output)
         payload = get_message(output)
         print(CONTROLLER.action(payload, recipient_id))
         return "Message Processed"
+
 
 def get_message(output):
     for event in output['entry']:
