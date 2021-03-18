@@ -10,9 +10,8 @@ from os import environ
 #from imdb import IMDb
 #import tokens
 #import app
-from moviebot.controller import messages, messages
 from moviebot.database.database import DataBase
-
+ACCESS_TOKEN = 'EAAF5ZA8L6hnUBAH9CjUB2YExM9WMvi3CitPQOzivVwnC3NEKZB7pxhxHeUrXmEDFMqTBEfJZCkV5MUGV3hyT2vppi3w80YBHzO5oMow7iOAfQxEpunp2w2EVSDn1Sq1e32ItNDdQMZAkzdjxMQSdzzKhcy6nsrj3dBIDUfalJt1XYcc7dppy'
 
 class ControllerMessenger(Controller):
 
@@ -33,26 +32,29 @@ class ControllerMessenger(Controller):
         ]
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
-        self.greeting()
+        #self.greeting()
         self.get_started()
         
     def get_started(self):
-        return requests.post(messages.get_started, json=self.start).json()
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
 
     def greeting(self):
-        greeting = messages.greeting
-        return requests.post(messages.greet, json=greeting).json()
+        greeting = {
+            "locale": "default",
+            "text": "Hello!"
+            }
+        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+ACCESS_TOKEN, json=greeting).json()
 
     def send_reply(self):
         text = messages.text
         text['recipient']['id'] = self.recipient_id
         text['message']['text'] = "test"
-        return requests.post(messages.message, json=text).json()
+        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=text).json()
 
     def persistent_menu(self):
         menu = messages.menu
         menu['psid'] = self.recipient_id
-        return requests.post(messages.persistent_menu, json=menu).json()
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=menu).json()
 
     def get_info(self, movie_id):
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
@@ -84,21 +86,29 @@ class ControllerMessenger(Controller):
         self.get_db()
         self.agent_response, self.user_options = self.agent.start_dialogue()
 
-    def typing(self):
-        typing = messages.typing_on(self.recipient_id)
-        print("TYPING: ", typing)
-        return requests.post(messages.button, json=typing).json()
+    def typing_on(self):
+        typing = {
+            "recipient":{
+            "id": self.recipient_id
+            },
+            "sender_action": "typing_on"
+        }
+        return typing
 
     def mark_seen(self):
-        mark = messages.mark_seen
-        mark['recipient_id'] = self.recipient_id
-        return requests.post(messages.button, json=mark).json()
+        mark_seen = {
+            "recipient": {
+                "id": self.recipient_id
+            },
+            "sender_action": "mark_seen"
+            }
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=mark_seen).json()
 
     def send_template(self):
-        template = messages.create_template(self.recipient_id, self.buttons[0:3],
+        template = self.movie_template(self.buttons[0:3],
             self.info['image_url'], self.info['imdb_link'], self.info['summary'], self.info['title'],
             self.info['rating'], self.info['duration'])
-        return requests.post(messages.message, json=template).json()
+        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
 
     def create_buttons(self, options):
         buttons = []
@@ -137,31 +147,24 @@ class ControllerMessenger(Controller):
         print("-----------------------------------------------------")
         if self.user_options:
             self.buttons = self.create_buttons(self.user_options.values())
-            print("BUTTONS: ", self.buttons)
-            #template = self.buttons_template(self.buttons)
             if "**" in self.agent_response:
                 self.send_template()
-            elif "Please choose" in self.agent_response:
-                self.template['message']['attachment']['payload']['text'] = "Please choose"
-                self.send_buttons(self.template)
-                
-            elif "Sorry" in self.agent_response:
-                self.template['message']['attachment']['payload']['text'] = "Sorry"
-                self.send_buttons(self.template)
-
             else: 
-                text = messages.text
-                text['recipient']['id'] = self.recipient_id
-                text['message']['text'] = self.agent_response
-                return requests.post(messages.message, json=text).json()
+                self.send_buttons(self.template)
         else: 
-            text = messages.text
-            text['recipient']['id'] = self.recipient_id
-            text['message']['text'] = self.agent_response
-            return requests.post(messages.message, json=text).json()
+            text = self.text(self.agent_response)
+            return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=text).json()
+
+    def text(self, message):
+        text = {
+            'recipient': {'id': self.recipient_id},
+            'message': {'text': message}
+        }
+        return text
 
     def send_buttons(self, buttons):
-        return requests.post(messages.button, json=buttons).json()
+        self.template['message']['attachment']['payload']['text'] = self.agent_response
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=buttons).json()
     
     def buttons_template(self, buttons):
         template = {
@@ -180,11 +183,11 @@ class ControllerMessenger(Controller):
         return template
 
     def get_started(self):
-        return requests.post(messages.get_started, json=self.start).json()
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
 
     def action(self, payload, recipient_id):
         self.recipient_id = recipient_id
-        self.typing()
+        self.typing_on()
         self.mark_seen()
         self.payload = payload
         #sender_action.sender_action(self.recipient_id)
@@ -194,15 +197,83 @@ class ControllerMessenger(Controller):
                 return func()
         return self.send_message()
 
-         # def send_quickreply(self):
+    def quick_reply(psid):
+      quickreply= {
+      'messaging_type':'RESPONSE',
+        'recipient':{'id':psid},
+        'message':{
+          'text': "More information",
+          'quick_replies':[]
+        }
         
-    #     quickreply = messages.qreply(self.recipient_id)
-    #     quick_replies = []
-    #     for option in self.user_options.values():
-    #         if type(option) == type("string"):
-    #             quick_replies.append(messages.create_reply(option, option))
-    #         else:
-    #             for item in option:
-    #                 quick_replies.append(messages.create_reply(item, item))
-    #     quickreply['message']['quick_replies'] = quick_replies
-    #     return requests.post(messages.quickreply, json=quickreply).json()
+      }
+      return quickreply
+
+    def movie_template(self, buttons, poster, url, plot, title, rating, duration):
+        template = {
+            "recipient":{ "id": self.recipient_id},
+            "message":{
+            "attachment":{
+                "type":"template",
+                "payload":{
+                "template_type":"generic",
+                "elements":[
+                    {
+                    "title":title + " " + str(rating) + " " + str(duration) + " min",
+                    "image_url":poster,
+                    "subtitle":plot,
+                    "default_action": {
+                        "type": "web_url",
+                        "url": url,
+                        "webview_height_ratio": "tall",
+                    },
+                    "buttons": buttons
+                    }
+                ]
+                }
+            }
+            }
+        }
+        return template
+
+    # def send_quickreply(self):
+
+#     quickreply = messages.qreply(self.recipient_id)
+#     quick_replies = []
+#     for option in self.user_options.values():
+#         if type(option) == type("string"):
+#             quick_replies.append(messages.create_reply(option, option))
+#         else:
+#             for item in option:
+#                 quick_replies.append(messages.create_reply(item, item))
+#     quickreply['message']['quick_replies'] = quick_replies
+#     return requests.post(messages.quickreply, json=quickreply).json()
+
+# menu = {
+#     "psid": "",
+
+#     "persistent_menu": [
+#         {
+#             "locale": "default",
+#             "composer_input_disabled": False,
+#             "call_to_actions": [
+#                 {
+#                     "type": "postback",
+#                     "title": "Talk to an agent",
+#                     "payload": "CARE_HELP"
+#                 },
+#                 {
+#                     "type": "postback",
+#                     "title": "Outfit suggestions",
+#                     "payload": "CURATION"
+#                 },
+#                 {
+#                     "type": "web_url",
+#                     "title": "Shop now",
+#                     "url": "https://wikipedia.com/",
+#                     "webview_height_ratio": "full"
+#                 }
+#             ]
+#         }
+#     ]
+# }
