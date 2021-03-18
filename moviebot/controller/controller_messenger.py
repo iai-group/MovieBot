@@ -7,7 +7,7 @@ from moviebot.utterance.utterance import UserUtterance
 from flask import Flask, request
 import requests
 from os import environ
-from imdb import IMDb
+#from imdb import IMDb
 #import tokens
 #import app
 from moviebot.controller import messages, messages
@@ -17,25 +17,43 @@ from moviebot.database.database import DataBase
 class ControllerMessenger(Controller):
 
     def __init__(self):
-        self.ia = IMDb()
         self.agent = {}
         self.user_options = {}
         self.recipient_id = ""
         self.payload = ""
         self.user_options = {}
         self.agent_response = ""
-        self.movie = ""
         self.movie_id = ""
         self.buttons = []
         self.configuration = ""
         self.info = {}
         self.action_list = [
         {"payload": "ubutton", "action": self.url_button},
-        {"payload": "quickreply", "action": self.send_quickreply}
+        {"payload": "start", "action": self.send_reply}
         ]
-
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
+        self.greeting()
+        self.get_started()
+        
+
+    def get_started(self):
+        return requests.post(messages.get_started, json=self.start).json()
+
+    def greeting(self):
+        greeting = messages.greeting
+        return requests.post(messages.greet, json=greeting).json()
+
+    def send_reply(self):
+        text = messages.text
+        text['recipient']['id'] = self.recipient_id
+        text['message']['text'] = "test"
+        return requests.post(messages.message, json=text).json()
+
+    def persistent_menu(self):
+        menu = messages.menu
+        menu['psid'] = self.recipient_id
+        return requests.post(messages.persistent_menu, json=menu).json()
 
     def get_info(self, movie_id):
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
@@ -67,7 +85,18 @@ class ControllerMessenger(Controller):
         self.get_db()
         self.agent_response, self.user_options = self.agent.start_dialogue()
 
+    def typing(self):
+        typing = messages.typing_on(self.recipient_id)
+        print("TYPING: ", typing)
+        return requests.post(messages.button, json=typing).json()
+
+    def mark_seen(self):
+        mark = messages.mark_seen
+        mark['recipient_id'] = self.recipient_id
+        return requests.post(messages.button, json=mark).json()
+
     def send_quickreply(self):
+        
         quickreply = messages.qreply(self.recipient_id)
         quick_replies = []
         for option in self.user_options.values():
@@ -80,14 +109,9 @@ class ControllerMessenger(Controller):
         return requests.post(messages.quickreply, json=quickreply).json()
 
     def send_template(self):
-        self.movie_id = self.get_movie_id(self.agent_response)
-        self.get_info(self.movie_id)
-        #self.movie = self.ia.get_movie(self.movie_id)
-        
         template = messages.create_template(self.recipient_id, self.buttons[0:3],
             self.info['image_url'], self.info['imdb_link'], self.info['summary'], self.info['title'],
             self.info['rating'], self.info['duration'])
-        
         return requests.post(messages.message, json=template).json()
 
     def create_buttons(self, options):
@@ -113,8 +137,8 @@ class ControllerMessenger(Controller):
             movie_id = response[start+3:start+10]
             return movie_id
 
-    def send_buttons(self, start, end):
-        buttons = messages.buttons_template(self.recipient_id, self.buttons[start:end])
+    def send_buttons(self):
+        buttons = messages.buttons_template(self.recipient_id)
         return requests.post(messages.button, json=buttons).json()
 
     def send_message(self):
@@ -124,23 +148,35 @@ class ControllerMessenger(Controller):
         self.agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
         )
+        self.movie_id = self.get_movie_id(self.agent_response)
+        self.get_info(self.movie_id)
         print("-----------------------------------------------------")
         print(self.payload)
         print("agent_response: ", self.agent_response)
-        
+        print("USER OPTIONS: ", self.user_options.values())
+        print("-----------------------------------------------------")
         if self.user_options:
-            print("options: ", list(self.user_options.values()))
             self.buttons = self.create_buttons(self.user_options.values())
-            print("buttons: ", self.buttons)
+            print("BUTTONS: ", self.buttons)
             if "**" in self.agent_response:
                 self.send_template()
-                #self.send_buttons(3, 5)
+            elif "Please choose" in self.agent_response:
+                buttons = messages.buttons_template(self.recipient_id, self.buttons)
+                self.send_buttons(buttons)
 
+            else: 
+                text = messages.text
+                text['recipient']['id'] = self.recipient_id
+                text['message']['text'] = self.agent_response
+                return requests.post(messages.message, json=text).json()
         else: 
-            text = messages.text
-            text['recipient']['id'] = self.recipient_id
-            text['message']['text'] = self.agent_response
-            return requests.post(messages.message, json=text).json()
+                text = messages.text
+                text['recipient']['id'] = self.recipient_id
+                text['message']['text'] = self.agent_response
+                return requests.post(messages.message, json=text).json()
+
+    def send_buttons(self, buttons):
+        return requests.post(messages.button, json=buttons).json()
 
     def get_started(self):
         return requests.post(messages.get_started, json=self.start).json()
@@ -166,6 +202,8 @@ class ControllerMessenger(Controller):
 
     def action(self, payload, recipient_id):
         self.recipient_id = recipient_id
+        self.typing()
+        self.mark_seen()
         self.payload = payload
         #sender_action.sender_action(self.recipient_id)
         for item in self.action_list:
