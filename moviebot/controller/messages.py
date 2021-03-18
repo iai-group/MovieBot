@@ -118,62 +118,15 @@ def qreply(psid):
     
 
 
-# def url_button(recipient_id, text, url, title):
-#     button = {
-#         "recipient":{
-#             "id": recipient_id
-#         },
-#         "message":{
-#             "attachment":{
-#                 "type":"template",
-#                 "payload":{
-#                     "template_type":"button",
-#                     "text": text,
-#                     "buttons":[
-#                     {
-#                     "type": "web_url",
-#                     "url": url,
-#                     "title": title
-#                     }
-#                 ]
-#             }
-#             }
-#         }
-#     }
-#     return button
-
-def postback_button(recipient_id, text, payload, title):
-    button = {
-        "recipient":{
-            "id": recipient_id
-        },
-        "message":{
-            "attachment":{
-            "type":"template",
-            "payload":{
-                "template_type":"button",
-                "text": text,
-                "buttons":[
-                {
-                    "type": "postback",
-                    "title": title,
-                    "payload": payload
-                }
-                ]
-            }
-            }
-        }
-      }
-    return button
-
-
-
 def buttons_template(recipient_id, buttons):
   buttons = {
     "recipient":{ "id": recipient_id},
-    "message":{"attachment":{"type":"template","payload":{
+    "message":{
+      "attachment":{
+        "type":"template",
+        "payload":{
           "template_type":"button",
-          "text":"What do you want to do next?",
+          "text":"",
           "buttons":buttons
         }
       }
@@ -181,20 +134,5 @@ def buttons_template(recipient_id, buttons):
   }
   return buttons
 
-def template_button(btype, title, payload):
-  button = {"type": btype, "title": title, "payload": payload}
-  return button
 
-# image = {
-#     "recipient": {
-#     },
-#     "message":{
-#         "attachment":{
-#           "type":"image", 
-#           "payload":{
-#             "is_reusable": True,
-#             "url": "https://i.imgur.com/ceuUozR.jpeg"
-#           }
-#         }
-#     }
-# }
+
