@@ -97,10 +97,9 @@ def receive_message():
 
     else:
         output = request.get_json()
-        print(output)
         recipient_id = get_id(output)
         payload = get_message(output)
-        print(CONTROLLER.action(payload, recipient_id))
+        CONTROLLER.action(payload, recipient_id)
         return "Message Processed"
 
 def get_message(output):
@@ -109,8 +108,8 @@ def get_message(output):
         for message in messaging:
             if message.get('message'):
                 if message['message'].get('text'): 
-                    m = message['message']['text']
-                    return m
+                    msg = message['message']['text']
+                    return msg
             if message.get('postback'):
                 return message['postback']['payload']
 
