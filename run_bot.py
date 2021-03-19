@@ -1,7 +1,6 @@
 from flask import Flask, request
 #import requests
 from os import environ
-import tokens
 
 import run_bot
 import os
@@ -86,7 +85,7 @@ def get_config():
     return configuration
 
 app = Flask(__name__)
-VERIFY_TOKEN = tokens.VERIFY_TOKEN
+VERIFY_TOKEN = 'bonobo'
 CONTROLLER = ControllerMessenger()
 
 @app.route('/', methods=['GET', 'POST'])
@@ -95,8 +94,7 @@ def receive_message():
         token_sent = request.args.get("hub.verify_token")
         return verify_fb_token(token_sent)
 
-    else:
-        
+    else:   
         output = request.get_json()
         recipient_id = get_id(output)
         payload = get_message(output)

@@ -11,6 +11,7 @@ from os import environ
 #import tokens
 #import app
 from moviebot.database.database import DataBase
+import time
 ACCESS_TOKEN = 'EAAF5ZA8L6hnUBAH9CjUB2YExM9WMvi3CitPQOzivVwnC3NEKZB7pxhxHeUrXmEDFMqTBEfJZCkV5MUGV3hyT2vppi3w80YBHzO5oMow7iOAfQxEpunp2w2EVSDn1Sq1e32ItNDdQMZAkzdjxMQSdzzKhcy6nsrj3dBIDUfalJt1XYcc7dppy'
 
 class ControllerMessenger(Controller):
@@ -28,7 +29,8 @@ class ControllerMessenger(Controller):
         self.info = {}
         self.template = {}
         self.action_list = [
-        {"payload": "start", "action": self.send_reply}
+        {"payload": "start", "action": self.instructions},
+        {"payload": "help", "action": self.help}
         ]
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
@@ -88,18 +90,14 @@ class ControllerMessenger(Controller):
 
     def typing_on(self):
         typing = {
-            "recipient":{
-            "id": self.recipient_id
-            },
+            "recipient":{"id": self.recipient_id},
             "sender_action": "typing_on"
         }
-        return typing
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=typing).json()
 
     def mark_seen(self):
         mark_seen = {
-            "recipient": {
-                "id": self.recipient_id
-            },
+            "recipient": {"id": self.recipient_id},
             "sender_action": "mark_seen"
             }
         return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=mark_seen).json()
@@ -113,7 +111,6 @@ class ControllerMessenger(Controller):
     def create_buttons(self, options):
         buttons = []
         for option in options:
-            print("type: ", type(option))
             if type(option) == type("string"):
                 print("string option: ", option)
                 buttons.append(self.create_button(option))
@@ -134,23 +131,24 @@ class ControllerMessenger(Controller):
             movie_id = response[start+3:start+10]
             return movie_id
 
-    def send_message(self):
+    def continue_dialogue(self):
         user_utterance = UserUtterance({'text': self.payload})
         self.agent_response, self.user_options = self.agent.continue_dialogue(
             user_utterance, self.user_options
         )
         self.movie_id = self.get_movie_id(self.agent_response)
         self.get_info(self.movie_id)
-        print("-----------------------------------------------------")
         print("agent_response: ", self.agent_response)
-        print("USER OPTIONS: ", self.user_options.values())
-        print("-----------------------------------------------------")
+
+
+    def send_message(self):
+        self.continue_dialogue()
         if self.user_options:
             self.buttons = self.create_buttons(self.user_options.values())
             if "**" in self.agent_response:
                 self.send_template()
             else: 
-                self.send_buttons(self.template)
+                self.send_buttons()
         else: 
             text = self.text(self.agent_response)
             return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=text).json()
@@ -162,9 +160,8 @@ class ControllerMessenger(Controller):
         }
         return text
 
-    def send_buttons(self, buttons):
-        self.template['message']['attachment']['payload']['text'] = self.agent_response
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=buttons).json()
+    def send_buttons(self):
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=self.template).json()
     
     def buttons_template(self, buttons):
         template = {
@@ -174,7 +171,7 @@ class ControllerMessenger(Controller):
                 "type":"template",
                 "payload":{
                 "template_type":"button",
-                "text":"",
+                "text":self.agent_response,
                 "buttons":buttons
                 }
             }
@@ -190,9 +187,9 @@ class ControllerMessenger(Controller):
         self.typing_on()
         self.mark_seen()
         self.payload = payload
-        #sender_action.sender_action(self.recipient_id)
+        #time.sleep(2)
         for item in self.action_list:
-            if payload == item['payload']:
+            if payload.lower() == item['payload']:
                 func = item.get('action')
                 return func()
         return self.send_message()
@@ -235,6 +232,30 @@ class ControllerMessenger(Controller):
             }
         }
         return template
+
+    def help(self):
+        self.instructions(True)
+        # help = "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
+        #         "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
+        #         "To restart the recommendation process, issue \"/restart\".\n\n" \
+        #         "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
+        #         "To see these instructions again, issue: \"/help\"." 
+        # return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=self.text(help)).json()
+
+    def instructions(self, help=False):
+        response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
+                "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
+                "To restart the recommendation process, issue \"/restart\".\n\n" \
+                "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
+                "To see these instructions again, issue: \"/help\"." 
+        instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
+                       'I can recommend you movies based on your preferences.\n' \
+                       'I will ask you a few questions and based on your answers, ' \
+                       'I will try to find a movie for you.\n\n' 
+        if help is False:
+            response = instructions + response
+        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=self.text(response)).json()
+         
 
     # def send_quickreply(self):
 
