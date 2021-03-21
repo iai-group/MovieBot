@@ -96,6 +96,7 @@ def receive_message():
 
     else:   
         output = request.get_json()
+        print(output)
         recipient_id = get_id(output)
         payload = get_message(output)
         CONTROLLER.action(payload, recipient_id)
@@ -104,19 +105,17 @@ def receive_message():
 
 def get_message(output):
     for event in output['entry']:
-        messaging = event['messaging']
-        for message in messaging:
+        for message in event['messaging']:
             if message.get('message'):
                 if message['message'].get('text'): 
-                    msg = message['message']['text']
-                    return msg
+                    return message['message']['text']
             if message.get('postback'):
                 return message['postback']['payload']
 
 def get_id(output):
     for event in output['entry']:
         messaging = event['messaging']
-        for message in messaging:
+        for message in event['messaging']:
             if message.get('message') or message.get('postback'):
                 recipient_id = message['sender']['id']
                 return recipient_id
