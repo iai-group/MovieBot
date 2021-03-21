@@ -21,14 +21,11 @@ class ControllerMessenger(Controller):
     def __init__(self):
         self.agent = {}
         self.user_options = {}
-        self.payload = ""
         self.user_options = {}
         self.agent_response = {}
-        self.movie_id = ""
         self.configuration = {}
         self.info = {}
         self.action_list = [
-        {"payload": "start", "action": self.instructions},
         {"payload": "help", "action": self.help}
         ]
         #images.upload_images()
@@ -57,14 +54,16 @@ class ControllerMessenger(Controller):
         menu['psid'] = user_id
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=menu).json()
 
-    def get_info(self, movie_id):
+    def get_info(self, movie_id, user_id):
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
-            self.info['title'] = row[1]
-            self.info['rating'] = row[4]
-            self.info['duration'] = row[6]
-            self.info['summary'] = row[10]
-            self.info["image_url"] = row[9]
-            self.info['imdb_link'] = row[12]
+            self.info[user_id] = {
+                "title": row[1],
+                "rating": row[4],
+                "duration": row[6],
+                "summary": row[10],
+                "image_url": row[9],
+                "imdb_link": row[12]
+            }
 
     def lookup(self):
         conn = sqlite3.connect(self.get_db())
@@ -111,8 +110,8 @@ class ControllerMessenger(Controller):
 
     def send_template(self, user_id, buttons):
         template = self.movie_template(user_id, buttons[0:3],
-            self.info['image_url'], self.info['imdb_link'], self.info['summary'], self.info['title'],
-            self.info['rating'], self.info['duration'])
+            self.info[user_id]['image_url'], self.info[user_id]['imdb_link'], self.info[user_id]['summary'], self.info[user_id]['title'],
+            self.info[user_id]['rating'], self.info[user_id]['duration'])
         return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
 
     def create_buttons(self, user_id, options):
@@ -138,18 +137,18 @@ class ControllerMessenger(Controller):
             movie_id = response[start+3:start+10]
             return movie_id
 
-    def continue_dialogue(self, user_id):
-        user_utterance = UserUtterance({'text': self.payload})
+    def continue_dialogue(self, user_id, payload):
+        user_utterance = UserUtterance({'text': payload})
         self.agent_response[user_id], self.user_options[user_id] =  \
             self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
-        self.movie_id = self.get_movie_id(self.agent_response[user_id])
-        self.get_info(self.movie_id)
+        movie_id = self.get_movie_id(self.agent_response[user_id])
+        self.get_info(movie_id, user_id)
         print("agent_response: ", self.agent_response[user_id])
 
-    def send_message(self, user_id):
-        self.continue_dialogue(user_id)
+    def send_message(self, user_id, payload):
+        self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.create_buttons(user_id, self.user_options[user_id].values())
             if "**" in self.agent_response[user_id]:
@@ -195,13 +194,12 @@ class ControllerMessenger(Controller):
         self.start_agent(recipient_id)
         self.typing_on(recipient_id)
         self.mark_seen(recipient_id)
-        self.payload = payload
         #time.sleep(2)
         for item in self.action_list:
             if payload.lower() == item['payload']:
                 func = item.get('action')
                 return func()
-        return self.send_message(recipient_id)
+        return self.send_message(recipient_id, payload)
 
     def quick_reply(psid):
       quickreply= {
