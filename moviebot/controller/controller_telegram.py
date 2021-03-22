@@ -10,9 +10,9 @@ import time
 from copy import deepcopy
 
 import yaml
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
-from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
-                          ConversationHandler)
+# from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
+# from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
+#                           ConversationHandler)
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller

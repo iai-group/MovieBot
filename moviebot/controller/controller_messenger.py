@@ -29,11 +29,16 @@ class ControllerMessenger(Controller):
         self.agent_response = {}
         self.configuration = {}
         self.info = {}
-        self.action_list = []
+        self.action_list = [
+            {"payload": "start", "action": self.test}
+        ]
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
         #self.greeting()
         self.get_started()
+    
+    def test(self):
+        print("started")
 
     def user_db_insert(self, id, like, seen):
         conn = sqlite3.connect('data/user_data.db')
@@ -81,10 +86,7 @@ class ControllerMessenger(Controller):
             }
         return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+ACCESS_TOKEN, json=greeting).json()
 
-    def persistent_menu(self):
-        menu = messages.menu
-        menu['psid'] = user_id
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=menu).json()
+    
 
     def get_info(self, movie_id, user_id):
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
@@ -223,6 +225,7 @@ class ControllerMessenger(Controller):
         self.start_agent(recipient_id)
         self.typing_on(recipient_id)
         self.mark_seen(recipient_id)
+        self.persistent_menu(recipient_id)
         #time.sleep(2)
         for item in self.action_list:
             if payload.lower() == item['payload']:
@@ -307,31 +310,33 @@ class ControllerMessenger(Controller):
 #     quickreply['message']['quick_replies'] = quick_replies
 #     return requests.post(messages.quickreply, json=quickreply).json()
 
-# menu = {
-#     "psid": "",
+    def persistent_menu(self, user_id):
+            menu = {
+                "psid": user_id,
+                "persistent_menu": [
+                    {
+                        "locale": "default",
+                        "composer_input_disabled": False,
+                        "call_to_actions": [
+                            {
+                                "type": "postback",
+                                "title": "Talk to an agent",
+                                "payload": "CARE_HELP"
+                            },
+                            {
+                                "type": "postback",
+                                "title": "Outfit suggestions",
+                                "payload": "CURATION"
+                            },
+                            {
+                                "type": "web_url",
+                                "title": "Shop now",
+                                "url": "https://wikipedia.com/",
+                                "webview_height_ratio": "full"
+                            }
+                        ]
+                    }
+                ]
+            }
+            return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
 
-#     "persistent_menu": [
-#         {
-#             "locale": "default",
-#             "composer_input_disabled": False,
-#             "call_to_actions": [
-#                 {
-#                     "type": "postback",
-#                     "title": "Talk to an agent",
-#                     "payload": "CARE_HELP"
-#                 },
-#                 {
-#                     "type": "postback",
-#                     "title": "Outfit suggestions",
-#                     "payload": "CURATION"
-#                 },
-#                 {
-#                     "type": "web_url",
-#                     "title": "Shop now",
-#                     "url": "https://wikipedia.com/",
-#                     "webview_height_ratio": "full"
-#                 }
-#             ]
-#         }
-#     ]
-# }
