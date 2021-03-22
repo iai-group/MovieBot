@@ -35,6 +35,18 @@ class ControllerMessenger(Controller):
         #self.greeting()
         self.get_started()
 
+    def user_db_insert(self, id, like, seen):
+        conn = sqlite3.connect('data/user_data.db')
+        c = conn.cursor()
+        c.execute(f"INSERT INTO USER_DATA (PSID, Liked_Movies, Seen_Movies) VALUES ({id}, '{like}', '{seen}')")
+        conn.commit()
+
+    def user_db_del(self, id):
+        conn = sqlite3.connect('data/user_data.db')
+        c = conn.cursor()
+        c.execute(f"DELETE FROM USER_DATA where PSID={id}")
+        conn.commit()
+
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
 
