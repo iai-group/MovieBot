@@ -40,13 +40,19 @@ class ControllerMessenger(Controller):
     def test(self):
         print("started")
 
-    def userDBIns_like(PSID, Movie_ID, like=1):
+    def add_to_db(self, user_id, payload, movie_id):
+        if payload == "I have already watched it.":
+            self.userDBIns_seen(user_id, movie_id)
+        if payload == "I like this recommendation.":
+            self.userDBIns_like(user_id, movie_id)
+
+    def userDBIns_like(self, PSID, Movie_ID, like=1):
         conn = sqlite3.connect('data/user_data.db')
         c = conn.cursor()
         c.execute(f"INSERT INTO USER_DATA (PSID, Movie_ID, Liked_Movies) VALUES ({PSID}, {Movie_ID}, '{like}')")
         conn.commit()
 
-    def userDBIns_seen(PSID, Movie_ID, seen=1):
+    def userDBIns_seen(self, PSID, Movie_ID, seen=1):
         conn = sqlite3.connect('data/user_data.db')
         c = conn.cursor()
         c.execute(f"INSERT INTO USER_DATA (PSID, Movie_ID, Seen_Movies) VALUES ({PSID}, {Movie_ID}, '{seen}')")
@@ -183,6 +189,7 @@ class ControllerMessenger(Controller):
         )
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.get_info(movie_id, user_id)
+        self.add_to_db(user_id, payload, movie_id)
         print("agent_response: ", self.agent_response[user_id])
 
     def send_message(self, user_id, payload):
