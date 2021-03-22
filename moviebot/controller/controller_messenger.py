@@ -35,10 +35,16 @@ class ControllerMessenger(Controller):
         #self.greeting()
         self.get_started()
 
-    def user_db_insert(self, id, like, seen):
+    def userDBIns_like(PSID, Movie_ID, like=1):
         conn = sqlite3.connect('data/user_data.db')
         c = conn.cursor()
-        c.execute(f"INSERT INTO USER_DATA (PSID, Liked_Movies, Seen_Movies) VALUES ({id}, '{like}', '{seen}')")
+        c.execute(f"INSERT INTO USER_DATA (PSID, Movie_ID, Liked_Movies) VALUES ({PSID}, {Movie_ID}, '{like}')")
+        conn.commit()
+
+    def dbins_seen(PSID, Movie_ID, seen=1):
+        conn = sqlite3.connect('data/user_data.db')
+        c = conn.cursor()
+        c.execute(f"INSERT INTO USER_DATA (PSID, Movie_ID, Seen_Movies) VALUES ({PSID}, {Movie_ID}, '{seen}')")
         conn.commit()
 
     def user_db_del(self, id):
