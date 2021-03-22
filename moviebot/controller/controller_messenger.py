@@ -7,6 +7,8 @@ from moviebot.utterance.utterance import UserUtterance
 from flask import Flask, request
 import requests
 from os import environ
+import os
+import yaml
 #from imdb import IMDb
 #import tokens
 #import app
@@ -15,26 +17,50 @@ from moviebot.nlu.annotation.slots import Slots
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 import time
 ACCESS_TOKEN = 'EAAF5ZA8L6hnUBAH9CjUB2YExM9WMvi3CitPQOzivVwnC3NEKZB7pxhxHeUrXmEDFMqTBEfJZCkV5MUGV3hyT2vppi3w80YBHzO5oMow7iOAfQxEpunp2w2EVSDn1Sq1e32ItNDdQMZAkzdjxMQSdzzKhcy6nsrj3dBIDUfalJt1XYcc7dppy'
+template_url = 'https://graph.facebook.com/v9.0/me/messages?access_token='
 
 class ControllerMessenger(Controller):
 
     def __init__(self):
+        self.token = ""
         self.agent = {}
         self.user_options = {}
         self.user_options = {}
         self.agent_response = {}
         self.configuration = {}
         self.info = {}
-        self.action_list = [
-        {"payload": "help", "action": self.help}
-        ]
+        self.action_list = []
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
         #self.greeting()
         self.get_started()
+
+    def load_bot_token(self, bot_token_path):
+        """Loads the Token for the Telegram bot
+
+        :return: the token of the Telegram Bot
+
+        Args:
+            bot_token_path:
+
+        """
+        if isinstance(bot_token_path, str):
+            if os.path.isfile(bot_token_path):
+                with open(bot_token_path, 'r') as file:
+                    token_config = yaml.load(file, Loader=yaml.Loader)
+                    if 'MESSENGER_TOKEN' in token_config:
+                        return token_config['MESSENGER_TOKEN']
+                    else:
+                        raise ValueError(
+                            f'The token for Messenger bot is not found in the file '
+                            f'{bot_token_path}')
+            else:
+                raise FileNotFoundError(f'File {bot_token_path} not found')
+        else:
+            raise ValueError('Unacceptable type of Token file name')
         
     def get_started(self):
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def greeting(self):
         greeting = {
@@ -42,12 +68,6 @@ class ControllerMessenger(Controller):
             "text": "Hello!"
             }
         return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+ACCESS_TOKEN, json=greeting).json()
-
-    def send_reply(self):
-        text = messages.text
-        text['recipient']['id'] = user_id
-        text['message']['text'] = "test"
-        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=text).json()
 
     def persistent_menu(self):
         menu = messages.menu
@@ -82,10 +102,8 @@ class ControllerMessenger(Controller):
     def execute_agent(self, configuration):
         self.configuration = configuration
         self.configuration['new_user'] = {}
-        #self.agent = Agent(configuration)
-        #self.agent.initialize()
         self.get_db()
-        #self.agent_response, self.user_options = self.agent.start_dialogue()
+        self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
 
     def start_agent(self, user_id):
         if user_id not in self.agent:
@@ -112,7 +130,7 @@ class ControllerMessenger(Controller):
         template = self.movie_template(user_id, buttons[0:3],
             self.info[user_id]['image_url'], self.info[user_id]['imdb_link'], self.info[user_id]['summary'], self.info[user_id]['title'],
             self.info[user_id]['rating'], self.info[user_id]['duration'])
-        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
+        return requests.post(template_url+self.token, json=template).json()
 
     def create_buttons(self, user_id, options):
         buttons = []
@@ -158,7 +176,7 @@ class ControllerMessenger(Controller):
                 self.send_buttons(template)
         else: 
             text = self.text(user_id, self.agent_response[user_id])
-            return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=text).json()
+            return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
 
     def text(self, user_id, message):
         text = {
@@ -190,7 +208,6 @@ class ControllerMessenger(Controller):
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
 
     def action(self, payload, recipient_id):
-      
         self.start_agent(recipient_id)
         self.typing_on(recipient_id)
         self.mark_seen(recipient_id)
