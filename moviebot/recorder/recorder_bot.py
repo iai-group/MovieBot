@@ -21,6 +21,7 @@ class RecorderBot:
         """
         if os.path.isdir(history_folder):
             self.path = history_folder
+            print("history_folder")
         else:
             raise FileNotFoundError(
                 'History path "{}" not found.'.format(history_folder))

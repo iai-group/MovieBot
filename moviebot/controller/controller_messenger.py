@@ -16,6 +16,7 @@ from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 import time
+from datetime import datetime
 ACCESS_TOKEN = 'EAAF5ZA8L6hnUBAH9CjUB2YExM9WMvi3CitPQOzivVwnC3NEKZB7pxhxHeUrXmEDFMqTBEfJZCkV5MUGV3hyT2vppi3w80YBHzO5oMow7iOAfQxEpunp2w2EVSDn1Sq1e32ItNDdQMZAkzdjxMQSdzzKhcy6nsrj3dBIDUfalJt1XYcc7dppy'
 template_url = 'https://graph.facebook.com/v9.0/me/messages?access_token='
 
@@ -24,6 +25,7 @@ class ControllerMessenger(Controller):
     def __init__(self):
         self.token = ""
         self.agent = {}
+        self.record_data = {}
         self.user_options = {}
         self.user_options = {}
         self.agent_response = {}
@@ -33,7 +35,8 @@ class ControllerMessenger(Controller):
         self.action_list = [
             {"payload": "start", "action": self.test},
             {"payload": "help", "action": self.instructions},
-            {"payload": "accept", "action": self.store_user}
+            {"payload": "accept", "action": self.store_user},
+            {"payload": "restart", "action": self.restart}
         ]
         #images.upload_images()
         self.start = {"get_started": {"payload": "start"}}
@@ -50,6 +53,8 @@ class ControllerMessenger(Controller):
     def store_user(self, user_id):
         self.users[user_id] = True
         print(self.users)
+        self.start_agent(user_id)
+        self.instructions(user_id, False)
 
     def add_to_db(self, user_id, payload, movie_id):
         if self.users[user_id] is False:
@@ -144,12 +149,17 @@ class ControllerMessenger(Controller):
         self.get_db()
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
 
-    def start_agent(self, user_id):
-        if user_id not in self.agent:
-            self.agent[user_id] = Agent(self.configuration)
-            self.user_options[user_id] = {}
-            self.agent[user_id].initialize(user_id)
-            self.agent_response[user_id], self.user_options[user_id] = self.agent[user_id].start_dialogue()
+    def restart(self, user_id):
+        self.start_agent(user_id, True)
+        
+
+    def start_agent(self, user_id, restart=False):
+        #if user_id not in self.agent:
+        self.agent[user_id] = Agent(self.configuration)
+        self.user_options[user_id] = {}
+        self.agent[user_id].initialize(user_id)
+        self.agent_response[user_id], self.user_options[user_id] = self.agent[user_id].start_dialogue(None, restart)
+        self.text(user_id, self.agent_response[user_id])
 
     def typing_on(self, user_id):
         typing = {
@@ -200,23 +210,26 @@ class ControllerMessenger(Controller):
             self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
-        self.record(user_id)
+        #self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.get_info(movie_id, user_id)
         #self.add_to_db(user_id, payload, movie_id)
         print("agent_response: ", self.agent_response[user_id])
 
-    def record(self, user_id):
-        if self.agent[user_id].bot_recorder:
-            self.record_data[user_id] = {
-                'Timestamp': str(update.message.date),
-                'User_Input': update.message.text
-            }
-            self.record_data[user_id].update(self.record_data_agent[user_id])
-            self.agent[user_id].bot_recorder.record_user_data(
-                user_id, self.record_data[user_id])
+    # def record(self, user_id, payload):
+    #     print(self.agent[user_id].bot_recorder)
+    #     if self.agent[user_id].bot_recorder:
+    #         self.record_data[user_id] = {
+    #             'Timestamp': str(datetime.now()),
+    #             'User_Input': payload
+    #         }
+    #         #self.record_data[user_id].update(self.record_data_agent[user_id])
+    #         self.agent[user_id].bot_recorder.record_user_data(
+    #             user_id, self.record_data[user_id])
 
     def send_message(self, user_id, payload):
+        if user_id not in self.agent:
+            self.start_agent(user_id)
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.create_buttons(user_id, self.user_options[user_id].values())
@@ -226,9 +239,9 @@ class ControllerMessenger(Controller):
                 template = self.buttons_template(buttons, user_id)
                 self.send_buttons(template)
         else: 
-            text = self.text(user_id, self.agent_response[user_id])
+            #text = self.text(user_id, self.agent_response[user_id])
             #return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
-            self.text(user_id, text)
+            self.text(user_id, self.agent_response[user_id])
 
 
     def send_buttons(self, template):
@@ -239,10 +252,8 @@ class ControllerMessenger(Controller):
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
 
     def action(self, payload, recipient_id):
-        self.start_agent(recipient_id)
         self.typing_on(recipient_id)
         self.mark_seen(recipient_id)
-        #self.persistent_menu(recipient_id)
         #time.sleep(2)
         for item in self.action_list:
             if payload.lower() == item['payload']:
