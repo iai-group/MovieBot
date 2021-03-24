@@ -189,7 +189,13 @@ class ControllerMessenger(Controller):
         )
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.get_info(movie_id, user_id)
-        self.add_to_db(user_id, payload, movie_id)
+        #self.add_to_db(user_id, payload, movie_id)
+        # if self.agent[user_id].bot_recorder:
+        #     record_data = {"Timestamp": user_utterance.get_timestamp()}
+        #     record_data.update(self.record_data_agent[user_id])
+        #     record_data.update({"Execution_Time": str(round(end - start, 3))})
+        #     self.agent[user_id].bot_recorder.record_user_data(
+        #         user_id, record_data)
         print("agent_response: ", self.agent_response[user_id])
 
     def send_message(self, user_id, payload):
