@@ -29,7 +29,6 @@ class ControllerMessenger(Controller):
         self.record_data = {}
         self.user_messages = {}
         self.record_data_agent = {}
-        #self.user_options = {}
         self.user_options = {}
         self.agent_response = {}
         self.configuration = {}
@@ -38,11 +37,11 @@ class ControllerMessenger(Controller):
         self.load_data = {}
         self.path = "conversation_history/"
         self.action_list = [
-            {"payload": "start", "action": self.test},
-            {"payload": "help", "action": self.instructions},
+            {"payload": "start", "action": self.privacy_policy},
+            {"payload": "/help", "action": self.instructions},
             {"payload": "accept", "action": self.store_user},
-            {"payload": "restart", "action": self.restart},
-            {"payload": "exit", "action": self.exit}
+            {"payload": "/restart", "action": self.restart},
+            {"payload": "/exit", "action": self.exit}
         ]
         self.start = {"get_started": {"payload": "start"}}
         self.get_started()
@@ -50,11 +49,6 @@ class ControllerMessenger(Controller):
         
     def get_started(self):
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
-
-    def test(self, user_id):
-        print("started")
-        #self.persistent_menu()
-        self.privacy_policy(user_id)
 
     def store_user(self, user_id):
         self.users[user_id] = True
@@ -85,13 +79,8 @@ class ControllerMessenger(Controller):
                 raise FileNotFoundError(f'File {bot_token_path} not found')
         else:
             raise ValueError('Unacceptable type of Token file name')
-        
     
-
-    
-
-    
-    def get_info(self, movie_id, user_id):
+    def movie_info(self, movie_id, user_id):
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
             self.info[user_id] = {
                 "title": row[1],
@@ -103,7 +92,7 @@ class ControllerMessenger(Controller):
             }
 
     def lookup(self):
-        conn = sqlite3.connect(self.get_db())
+        conn = sqlite3.connect(self.configuration['DATA']['db_path'])
         c = conn.cursor()
         return c
 
@@ -111,14 +100,9 @@ class ControllerMessenger(Controller):
         for e in element:
             return e
 
-    def get_db(self):
-        db_path = self.configuration['DATA']['db_path']
-        return db_path
-
     def execute_agent(self, configuration):
         self.configuration = configuration
         self.configuration['new_user'] = {}
-        self.get_db()
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
 
     def restart(self, user_id):
@@ -139,7 +123,7 @@ class ControllerMessenger(Controller):
 
     def movie_template(self, user_id, buttons):
         title = self.info[user_id]['title'] + " " + str(self.info[user_id]['rating']) + \
-            str(self.info[user_id]['duration']) + " min"
+            " " + str(self.info[user_id]['duration']) + " min"
         self.user_messages[user_id].template(
             buttons[0:3], self.info[user_id]['image_url'], self.info[user_id]['imdb_link'], \
                 self.info[user_id]['summary'], title)
@@ -169,7 +153,7 @@ class ControllerMessenger(Controller):
         )
         self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
-        self.get_info(movie_id, user_id)
+        self.movie_info(movie_id, user_id)
         print("agent_response: ", self.agent_response[user_id])
 
     def record(self, user_id, payload):
@@ -190,7 +174,6 @@ class ControllerMessenger(Controller):
                 data = json.load(json_file)
                 for conversation in data:
                     for movie in conversation["Context"]:
-                        #self.load[user_id]
                         self.load_data[user_id][movie] = conversation["Context"][movie]
 
     def send_message(self, user_id, payload):
@@ -205,9 +188,6 @@ class ControllerMessenger(Controller):
                 self.user_messages[user_id].buttons_template(buttons, self.agent_response[user_id])
         else: 
             self.user_messages[user_id].text(self.agent_response[user_id])
-
-    def get_started(self):
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def action(self, output):
         recipient_id = self.get_id(output)
@@ -247,9 +227,9 @@ class ControllerMessenger(Controller):
     def instructions(self, user_id, help=True):
         response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
-                "To restart the recommendation process, issue \"restart\".\n\n" \
+                "To restart the recommendation process, issue \"/restart\".\n\n" \
                 "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
-                "To see these instructions again, issue: \"help\"." 
+                "To see these instructions again, issue: \"/help\"." 
 
         instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
                        'I can recommend you movies based on your preferences.\n' \
@@ -266,29 +246,5 @@ class ControllerMessenger(Controller):
         payload = ["accept", "reject"]
         self.user_messages[user_id].quickreply("Accept or Reject", title, payload)
          
-    def persistent_menu(self):
-        menu = {
-            "get_started":{
-                "payload": "start"
-            },
-            "persistent_menu": [
-                {
-                    "locale": "default",
-                    "composer_input_disabled": False,
-                    "call_to_actions": [
-                        {
-                            "type": "postback",
-                            "title": "Talk to an agent",
-                            "payload": "CARE_HELP"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "Outfit suggestions",
-                            "payload": "CURATION"
-                        }
-                    ]
-                }
-            ]
-        }
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
+
 

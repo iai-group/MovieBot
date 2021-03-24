@@ -34,6 +34,7 @@ class Messages:
             buttons.append(
                 {"type": "postback", "title": option, "payload": option}
             )
+        #self.buttons = buttons
         return buttons
 
     def typing_on(self):
@@ -49,32 +50,6 @@ class Messages:
             "sender_action": "mark_seen"
             }
         return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=mark_seen).json()
-
-    def persistent_menu(self):
-        menu = {
-            "get_started":{
-                "payload": "start"
-            },
-            "persistent_menu": [
-                {
-                    "locale": "default",
-                    "composer_input_disabled": False,
-                    "call_to_actions": [
-                        {
-                            "type": "postback",
-                            "title": "Talk to an agent",
-                            "payload": "CARE_HELP"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "Outfit suggestions",
-                            "payload": "CURATION"
-                        }
-                    ]
-                }
-            ]
-        }
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
     
     def text(self, message):
             text = {
@@ -110,7 +85,6 @@ class Messages:
         }
         return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=template).json()
 
-
     def buttons_template(self, buttons, text):
         template = {
             "recipient":{ "id": self.user_id},
@@ -126,3 +100,30 @@ class Messages:
             }
         }
         return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=template).json()
+    
+    
+    # def persistent_menu(self):
+    #     menu = {
+    #         "get_started":{
+    #             "payload": "start"
+    #         },
+    #         "persistent_menu": [
+    #             {
+    #                 "locale": "default",
+    #                 "composer_input_disabled": False,
+    #                 "call_to_actions": [
+    #                     {
+    #                         "type": "postback",
+    #                         "title": "Talk to an agent",
+    #                         "payload": "CARE_HELP"
+    #                     },
+    #                     {
+    #                         "type": "postback",
+    #                         "title": "Outfit suggestions",
+    #                         "payload": "CURATION"
+    #                     }
+    #                 ]
+    #             }
+    #         ]
+    #     }
+    #     return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
