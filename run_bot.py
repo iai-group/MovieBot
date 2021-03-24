@@ -2,7 +2,6 @@ from flask import Flask, request
 #import requests
 from os import environ
 
-import run_bot
 import os
 import sys
 import yaml
@@ -97,28 +96,8 @@ def receive_message():
     else:   
         output = request.get_json()
         print(output)
-        recipient_id = get_id(output)
-        payload = get_message(output)
-        CONTROLLER.action(payload, recipient_id)
+        CONTROLLER.action(output)
         return "Message Processed"
-
-
-def get_message(output):
-    for event in output['entry']:
-        for message in event['messaging']:
-            if message.get('message'):
-                if message['message'].get('text'): 
-                    return message['message']['text']
-            if message.get('postback'):
-                return message['postback']['payload']
-
-def get_id(output):
-    for event in output['entry']:
-        messaging = event['messaging']
-        for message in event['messaging']:
-            if message.get('message') or message.get('postback'):
-                recipient_id = message['sender']['id']
-                return recipient_id
 
 def verify_fb_token(token_sent):
     if token_sent == VERIFY_TOKEN:

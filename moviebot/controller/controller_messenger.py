@@ -16,6 +16,7 @@ from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 import time
+from datetime import datetime
 ACCESS_TOKEN = 'EAAF5ZA8L6hnUBAH9CjUB2YExM9WMvi3CitPQOzivVwnC3NEKZB7pxhxHeUrXmEDFMqTBEfJZCkV5MUGV3hyT2vppi3w80YBHzO5oMow7iOAfQxEpunp2w2EVSDn1Sq1e32ItNDdQMZAkzdjxMQSdzzKhcy6nsrj3dBIDUfalJt1XYcc7dppy'
 template_url = 'https://graph.facebook.com/v9.0/me/messages?access_token='
 
@@ -24,45 +25,37 @@ class ControllerMessenger(Controller):
     def __init__(self):
         self.token = ""
         self.agent = {}
+        self.record_data = {}
+        self.record_data_agent = {}
         self.user_options = {}
         self.user_options = {}
         self.agent_response = {}
         self.configuration = {}
         self.info = {}
+        self.users = {}
         self.action_list = [
-            {"payload": "start", "action": self.test}
+            {"payload": "start", "action": self.test},
+            {"payload": "help", "action": self.instructions},
+            {"payload": "accept", "action": self.store_user},
+            {"payload": "restart", "action": self.restart},
+            {"payload": "exit", "action": self.exit}
         ]
-        #images.upload_images()
-        self.start = {"get_started": {"payload": "start"}}
+        #self.start = {"get_started": {"payload": "start"}}
+        #self.get_started()
+        self.persistent_menu()
         #self.greeting()
-        self.get_started()
+        
     
-    def test(self):
+    def test(self, user_id):
         print("started")
+        #self.persistent_menu()
+        self.privacy_policy(user_id)
 
-    def add_to_db(self, user_id, payload, movie_id):
-        if payload == "I have already watched it.":
-            self.userDBIns_seen(user_id, movie_id)
-        if payload == "I like this recommendation.":
-            self.userDBIns_like(user_id, movie_id)
-
-    def userDBIns_like(self, PSID, Movie_ID, like=1):
-        conn = sqlite3.connect('data/user_data.db')
-        c = conn.cursor()
-        c.execute(f"INSERT INTO USER_DATA (PSID, Movie_ID, Liked_Movies) VALUES ({PSID}, {Movie_ID}, '{like}')")
-        conn.commit()
-
-    def userDBIns_seen(self, PSID, Movie_ID, seen=1):
-        conn = sqlite3.connect('data/user_data.db')
-        c = conn.cursor()
-        c.execute(f"INSERT INTO USER_DATA (PSID, Movie_ID, Seen_Movies) VALUES ({PSID}, {Movie_ID}, '{seen}')")
-        conn.commit()
-
-    def user_db_del(self, id):
-        conn = sqlite3.connect('data/user_data.db')
-        c = conn.cursor()
-        c.execute(f"DELETE FROM USER_DATA where PSID={id}")
-        conn.commit()
+    def store_user(self, user_id):
+        self.users[user_id] = True
+        print(self.users)
+        self.start_agent(user_id)
+        self.instructions(user_id, False)
 
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
@@ -92,14 +85,14 @@ class ControllerMessenger(Controller):
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def greeting(self):
+        print("greeting")
         greeting = {
-            "locale": "default",
+            "locale": "nn_NO",
             "text": "Hello!"
             }
-        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+ACCESS_TOKEN, json=greeting).json()
+        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=greeting).json()
 
     
-
     def get_info(self, movie_id, user_id):
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
             self.info[user_id] = {
@@ -131,12 +124,20 @@ class ControllerMessenger(Controller):
         self.get_db()
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
 
-    def start_agent(self, user_id):
-        if user_id not in self.agent:
-            self.agent[user_id] = Agent(self.configuration)
-            self.user_options[user_id] = {}
-            self.agent[user_id].initialize(user_id)
-            self.agent_response[user_id], self.user_options[user_id] = self.agent[user_id].start_dialogue()
+    def restart(self, user_id):
+        self.start_agent(user_id, True)
+        
+    def start_agent(self, user_id, restart=False):
+        #if user_id not in self.agent:
+        self.agent[user_id] = Agent(self.configuration)
+        self.user_options[user_id] = {}
+        self.agent[user_id].initialize(user_id)
+        self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
+        ] =  self.agent[user_id].start_dialogue()
+        if restart:
+            self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
+            ] = self.agent[user_id].start_dialogue(None, restart)
+            self.text(user_id, self.agent_response[user_id])
 
     def typing_on(self, user_id):
         typing = {
@@ -183,22 +184,31 @@ class ControllerMessenger(Controller):
 
     def continue_dialogue(self, user_id, payload):
         user_utterance = UserUtterance({'text': payload})
-        self.agent_response[user_id], self.user_options[user_id] =  \
-            self.agent[user_id].continue_dialogue(
+        self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
+        ] = self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
+        print("self.record_data: ", self.record_data_agent[user_id])
+        self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.get_info(movie_id, user_id)
         #self.add_to_db(user_id, payload, movie_id)
-        # if self.agent[user_id].bot_recorder:
-        #     record_data = {"Timestamp": user_utterance.get_timestamp()}
-        #     record_data.update(self.record_data_agent[user_id])
-        #     record_data.update({"Execution_Time": str(round(end - start, 3))})
-        #     self.agent[user_id].bot_recorder.record_user_data(
-        #         user_id, record_data)
         print("agent_response: ", self.agent_response[user_id])
 
+    def record(self, user_id, payload):
+        print(self.agent[user_id].bot_recorder)
+        if self.agent[user_id].bot_recorder:
+            self.record_data[user_id] = {
+                'Timestamp': str(datetime.now()),
+                'User_Input': payload
+            }
+            self.record_data[user_id].update(self.record_data_agent[user_id])
+            self.agent[user_id].bot_recorder.record_user_data(
+                user_id, self.record_data[user_id])
+
     def send_message(self, user_id, payload):
+        if user_id not in self.agent:
+            self.start_agent(user_id)
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.create_buttons(user_id, self.user_options[user_id].values())
@@ -208,61 +218,52 @@ class ControllerMessenger(Controller):
                 template = self.buttons_template(buttons, user_id)
                 self.send_buttons(template)
         else: 
-            text = self.text(user_id, self.agent_response[user_id])
-            return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
+            self.text(user_id, self.agent_response[user_id])
+
+
+    def send_buttons(self, template):
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
+    
+
+    def get_started(self):
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
+
+    def action(self, output):
+        recipient_id = self.get_id(output)
+        payload = self.get_message(output)
+        self.typing_on(recipient_id)
+        self.mark_seen(recipient_id)
+        #time.sleep(2)
+        for item in self.action_list:
+            if payload.lower() == item['payload']:
+                func = item.get('action')
+                return func(recipient_id)
+        return self.send_message(recipient_id, payload)
+
+    def get_message(self, output):
+        for event in output['entry']:
+            for message in event['messaging']:
+                if message.get('message'):
+                    if message['message'].get('text'): 
+                        return message['message']['text']
+                if message.get('postback'):
+                    return message['postback']['payload']
+
+    def get_id(self, output):
+        for event in output['entry']:
+            messaging = event['messaging']
+            for message in event['messaging']:
+                if message.get('message') or message.get('postback'):
+                    recipient_id = message['sender']['id']
+                    return recipient_id
+
 
     def text(self, user_id, message):
         text = {
             'recipient': {'id': user_id},
             'message': {'text': message}
         }
-        return text
-
-    def send_buttons(self, template):
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
-    
-    def buttons_template(self, buttons, user_id):
-        template = {
-            "recipient":{ "id": user_id},
-            "message":{
-            "attachment":{
-                "type":"template",
-                "payload":{
-                "template_type":"button",
-                "text":self.agent_response[user_id],
-                "buttons":buttons
-                }
-            }
-            }
-        }
-        return template
-
-    def get_started(self):
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
-
-    def action(self, payload, recipient_id):
-        self.start_agent(recipient_id)
-        self.typing_on(recipient_id)
-        self.mark_seen(recipient_id)
-        self.persistent_menu(recipient_id)
-        #time.sleep(2)
-        for item in self.action_list:
-            if payload.lower() == item['payload']:
-                func = item.get('action')
-                return func()
-        return self.send_message(recipient_id, payload)
-
-    def quick_reply(psid):
-      quickreply= {
-      'messaging_type':'RESPONSE',
-        'recipient':{'id':psid},
-        'message':{
-          'text': "More information",
-          'quick_replies':[]
-        }
-        
-      }
-      return quickreply
+        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
 
     def movie_template(self, user_id, buttons, poster, url, plot, title, rating, duration):
         template = {
@@ -280,7 +281,7 @@ class ControllerMessenger(Controller):
                     "default_action": {
                         "type": "web_url",
                         "url": url,
-                        "webview_height_ratio": "tall",
+                        "webview_height_ratio": "full",
                     },
                     "buttons": buttons
                     }
@@ -291,21 +292,33 @@ class ControllerMessenger(Controller):
         }
         return template
 
-    def help(self):
-        self.instructions(True)
-        # help = "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
-        #         "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
-        #         "To restart the recommendation process, issue \"/restart\".\n\n" \
-        #         "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
-        #         "To see these instructions again, issue: \"/help\"." 
-        # return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=self.text(help)).json()
+    def buttons_template(self, buttons, user_id):
+        template = {
+            "recipient":{ "id": user_id},
+            "message":{
+            "attachment":{
+                "type":"template",
+                "payload":{
+                "template_type":"button",
+                "text":self.agent_response[user_id],
+                "buttons":buttons
+                }
+            }
+            }
+        }
+        return template
 
-    def instructions(self, help=False):
+    def exit(self, user_id):
+        self.agent_response[user_id] = 'You are exiting. I hope you found a movie. Bye.'
+        self.text(user_id, self.agent_response[user_id])
+        del self.agent[user_id]
+
+    def instructions(self, user_id, help=True):
         response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
-                "To restart the recommendation process, issue \"/restart\".\n\n" \
+                "To restart the recommendation process, issue \"restart\".\n\n" \
                 "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
-                "To see these instructions again, issue: \"/help\"." 
+                "To see these instructions again, issue: \"help\"." 
 
         instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
                        'I can recommend you movies based on your preferences.\n' \
@@ -313,49 +326,60 @@ class ControllerMessenger(Controller):
                        'I will try to find a movie for you.\n\n' 
         if help is False:
             response = instructions + response
-        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+ACCESS_TOKEN, json=self.text(response)).json()
+        self.text(user_id, response)
+
+    def privacy_policy(self, user_id):
+        policy = "Privacy policy... ."
+        self.text(user_id, policy)
+        self.send_quickreply(user_id, "Accept or Reject")
          
-
-    # def send_quickreply(self):
-
-#     quickreply = messages.qreply(user_id)
-#     quick_replies = []
-#     for option in self.user_options.values():
-#         if type(option) == type("string"):
-#             quick_replies.append(messages.create_reply(option, option))
-#         else:
-#             for item in option:
-#                 quick_replies.append(messages.create_reply(item, item))
-#     quickreply['message']['quick_replies'] = quick_replies
-#     return requests.post(messages.quickreply, json=quickreply).json()
-
-    def persistent_menu(self, user_id):
-            menu = {
-                "psid": user_id,
-                "persistent_menu": [
-                    {
-                        "locale": "default",
-                        "composer_input_disabled": False,
-                        "call_to_actions": [
-                            {
-                                "type": "postback",
-                                "title": "Talk to an agent",
-                                "payload": "CARE_HELP"
-                            },
-                            {
-                                "type": "postback",
-                                "title": "Outfit suggestions",
-                                "payload": "CURATION"
-                            },
-                            {
-                                "type": "web_url",
-                                "title": "Shop now",
-                                "url": "https://wikipedia.com/",
-                                "webview_height_ratio": "full"
-                            }
-                        ]
-                    }
+    def send_quickreply(self, user_id, text):
+        quick_reply = {
+            "recipient": {
+                "id": user_id
+            },
+            "messaging_type": "RESPONSE",
+            "message":{
+                "text": text,
+                "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title": "Accept",
+                    "payload":"Accept"
+                },{
+                    "content_type":"text",
+                    "title":"Reject",
+                    "payload":"Reject"
+                }
                 ]
             }
-            return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
+            
+        }
+        return requests.post("https://graph.facebook.com/v10.0/me/messages?access_token="+self.token, json=quick_reply).json()
+
+    def persistent_menu(self):
+        menu = {
+            "get_started":{
+                "payload": "start"
+            },
+            "persistent_menu": [
+                {
+                    "locale": "default",
+                    "composer_input_disabled": False,
+                    "call_to_actions": [
+                        {
+                            "type": "postback",
+                            "title": "Talk to an agent",
+                            "payload": "CARE_HELP"
+                        },
+                        {
+                            "type": "postback",
+                            "title": "Outfit suggestions",
+                            "payload": "CURATION"
+                        }
+                    ]
+                }
+            ]
+        }
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
 

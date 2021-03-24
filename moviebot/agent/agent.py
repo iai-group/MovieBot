@@ -125,6 +125,8 @@ class Agent:
         self.dialogue_manager = DialogueManager(data_config, self.isBot,
                                                 self.new_user)
 
+        self.isBot = True
+        print(self.isBot)
         if self.isBot:
             if self.config['BOT_HISTORY'] and self.config['BOT_HISTORY']['save']:
                 if self.config['BOT_HISTORY']['path']:
