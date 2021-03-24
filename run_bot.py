@@ -97,7 +97,7 @@ def receive_message():
         # if True:
         #     return ""
         output = request.get_json()
-        print(output)
+        #print(output)
         CONTROLLER.action(output)
         return "Message Processed"
 

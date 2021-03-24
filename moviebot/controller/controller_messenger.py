@@ -44,12 +44,13 @@ class ControllerMessenger(Controller):
             {"payload": "restart", "action": self.restart},
             {"payload": "exit", "action": self.exit}
         ]
-        #self.start = {"get_started": {"payload": "start"}}
-        #self.get_started()
-        self.persistent_menu()
+        self.start = {"get_started": {"payload": "start"}}
+        self.get_started()
         #self.greeting()
         
-    
+    def get_started(self):
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
+
     def test(self, user_id):
         print("started")
         #self.persistent_menu()
@@ -85,16 +86,9 @@ class ControllerMessenger(Controller):
         else:
             raise ValueError('Unacceptable type of Token file name')
         
-    def get_started(self):
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
+    
 
-    def greeting(self):
-        print("greeting")
-        greeting = {
-            "locale": "nn_NO",
-            "text": "Hello!"
-            }
-        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=greeting).json()
+    
 
     
     def get_info(self, movie_id, user_id):
@@ -119,7 +113,6 @@ class ControllerMessenger(Controller):
 
     def get_db(self):
         db_path = self.configuration['DATA']['db_path']
-        print("path: ", db_path)
         return db_path
 
     def execute_agent(self, configuration):
@@ -143,44 +136,24 @@ class ControllerMessenger(Controller):
             ] = self.agent[user_id].start_dialogue(None, restart)
             self.text(user_id, self.agent_response[user_id])
 
-    def typing_on(self, user_id):
-        typing = {
-            "recipient":{"id": user_id},
-            "sender_action": "typing_on"
-        }
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=typing).json()
 
-    def mark_seen(self, user_id):
-        mark_seen = {
-            "recipient": {"id": user_id},
-            "sender_action": "mark_seen"
-            }
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=mark_seen).json()
+    def movie_template(self, user_id, buttons):
+        title = self.info[user_id]['title'] + " " + str(self.info[user_id]['rating']) + \
+            str(self.info[user_id]['duration']) + " min"
+        self.user_messages[user_id].template(
+            buttons[0:3], self.info[user_id]['image_url'], self.info[user_id]['imdb_link'], \
+                self.info[user_id]['summary'], title)
 
-    def send_template(self, user_id, buttons):
-        template = self.movie_template(user_id, buttons[0:3],
-            self.info[user_id]['image_url'], self.info[user_id]['imdb_link'], self.info[user_id]['summary'], self.info[user_id]['title'],
-            self.info[user_id]['rating'], self.info[user_id]['duration'])
-            title = self.info[user_id]['title'] + " " + self.info[user_id]['rating'] + \
-                self.info[user_id]['duration'] + " min"
-        return requests.post(template_url+self.token, json=template).json()
-
-    def create_buttons(self, user_id, options):
-        buttons = []
-        for option in options:
+    def get_options(self, user_id):
+        options = []
+        for option in self.user_options[user_id].values():
             if type(option) == type("string"):
-                print("string option: ", option)
-                buttons.append(self.create_button(option))
+                options.append(option)
             else:
                 for item in option:
-                    print("item: ", item)
-                    buttons.append(self.create_button(item))
-        self.template = self.buttons_template(buttons, user_id)
-        return buttons
-        
-    def create_button(self, payload):
-        button = {"type": "postback", "title": payload, "payload": payload}
-        return button
+                    options.append(item)
+        print("OPTIONS: ", options)
+        return options
 
     def get_movie_id(self, response):
         if "/tt" in response:
@@ -194,15 +167,12 @@ class ControllerMessenger(Controller):
         ] = self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
-        print("self.record_data: ", self.record_data_agent[user_id])
         self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.get_info(movie_id, user_id)
-        #self.add_to_db(user_id, payload, movie_id)
         print("agent_response: ", self.agent_response[user_id])
 
     def record(self, user_id, payload):
-        print(self.agent[user_id].bot_recorder)
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
                 'Timestamp': str(datetime.now()),
@@ -222,39 +192,29 @@ class ControllerMessenger(Controller):
                     for movie in conversation["Context"]:
                         #self.load[user_id]
                         self.load_data[user_id][movie] = conversation["Context"][movie]
-            print("OK")
-        print(self.load_data)
-
 
     def send_message(self, user_id, payload):
         if user_id not in self.agent:
             self.start_agent(user_id)
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
-            buttons = self.create_buttons(user_id, self.user_options[user_id].values())
+            buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
             if "**" in self.agent_response[user_id]:
-                self.send_template(user_id, buttons)
+                self.movie_template(user_id, buttons)
             else: 
-                template = self.buttons_template(buttons, user_id)
-                self.send_buttons(template)
+                self.user_messages[user_id].buttons_template(buttons, self.agent_response[user_id])
         else: 
-            #self.text(user_id, self.agent_response[user_id])
             self.user_messages[user_id].text(self.agent_response[user_id])
 
-
-    def send_buttons(self, template):
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
-    
     def get_started(self):
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
+        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def action(self, output):
-        
         recipient_id = self.get_id(output)
         self.user_messages[recipient_id] = Messages(recipient_id, self.token)
         payload = self.get_message(output)
-        self.typing_on(recipient_id)
-        self.mark_seen(recipient_id)
+        self.user_messages[recipient_id].mark_seen()
+        self.user_messages[recipient_id].typing_on()
         #time.sleep(2)
         for item in self.action_list:
             if payload.lower() == item['payload']:
@@ -279,57 +239,6 @@ class ControllerMessenger(Controller):
                     recipient_id = message['sender']['id']
                     return recipient_id
 
-
-    def text(self, user_id, message):
-        text = {
-            'recipient': {'id': user_id},
-            'message': {'text': message}
-        }
-        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
-
-    def movie_template(self, user_id, buttons, poster, url, plot, title, rating, duration):
-        template = {
-            "recipient":{ "id": user_id},
-            "message":{
-            "attachment":{
-                "type":"template",
-                "payload":{
-                "template_type":"generic",
-                "elements":[
-                    {
-                    "title":title + " " + str(rating) + " " + str(duration) + " min",
-                    "image_url":poster,
-                    "subtitle":plot,
-                    "default_action": {
-                        "type": "web_url",
-                        "url": url,
-                        "webview_height_ratio": "full",
-                    },
-                    "buttons": buttons
-                    }
-                ]
-                }
-            }
-            }
-        }
-        return template
-
-    def buttons_template(self, buttons, user_id):
-        template = {
-            "recipient":{ "id": user_id},
-            "message":{
-            "attachment":{
-                "type":"template",
-                "payload":{
-                "template_type":"button",
-                "text":self.agent_response[user_id],
-                "buttons":buttons
-                }
-            }
-            }
-        }
-        return template
-
     def exit(self, user_id):
         self.agent_response[user_id] = 'You are exiting. I hope you found a movie. Bye.'
         self.text(user_id, self.agent_response[user_id])
@@ -348,37 +257,15 @@ class ControllerMessenger(Controller):
                        'I will try to find a movie for you.\n\n' 
         if help is False:
             response = instructions + response
-        self.text(user_id, response)
+        self.user_messages[user_id].text(response)
 
     def privacy_policy(self, user_id):
         policy = "Privacy policy... ."
-        self.text(user_id, policy)
-        self.send_quickreply(user_id, "Accept or Reject")
+        self.user_messages[user_id].text(policy)
+        title = ["Accept", "Reject"]
+        payload = ["accept", "reject"]
+        self.user_messages[user_id].quickreply("Accept or Reject", title, payload)
          
-    def send_quickreply(self, user_id, text):
-        quick_reply = {
-            "recipient": {
-                "id": user_id
-            },
-            "messaging_type": "RESPONSE",
-            "message":{
-                "text": text,
-                "quick_replies":[
-                {
-                    "content_type":"text",
-                    "title": "Accept",
-                    "payload":"Accept"
-                },{
-                    "content_type":"text",
-                    "title":"Reject",
-                    "payload":"Reject"
-                }
-                ]
-            }
-            
-        }
-        return requests.post("https://graph.facebook.com/v10.0/me/messages?access_token="+self.token, json=quick_reply).json()
-
     def persistent_menu(self):
         menu = {
             "get_started":{

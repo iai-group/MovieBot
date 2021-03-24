@@ -7,7 +7,14 @@ class Messages:
         self.buttons = {}
         self.token = token
 
-    def send_quickreply(self, text):
+    def quickreply(self, text, title, payload):
+        replies = []
+        for i, title in enumerate(title):
+            replies.append({
+                "content_type":"text",
+                "title": title,
+                "payload":payload[i]
+            })
         quick_reply = {
             "recipient": {
                 "id": self.user_id
@@ -15,21 +22,33 @@ class Messages:
             "messaging_type": "RESPONSE",
             "message":{
                 "text": text,
-                "quick_replies":[
-                {
-                    "content_type":"text",
-                    "title": "Accept",
-                    "payload":"Accept"
-                },{
-                    "content_type":"text",
-                    "title":"Reject",
-                    "payload":"Reject"
-                }
-                ]
+                "quick_replies":replies
             }
             
         }
         return requests.post("https://graph.facebook.com/v10.0/me/messages?access_token="+self.token, json=quick_reply).json()
+
+    def create_buttons(self, options):
+        buttons = []
+        for option in options:
+            buttons.append(
+                {"type": "postback", "title": option, "payload": option}
+            )
+        return buttons
+
+    def typing_on(self):
+        typing = {
+            "recipient":{"id": self.user_id},
+            "sender_action": "typing_on"
+        }
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=typing).json()
+
+    def mark_seen(self):
+        mark_seen = {
+            "recipient": {"id": self.user_id},
+            "sender_action": "mark_seen"
+            }
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=mark_seen).json()
 
     def persistent_menu(self):
         menu = {
@@ -56,7 +75,7 @@ class Messages:
             ]
         }
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
-
+    
     def text(self, message):
             text = {
                 'recipient': {'id': self.user_id},
@@ -74,9 +93,9 @@ class Messages:
                 "template_type":"generic",
                 "elements":[
                     {
-                    "title":title + " " + str(rating) + " " + str(duration) + " min",
-                    "image_url":poster,
-                    "subtitle":plot,
+                    "title":title,
+                    "image_url":image,
+                    "subtitle":subtitle,
                     "default_action": {
                         "type": "web_url",
                         "url": url,
@@ -89,9 +108,10 @@ class Messages:
             }
             }
         }
-        return template
+        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=template).json()
 
-    def buttons_template(self, buttons):
+
+    def buttons_template(self, buttons, text):
         template = {
             "recipient":{ "id": self.user_id},
             "message":{
@@ -99,13 +119,10 @@ class Messages:
                 "type":"template",
                 "payload":{
                 "template_type":"button",
-                "text":self.agent_response[user_id],
+                "text":text,
                 "buttons":buttons
                 }
             }
             }
         }
-        return template
-
-    def send_buttons(self, template):
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
+        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=template).json()
