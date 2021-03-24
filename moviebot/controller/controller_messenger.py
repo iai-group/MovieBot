@@ -189,6 +189,8 @@ class ControllerMessenger(Controller):
 
     def initialize(self, user_id):
         if user_id not in self.agent:
+            self.user_options[user_id] = {}
+            self.users[user_id] = {}
             self.user_messages[user_id] = Messages(user_id, self.token)
             self.start_agent(user_id)
         self.user_messages[user_id].mark_seen()

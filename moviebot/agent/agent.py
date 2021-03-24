@@ -118,15 +118,16 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config['slots'] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if self.config.get('TELEGRAM', False) and self.config.get('MESSENGER', False):
+        if self.config.get('TELEGRAM', False):
             self.isBot = True
             self.new_user = self.config['new_user'][user_id]
+
+        if self.config.get('MESSENGER', True):
+            self.isBot = True
 
         self.dialogue_manager = DialogueManager(data_config, self.isBot,
                                                 self.new_user)
 
-        self.isBot = True
-        print(self.isBot)
         if self.isBot:
             if self.config['BOT_HISTORY'] and self.config['BOT_HISTORY']['save']:
                 if self.config['BOT_HISTORY']['path']:
