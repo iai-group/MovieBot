@@ -36,10 +36,10 @@ class ControllerMessenger(Controller):
             {"payload": "start", "action": self.test},
             {"payload": "help", "action": self.instructions},
             {"payload": "accept", "action": self.store_user},
-            {"payload": "restart", "action": self.restart}
+            {"payload": "restart", "action": self.restart},
+            {"payload": "exit", "action": self.exit}
         ]
-        #images.upload_images()
-        self.start = {"get_started": {"payload": "start"}}
+        #self.start = {"get_started": {"payload": "start"}}
         #self.get_started()
         self.persistent_menu()
         #self.greeting()
@@ -152,14 +152,14 @@ class ControllerMessenger(Controller):
     def restart(self, user_id):
         self.start_agent(user_id, True)
         
-
     def start_agent(self, user_id, restart=False):
         #if user_id not in self.agent:
         self.agent[user_id] = Agent(self.configuration)
         self.user_options[user_id] = {}
         self.agent[user_id].initialize(user_id)
         self.agent_response[user_id], self.user_options[user_id] = self.agent[user_id].start_dialogue(None, restart)
-        self.text(user_id, self.agent_response[user_id])
+        if restart:
+            self.text(user_id, self.agent_response[user_id])
 
     def typing_on(self, user_id):
         typing = {
@@ -239,8 +239,6 @@ class ControllerMessenger(Controller):
                 template = self.buttons_template(buttons, user_id)
                 self.send_buttons(template)
         else: 
-            #text = self.text(user_id, self.agent_response[user_id])
-            #return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
             self.text(user_id, self.agent_response[user_id])
 
 
@@ -251,7 +249,9 @@ class ControllerMessenger(Controller):
     def get_started(self):
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
 
-    def action(self, payload, recipient_id):
+    def action(self, output):
+        recipient_id = self.get_id(output)
+        payload = self.get_message(output)
         self.typing_on(recipient_id)
         self.mark_seen(recipient_id)
         #time.sleep(2)
@@ -261,17 +261,23 @@ class ControllerMessenger(Controller):
                 return func(recipient_id)
         return self.send_message(recipient_id, payload)
 
-    def quick_reply(psid):
-      quickreply= {
-      'messaging_type':'RESPONSE',
-        'recipient':{'id':psid},
-        'message':{
-          'text': "More information",
-          'quick_replies':[]
-        }
-        
-      }
-      return quickreply
+    def get_message(self, output):
+        for event in output['entry']:
+            for message in event['messaging']:
+                if message.get('message'):
+                    if message['message'].get('text'): 
+                        return message['message']['text']
+                if message.get('postback'):
+                    return message['postback']['payload']
+
+    def get_id(self, output):
+        for event in output['entry']:
+            messaging = event['messaging']
+            for message in event['messaging']:
+                if message.get('message') or message.get('postback'):
+                    recipient_id = message['sender']['id']
+                    return recipient_id
+
 
     def text(self, user_id, message):
         text = {
@@ -323,12 +329,17 @@ class ControllerMessenger(Controller):
         }
         return template
 
+    def exit(self, user_id):
+        self.agent_response[user_id] = 'You are exiting. I hope you found a movie. Bye.'
+        self.text(user_id, self.agent_response[user_id])
+        del self.agent[user_id]
+
     def instructions(self, user_id, help=True):
         response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
-                "To restart the recommendation process, issue \"/restart\".\n\n" \
+                "To restart the recommendation process, issue \"restart\".\n\n" \
                 "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
-                "To see these instructions again, issue: \"/help\"." 
+                "To see these instructions again, issue: \"help\"." 
 
         instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
                        'I can recommend you movies based on your preferences.\n' \
@@ -343,7 +354,6 @@ class ControllerMessenger(Controller):
         self.text(user_id, policy)
         self.send_quickreply(user_id, "Accept or Reject")
          
-
     def send_quickreply(self, user_id, text):
         quick_reply = {
             "recipient": {
