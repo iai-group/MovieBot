@@ -18,8 +18,6 @@ from moviebot.nlu.annotation.slots import Slots
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 import time
 from datetime import datetime
-ACCESS_TOKEN = 'EAAF5ZA8L6hnUBAH9CjUB2YExM9WMvi3CitPQOzivVwnC3NEKZB7pxhxHeUrXmEDFMqTBEfJZCkV5MUGV3hyT2vppi3w80YBHzO5oMow7iOAfQxEpunp2w2EVSDn1Sq1e32ItNDdQMZAkzdjxMQSdzzKhcy6nsrj3dBIDUfalJt1XYcc7dppy'
-template_url = 'https://graph.facebook.com/v9.0/me/messages?access_token='
 
 class ControllerMessenger(Controller):
 
@@ -36,7 +34,7 @@ class ControllerMessenger(Controller):
         self.users = {}
         self.load_data = {}
         self.path = "conversation_history/"
-        self.action_list = [
+        self.methods = [
             {"payload": "start", "action": self.privacy_policy},
             {"payload": "/help", "action": self.instructions},
             {"payload": "accept", "action": self.store_user},
@@ -52,7 +50,6 @@ class ControllerMessenger(Controller):
 
     def store_user(self, user_id):
         self.users[user_id] = True
-        print(self.users)
         self.start_agent(user_id)
         self.instructions(user_id, False)
 
@@ -109,16 +106,14 @@ class ControllerMessenger(Controller):
         self.start_agent(user_id, True)
         
     def start_agent(self, user_id, restart=False):
-        #if user_id not in self.agent:
         self.agent[user_id] = Agent(self.configuration)
-        self.user_options[user_id] = {}
         self.agent[user_id].initialize(user_id)
         self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
         ] =  self.agent[user_id].start_dialogue()
         if restart:
             self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
             ] = self.agent[user_id].start_dialogue(None, restart)
-            self.text(user_id, self.agent_response[user_id])
+            self.user_messages[user_id].text(self.agent_response[user_id])
 
 
     def movie_template(self, user_id, buttons):
@@ -177,8 +172,6 @@ class ControllerMessenger(Controller):
                         self.load_data[user_id][movie] = conversation["Context"][movie]
 
     def send_message(self, user_id, payload):
-        if user_id not in self.agent:
-            self.start_agent(user_id)
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
@@ -189,35 +182,19 @@ class ControllerMessenger(Controller):
         else: 
             self.user_messages[user_id].text(self.agent_response[user_id])
 
-    def action(self, output):
-        recipient_id = self.get_id(output)
-        self.user_messages[recipient_id] = Messages(recipient_id, self.token)
-        payload = self.get_message(output)
-        self.user_messages[recipient_id].mark_seen()
-        self.user_messages[recipient_id].typing_on()
-        #time.sleep(2)
-        for item in self.action_list:
+    def initialize(self, user_id):
+        if user_id not in self.agent:
+            self.user_messages[user_id] = Messages(user_id, self.token)
+            self.start_agent(user_id)
+        self.user_messages[user_id].mark_seen()
+        self.user_messages[user_id].typing_on()
+
+    def run_method(self, user_id, payload):
+        for item in self.methods:
             if payload.lower() == item['payload']:
                 func = item.get('action')
-                return func(recipient_id)
-        return self.send_message(recipient_id, payload)
-
-    def get_message(self, output):
-        for event in output['entry']:
-            for message in event['messaging']:
-                if message.get('message'):
-                    if message['message'].get('text'): 
-                        return message['message']['text']
-                if message.get('postback'):
-                    return message['postback']['payload']
-
-    def get_id(self, output):
-        for event in output['entry']:
-            messaging = event['messaging']
-            for message in event['messaging']:
-                if message.get('message') or message.get('postback'):
-                    recipient_id = message['sender']['id']
-                    return recipient_id
+                return func(user_id)
+        return True
 
     def exit(self, user_id):
         self.agent_response[user_id] = 'You are exiting. I hope you found a movie. Bye.'

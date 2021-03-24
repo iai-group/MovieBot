@@ -1,5 +1,4 @@
-from flask import Flask, request
-#import requests
+
 from os import environ
 
 import os
@@ -9,7 +8,7 @@ import yaml
 from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
-
+from moviebot.controller import server
 
 def _validate_file(file_name, file_type):
     """Checks if the file is valid and is present
@@ -83,30 +82,6 @@ def get_config():
     configuration, _, _ = arg_parse()
     return configuration
 
-app = Flask(__name__)
-VERIFY_TOKEN = 'bonobo'
-CONTROLLER = ControllerMessenger()
-
-@app.route('/', methods=['GET', 'POST'])
-def receive_message():
-    if request.method == 'GET':
-        token_sent = request.args.get("hub.verify_token")
-        return verify_fb_token(token_sent)
-
-    else:   
-        # if True:
-        #     return ""
-        output = request.get_json()
-        #print(output)
-        CONTROLLER.action(output)
-        return "Message Processed"
-
-def verify_fb_token(token_sent):
-    if token_sent == VERIFY_TOKEN:
-        return request.args.get("hub.challenge")
-    return 'Invalid verification token'
-
-
 if __name__ == '__main__':
     # Usage: python run_bot.py -c <path_to_config.yaml>
     # Version: Python 3.6
@@ -114,9 +89,10 @@ if __name__ == '__main__':
     if BOT:
         CONTROLLER = ControllerTelegram()
     elif MESSENGER:
-        CONTROLLER.execute_agent(CONFIGURATION)  
-        app.run(host='0.0.0.0', port=environ.get("PORT", 5000))
+        server.run(CONFIGURATION)
+        CONTROLLER = ControllerMessenger()
     else:
         CONTROLLER = ControllerTerminal()
     CONTROLLER.execute_agent(CONFIGURATION)
+    
     
