@@ -38,6 +38,7 @@ class ControllerMessenger(Controller):
             {"payload": "start", "action": self.privacy_policy},
             {"payload": "/help", "action": self.instructions},
             {"payload": "accept", "action": self.store_user},
+            {"payload": "reject", "action": self.start_conversation},
             {"payload": "/restart", "action": self.restart},
             {"payload": "/exit", "action": self.exit}
         ]
@@ -50,6 +51,9 @@ class ControllerMessenger(Controller):
 
     def store_user(self, user_id):
         self.users[user_id] = True
+        self.start_conversation(user_id)
+
+    def start_conversation(self, user_id):
         self.start_agent(user_id)
         self.instructions(user_id, False)
 
@@ -146,7 +150,8 @@ class ControllerMessenger(Controller):
         ] = self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
-        self.record(user_id, payload)
+        if self.users[user_id]:
+            self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.movie_info(movie_id, user_id)
         print("agent_response: ", self.agent_response[user_id])
