@@ -12,6 +12,7 @@ import yaml
 #from imdb import IMDb
 #import tokens
 #import app
+from moviebot.controller.messages import Messages
 from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.dialogue_manager.dialogue_state import DialogueState
@@ -26,13 +27,16 @@ class ControllerMessenger(Controller):
         self.token = ""
         self.agent = {}
         self.record_data = {}
+        self.user_messages = {}
         self.record_data_agent = {}
-        self.user_options = {}
+        #self.user_options = {}
         self.user_options = {}
         self.agent_response = {}
         self.configuration = {}
         self.info = {}
         self.users = {}
+        self.load_data = {}
+        self.path = "conversation_history/"
         self.action_list = [
             {"payload": "start", "action": self.test},
             {"payload": "help", "action": self.instructions},
@@ -157,6 +161,8 @@ class ControllerMessenger(Controller):
         template = self.movie_template(user_id, buttons[0:3],
             self.info[user_id]['image_url'], self.info[user_id]['imdb_link'], self.info[user_id]['summary'], self.info[user_id]['title'],
             self.info[user_id]['rating'], self.info[user_id]['duration'])
+            title = self.info[user_id]['title'] + " " + self.info[user_id]['rating'] + \
+                self.info[user_id]['duration'] + " min"
         return requests.post(template_url+self.token, json=template).json()
 
     def create_buttons(self, user_id, options):
@@ -206,6 +212,20 @@ class ControllerMessenger(Controller):
             self.agent[user_id].bot_recorder.record_user_data(
                 user_id, self.record_data[user_id])
 
+    def load_user_data(self, user_id):
+        user_history_path = self.path + 'user_' + user_id + '.json'
+        self.load_data[user_id] = {}
+        if os.path.isfile(user_history_path):
+            with open(user_history_path) as json_file:
+                data = json.load(json_file)
+                for conversation in data:
+                    for movie in conversation["Context"]:
+                        #self.load[user_id]
+                        self.load_data[user_id][movie] = conversation["Context"][movie]
+            print("OK")
+        print(self.load_data)
+
+
     def send_message(self, user_id, payload):
         if user_id not in self.agent:
             self.start_agent(user_id)
@@ -218,18 +238,20 @@ class ControllerMessenger(Controller):
                 template = self.buttons_template(buttons, user_id)
                 self.send_buttons(template)
         else: 
-            self.text(user_id, self.agent_response[user_id])
+            #self.text(user_id, self.agent_response[user_id])
+            self.user_messages[user_id].text(self.agent_response[user_id])
 
 
     def send_buttons(self, template):
         return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+ACCESS_TOKEN, json=template).json()
     
-
     def get_started(self):
         return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ACCESS_TOKEN, json=self.start).json()
 
     def action(self, output):
+        
         recipient_id = self.get_id(output)
+        self.user_messages[recipient_id] = Messages(recipient_id, self.token)
         payload = self.get_message(output)
         self.typing_on(recipient_id)
         self.mark_seen(recipient_id)

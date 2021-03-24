@@ -94,6 +94,8 @@ def receive_message():
         return verify_fb_token(token_sent)
 
     else:   
+        # if True:
+        #     return ""
         output = request.get_json()
         print(output)
         CONTROLLER.action(output)
