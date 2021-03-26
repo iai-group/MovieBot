@@ -9,9 +9,6 @@ import requests
 from os import environ
 import os
 import yaml
-#from imdb import IMDb
-#import tokens
-#import app
 from moviebot.controller.messages import Messages
 from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
@@ -33,12 +30,12 @@ class ControllerMessenger(Controller):
         self.info = {}
         self.users = {}
         self.load_data = {}
-        self.path = "conversation_history/"
+        self.path = ""
         self.methods = [
             {"payload": "start", "action": self.privacy_policy},
             {"payload": "/help", "action": self.instructions},
-            {"payload": "accept", "action": self.store_user},
-            {"payload": "reject", "action": self.start_conversation},
+            {"payload": "/accept", "action": self.store_user},
+            {"payload": "/reject", "action": self.start_conversation},
             {"payload": "/restart", "action": self.restart},
             {"payload": "/exit", "action": self.exit}
         ]
@@ -47,9 +44,10 @@ class ControllerMessenger(Controller):
         #self.greeting()
         
     def get_started(self):
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=self.start).json()
+        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def store_user(self, user_id):
+        print("store user")
         self.users[user_id] = True
         self.start_conversation(user_id)
 
@@ -105,6 +103,8 @@ class ControllerMessenger(Controller):
         self.configuration = configuration
         self.configuration['new_user'] = {}
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
+        if self.configuration['BOT_HISTORY']['path']:
+            self.path = self.configuration['BOT_HISTORY']['path']
 
     def restart(self, user_id):
         self.start_agent(user_id, True)
@@ -205,7 +205,7 @@ class ControllerMessenger(Controller):
 
     def exit(self, user_id):
         self.agent_response[user_id] = 'You are exiting. I hope you found a movie. Bye.'
-        self.text(user_id, self.agent_response[user_id])
+        self.user_messages[user_id].text(self.agent_response[user_id])
         del self.agent[user_id]
 
     def instructions(self, user_id, help=True):
@@ -227,8 +227,8 @@ class ControllerMessenger(Controller):
         policy = "Privacy policy... ."
         self.user_messages[user_id].text(policy)
         title = ["Accept", "Reject"]
-        payload = ["accept", "reject"]
+        payload = ["/accept", "/reject"]
         self.user_messages[user_id].quickreply("Accept or Reject", title, payload)
          
-
+  
 
