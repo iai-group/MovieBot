@@ -28,20 +28,20 @@ def verify_fb_token(token_sent):
     return 'Invalid verification token'
 
 def action(output):
-        user_id = get_id(output)
-        controller.initialize(user_id)
-        payload = get_message(output)
-        if controller.run_method(user_id, payload):
-            controller.send_message(user_id, payload)
+    user_id = get_id(output)
+    controller.initialize(user_id)
+    payload = get_message(output)
+    if controller.run_method(user_id, payload):
+        controller.send_message(user_id, payload)
 
 def get_message(output):
-        for event in output['entry']:
-            for message in event['messaging']:
-                if message.get('message'):
-                    if message['message'].get('text'): 
-                        return message['message']['text']
-                if message.get('postback'):
-                    return message['postback']['payload']
+    for event in output['entry']:
+        for message in event['messaging']:
+            if message.get('message'):
+                if message['message'].get('text'): 
+                    return message['message']['text']
+            if message.get('postback'):
+                return message['postback']['payload']
 
 def get_id(output):
     for event in output['entry']:
