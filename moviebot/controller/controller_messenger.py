@@ -32,14 +32,14 @@ class ControllerMessenger(Controller):
         self.load_data = {}
         self.path = ""
         self.methods = [
-            {"payload": "start", "action": self.privacy_policy},
+            {"payload": "/start", "action": self.privacy_policy},
             {"payload": "/help", "action": self.instructions},
             {"payload": "/accept", "action": self.store_user},
             {"payload": "/reject", "action": self.start_conversation},
             {"payload": "/restart", "action": self.restart},
             {"payload": "/exit", "action": self.exit}
         ]
-        self.start = {"get_started": {"payload": "start"}}
+        self.start = {"get_started": {"payload": "/start"}}
         self.get_started()
         #self.greeting()
         
