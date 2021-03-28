@@ -40,6 +40,17 @@ class ControllerMessenger(Controller):
             {"payload": "/exit", "action": self.exit},
             {"payload": "/delete", "action": self.delete_data}
         ]
+        self.short_answers = {
+            "I like this recommendation.": "I like this",
+            "I have already watched it.": "Seen it",
+            "Tell me more about it.": "Tell me more",
+            "Recommend me something else please.": "Something else",
+            "Tell me something about it.": "More information",
+            "/restart": "restart",
+            "I would like a similar recommendation.": "Similar",
+            "I want to restart for a new movie.": "Restart",
+            "I would like to quit now.": "Quit"
+        }
         self.start = {"get_started": {"payload": "/start"}}
         self.get_started()
         #self.greeting()
@@ -120,7 +131,6 @@ class ControllerMessenger(Controller):
             ] = self.agent[user_id].start_dialogue(None, restart)
             self.user_messages[user_id].text(self.agent_response[user_id])
 
-
     def movie_template(self, user_id, buttons):
         title = self.info[user_id]['title'] + " " + str(self.info[user_id]['rating']) + \
             " " + str(self.info[user_id]['duration']) + " min"
@@ -135,9 +145,17 @@ class ControllerMessenger(Controller):
                 options.append(option)
             else:
                 for item in option:
-                    options.append(item)
+                    options.append(self.shorten(item))
+                    #options.append(item)
+                    test = self.shorten(item)
+                    print(test)
         print("OPTIONS: ", options)
         return options
+    
+    def shorten(self, input):
+        for key, value in self.short_answers.items():
+            if key == input:
+                return {"title": value, "payload": key}
 
     def get_movie_id(self, response):
         if "/tt" in response:
@@ -183,7 +201,6 @@ class ControllerMessenger(Controller):
             os.remove(user_history_path)
             self.users[user_id] = False
             
-
     def send_message(self, user_id, payload):
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:

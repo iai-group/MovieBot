@@ -32,7 +32,7 @@ class Messages:
         buttons = []
         for option in options:
             buttons.append(
-                {"type": "postback", "title": option, "payload": option}
+                {"type": "postback", "title": option['title'], "payload": option['payload']}
             )
         #self.buttons = buttons
         return buttons
