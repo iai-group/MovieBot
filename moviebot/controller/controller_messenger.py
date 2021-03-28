@@ -37,7 +37,8 @@ class ControllerMessenger(Controller):
             {"payload": "/accept", "action": self.store_user},
             {"payload": "/reject", "action": self.start_conversation},
             {"payload": "/restart", "action": self.restart},
-            {"payload": "/exit", "action": self.exit}
+            {"payload": "/exit", "action": self.exit},
+            {"payload": "/delete", "action": self.delete_data}
         ]
         self.start = {"get_started": {"payload": "/start"}}
         self.get_started()
@@ -176,6 +177,13 @@ class ControllerMessenger(Controller):
                     for movie in conversation["Context"]:
                         self.load_data[user_id][movie] = conversation["Context"][movie]
 
+    def delete_data(self, user_id):
+        user_history_path = self.path + 'user_' + user_id + '.json'
+        if os.path.isfile(user_history_path):
+            os.remove(user_history_path)
+            self.users[user_id] = False
+            
+
     def send_message(self, user_id, payload):
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
@@ -224,7 +232,7 @@ class ControllerMessenger(Controller):
         self.user_messages[user_id].text(response)
 
     def privacy_policy(self, user_id):
-        policy = "Privacy policy... ."
+        policy = "Privacy policy... type \"/delete\" to remove stored conversation."
         self.user_messages[user_id].text(policy)
         title = ["Accept", "Reject"]
         payload = ["/accept", "/reject"]
