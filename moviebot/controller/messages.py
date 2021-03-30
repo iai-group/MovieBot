@@ -104,9 +104,7 @@ class Messages:
     
     def persistent_menu(self):
         menu = {
-            "get_started":{
-                "payload": "start"
-            },
+            "psid": self.user_id,
             "persistent_menu": [
                 {
                     "locale": "default",
@@ -116,11 +114,6 @@ class Messages:
                             "type": "postback",
                             "title": "Talk to an agent",
                             "payload": "CARE_HELP"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "Outfit suggestions",
-                            "payload": "CURATION"
                         }
                     ]
                 }

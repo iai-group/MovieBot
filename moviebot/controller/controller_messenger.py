@@ -46,42 +46,31 @@ class ControllerMessenger(Controller):
             "Tell me more about it.": "Tell me more",
             "Recommend me something else please.": "Something else",
             "Tell me something about it.": "More information",
-            "/restart": "restart",
+            "/restart": "Restart",
             "I would like a similar recommendation.": "Similar",
             "I want to restart for a new movie.": "Restart",
             "I would like to quit now.": "Quit"
         }
         self.start = {"get_started": {"payload": "/start"}}
-        self.get_started()
-        #self.greeting()
         
     def get_started(self):
         return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def store_user(self, user_id):
-        print("store user")
         self.users[user_id] = True
         self.start_conversation(user_id)
 
     def start_conversation(self, user_id):
         self.start_agent(user_id)
-        self.instructions(user_id, False)
+        self.instructions(user_id)
 
     def load_bot_token(self, bot_token_path):
-        """Loads the Token for the Telegram bot
-
-        :return: the token of the Telegram Bot
-
-        Args:
-            bot_token_path:
-
-        """
         if isinstance(bot_token_path, str):
             if os.path.isfile(bot_token_path):
                 with open(bot_token_path, 'r') as file:
                     token_config = yaml.load(file, Loader=yaml.Loader)
-                    if 'MESSENGER_TOKEN' in token_config:
-                        return token_config['MESSENGER_TOKEN']
+                    if 'MESSENGER_TEST_TOKEN' in token_config:
+                        return token_config['MESSENGER_TEST_TOKEN']
                     else:
                         raise ValueError(
                             f'The token for Messenger bot is not found in the file '
@@ -107,16 +96,14 @@ class ControllerMessenger(Controller):
         c = conn.cursor()
         return c
 
-    def strip_tuple(self, element):
-        for e in element:
-            return e
-
     def execute_agent(self, configuration):
         self.configuration = configuration
         self.configuration['new_user'] = {}
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
         if self.configuration['BOT_HISTORY']['path']:
             self.path = self.configuration['BOT_HISTORY']['path']
+        print("get_started: ", self.get_started())
+        print("greeting: ", self.greeting())
 
     def restart(self, user_id):
         self.start_agent(user_id, True)
@@ -141,21 +128,16 @@ class ControllerMessenger(Controller):
     def get_options(self, user_id):
         options = []
         for option in self.user_options[user_id].values():
-            if type(option) == type("string"):
-                options.append(option)
-            else:
-                for item in option:
-                    options.append(self.shorten(item))
-                    #options.append(item)
-                    test = self.shorten(item)
-                    print(test)
+            for item in option:
+                options.append({"title": self.shorten(item), "payload": item})
         print("OPTIONS: ", options)
         return options
-    
+
     def shorten(self, input):
         for key, value in self.short_answers.items():
             if key == input:
-                return {"title": value, "payload": key}
+                return value
+        return input
 
     def get_movie_id(self, response):
         if "/tt" in response:
@@ -202,10 +184,12 @@ class ControllerMessenger(Controller):
             self.users[user_id] = False
             
     def send_message(self, user_id, payload):
+        self.user_messages[user_id].typing_on()
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
             if "**" in self.agent_response[user_id]:
+                self.user_messages[user_id].text(self.info[user_id]['imdb_link'])
                 self.movie_template(user_id, buttons)
             else: 
                 self.user_messages[user_id].buttons_template(buttons, self.agent_response[user_id])
@@ -233,19 +217,19 @@ class ControllerMessenger(Controller):
         self.user_messages[user_id].text(self.agent_response[user_id])
         del self.agent[user_id]
 
-    def instructions(self, user_id, help=True):
+    def instructions(self, user_id):
         response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
                 "To restart the recommendation process, issue \"/restart\".\n\n" \
                 "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
                 "To see these instructions again, issue: \"/help\"." 
 
-        instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
-                       'I can recommend you movies based on your preferences.\n' \
-                       'I will ask you a few questions and based on your answers, ' \
-                       'I will try to find a movie for you.\n\n' 
-        if help is False:
-            response = instructions + response
+        # instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
+        #                'I can recommend you movies based on your preferences.\n' \
+        #                'I will ask you a few questions and based on your answers, ' \
+        #                'I will try to find a movie for you.\n\n' 
+        # if help is False:
+        #     response = instructions + response
         self.user_messages[user_id].text(response)
 
     def privacy_policy(self, user_id):
@@ -254,6 +238,21 @@ class ControllerMessenger(Controller):
         title = ["Accept", "Reject"]
         payload = ["/accept", "/reject"]
         self.user_messages[user_id].quickreply("Accept or Reject", title, payload)
-         
+        #self.user_messages[user_id].persistent_menu()
+
+    def greeting(self):
+        greeting = {
+            "greeting":[
+            {
+                "locale":"default",
+                "text": "Hi there. I am IAI MovieBot, your movie recommending buddy. \
+                       I can recommend you movies based on your preferences.\n \
+                       I will ask you a few questions and based on your answers,  \
+                       I will try to find a movie for you.\n\n "
+            }
+            ]
+        }
+        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=greeting).json()
+
   
 

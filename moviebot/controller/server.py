@@ -1,14 +1,23 @@
 from moviebot.controller.controller_messenger import ControllerMessenger
 from flask import Flask, request
 from os import environ
+import yaml
 
 app = Flask(__name__)
-VERIFY_TOKEN = 'bonobo'
+VERIFY_TOKEN = "bonobo"
 controller = ControllerMessenger()
 
 def run(config):
     controller.execute_agent(config)
+    verify_token()
     app.run(host='0.0.0.0', port=environ.get("PORT", 5000))
+    
+def verify_token():
+    path = 'config/bot_token.yaml'
+    with open(path, 'r') as file:
+        config = yaml.load(file, Loader=yaml.Loader)
+        VERIFY_TOKEN = config['MESSENGER_VERIFY_TOKEN']
+        print("---------------> ", config['MESSENGER_VERIFY_TOKEN'])
 
 @app.route('/', methods=['GET', 'POST'])
 def receive_message():
@@ -27,7 +36,8 @@ def verify_fb_token(token_sent):
     return 'Invalid verification token'
 
 def action(output):
-        user_id = get_id(output)
+        event = output['entry'][0]['messaging'][0]
+        user_id = event['sender']['id']
         controller.initialize(user_id)
         payload = get_message(output)
         print(payload)
@@ -46,10 +56,3 @@ def get_message(output):
             if message.get('postback'):
                 return message['postback']['payload']
 
-def get_id(output):
-    for event in output['entry']:
-        messaging = event['messaging']
-        for message in event['messaging']:
-            if message.get('message') or message.get('postback'):
-                recipient_id = message['sender']['id']
-                return recipient_id

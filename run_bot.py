@@ -93,6 +93,6 @@ if __name__ == '__main__':
         CONTROLLER = ControllerMessenger()
     else:
         CONTROLLER = ControllerTerminal()
-    CONTROLLER.execute_agent(CONFIGURATION)
+        CONTROLLER.execute_agent(CONFIGURATION)
     
     
