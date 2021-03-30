@@ -4,7 +4,6 @@ from os import environ
 import yaml
 
 app = Flask(__name__)
-VERIFY_TOKEN = "bonobo"
 controller = ControllerMessenger()
 
 def run(config):
@@ -17,7 +16,7 @@ def verify_token():
     with open(path, 'r') as file:
         config = yaml.load(file, Loader=yaml.Loader)
         VERIFY_TOKEN = config['MESSENGER_VERIFY_TOKEN']
-        print("---------------> ", config['MESSENGER_VERIFY_TOKEN'])
+        return VERIFY_TOKEN
 
 @app.route('/', methods=['GET', 'POST'])
 def receive_message():
@@ -31,7 +30,7 @@ def receive_message():
         return "Message Processed"
 
 def verify_fb_token(token_sent):
-    if token_sent == VERIFY_TOKEN:
+    if token_sent == verify_token():
         return request.args.get("hub.challenge")
     return 'Invalid verification token'
 

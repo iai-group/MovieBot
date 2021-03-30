@@ -31,11 +31,44 @@ class Messages:
     def create_buttons(self, options):
         buttons = []
         for option in options:
-            buttons.append(
-                {"type": "postback", "title": option['title'], "payload": option['payload']}
-            )
-        #self.buttons = buttons
+            if option['button_type'] == "postback":
+                buttons.append(
+                {"type": option['button_type'], "title": option['title'], "payload": option['payload']}
+                )
+            if option['button_type'] == "web_url":
+                buttons.append(
+                    {"type": option['button_type'], "title": option['title'], "url": option['url']}
+                )
         return buttons
+
+    def url_button(self, title, options):
+        buttons = self.create_buttons(options)
+        # b = {
+        #     "type":"web_url",
+        #     "url":"https://www.nrk.no",
+        #     "title":"Select Criteria",
+        #     "webview_height_ratio": "full",
+        #     "messenger_extensions": False,  
+        #     "fallback_url": "https://www.vg.no"
+        # }
+        # buttons.append(b)
+        template = \
+        {
+            "recipient":{
+                "id": self.user_id
+            },
+            "message":{
+                "attachment":{
+                "type":"template",
+                "payload":{
+                    "template_type":"button",
+                    "text": title,
+                    "buttons": buttons
+                }
+                }
+            }
+        }
+        return requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+self.token, json=template).json()
 
     def typing_on(self):
         typing = {

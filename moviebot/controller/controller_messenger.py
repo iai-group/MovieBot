@@ -38,7 +38,10 @@ class ControllerMessenger(Controller):
             {"payload": "/reject", "action": self.start_conversation},
             {"payload": "/restart", "action": self.restart},
             {"payload": "/exit", "action": self.exit},
-            {"payload": "/delete", "action": self.delete_data}
+            {"payload": "/delete", "action": self.delete_data},
+            {"payload": "/test", "action": self.privacy_policy},
+            {"payload": "/store", "action": self.store_user},
+            {"payload": "/continue", "action": self.start_conversation}
         ]
         self.short_answers = {
             "I like this recommendation.": "I like this",
@@ -58,8 +61,9 @@ class ControllerMessenger(Controller):
 
     def store_user(self, user_id):
         self.users[user_id] = True
-        self.start_conversation(user_id)
-
+        self.store_data(user_id)
+        #self.start_conversation(user_id)
+        
     def start_conversation(self, user_id):
         self.start_agent(user_id)
         self.instructions(user_id)
@@ -129,8 +133,7 @@ class ControllerMessenger(Controller):
         options = []
         for option in self.user_options[user_id].values():
             for item in option:
-                options.append({"title": self.shorten(item), "payload": item})
-        print("OPTIONS: ", options)
+                options.append({"button_type": "postback", "title": self.shorten(item), "payload": item})
         return options
 
     def shorten(self, input):
@@ -155,7 +158,6 @@ class ControllerMessenger(Controller):
             self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.movie_info(movie_id, user_id)
-        print("agent_response: ", self.agent_response[user_id])
 
     def record(self, user_id, payload):
         if self.agent[user_id].bot_recorder:
@@ -182,14 +184,15 @@ class ControllerMessenger(Controller):
         if os.path.isfile(user_history_path):
             os.remove(user_history_path)
             self.users[user_id] = False
+            self.user_messages[user_id].text("Conversation history deleted.")
+        else:
+            self.user_messages[user_id].text("No conversation history.")
             
     def send_message(self, user_id, payload):
-        self.user_messages[user_id].typing_on()
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
             if "**" in self.agent_response[user_id]:
-                self.user_messages[user_id].text(self.info[user_id]['imdb_link'])
                 self.movie_template(user_id, buttons)
             else: 
                 self.user_messages[user_id].buttons_template(buttons, self.agent_response[user_id])
@@ -218,28 +221,30 @@ class ControllerMessenger(Controller):
         del self.agent[user_id]
 
     def instructions(self, user_id):
-        response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
+        response =  "To start the conversation say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
                 "To restart the recommendation process, issue \"/restart\".\n\n" \
                 "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
                 "To see these instructions again, issue: \"/help\"." 
 
-        # instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
-        #                'I can recommend you movies based on your preferences.\n' \
-        #                'I will ask you a few questions and based on your answers, ' \
-        #                'I will try to find a movie for you.\n\n' 
-        # if help is False:
-        #     response = instructions + response
         self.user_messages[user_id].text(response)
 
-    def privacy_policy(self, user_id):
-        policy = "Privacy policy... type \"/delete\" to remove stored conversation."
+    def store_data(self, user_id):
+        policy = "Type \"/delete\" at any time to stop storing and delete conversation history.\n\n" \
+                "Press start to continue."
         self.user_messages[user_id].text(policy)
-        title = ["Accept", "Reject"]
-        payload = ["/accept", "/reject"]
-        self.user_messages[user_id].quickreply("Accept or Reject", title, payload)
-        #self.user_messages[user_id].persistent_menu()
 
+    def privacy_policy(self, user_id):
+        title = "We may store some information to improve recommendations.\n"\
+                "You may delete stored data at any time.\n" \
+                 "Read more in our privacy policy"
+        options = [{"button_type": "web_url", "title": "Privacy Policy", "url": "https://www.nrk.no"},
+                    {"button_type": "postback", "title": "Accept", "payload": "/store"},
+                    {"button_type": "postback", "title": "Start", "payload": "/continue"}
+        ]
+        self.user_messages[user_id].url_button(title, options)  
+
+        
     def greeting(self):
         greeting = {
             "greeting":[
