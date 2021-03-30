@@ -73,8 +73,8 @@ class ControllerMessenger(Controller):
             if os.path.isfile(bot_token_path):
                 with open(bot_token_path, 'r') as file:
                     token_config = yaml.load(file, Loader=yaml.Loader)
-                    if 'MESSENGER_TEST_TOKEN' in token_config:
-                        return token_config['MESSENGER_TEST_TOKEN']
+                    if 'MESSENGER_TOKEN' in token_config:
+                        return token_config['MESSENGER_TOKEN']
                     else:
                         raise ValueError(
                             f'The token for Messenger bot is not found in the file '
@@ -250,10 +250,10 @@ class ControllerMessenger(Controller):
             "greeting":[
             {
                 "locale":"default",
-                "text": "Hi there. I am IAI MovieBot, your movie recommending buddy. \
-                       I can recommend you movies based on your preferences.\n \
-                       I will ask you a few questions and based on your answers,  \
-                       I will try to find a movie for you.\n\n "
+                "text": "Hi there. I am IAI MovieBot, your movie recommending buddy. " \
+                       "I can recommend you movies based on your preferences.\n " \
+                       "I will ask you a few questions and based on your answers, "  \
+                       "I will try to find a movie for you.\n\n"
             }
             ]
         }
