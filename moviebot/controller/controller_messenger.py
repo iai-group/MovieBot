@@ -106,8 +106,8 @@ class ControllerMessenger(Controller):
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
         if self.configuration['BOT_HISTORY']['path']:
             self.path = self.configuration['BOT_HISTORY']['path']
-        print("get_started: ", self.get_started())
-        print("greeting: ", self.greeting())
+        self.get_started()
+        self.greeting()
 
     def restart(self, user_id):
         self.start_agent(user_id, True)
