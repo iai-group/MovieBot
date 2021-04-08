@@ -32,38 +32,43 @@ class ControllerMessenger(Controller):
         self.load_data = {}
         self.path = ""
         self.methods = [
-            {"payload": "start", "action": self.privacy_policy},
+            {"payload": "/start", "action": self.privacy_policy},
             {"payload": "/help", "action": self.instructions},
             {"payload": "/accept", "action": self.store_user},
             {"payload": "/reject", "action": self.start_conversation},
             {"payload": "/restart", "action": self.restart},
-            {"payload": "/exit", "action": self.exit}
+            {"payload": "/exit", "action": self.exit},
+            {"payload": "/delete", "action": self.delete_data},
+            {"payload": "/test", "action": self.privacy_policy},
+            {"payload": "/store", "action": self.store_user},
+            {"payload": "/continue", "action": self.start_conversation}
         ]
-        self.start = {"get_started": {"payload": "start"}}
-        self.get_started()
-        #self.greeting()
+        self.short_answers = {
+            "I like this recommendation.": "I like this",
+            "I have already watched it.": "Seen it",
+            "Tell me more about it.": "Tell me more",
+            "Recommend me something else please.": "Something else",
+            "Tell me something about it.": "More information",
+            "/restart": "Restart",
+            "I would like a similar recommendation.": "Similar",
+            "I want to restart for a new movie.": "Restart",
+            "I would like to quit now.": "Quit"
+        }
+        self.start = {"get_started": {"payload": "/start"}}
         
     def get_started(self):
         return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def store_user(self, user_id):
-        print("store user")
         self.users[user_id] = True
-        self.start_conversation(user_id)
-
+        self.store_data(user_id)
+        #self.start_conversation(user_id)
+        
     def start_conversation(self, user_id):
         self.start_agent(user_id)
-        self.instructions(user_id, False)
+        self.instructions(user_id)
 
     def load_bot_token(self, bot_token_path):
-        """Loads the Token for the Telegram bot
-
-        :return: the token of the Telegram Bot
-
-        Args:
-            bot_token_path:
-
-        """
         if isinstance(bot_token_path, str):
             if os.path.isfile(bot_token_path):
                 with open(bot_token_path, 'r') as file:
@@ -95,16 +100,14 @@ class ControllerMessenger(Controller):
         c = conn.cursor()
         return c
 
-    def strip_tuple(self, element):
-        for e in element:
-            return e
-
     def execute_agent(self, configuration):
         self.configuration = configuration
         self.configuration['new_user'] = {}
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
         if self.configuration['BOT_HISTORY']['path']:
             self.path = self.configuration['BOT_HISTORY']['path']
+        print("get_started: ", self.get_started())
+        print("greeting: ", self.greeting())
 
     def restart(self, user_id):
         self.start_agent(user_id, True)
@@ -119,7 +122,6 @@ class ControllerMessenger(Controller):
             ] = self.agent[user_id].start_dialogue(None, restart)
             self.user_messages[user_id].text(self.agent_response[user_id])
 
-
     def movie_template(self, user_id, buttons):
         title = self.info[user_id]['title'] + " " + str(self.info[user_id]['rating']) + \
             " " + str(self.info[user_id]['duration']) + " min"
@@ -130,13 +132,15 @@ class ControllerMessenger(Controller):
     def get_options(self, user_id):
         options = []
         for option in self.user_options[user_id].values():
-            if type(option) == type("string"):
-                options.append(option)
-            else:
-                for item in option:
-                    options.append(item)
-        print("OPTIONS: ", options)
+            for item in option:
+                options.append({"button_type": "postback", "title": self.shorten(item), "payload": item})
         return options
+
+    def shorten(self, input):
+        for key, value in self.short_answers.items():
+            if key == input:
+                return value
+        return input
 
     def get_movie_id(self, response):
         if "/tt" in response:
@@ -154,7 +158,6 @@ class ControllerMessenger(Controller):
             self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.movie_info(movie_id, user_id)
-        print("agent_response: ", self.agent_response[user_id])
 
     def record(self, user_id, payload):
         if self.agent[user_id].bot_recorder:
@@ -176,6 +179,15 @@ class ControllerMessenger(Controller):
                     for movie in conversation["Context"]:
                         self.load_data[user_id][movie] = conversation["Context"][movie]
 
+    def delete_data(self, user_id):
+        user_history_path = self.path + 'user_' + user_id + '.json'
+        if os.path.isfile(user_history_path):
+            os.remove(user_history_path)
+            self.users[user_id] = False
+            self.user_messages[user_id].text("Conversation history deleted.")
+        else:
+            self.user_messages[user_id].text("No conversation history.")
+            
     def send_message(self, user_id, payload):
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
@@ -208,27 +220,44 @@ class ControllerMessenger(Controller):
         self.user_messages[user_id].text(self.agent_response[user_id])
         del self.agent[user_id]
 
-    def instructions(self, user_id, help=True):
-        response =  "To start the conversation, issue \"/start\", say Hi/Hello, or simply " \
+    def instructions(self, user_id):
+        response =  "To start the conversation say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
                 "To restart the recommendation process, issue \"/restart\".\n\n" \
                 "To end the conversation, issue \"/exit\" or say Bye/Goodbye.\n\n" \
                 "To see these instructions again, issue: \"/help\"." 
 
-        instructions = 'Hi there. I am IAI MovieBot, your movie recommending buddy. ' \
-                       'I can recommend you movies based on your preferences.\n' \
-                       'I will ask you a few questions and based on your answers, ' \
-                       'I will try to find a movie for you.\n\n' 
-        if help is False:
-            response = instructions + response
         self.user_messages[user_id].text(response)
 
-    def privacy_policy(self, user_id):
-        policy = "Privacy policy... ."
+    def store_data(self, user_id):
+        policy = "Type \"/delete\" at any time to stop storing and delete conversation history.\n\n" \
+                "Press start to continue."
         self.user_messages[user_id].text(policy)
-        title = ["Accept", "Reject"]
-        payload = ["/accept", "/reject"]
-        self.user_messages[user_id].quickreply("Accept or Reject", title, payload)
-         
+
+    def privacy_policy(self, user_id):
+        title = "We may store some information to improve recommendations.\n"\
+                "You may delete stored data at any time.\n" \
+                 "Read more in our privacy policy"
+        options = [{"button_type": "web_url", "title": "Privacy Policy", "url": "https://www.nrk.no"},
+                    {"button_type": "postback", "title": "Accept", "payload": "/store"},
+                    {"button_type": "postback", "title": "Start", "payload": "/continue"}
+        ]
+        self.user_messages[user_id].url_button(title, options)  
+
+        
+    def greeting(self):
+        greeting = {
+            "greeting":[
+            {
+                "locale":"default",
+                "text": "Hi there. I am IAI MovieBot, your movie recommending buddy. " \
+                       "I can recommend you movies based on your preferences.\n " \
+                       "I will ask you a few questions and based on your answers, "  \
+                       "I will try to find a movie for you.\n\n"
+            }
+            ]
+        }
+        return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=greeting).json()
+
   
 
