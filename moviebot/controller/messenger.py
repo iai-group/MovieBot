@@ -1,11 +1,18 @@
 import requests
 
-class Messages:
+class Messenger:
 
     def __init__(self, user_id, token):
         self.user_id = user_id
         self.buttons = {}
         self.token = token
+        self.quick_reply_uri = "https://graph.facebook.com/v10.0/me/messages?access_token="+self.token
+        self.url_button_uri = "https://graph.facebook.com/v2.6/me/messages?access_token="+self.token
+        self.text_uri = 'https://graph.facebook.com/v9.0/me/messages?access_token='+self.token
+        self.template_uri = 'https://graph.facebook.com/v9.0/me/messages?access_token='+self.token
+        self.button_template_uri = 'https://graph.facebook.com/v2.6/me/messages?access_token='+self.token
+        self.typing_on_uri = 'https://graph.facebook.com/v2.6/me/messages?access_token='+self.token
+        self.mark_seen_uri = 'https://graph.facebook.com/v2.6/me/messages?access_token='+self.token
 
     def quickreply(self, text, title, payload):
         replies = []
@@ -26,7 +33,7 @@ class Messages:
             }
             
         }
-        return requests.post("https://graph.facebook.com/v10.0/me/messages?access_token="+self.token, json=quick_reply).json()
+        return requests.post(self.quick_reply_uri, json=quick_reply).json()
 
     def create_buttons(self, options):
         buttons = []
@@ -43,15 +50,6 @@ class Messages:
 
     def url_button(self, title, options):
         buttons = self.create_buttons(options)
-        # b = {
-        #     "type":"web_url",
-        #     "url":"https://www.nrk.no",
-        #     "title":"Select Criteria",
-        #     "webview_height_ratio": "full",
-        #     "messenger_extensions": False,  
-        #     "fallback_url": "https://www.vg.no"
-        # }
-        # buttons.append(b)
         template = \
         {
             "recipient":{
@@ -68,28 +66,28 @@ class Messages:
                 }
             }
         }
-        return requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+self.token, json=template).json()
+        return requests.post(self.url_button_uri, json=template).json()
 
     def typing_on(self):
         typing = {
             "recipient":{"id": self.user_id},
             "sender_action": "typing_on"
         }
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=typing).json()
+        return requests.post(self.typing_on_uri, json=typing).json()
 
     def mark_seen(self):
         mark_seen = {
             "recipient": {"id": self.user_id},
             "sender_action": "mark_seen"
             }
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=mark_seen).json()
+        return requests.post(self.mark_seen_uri, json=mark_seen).json()
     
     def text(self, message):
             text = {
                 'recipient': {'id': self.user_id},
                 'message': {'text': message}
             }
-            return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=text).json()
+            return requests.post(self.text_uri, json=text).json()
 
     def template(self, buttons, image, url, subtitle, title):
         template = {
@@ -116,7 +114,7 @@ class Messages:
             }
             }
         }
-        return requests.post('https://graph.facebook.com/v9.0/me/messages?access_token='+self.token, json=template).json()
+        return requests.post(self.template_uri, json=template).json()
 
     def buttons_template(self, buttons, text):
         template = {
@@ -132,24 +130,6 @@ class Messages:
             }
             }
         }
-        return requests.post('https://graph.facebook.com/v2.6/me/messages?access_token='+self.token, json=template).json()
+        return requests.post(self.button_template_uri, json=template).json()
     
-    
-    def persistent_menu(self):
-        menu = {
-            "psid": self.user_id,
-            "persistent_menu": [
-                {
-                    "locale": "default",
-                    "composer_input_disabled": False,
-                    "call_to_actions": [
-                        {
-                            "type": "postback",
-                            "title": "Talk to an agent",
-                            "payload": "CARE_HELP"
-                        }
-                    ]
-                }
-            ]
-        }
-        return requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+self.token, json=menu).json()
+

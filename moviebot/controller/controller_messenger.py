@@ -9,7 +9,7 @@ import requests
 from os import environ
 import os
 import yaml
-from moviebot.controller.messages import Messages
+from moviebot.controller.messenger import Messenger
 from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.dialogue_manager.dialogue_state import DialogueState
@@ -203,7 +203,7 @@ class ControllerMessenger(Controller):
         if user_id not in self.agent:
             self.user_options[user_id] = {}
             self.users[user_id] = {}
-            self.user_messages[user_id] = Messages(user_id, self.token)
+            self.user_messages[user_id] = Messenger(user_id, self.token)
             self.start_agent(user_id)
         self.user_messages[user_id].mark_seen()
         self.user_messages[user_id].typing_on()
@@ -238,7 +238,7 @@ class ControllerMessenger(Controller):
         title = "We may store some information to improve recommendations.\n"\
                 "You may delete stored data at any time.\n" \
                  "Read more in our privacy policy"
-        options = [{"button_type": "web_url", "title": "Privacy Policy", "url": "https://www.nrk.no"},
+        options = [{"button_type": "web_url", "title": "Privacy Policy", "url": "https://iai-group.github.io/moviebot/Privacy_policy.html"},
                     {"button_type": "postback", "title": "Accept", "payload": "/store"},
                     {"button_type": "postback", "title": "Start", "payload": "/continue"}
         ]
