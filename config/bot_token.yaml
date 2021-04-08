@@ -1,4 +1,4 @@
 BOT_TOKEN: <<token>>
 MESSENGER_TOKEN: <<token>>
 MESSENGER_TEST_TOKEN: <<token>>
-MESSENGER_VERIFY_TOKEN: <<token>>
+MESSENGER_VERIFY_TOKEN: <<verify_token>>
