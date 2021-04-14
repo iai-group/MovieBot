@@ -12,7 +12,7 @@ The words of which the initial letter is capitalized have meanings defined under
 ## Definition
 
 For the purposes of this Privacy Policy:
-* __Organisation__ (referred to as either "We", "Us" or "Our" in this Agreement) refers to The IAI Research Group ath the University of Stavanger, Norway.
+* __Organisation__ (referred to as either "We", "Us" or "Our" in this Agreement) refers to the IAI Research Group ath the University of Stavanger, Norway.
 * __Bot__ refers to the reccomendation service agent you interract with.
 * __Service__ refers to the movie recommender service.
 * __You__ means the individual accessing or using the Service, or the Organisation, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.

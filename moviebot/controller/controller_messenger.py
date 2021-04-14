@@ -1,3 +1,5 @@
+"""This file contains the Controller class which controls the flow of the
+conversation while the user interacts with the agent using Messenger."""
 
 import json
 import sqlite3
@@ -19,6 +21,8 @@ from datetime import datetime
 class ControllerMessenger(Controller):
 
     def __init__(self):
+         """Initializes structs for Controller and sends the get started button to the facebook API.
+        """
         self.token = ""
         self.agent = {}
         self.record_data = {}
@@ -57,18 +61,37 @@ class ControllerMessenger(Controller):
         self.start = {"get_started": {"payload": "/start"}}
         
     def get_started(self):
+        """Displays 'Get Started' button at messenger weclome screen"""
         return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=self.start).json()
 
     def store_user(self, user_id):
+        """True if user accepts licence agreement. 
+        Data for this user is stored in conversation history.
+
+        Args:
+            user_id:
+        """
         self.users[user_id] = True
         self.store_data(user_id)
         #self.start_conversation(user_id)
         
     def start_conversation(self, user_id):
+        """Start conversation with agent and send instructions to user.
+        Args: 
+            user_id:
+        """
         self.start_agent(user_id)
         self.instructions(user_id)
 
     def load_bot_token(self, bot_token_path):
+         """Loads the Token for the Telegram bot
+
+        :return: the token of the Telegram Bot
+
+        Args:
+            bot_token_path:
+
+        """
         if isinstance(bot_token_path, str):
             if os.path.isfile(bot_token_path):
                 with open(bot_token_path, 'r') as file:
@@ -85,6 +108,11 @@ class ControllerMessenger(Controller):
             raise ValueError('Unacceptable type of Token file name')
     
     def movie_info(self, movie_id, user_id):
+        """Retrieve relevant movie info from database for selected user.
+        Args:
+            movie_id: 
+            user_id:
+        """
         for row in self.lookup().execute(f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'):
             self.info[user_id] = {
                 "title": row[1],
@@ -101,6 +129,17 @@ class ControllerMessenger(Controller):
         return c
 
     def execute_agent(self, configuration):
+        """Gets access token and conversation_history path from config file.
+
+        Sends get_started and greeting requests to the messenger API.
+
+        Runs the conversational agent and executes the dialogue by calling
+        the basic components of IAI MovieBot.
+
+        Args:
+            configuration: the settings for the agent
+
+        """
         self.configuration = configuration
         self.configuration['new_user'] = {}
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
@@ -110,9 +149,22 @@ class ControllerMessenger(Controller):
         self.greeting()
 
     def restart(self, user_id):
+        """Restart agent for this user.
+
+        Args: 
+            user_id:
+
+        """
         self.start_agent(user_id, True)
         
     def start_agent(self, user_id, restart=False):
+        """Start conversation with agent.
+
+        Args:
+            user_id:
+            restart: True or False
+
+        """
         self.agent[user_id] = Agent(self.configuration)
         self.agent[user_id].initialize(user_id)
         self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
@@ -123,6 +175,13 @@ class ControllerMessenger(Controller):
             self.user_messages[user_id].text(self.agent_response[user_id])
 
     def movie_template(self, user_id, buttons):
+        """Sends template for recommended movie.
+
+        Args:
+            user_id:
+            buttons: list of buttons
+
+        """
         title = self.info[user_id]['title'] + " " + str(self.info[user_id]['rating']) + \
             " " + str(self.info[user_id]['duration']) + " min"
         self.user_messages[user_id].template(
@@ -130,6 +189,12 @@ class ControllerMessenger(Controller):
                 self.info[user_id]['summary'], title)
 
     def get_options(self, user_id):
+        """Gets options from agent.
+
+        Args:
+            user_id:
+            
+        """
         options = []
         for option in self.user_options[user_id].values():
             for item in option:
@@ -137,18 +202,37 @@ class ControllerMessenger(Controller):
         return options
 
     def shorten(self, input):
+        """Creates shorter versions of agent responses.
+
+        Args:
+            input: agent options
+            
+        """
         for key, value in self.short_answers.items():
             if key == input:
                 return value
         return input
 
     def get_movie_id(self, response):
+        """Retrieves movie id from agent response string.
+
+        Args: 
+            response: agent response 
+
+        """
         if "/tt" in response:
             start = response.find("/tt")
             movie_id = response[start+3:start+10]
             return movie_id
 
     def continue_dialogue(self, user_id, payload):
+        """Continues dialogue with the agent. Updates movie info.
+
+        Args:
+            user_id:
+            payload: payload from user 
+        
+        """
         user_utterance = UserUtterance({'text': payload})
         self.agent_response[user_id], self.record_data_agent[user_id], self.user_options[user_id
         ] = self.agent[user_id].continue_dialogue(
@@ -160,6 +244,13 @@ class ControllerMessenger(Controller):
         self.movie_info(movie_id, user_id)
 
     def record(self, user_id, payload):
+        """Records user conversation if user has accepted privacy policy.
+
+        Args: 
+            user_id:
+            payload: user payload
+        
+        """
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
                 'Timestamp': str(datetime.now()),
@@ -170,6 +261,12 @@ class ControllerMessenger(Controller):
                 user_id, self.record_data[user_id])
 
     def load_user_data(self, user_id):
+        """Gets movie choices (accept/reject) for a user from conversation history.
+
+        Args:
+            user_id:
+
+        """
         user_history_path = self.path + 'user_' + user_id + '.json'
         self.load_data[user_id] = {}
         if os.path.isfile(user_history_path):
@@ -180,6 +277,12 @@ class ControllerMessenger(Controller):
                         self.load_data[user_id][movie] = conversation["Context"][movie]
 
     def delete_data(self, user_id):
+        """Delete stored conversation history for user.
+
+        Args:
+            user_id:
+
+        """
         user_history_path = self.path + 'user_' + user_id + '.json'
         if os.path.isfile(user_history_path):
             os.remove(user_history_path)
@@ -189,6 +292,13 @@ class ControllerMessenger(Controller):
             self.user_messages[user_id].text("No conversation history.")
             
     def send_message(self, user_id, payload):
+        """Sends template, buttons or text based on current agent options.
+
+        Args: 
+            user_id:
+            payload: user_payload
+
+        """
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
@@ -200,6 +310,12 @@ class ControllerMessenger(Controller):
             self.user_messages[user_id].text(self.agent_response[user_id])
 
     def initialize(self, user_id):
+        """Initializes structs for a new user.
+
+        Args:
+            user_id:
+        
+        """
         if user_id not in self.agent:
             self.user_options[user_id] = {}
             self.users[user_id] = {}
@@ -209,6 +325,13 @@ class ControllerMessenger(Controller):
         self.user_messages[user_id].typing_on()
 
     def run_method(self, user_id, payload):
+        """Runs methods for specific user inputs.
+
+        Args:
+            user_id:
+            payload: user payload
+        
+        """
         for item in self.methods:
             if payload.lower() == item['payload']:
                 func = item.get('action')
@@ -216,11 +339,19 @@ class ControllerMessenger(Controller):
         return True
 
     def exit(self, user_id):
+        """Ends conversation and deletes user id from agent.
+
+        Args:
+            user_id:
+
+        """
         self.agent_response[user_id] = 'You are exiting. I hope you found a movie. Bye.'
         self.user_messages[user_id].text(self.agent_response[user_id])
         del self.agent[user_id]
 
     def instructions(self, user_id):
+        """Instructions when the conversation is started and when '/help' is issued."""
+
         response =  "To start the conversation say Hi/Hello, or simply " \
                 "enter you preferences (\"I want a horror movie from the 90s\").\n\n" \
                 "To restart the recommendation process, issue \"/restart\".\n\n" \
@@ -230,6 +361,11 @@ class ControllerMessenger(Controller):
         self.user_messages[user_id].text(response)
 
     def store_data(self, user_id):
+        """Instructions for deleting stored conversation history.
+        Args: 
+            user_id:
+
+        """
         policy = "Type \"/delete\" at any time to stop storing and delete conversation history.\n\n" \
                 "Press start to continue."
         self.user_messages[user_id].text(policy)
@@ -246,6 +382,7 @@ class ControllerMessenger(Controller):
 
         
     def greeting(self):
+        """Posts greeting text on welcome screen."""
         greeting = {
             "greeting":[
             {
