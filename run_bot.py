@@ -1,15 +1,14 @@
-"""This code is executed to run IAI MovieBot"""
 
-__author__ = 'Javeria Habib'
+from os import environ
 
 import os
 import sys
-
 import yaml
 
+from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
-
+from moviebot.controller import server
 
 def _validate_file(file_name, file_type):
     """Checks if the file is valid and is present
@@ -74,18 +73,26 @@ def arg_parse(args=None):
 
     if cfg_parser:
         print(f'Configuration file "{config_file}" is loaded.')
-        return cfg_parser, cfg_parser['TELEGRAM']
+        return cfg_parser, cfg_parser['TELEGRAM'], cfg_parser['MESSENGER']
     else:
         raise ValueError(
             'The configuration file does not contain the correct format.')
 
+def get_config():
+    configuration, _, _ = arg_parse()
+    return configuration
 
 if __name__ == '__main__':
     # Usage: python run_bot.py -c <path_to_config.yaml>
     # Version: Python 3.6
-    CONFIGURATION, BOT = arg_parse()
+    CONFIGURATION, BOT , MESSENGER = arg_parse()
     if BOT:
         CONTROLLER = ControllerTelegram()
+    elif MESSENGER:
+        server.run(CONFIGURATION)
+        CONTROLLER = ControllerMessenger()
     else:
         CONTROLLER = ControllerTerminal()
-    CONTROLLER.execute_agent(CONFIGURATION)
+        CONTROLLER.execute_agent(CONFIGURATION)
+    
+    

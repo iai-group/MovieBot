@@ -15,6 +15,8 @@ NLU:
 
 TELEGRAM: False # execute the code on Telegram
 
+MESSENGER: True
+
 BOT_TOKEN_PATH: config/bot_token.yaml
 
 BOT_HISTORY: # save the conversational logs for Telegram users
