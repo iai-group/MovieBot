@@ -120,7 +120,7 @@ class Agent:
 
         if self.config.get('TELEGRAM', False):
             self.isBot = True
-            self.new_user = self.config['new_user'][user_id]
+            #self.new_user = self.config['new_user'][user_id]
 
         if self.config.get('MESSENGER', True):
             self.isBot = True

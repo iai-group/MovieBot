@@ -13,7 +13,9 @@ DATA:
 NLU:
   tag_words_slots: config/tag_words_slots.json
 
-TELEGRAM: False # execute the code on Telegram
+TELEGRAM: True # execute the code on Telegram
+
+POLLING: False # True when using Telegram without server
 
 MESSENGER: True
 
