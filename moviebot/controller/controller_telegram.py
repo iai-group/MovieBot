@@ -289,38 +289,37 @@ class ControllerTelegram(Controller):
         self.configuration['new_user'] = {}
         # Get the updater and dispatcher for the telegram controller
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
-        updater = Updater(self.token, use_context=True)
-        dp = updater.dispatcher
-
-        # Add conversation handler with states START, CONTINUE_RECOMMENDATION
-        # and END
-        conv_handler = ConversationHandler(
-            entry_points=[
-                CommandHandler('start', self.start),
-                CommandHandler('restart', self.start),
-                CommandHandler('help', self.help),
-                MessageHandler(Filters.text, self.continue_conv)
-            ],
-            states={
-                CONTINUE: [
+        polling = self.configuration['POLLING']
+        if polling:
+            updater = Updater(self.token, use_context=True)
+            dp = updater.dispatcher
+            # Add conversation handler with states START, CONTINUE_RECOMMENDATION
+            # and END
+            conv_handler = ConversationHandler(
+                entry_points=[
                     CommandHandler('start', self.start),
-                    CommandHandler('restart', self.restart),
+                    CommandHandler('restart', self.start),
                     CommandHandler('help', self.help),
-                    CommandHandler('exit', self.exit),
                     MessageHandler(Filters.text, self.continue_conv)
-                ]
-            },
-            fallbacks=[CommandHandler('exit', self.exit)])
-
-        dp.add_handler(conv_handler)
-        # dp.add_error_handler(self.error)
-        # Start the Bot
-        updater.start_polling()
-
-        # Run the controller until you press Ctrl-C or the process receives SIGINT,
-        # SIGTERM or SIGABRT. This should be used most of the time, since
-        # start_polling() is non-blocking and will stop the controller gracefully.
-        updater.idle()
+                ],
+                states={
+                    CONTINUE: [
+                        CommandHandler('start', self.start),
+                        CommandHandler('restart', self.restart),
+                        CommandHandler('help', self.help),
+                        CommandHandler('exit', self.exit),
+                        MessageHandler(Filters.text, self.continue_conv)
+                    ]
+                },
+                fallbacks=[CommandHandler('exit', self.exit)])
+            dp.add_handler(conv_handler)
+            dp.add_error_handler(self.error)
+            #Start the Bot
+            updater.start_polling()
+            # Run the controller until you press Ctrl-C or the process receives SIGINT,
+            # SIGTERM or SIGABRT. This should be used most of the time, since
+            # start_polling() is non-blocking and will stop the controller gracefully.
+            updater.idle()
         print(
             'The components for the conversation are initialized successfully.')
         print('The users can access IAI MovieBot using Telegram.')

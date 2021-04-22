@@ -21,7 +21,7 @@ from datetime import datetime
 class ControllerMessenger(Controller):
 
     def __init__(self):
-         """Initializes structs for Controller and sends the get started button to the facebook API.
+        """Initializes structs for Controller and sends the get started button to the facebook API.
         """
         self.token = ""
         self.agent = {}
@@ -84,7 +84,7 @@ class ControllerMessenger(Controller):
         self.instructions(user_id)
 
     def load_bot_token(self, bot_token_path):
-         """Loads the Token for the Telegram bot
+        """Loads the Token for the Telegram bot
 
         :return: the token of the Telegram Bot
 

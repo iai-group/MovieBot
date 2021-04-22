@@ -73,7 +73,7 @@ def arg_parse(args=None):
 
     if cfg_parser:
         print(f'Configuration file "{config_file}" is loaded.')
-        return cfg_parser, cfg_parser['TELEGRAM'], cfg_parser['MESSENGER']
+        return cfg_parser, cfg_parser['TELEGRAM'], cfg_parser['MESSENGER'], cfg_parser['POLLING']
     else:
         raise ValueError(
             'The configuration file does not contain the correct format.')
@@ -85,12 +85,16 @@ def get_config():
 if __name__ == '__main__':
     # Usage: python run_bot.py -c <path_to_config.yaml>
     # Version: Python 3.6
-    CONFIGURATION, BOT , MESSENGER = arg_parse()
+    CONFIGURATION, BOT , MESSENGER, POLLING = arg_parse()
     if BOT:
-        CONTROLLER = ControllerTelegram()
+        if POLLING:
+            CONTROLLER = ControllerTelegram()
+            CONTROLLER.execute_agent(CONFIGURATION)
+        else:
+            server.run(CONFIGURATION)    
     elif MESSENGER:
         server.run(CONFIGURATION)
-        CONTROLLER = ControllerMessenger()
+        #CONTROLLER = ControllerMessenger()
     else:
         CONTROLLER = ControllerTerminal()
         CONTROLLER.execute_agent(CONFIGURATION)
