@@ -10,7 +10,7 @@ import telegram
 app = Flask(__name__)
 controller_messenger = ControllerMessenger()
 controller_telegram = ControllerTelegram()
-URL = "https://636d944311f9.ngrok.io/" # Webhook url
+URL = "https://421bfb4b7569.ngrok.io/" # Telegram webhook url
 
 def bot_token():
     """Gets bot token from config file."""

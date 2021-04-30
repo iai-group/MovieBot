@@ -193,10 +193,19 @@ class ControllerTelegram(Controller):
                 user_utterance, self.user_options[user_id], user_fname=update.effective_user[
                     'first_name'])
         if self.user_options[user_id]:
+            print("USER OPTIONS: ", list(self.user_options[user_id].values()))
             # d = {str(key):val for key,val in self.user_options[user_id].items()}
             # print(user_id + str(d))
-            reply_keyboard = self._recheck_user_options(
-                deepcopy(list(self.user_options[user_id].values())))
+            remove = False
+            for option in list(self.user_options[user_id].values()):
+                if "Tell me" in option[0]:
+                    remove = True
+            if remove:
+                reply_keyboard = self._recheck_user_options(
+                    deepcopy(list(self.user_options[user_id].values())[0:3]))
+            else:
+                reply_keyboard = self._recheck_user_options(
+                    deepcopy(list(self.user_options[user_id].values())))
             resize = True
             if len(self.user_options[user_id]) > 3:
                 resize = False

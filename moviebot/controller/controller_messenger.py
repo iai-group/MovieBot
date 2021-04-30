@@ -301,6 +301,7 @@ class ControllerMessenger(Controller):
         """
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
+            #print("User options: ", self.user_options[user_id])
             buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
             if "**" in self.agent_response[user_id]:
                 self.movie_template(user_id, buttons)
