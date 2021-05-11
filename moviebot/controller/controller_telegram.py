@@ -18,6 +18,7 @@ from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
 from moviebot.core.shared.utterance.utterance import UserUtterance
 
+
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -40,6 +41,7 @@ class ControllerTelegram(Controller):
         self.record_data_agent = {}
         self.record_data = {}
         self.token = ''
+        self.short_answers = {}
 
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
@@ -160,6 +162,36 @@ class ControllerTelegram(Controller):
                 user_id, self.record_data[user_id])
         return CONTINUE
 
+    def shorten(self, input):
+        """Creates shorter versions of agent responses.
+
+        Args:
+            input: agent options
+            
+        """
+        options = []
+        for item in input:
+            found = False
+            for key, value in self.short_answers.items():
+                if key == item[0]:
+                    found = True
+                    options.append(value)
+            if not found:
+                options.append(item)
+        return options
+
+    def original(self, input):
+        """Converts user options back to original strings.
+        Args:
+            input: user input
+        """
+        #input_file = 'moviebot/controller/short_answers.yaml'
+        for key, value in self.short_answers.items():
+            if input == value:
+                return key
+        return input
+       
+
     def continue_conv(self, update, context):
         """Continues the conversation until the users want to restart of exit.
 
@@ -187,25 +219,38 @@ class ControllerTelegram(Controller):
                 f"Conversation is starting for user id = {user_id} and user name = '"
                 f"{update.effective_user['first_name']}'")
         start = time.time()
+        
+        if self.configuration['MESSENGER_MODE']:
+            update.message.text = self.original(update.message.text)
+
         user_utterance = UserUtterance(update.message.to_dict())
+
         self.response[user_id], self.record_data_agent[user_id], self.user_options[user_id] = \
             self.agent[user_id].continue_dialogue(
                 user_utterance, self.user_options[user_id], user_fname=update.effective_user[
                     'first_name'])
+
+        
         if self.user_options[user_id]:
-            print("USER OPTIONS: ", list(self.user_options[user_id].values()))
-            # d = {str(key):val for key,val in self.user_options[user_id].items()}
-            # print(user_id + str(d))
             remove = False
-            for option in list(self.user_options[user_id].values()):
-                if "Tell me" in option[0]:
-                    remove = True
-            if remove:
-                reply_keyboard = self._recheck_user_options(
-                    deepcopy(list(self.user_options[user_id].values())[0:3]))
+            if self.configuration['MESSENGER_MODE']:
+                short_answers = self.shorten(list(self.user_options[user_id].values()))
+                for option in list(self.user_options[user_id].values()):
+                    if "Tell me" in option[0]:
+                        remove = True
+
+                if remove:
+                    reply_keyboard = self._recheck_user_options(
+                    deepcopy(short_answers[0:3]))
+
+                else:
+                    reply_keyboard = self._recheck_user_options(
+                        deepcopy(short_answers))
+
             else:
                 reply_keyboard = self._recheck_user_options(
                     deepcopy(list(self.user_options[user_id].values())))
+       
             resize = True
             if len(self.user_options[user_id]) > 3:
                 resize = False
@@ -296,6 +341,11 @@ class ControllerTelegram(Controller):
         """
         self.configuration = configuration
         self.configuration['new_user'] = {}
+
+        input_file = 'config/short_answers.yaml'
+        for key, value in yaml.load(open(input_file)).items():
+            self.short_answers[key] = value
+
         # Get the updater and dispatcher for the telegram controller
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
         polling = self.configuration['POLLING']
