@@ -24,6 +24,7 @@ class ControllerMessenger(Controller):
         """Initializes structs for Controller and sends the get started button to the facebook API.
         """
         self.token = ""
+        self.started = False
         self.agent = {}
         self.record_data = {}
         self.user_messages = {}
@@ -47,17 +48,7 @@ class ControllerMessenger(Controller):
             {"payload": "/store", "action": self.store_user},
             {"payload": "/continue", "action": self.start_conversation}
         ]
-        self.short_answers = {
-            "I like this recommendation.": "I like this",
-            "I have already watched it.": "Seen it",
-            "Tell me more about it.": "Tell me more",
-            "Recommend me something else please.": "Something else",
-            "Tell me something about it.": "More information",
-            "/restart": "Restart",
-            "I would like a similar recommendation.": "Similar",
-            "I want to restart for a new movie.": "Restart",
-            "I would like to quit now.": "Quit"
-        }
+        self.short_answers = {}
         self.start = {"get_started": {"payload": "/start"}}
         
     def get_started(self):
@@ -80,8 +71,10 @@ class ControllerMessenger(Controller):
         Args: 
             user_id:
         """
+        self.started = True
         self.start_agent(user_id)
         self.instructions(user_id)
+   
 
     def load_bot_token(self, bot_token_path):
         """Loads the Token for the Telegram bot
@@ -140,13 +133,20 @@ class ControllerMessenger(Controller):
             configuration: the settings for the agent
 
         """
+
+        input_file = 'config/short_answers.yaml'
+        for key, value in yaml.load(open(input_file)).items():
+            self.short_answers[key] = value
+
         self.configuration = configuration
         self.configuration['new_user'] = {}
         self.token = self.load_bot_token(self.configuration['BOT_TOKEN_PATH'])
         if self.configuration['BOT_HISTORY']['path']:
             self.path = self.configuration['BOT_HISTORY']['path']
+        #self.persistent()
         self.get_started()
         self.greeting()
+        
 
     def restart(self, user_id):
         """Restart agent for this user.
@@ -198,7 +198,8 @@ class ControllerMessenger(Controller):
         options = []
         for option in self.user_options[user_id].values():
             for item in option:
-                options.append({"button_type": "postback", "title": self.shorten(item), "payload": item})
+                options.append({"button_type": "postback", "title": 
+                    self.shorten(item), "payload": item})
         return options
 
     def shorten(self, input):
@@ -301,7 +302,7 @@ class ControllerMessenger(Controller):
         """
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
-            #print("User options: ", self.user_options[user_id])
+            print("User options: ", list(self.user_options[user_id].values()))
             buttons = self.user_messages[user_id].create_buttons(self.get_options(user_id))
             if "**" in self.agent_response[user_id]:
                 self.movie_template(user_id, buttons)
@@ -337,6 +338,8 @@ class ControllerMessenger(Controller):
             if payload.lower() == item['payload']:
                 func = item.get('action')
                 return func(user_id)
+        if self.started is False:
+            return False
         return True
 
     def exit(self, user_id):
@@ -398,4 +401,20 @@ class ControllerMessenger(Controller):
         return requests.post('https://graph.facebook.com/v10.0/me/messenger_profile?access_token='+self.token, json=greeting).json()
 
   
-
+    def persistent(self):
+        persistent = {
+        "persistent_menu": [
+            {
+                "locale": "default",
+                "composer_input_disabled": False,
+                "call_to_actions": [
+                    {
+                    "type": "postback",
+                    "title": "Restart",
+                    "payload": "/restart"
+                }
+                ]
+            }
+        ]
+        }
+        return requests.post('https://graph.facebook.com/v10.0/me/custom_user_settings?access_token='+self.token, json=persistent).json()

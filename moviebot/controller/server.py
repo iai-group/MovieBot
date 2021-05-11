@@ -10,7 +10,7 @@ import telegram
 app = Flask(__name__)
 controller_messenger = ControllerMessenger()
 controller_telegram = ControllerTelegram()
-URL = "https://421bfb4b7569.ngrok.io/" # Telegram webhook url
+URL = "https://025d8e8dc5c6.ngrok.io/" # Webhook url
 
 def bot_token():
     """Gets bot token from config file."""
@@ -42,8 +42,8 @@ def respond():
     return 'ok'
 
 def set_webhook():
-    s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=telegram_token))
-    if s:
+    webook = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=telegram_token))
+    if webook:
         return "webhook ok"
     else:
         return "webhook failed"
@@ -78,7 +78,6 @@ def receive_message():
         return verify_fb_token(token_sent)
     else:  
         output = request.get_json()
-        print(output)
         action(output)
         return "Message Processed"
 

@@ -15,9 +15,11 @@ NLU:
 
 TELEGRAM: True # execute the code on Telegram
 
-POLLING: False # True when using Telegram without server
+POLLING: True # True when using Telegram without server
 
-MESSENGER: True
+MESSENGER_MODE: False
+
+MESSENGER: False
 
 BOT_TOKEN_PATH: config/bot_token.yaml
 
