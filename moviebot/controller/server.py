@@ -10,7 +10,6 @@ import telegram
 app = Flask(__name__)
 controller_messenger = ControllerMessenger()
 controller_telegram = ControllerTelegram()
-URL = "https://025d8e8dc5c6.ngrok.io/" # Webhook url
 
 def bot_token():
     """Gets bot token from config file."""
@@ -41,14 +40,14 @@ def respond():
         controller_telegram.continue_conv(update, True)
     return 'ok'
 
-def set_webhook():
-    webook = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=telegram_token))
+def set_webhook(webhook_url):
+    webook = bot.setWebhook('{URL}{HOOK}'.format(URL=webhook_url, HOOK=telegram_token))
     if webook:
         return "webhook ok"
     else:
         return "webhook failed"
 
-def run(config):
+def run(config, webhook_url):
     """Runs execute_agent in ControllerMessenger and starts flask server.
 
     Args:
@@ -59,7 +58,7 @@ def run(config):
     controller_messenger.execute_agent(config)
     # Messenger verify token
     verify_token()
-    set_webhook()
+    set_webhook(webhook_url)
     app.run(host='0.0.0.0', port=environ.get("PORT", 5000))
     
 def verify_token():
