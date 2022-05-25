@@ -422,13 +422,11 @@ class ControllerFlask(Controller):
         return self.user_messages[user_id].text(policy, intent="REVEAL.DISCLOSE")
 
     def first_time_message(self, user_id):
+        start_text = self.start_agent(user_id)
         greet = self.greeting()
-        greet = greet["message"]["text"]
-        privacy = self.privacy_policy()
-        privacy = privacy["message"]["text"]
 
         return self.user_messages[user_id].text(
-            "\n\n".join([greet, privacy]), intent="REVEAL.DISCLOSE"
+            greet["message"]["text"], intent="REVEAL.DISCLOSE"
         )
 
     def privacy_policy(self):
