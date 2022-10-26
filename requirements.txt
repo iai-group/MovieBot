@@ -1,4 +1,8 @@
+flake8
+black
+pytest
 pyyaml>=3.13
 python-telegram-bot
 wikipedia
 nltk
+flask

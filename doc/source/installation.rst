@@ -31,10 +31,7 @@ Python Libraries
 
 .. code-block:: shell
 
-    $ pip install pyyaml
-    $ pip install python-telegram-bot --upgrade
-    $ pip install wikipedia
-    $ pip install nltk
+    $ pip3 install -r requirements.txt
        
 nltk Resources
 --------------

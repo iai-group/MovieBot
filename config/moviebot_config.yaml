@@ -13,11 +13,11 @@ DATA:
 NLU:
   tag_words_slots: config/tag_words_slots.json
 
-TELEGRAM: True # execute the code on Telegram
+TELEGRAM: False # execute the code on Telegram
 
 POLLING: False # True when using Telegram without server
 
-MESSENGER: True
+MESSENGER: False
 
 BOT_TOKEN_PATH: config/bot_token.yaml
 
