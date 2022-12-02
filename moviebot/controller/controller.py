@@ -1,7 +1,6 @@
 """This file contains the Controller which controls the conversation between
 the agent and the user."""
 
-__author__ = "Javeria Habib"
 
 from abc import ABC, abstractmethod
 

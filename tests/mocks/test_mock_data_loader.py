@@ -3,7 +3,7 @@ import moviebot.nlu.data_loader as DL
 from unittest.mock import patch
 
 
-@patch('moviebot.nlu.data_loader.DataLoader', new=MockDataLoader)
+@patch("moviebot.nlu.data_loader.DataLoader", new=MockDataLoader)
 def test_mock_data_loader():
     # Setup
     loader = DL.DataLoader(None, None)

@@ -1,11 +1,10 @@
 import os
 import sys
-from os import environ
 
 import yaml
 
 # from moviebot.controller import server
-from moviebot.controller.controller_messenger import ControllerMessenger
+# from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 

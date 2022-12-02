@@ -3,8 +3,6 @@ It keeps track of the recommendations agent made with user response to those
 recommendations.
 """
 
-__author__ = 'Javeria Habib'
-
 
 class DialogueContext:
     """DialogueContext models a record of previous conversation. It keeps track

@@ -15,18 +15,18 @@ import sys
 
 import sphinx_rtd_theme
 
-sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 
-project = 'IAI MovieBot'
-copyright = '2020, IAI group, University of Stavanger'
-author = 'Javeria Habib, Krisztian Balog'
+project = "IAI MovieBot"
+copyright = "2020, IAI group, University of Stavanger"
+author = "Javeria Habib, Krisztian Balog"
 
 # The short X.Y version.
-version = u'0.1'
+version = "0.1"
 # The full version, including alpha/beta/rc tags.
-release = u'0.1'
+release = "0.1"
 
 # -- General configuration ---------------------------------------------------
 
@@ -34,29 +34,29 @@ release = u'0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.napoleon',
-    #'sphinx.ext.coverage',  # in ll
-    #'sphinx.ext.ifconfig',
-    #'sphinx.ext.viewcode',
-    #'sphinx.ext.todo',
-    'autoapi.extension',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    # 'sphinx.ext.coverage',  # in ll
+    # 'sphinx.ext.ifconfig',
+    # 'sphinx.ext.viewcode',
+    # 'sphinx.ext.todo',
+    "autoapi.extension",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
-#source_encoding = 'utf-8-sig'
+# source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -68,18 +68,21 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Auto api
-autoapi_type = 'python'
-autoapi_dirs = ['../../moviebot']
-autoapi_ignore = ['*tests/*']
+autoapi_type = "python"
+autoapi_dirs = ["../../moviebot"]
+autoapi_ignore = ["*tests/*"]
 autoapi_options = [
-    'members', 'undoc-members', 'show-inheritance', 'show-module-summary'
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
 ]

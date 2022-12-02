@@ -1,11 +1,10 @@
 """This file contains the Controller class which controls the flow of the
 conversation while the user interacts with the agent using python console"""
 
-__author__ = "Javeria Habib"
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 
 class ControllerTerminal(Controller):

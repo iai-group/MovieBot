@@ -1,10 +1,9 @@
 """Dialogue Act defines the action user or agent takes during the conversation.
 """
 
-__author__ = 'Javeria Habib'
 
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.core.intents.agent_intents import AgentIntents
+from moviebot.core.intents.user_intents import UserIntents
 
 
 class DialogueAct:
@@ -20,11 +19,12 @@ class DialogueAct:
 
         """
         self.intent = None
-        if (isinstance(intent, UserIntents)
-                or isinstance(intent, AgentIntents)) and intent is not None:
+        if (
+            isinstance(intent, UserIntents) or isinstance(intent, AgentIntents)
+        ) and intent is not None:
             self.intent = intent
         else:
-            raise ValueError('Unacceptable dialogue act type: %s ' % intent)
+            raise ValueError("Unacceptable dialogue act type: %s " % intent)
 
         self.params = params or []
 
@@ -36,8 +36,11 @@ class DialogueAct:
 
         """
         if self.intent:
-            return str(self.intent) + \
-                   '(' + \
-                   ', '.join([str(param) for param in self.params]) + ')'
+            return (
+                str(self.intent)
+                + "("
+                + ", ".join([str(param) for param in self.params])
+                + ")"
+            )
         else:
-            return 'None (DialogueAct)'
+            return "None (DialogueAct)"

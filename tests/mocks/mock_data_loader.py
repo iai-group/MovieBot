@@ -1,17 +1,16 @@
 tag_words = {
-    'user_reveal': '',
-    'user_inquire': '',
-    'user_reveal_inquire': '',
+    "user_reveal": "",
+    "user_inquire": "",
+    "user_reveal_inquire": "",
 }
 
 slot_values = {
-    'actors': {},
-    'directors': {},
+    "actors": {},
+    "directors": {},
 }
 
 
 class MockDataLoader:
-
     def __init__(self, config, _lemmatize_value):
         pass
 
