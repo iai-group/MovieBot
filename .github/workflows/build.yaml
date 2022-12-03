@@ -132,7 +132,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: 35bb996459f0949b38da651c66cf95cb
+          gistID: 4f783c1a3358dbd1e01d44f9656676a0
           filename: coverage.${{ env.REPO_NAME }}.${{ github.event.number }}.json
           label: coverage
           message: ${{ env.COVERAGE }}
@@ -154,5 +154,5 @@ jobs:
           body: |
             Current Branch | Main Branch |
             | ------ | ------ |
-            ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/adrzewiecki/35bb996459f0949b38da651c66cf95cb/raw/coverage.${{ env.REPO_NAME }}.${{ github.event.number  }}.json) | ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/adrzewiecki/35bb996459f0949b38da651c66cf95cb/raw/coverage.${{ env.REPO_NAME }}.main.json) |
+            ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/IKostric/4f783c1a3358dbd1e01d44f9656676a0/raw/coverage.${{ env.REPO_NAME }}.${{ github.event.number  }}.json) | ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/IKostric/4f783c1a3358dbd1e01d44f9656676a0/raw/coverage.${{ env.REPO_NAME }}.main.json) |
           edit-mode: replace
