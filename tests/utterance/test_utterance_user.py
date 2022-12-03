@@ -1,13 +1,21 @@
-from moviebot.core.shared.utterance.utterance_user import UserUtterance
-
 import pytest
 
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
-@pytest.mark.parametrize('utterance, expected', [
-    ('Hello WoRld', ['hello', 'world']),
-    ('document.with, punctuation:   with?spaces\ttabs\nwith newlines\n\n\n',
-     ['document', 'punctuation', 'space', 'tab', 'newlines']),
-])
+
+@pytest.mark.parametrize(
+    "utterance, expected",
+    [
+        ("Hello WoRld", ["hello", "world"]),
+        (
+            (
+                "document.with, punctuation:   with?spaces\ttabs\nwith"
+                " newlines\n\n\n"
+            ),
+            ["document", "punctuation", "space", "tab", "newlines"],
+        ),
+    ],
+)
 def test_get_processed_utterance(utterance, expected):
     # Setup
     uu = UserUtterance(utterance)
