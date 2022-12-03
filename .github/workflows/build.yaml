@@ -100,6 +100,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
           files: artifacts/unit-test-py39/*.xml
+          comment_mode: off
 
       - name: Get the Coverage
         shell: bash
