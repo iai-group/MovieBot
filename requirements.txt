@@ -2,6 +2,7 @@ pre-commit
 flake8
 black
 pytest
+pytest-cov
 pyyaml>=3.13
 python-telegram-bot
 wikipedia
