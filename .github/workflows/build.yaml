@@ -96,23 +96,6 @@ jobs:
         with:
           path: artifacts
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: artifacts/unit-test-py39/*.xml
-
-      - name: Pytest coverage comment in pull-request
-        uses: MishaKav/pytest-coverage-comment@main
-        with:
-          default-branch: main
-          pytest-coverage-path: artifacts/coverage-results-txt/pytest-coverage.txt
-
-          hide-badge: true
-          hide-report: false
-          create-new-comment: false
-          hide-comment: false
-          report-only-changed-files: true
-
       - name: Get the Coverage
         shell: bash
         run: |
