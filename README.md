@@ -4,6 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/iai-moviebot/badge/?version=latest)](https://iai-moviebot.readthedocs.io/en/latest/?badge=latest)
 ![Tests](https://img.shields.io/github/workflow/status/iai-group/moviebot/Deploy?label=Tests)
 ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/IKostric/4f783c1a3358dbd1e01d44f9656676a0/raw/coverage.moviebot.main.json)
+![Python version](https://img.shields.io/badge/python-3.9-blue)
 
 IAI MovieBot is a conversational recommender system for movies.  It follows a standard task-oriented dialogue system architecture, comprising of natural language understanding (NLU), dialogue manager (DM), and natural language generation (NLG) components.  The distinctive features of IAI MovieBot include a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences.  While our current focus is limited to movies, the system aims to be a reusable development framework that can support users in accomplishing recommendation-related goals via multi-turn conversations.
 
