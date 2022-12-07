@@ -17,13 +17,7 @@ from moviebot.core.shared.utterance.utterance import UserUtterance
     ],
 )
 def test_get_processed_utterance(utterance, expected):
-    # Setup
     uu = UserUtterance(utterance)
-
-    # Exercise
     result = uu.get_preprocessed_utterance()
 
-    # Results
     assert result == expected
-
-    # Cleanup - none
