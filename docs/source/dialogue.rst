@@ -4,6 +4,70 @@ Dialogue Modeling
 We assume that recommendations happen via a multi-turn conversation with an *agent*, which is initiated and terminated by the *user*.
 The agent keeps eliciting user preferences until (a) the result set is sufficiently small or (b) it has reached the maximum amount of questions it is allowed to ask (to avoid fatiguing the user). Then, the agent makes recommendations for specific items and elicits feedback on them, until the user finds an item to their liking (or terminates the process).
 
+Intents
+-------
+
+User intents
+"""""""""""""
+
+:py:class:`UserIntents <moviebot.intents.user_intents>`
+
++------------------------+------------+
+| Intent   | Description   |
++========================+============+
+| Reveal   | The user wants to reveal a preference.   | 
++------------------------+------------+
+| Inquire  | Once the agent has recommended an item, the user can ask further details about it.        | 
++------------------------+------------+
+| Remove preference  | The user wants to remove any previously stated preference.        | 
++------------------------+------------+
+| Reject  | The user either has already seen/consumed the recommended item or does not like it.        | 
++------------------------+------------+
+| Accept  | The user accepts (likes) the recommendation. This will determine the success of the system as being able to find a recommendation the user liked.        | 
++------------------------+------------+
+| Continue recommendation  | If the user likes a recommendation, they can either restart, quit or continue the process to get a similar recommendation.        | 
++------------------------+------------+
+| Restart  | The user wants to restart the recommendation process.        | 
++------------------------+------------+
+| Acknowledge  | Acknowledge the agent's question where required.        | 
++------------------------+------------+
+| Deny  | Negate the agent's question where required.        | 
++------------------------+------------+
+| Hi  | When the user initiates the conversation, they start with a formal hi/hello or reveal preferences.        | 
++------------------------+------------+
+| Bye  | End the conversation by sending a bye message or an exit command.        | 
++------------------------+------------+
+
+Agent intents
+"""""""""""""
+
+:py:class:`AgentIntents <moviebot.intents.agent_intents>`
+
++------------------------+------------+
+| Intent   | Description   |
++========================+============+
+| Elicit   | Ask the user to describe their preferences.   | 
++------------------------+------------+
+| Recommend  | Based on the user's preferences, make a recommendation.        | 
++------------------------+------------+
+| No results  | The database does not contain any items matching the user's preferences.        | 
++------------------------+------------+
+|  Count results | The number of items matching the user's preferences is larger than a maximum limit. This will be followed by an elicit intent.        | 
++------------------------+------------+
+| Inform  | If the user inquires about the recommended item, the agent provides the relevant information.        | 
++------------------------+------------+
+| Continue recommendation  | If the user likes a recommendation, they can either restart, quit or continue the process to get a similar recommendation.        | 
++------------------------+------------+
+| Restart  | The user wants to restart the recommendation process.        | 
++------------------------+------------+
+| Acknowledge  | Acknowledge the user's query where required.        | 
++------------------------+------------+
+| Can't help  | The agent does not understand the user's query or is not able to respond properly based on the current dialogue state.        | 
++------------------------+------------+
+| Welcome  | Start the conversation by giving a short introduction.        | 
++------------------------+------------+
+| Bye  | End the conversation.        | 
++------------------------+------------+
 
 Dialogue Act
 ------------
