@@ -16,6 +16,10 @@ IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/I
 
 The installation instructions and documentation can be found on [Read the Docs](https://iai-moviebot.readthedocs.io/).
 
+## Contributions
+
+Contributions are welcome. Changes to IAI MovieBot should conform to [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python).
+
 
 ## Publication
 
