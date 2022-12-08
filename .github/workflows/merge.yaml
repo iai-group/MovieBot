@@ -24,6 +24,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest-github-actions-annotate-failures
+
+      - name: Download NLTK dependencies
+        run: |
+          python -m nltk.downloader punkt wordnet stopwords omw-1.4
+
       - name: PyTest with code coverage
         continue-on-error: true
         run: |
