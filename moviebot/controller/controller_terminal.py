@@ -12,13 +12,7 @@ class ControllerTerminal(Controller):
     IAI MovieBot. The controller executes the conversational agent."""
 
     def execute_agent(self) -> None:
-        """Runs the conversational agent and executes the dialogue by calling
-        the basic components of IAI MovieBot
-
-        Args:
-            configuration: the settings for the agent
-
-        """
+        """Runs the conversational agent and executes the dialogue."""
         agent = None
         while True:
             utterance = input("User: ")

@@ -28,6 +28,7 @@ class Controller(ABC):
         raise NotImplementedError
 
     def initialize_agent(self) -> Agent:
+        """Initializes and returns an agent based on configuration."""
         agent = Agent(self.configuration)
         agent.initialize()
         print(
@@ -36,4 +37,9 @@ class Controller(ABC):
         return agent
 
     def restart(self, utterance: UserUtterance) -> bool:
+        """Returns true if user intent is to restart conversation.
+
+        Args:
+            utterance: User utterance.
+        """
         return utterance.get_text() == RESTART
