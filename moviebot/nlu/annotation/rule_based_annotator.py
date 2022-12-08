@@ -7,16 +7,17 @@ import re
 import string
 from copy import deepcopy
 
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
+from moviebot.nlu.annotation.semantic_annotation import (
+    AnnotationType,
+    EntityType,
+    SemanticAnnotation,
+)
+from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
+from moviebot.nlu.annotation.slots import Slots
 from nltk import ngrams
 from nltk.corpus import stopwords
-
-from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
-from moviebot.nlu.annotation.item_constraint import ItemConstraint
-from moviebot.nlu.annotation.semantic_annotation import SemanticAnnotation
-from moviebot.nlu.annotation.semantic_annotation import AnnotationType
-from moviebot.nlu.annotation.semantic_annotation import EntityType
-from moviebot.nlu.annotation.operator import Operator
-from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):
@@ -326,22 +327,22 @@ class RBAnnotator(SlotAnnotator):
 
     def find_in_raw_utterance(self, raw_utterance, gram, ngram_size):
         """
+        Finds the ngram in the raw utterance.
 
-        TODO (Ivica Kostric): There are cases where this method fails when,
-        for example user doesn't use space after punctuation or writes
-        'kung-fu' instead of 'kung fu'. This leads to problem later since it
-        sets the value parameter of ItemConstraint to None.
+        If the ngram is found in the utterance it is returned with removed
+        punctuation.
 
         Args:
-            raw_utterance: 
-            gram: 
-            ngram_size: 
+            raw_utterance: The raw utterance.
+            gram: The ngram to be found in the raw_utterance.
+            ngram_size: The size of the n-gram.
 
         """
+        raw_utterance = raw_utterance.translate(
+            str.maketrans(string.punctuation, " " * len(string.punctuation))
+        )
         n_grams = ngrams(raw_utterance.split(), ngram_size)
         for _gram in n_grams:
             gramR = ' '.join(_gram)
             if self._lemmatize_value(gramR) == gram:
-                while gramR[-1] in string.punctuation:
-                    gramR = gramR[:-1]
                 return gramR
