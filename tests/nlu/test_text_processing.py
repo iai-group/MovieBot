@@ -36,7 +36,4 @@ def test_process_text(utterance: str, expected: List[Token]) -> None:
     result = tp.process_text(utterance)
 
     assert len(result) == len(expected)
-    for r, e in zip(result, expected):
-        r_dict = r.__dict__
-        e_dict = e.__dict__
-        assert all((r_dict.get(k) == v for k, v in e_dict.items()))
+    assert all(r == e for r, e in zip(result, expected))

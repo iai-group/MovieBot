@@ -1,10 +1,9 @@
 """ This file contains the main functions for checking the user intents."""
 
-__author__ = "Javeria Habib"
-
 import re
 import string
 from copy import deepcopy
+from typing import Any, Dict
 
 import wikipedia
 from nltk.stem import WordNetLemmatizer
@@ -26,12 +25,11 @@ class UserIntentsChecker:
     required, CheckUserIntents calls annotators to check which slot user refers
     to."""
 
-    def __init__(self, config):
-        """Initialize the Intents checker and load database, tag words etc
+    def __init__(self, config: Dict[str, Any]):
+        """Initializes the intents checker and load database, tag words etc.
 
-        :type self.database: DataBase
-        :type self.ontology: Ontology
-
+        Args:
+            config: Dictionary with ontology and database.
         """
         self.ontology = config["ontology"]
         self.database = config["database"]
