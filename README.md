@@ -18,7 +18,7 @@ The installation instructions and documentation can be found on [Read the Docs](
 
 ## Contributions
 
-Contributions are welcome. Changes to IAI MovieBot should conform to [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python).
+Contributions are welcome. Changes to IAI MovieBot should conform to the [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python).
 
 
 ## Publication
