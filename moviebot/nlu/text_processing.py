@@ -45,9 +45,9 @@ class Span:
     def __eq__(self, other):
         s_dict = vars(self)
         o_dict = vars(other)
-        return all((s_dict.get(k) == v for k, v in o_dict.items())) and type(
-            self
-        ) is type(other)
+        return type(self) is type(other) and all(
+            (s_dict.get(k) == v for k, v in o_dict.items())
+        )
 
     def __lt__(self, other):
         return (self.start, self.end) < (other.start, other.end)
