@@ -10,9 +10,6 @@ import time
 from copy import deepcopy
 
 import yaml
-from moviebot.agent.agent import Agent
-from moviebot.controller.controller import Controller
-from moviebot.core.shared.utterance.utterance import UserUtterance
 from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import (
     CommandHandler,
@@ -21,6 +18,10 @@ from telegram.ext import (
     MessageHandler,
     Updater,
 )
+
+from moviebot.agent.agent import Agent
+from moviebot.controller.controller import Controller
+from moviebot.core.utterance.utterance import UserUtterance
 
 # Enable logging
 logging.basicConfig(

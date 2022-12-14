@@ -108,5 +108,5 @@ if __name__ == "__main__":
         # server.run(CONFIGURATION)
         # CONTROLLER = ControllerMessenger()
     else:
-        CONTROLLER = ControllerTerminal()
-        CONTROLLER.execute_agent(CONFIGURATION)
+        CONTROLLER = ControllerTerminal(CONFIGURATION)
+        CONTROLLER.execute_agent()

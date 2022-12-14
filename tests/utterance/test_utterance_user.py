@@ -1,6 +1,6 @@
 import pytest
 
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 
 @pytest.mark.parametrize(

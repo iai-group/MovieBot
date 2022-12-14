@@ -1,16 +1,19 @@
-import sys, os
-if os.getcwd().endswith('eval'):
-    os.chdir('..')
+import os
+import sys
+
+if os.getcwd().endswith("eval"):
+    os.chdir("..")
     sys.path.insert(1, os.getcwd())
 
 import json
 import time
-from copy import deepcopy
 from collections import defaultdict
+from copy import deepcopy
 
 from run_bot import arg_parse
+
 from moviebot.agent.agent import Agent
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 
 def get_data_path(filename):
@@ -22,24 +25,22 @@ def get_data_path(filename):
     Returns:
         Text: Full path for the filename.
     """
-    return os.path.join(os.getcwd(), 'eval', 'data', filename)
+    return os.path.join(os.getcwd(), "eval", "data", filename)
 
 
 def load_json(filename):
-    """Loads the contents of a json file from the data folder.
-    """
+    """Loads the contents of a json file from the data folder."""
     try:
-        with open(get_data_path(filename), 'r') as f:
+        with open(get_data_path(filename), "r") as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f'File \'{filename}\' not found.')
+        print(f"File '{filename}' not found.")
         return []
 
 
 def save_json(data, filename):
-    """Saves contents of data to json file to the data folder.
-    """
-    with open(get_data_path(filename), '+w') as f:
+    """Saves contents of data to json file to the data folder."""
+    with open(get_data_path(filename), "+w") as f:
         json.dump(data, f)
 
 
@@ -52,7 +53,7 @@ def load_config(filename=None):
     Returns:
         dict: Dictionary loaded from config file.
     """
-    args = ['', '']
+    args = ["", ""]
     if filename:
         args.append(filename)
     return arg_parse(args)[0]
@@ -67,12 +68,16 @@ def parse_ccpem_collection(collection):
     Returns:
         List[Dict]: Text and segments parts of the collection.
     """
-    return [[{
-        'text': utterance['text'],
-        'segments': utterance.get('segments', [])
-    }
-             for utterance in conversation['utterances']]
-            for conversation in collection]
+    return [
+        [
+            {
+                "text": utterance["text"],
+                "segments": utterance.get("segments", []),
+            }
+            for utterance in conversation["utterances"]
+        ]
+        for conversation in collection
+    ]
 
 
 def get_conversations(collection):
@@ -84,9 +89,10 @@ def get_conversations(collection):
     Returns:
         List[List]: List of utterances in a list of conversations
     """
-    return [[utterance['text']
-             for utterance in conversation]
-            for conversation in collection]
+    return [
+        [utterance["text"] for utterance in conversation]
+        for conversation in collection
+    ]
 
 
 def get_segments(collection, annotationTypes=None):
@@ -106,20 +112,21 @@ def get_segments(collection, annotationTypes=None):
         conversation_segment = []
         for utterance in conversation:
             if not annotationTypes:
-                conversation_segment.append(utterance['segments'])
+                conversation_segment.append(utterance["segments"])
                 continue
 
             segments_to_keep = []
-            for segment in utterance['segments']:
+            for segment in utterance["segments"]:
                 annotations = [
-                    ann for ann in segment['annotations']
-                    if ann['entityType'] in annotationTypes.get(
-                        ann['annotationType'], [])
+                    ann
+                    for ann in segment["annotations"]
+                    if ann["entityType"]
+                    in annotationTypes.get(ann["annotationType"], [])
                 ]
 
                 if len(annotations) > 0:
                     to_keep = deepcopy(segment)
-                    to_keep['annotations'] = annotations
+                    to_keep["annotations"] = annotations
                     segments_to_keep.append(to_keep)
             conversation_segment.append(segments_to_keep)
         segments.append(conversation_segment)
@@ -138,10 +145,11 @@ def get_annotation_types(collection):
     """
     annotation_types = defaultdict(set)
     for utterance in collection:
-        for segment in utterance['segments']:
-            for annotation in segment['annotations']:
-                annotation_types[annotation['annotationType']].add(
-                    annotation['entityType'])
+        for segment in utterance["segments"]:
+            for annotation in segment["annotations"]:
+                annotation_types[annotation["annotationType"]].add(
+                    annotation["entityType"]
+                )
 
     return annotation_types
 
@@ -171,10 +179,11 @@ def annotate_slot_utterance(annotator, slot, utterance):
     Returns:
         List[Dict]: List of semantic annotations for utterance.
     """
-    user_utterance = UserUtterance({'text': utterance})
+    user_utterance = UserUtterance({"text": utterance})
     constraints = annotator.slot_annotation(slot, user_utterance) or []
     semantic_annotations = [
-        annotation for constraint in constraints
+        annotation
+        for constraint in constraints
         for annotation in constraint.annotation
     ]
     return [
@@ -184,12 +193,13 @@ def annotate_slot_utterance(annotator, slot, utterance):
 
 
 def remove_non_seriasable(d):
-    """ Converts AnnotationType and EntityType classes to strings. This is
+    """Converts AnnotationType and EntityType classes to strings. This is
     needed when saving to a file.
     """
     return {
-        k: str(val.name).lower() if k in ('annotation_type',
-                                          'entity_type') else val
+        k: str(val.name).lower()
+        if k in ("annotation_type", "entity_type")
+        else val
         for k, val in d.items()
     }
 
@@ -206,7 +216,7 @@ def annotate_conversation_for_slot(annotator, slot, conversation, i=None):
         List[List[Dict]]: List of semantic annotations for conversation.
     """
     if i:
-        print(f'Annotating conversation {i} for slot \'{slot}\'')
+        print(f"Annotating conversation {i} for slot '{slot}'")
     return [
         annotate_slot_utterance(annotator, slot, utterance)
         for utterance in conversation
@@ -224,18 +234,21 @@ def remove_duplicates(annotations):
         List: List of annotations without duplicates.
     """
     return [
-        annotation for i, annotation in enumerate(annotations)
-        if not any(annotation == ann for ann in annotations[i + 1:])
+        annotation
+        for i, annotation in enumerate(annotations)
+        if not any(annotation == ann for ann in annotations[i + 1 :])
     ]
 
 
 def is_match(annotation, truth):
-    """Checks whether annotations from the system and ground truth overlap.
-    """
-    return (annotation['start'] <= truth['startIndex']
-            and annotation['end'] > truth['startIndex']) or (
-                truth['startIndex'] <= annotation['start']
-                and truth['endIndex'] > annotation['start'])
+    """Checks whether annotations from the system and ground truth overlap."""
+    return (
+        annotation["start"] <= truth["startIndex"]
+        and annotation["end"] > truth["startIndex"]
+    ) or (
+        truth["startIndex"] <= annotation["start"]
+        and truth["endIndex"] > annotation["start"]
+    )
 
 
 def get_matches(annotations, true_annotations):
@@ -252,7 +265,8 @@ def get_matches(annotations, true_annotations):
     return sum(
         is_match(annotation, truth)
         for annotation in annotations
-        for truth in true_annotations)
+        for truth in true_annotations
+    )
 
 
 def evaluate(conversations, truth_segments):
@@ -279,15 +293,18 @@ def evaluate(conversations, truth_segments):
 
         total_num_annotations += len(annotation)
         total_num_truth += sum(
-            len(ann['annotations']) for ann in true_annotation)
+            len(ann["annotations"]) for ann in true_annotation
+        )
 
-    p_micro = total_matches / total_num_annotations if total_num_annotations else 0
+    p_micro = (
+        total_matches / total_num_annotations if total_num_annotations else 0
+    )
     r_micro = total_matches / total_num_truth if total_num_truth else 0
     f1 = 2 * p_micro * r_micro / (p_micro + r_micro)
     return {
-        'precision': p_micro,
-        'recall': r_micro,
-        'f1': f1,
+        "precision": p_micro,
+        "recall": r_micro,
+        "f1": f1,
     }
 
 
@@ -302,14 +319,14 @@ def get_annotations(slots, entity_types, force=False):
     Returns:
         Dict: Dictionary with annotatins and durations for each slot.
     """
-    filename = 'annotations.json'
+    filename = "annotations.json"
     if not force:
         annotations = load_json(filename)
         if annotations:
             return annotations
 
-    print('Creating new annotation file...')
-    raw_data = load_json('data.json')
+    print("Creating new annotation file...")
+    raw_data = load_json("data.json")
     data = parse_ccpem_collection(raw_data)
     conversations = get_conversations(data)
 
@@ -318,17 +335,18 @@ def get_annotations(slots, entity_types, force=False):
 
     results = defaultdict(dict)
     for slot, entity_type in zip(slots, entity_types):
-        segments = get_segments(data, {'ENTITY_NAME': [entity_type]})
+        segments = get_segments(data, {"ENTITY_NAME": [entity_type]})
         start = time.time()
         annotations = [
             annotate_conversation_for_slot(annotator, slot, utterances, i)
             for i, utterances in enumerate(conversations)
         ]
-        results[slot]['duration'] = time.time() - start
-        results[slot]['metrics'] = evaluate(annotations, segments)
-        results[slot]['errors'] = get_errors(annotations, segments,
-                                             conversations)
-        results[slot]['annotations'] = annotations
+        results[slot]["duration"] = time.time() - start
+        results[slot]["metrics"] = evaluate(annotations, segments)
+        results[slot]["errors"] = get_errors(
+            annotations, segments, conversations
+        )
+        results[slot]["annotations"] = annotations
 
     save_json(results, filename)
     return results
@@ -354,30 +372,34 @@ def get_errors(annotations, truth_segments, conversations):
             truth = truth_segments[i][j]
 
             num_annotations = len(annotation)
-            num_truth = sum(len(ann['annotations']) for ann in truth)
+            num_truth = sum(len(ann["annotations"]) for ann in truth)
 
             matches = get_matches(annotation, truth)
 
             if (num_annotations != num_truth) or (matches != num_truth):
-                errors.append({
-                    'conversation': i,
-                    'utterance': utterance,
-                    'annotations': annotation,
-                    'truth': truth
-                })
+                errors.append(
+                    {
+                        "conversation": i,
+                        "utterance": utterance,
+                        "annotations": annotation,
+                        "truth": truth,
+                    }
+                )
     return errors
 
 
-if __name__ == '__main__':
-    slots = ['genres', 'actors', 'title']
-    entity_types = ['MOVIE_GENRE_OR_CATEGORY', 'PERSON', 'MOVIE_OR_SERIES']
+if __name__ == "__main__":
+    slots = ["genres", "actors", "title"]
+    entity_types = ["MOVIE_GENRE_OR_CATEGORY", "PERSON", "MOVIE_OR_SERIES"]
 
     res = get_annotations(slots, entity_types)
 
     for slot in slots:
-        p, r, f1 = res[slot]['metrics'].values()
-        print(f'\nScores for {slot}: \n')
-        print(f'\tPrecision (micro-averaged): {round(p, 5)}')
-        print(f'\tRecall (micro-averaged): {round(r, 5)}')
-        print(f'\tF1: {round(f1, 5)}')
-        print(f'\nAnnotation took {round(res[slot]["duration"]/60, 3)} minutes')
+        p, r, f1 = res[slot]["metrics"].values()
+        print(f"\nScores for {slot}: \n")
+        print(f"\tPrecision (micro-averaged): {round(p, 5)}")
+        print(f"\tRecall (micro-averaged): {round(r, 5)}")
+        print(f"\tF1: {round(f1, 5)}")
+        print(
+            f'\nAnnotation took {round(res[slot]["duration"]/60, 3)} minutes'
+        )

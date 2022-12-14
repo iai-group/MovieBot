@@ -1,20 +1,21 @@
 """This file contains a class which can be used to annotate slot values in the
 user utterance."""
 
-from typing import List
 import abc
+from typing import List
 
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.slots import Slots
-from moviebot.core.shared.utterance.utterance import UserUtterance
 
 
 class SlotAnnotator(abc.ABC):
     """This class is used to annotate slot values in the user utterance."""
 
     @abc.abstractmethod
-    def slot_annotation(self, slot: Slots,
-                        utterance: UserUtterance) -> List[ItemConstraint]:
+    def slot_annotation(
+        self, slot: Slots, utterance: UserUtterance
+    ) -> List[ItemConstraint]:
         """Given utterance and a slot return a list of triplets of
         (slot, operator, value).
 
