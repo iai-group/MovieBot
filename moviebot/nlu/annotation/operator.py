@@ -2,7 +2,7 @@
 It will be used to identify dialogue act item operator
 """
 
-__author__ = 'Javeria Habib'
+__author__ = "Javeria Habib"
 
 from enum import Enum
 
@@ -31,20 +31,20 @@ class Operator(Enum):
             a string representation of the Operator
 
         """
-        opr = 'UNK'
-        if self.name == 'EQ':
-            opr = '='
-        elif self.name == 'NE':
-            opr = '!='
-        elif self.name == 'LT':
-            opr = '<'
-        elif self.name == 'LE':
-            opr = '<='
-        elif self.name == 'GT':
-            opr = '>'
-        elif self.name == 'GE':
-            opr = '>='
-        elif self.name in ['AND', 'OR', 'NOT', 'IN', 'BETWEEN']:
+        opr = "UNK"
+        if self.name == "EQ":
+            opr = "="
+        elif self.name == "NE":
+            opr = "!="
+        elif self.name == "LT":
+            opr = "<"
+        elif self.name == "LE":
+            opr = "<="
+        elif self.name == "GT":
+            opr = ">"
+        elif self.name == "GE":
+            opr = ">="
+        elif self.name in ["AND", "OR", "NOT", "IN", "BETWEEN"]:
             opr = self.name
 
-        return f'{opr}'
+        return f"{opr}"

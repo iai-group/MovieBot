@@ -17,7 +17,10 @@ from moviebot.nlu.text_processing import Token, Tokenizer
             ],
         ),
         (
-            "document.with, punctuation:   with?spaces\ttabs\nwith newlines\n\n\n",
+            (
+                "document.with, punctuation:   with?spaces\ttabs\nwith"
+                " newlines\n\n\n"
+            ),
             [
                 Token("document", 0, 8, "document", False),
                 Token("with", 9, 13, "with", True),

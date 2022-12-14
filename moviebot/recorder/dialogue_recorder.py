@@ -14,8 +14,8 @@ class DialogueRecorder:
 
         Args:
             path: Path where the file must be saved
-            nlp: If the Dialogue Acts must also be saved 
-            
+            nlp: If the Dialogue Acts must also be saved
+
         """
         self.path = path
         self.nlp = nlp

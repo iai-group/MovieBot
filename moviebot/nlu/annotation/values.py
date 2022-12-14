@@ -3,7 +3,7 @@ fetched from the database.
 This approach will help the dialogue state tracker to update state for specific
 type of slot values easily"""
 
-__author__ = 'Javeria Habib'
+__author__ = "Javeria Habib"
 
 from enum import Enum
 
@@ -13,9 +13,9 @@ class Values(Enum):
     values fetched from the database. This approach will help the dialogue state
     tracker to update state for specific type of slot values easily"""
 
-    DONT_CARE = 'dont_care'
-    DISCLOSE_NOT = 'disclose_not'
-    NOT_FOUND = 'not_found'
+    DONT_CARE = "dont_care"
+    DISCLOSE_NOT = "disclose_not"
+    NOT_FOUND = "not_found"
 
     def __str__(self):
         return str(self.value)

@@ -3,7 +3,7 @@ It keeps track of the recommendations agent made with user response to those
 recommendations.
 """
 
-__author__ = 'Javeria Habib'
+__author__ = "Javeria Habib"
 
 
 class DialogueContext:
