@@ -1,13 +1,16 @@
 """This file contains the Controller which controls the conversation between
 the agent and the user."""
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 from moviebot.agent.agent import Agent
-from moviebot.core.utterance.utterance import UserUtterance
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
 RESTART = "/restart"
+
+logger = logging.getLogger(__name__)
 
 
 class Controller(ABC):
@@ -31,7 +34,7 @@ class Controller(ABC):
         """Initializes and returns an agent based on configuration."""
         agent = Agent(self.configuration)
         agent.initialize()
-        print(
+        logger.debug(
             "The components for the conversation are initialized successfully."
         )
         return agent
