@@ -2,8 +2,6 @@
 If required, it also saves the dialogue acts.
 """
 
-__author__ = "Javeria Habib"
-
 
 class DialogueRecorder:
     """Record all the details of each dialogue in the conversation in it's raw form.

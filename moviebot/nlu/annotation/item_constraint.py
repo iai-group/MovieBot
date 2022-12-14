@@ -1,9 +1,9 @@
 """The Dialogue Act Item defines the parameters for a Dialogue Act.
 It comprises ot the parameters mentioned in the conversation"""
 
-__author__ = "Javeria Habib"
 
-from typing import Optional, List, Text, Any
+from typing import Any, List, Optional, Text
+
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.semantic_annotation import SemanticAnnotation
 

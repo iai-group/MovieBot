@@ -1,17 +1,16 @@
 """Dialogue State Tracker updates the current dialogue state."""
 
-__author__ = "Javeria Habib"
 
 from copy import deepcopy
 
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
 
 
 class DialogueStateTracker:
@@ -66,9 +65,7 @@ class DialogueStateTracker:
                     f"between {time_value.split()[-1]} and {value.split()[-1]}"
                 )
             else:
-                value = (
-                    f" between {value.split()[-1]} and {time_value.split()[-1]}"
-                )
+                value = f" between {value.split()[-1]} and {time_value.split()[-1]}"
             self.dialogue_state.frame_CIN[param.slot] = value
         else:
             if value.startswith("="):
@@ -149,7 +146,9 @@ class DialogueStateTracker:
                             if param.op == Operator.NE:
                                 if (
                                     param.value
-                                    in self.dialogue_state.frame_CIN[param.slot]
+                                    in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -168,7 +167,9 @@ class DialogueStateTracker:
                             else:
                                 if (
                                     f".NOT.{param.value}"
-                                    in self.dialogue_state.frame_CIN[param.slot]
+                                    in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -246,7 +247,9 @@ class DialogueStateTracker:
                             "inquire"
                         )
                 else:
-                    self.dialogue_context.movies_recommended[name] = ["inquire"]
+                    self.dialogue_context.movies_recommended[name] = [
+                        "inquire"
+                    ]
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.user_requestable:
                         self.dialogue_state.user_requestable.remove(param.slot)

@@ -3,7 +3,6 @@ fetched from the database.
 This approach will help the dialogue state tracker to update state for specific
 type of slot values easily"""
 
-__author__ = "Javeria Habib"
 
 from enum import Enum
 

@@ -1,6 +1,5 @@
 """ This file contains the main functions for loading database and tag_words files for NLU."""
 
-__author__ = "Javeria Habib"
 
 import json
 import os

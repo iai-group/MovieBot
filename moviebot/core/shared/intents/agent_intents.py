@@ -2,7 +2,6 @@
 constants. This approach will help the Dialogue Policy to decide the intents
 from a pre-defined set."""
 
-__author__ = "Javeria Habib"
 
 from enum import Enum
 

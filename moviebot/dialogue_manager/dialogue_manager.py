@@ -3,14 +3,13 @@ agent. The agent can access the state, context and actions via the Dialogue Mana
 Dialogue manager also access the database and ontology to carry on the conversation.
 """
 
-__author__ = "Javeria Habib"
 
+from moviebot.core.shared.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
 from moviebot.dialogue_manager.dialogue_state_tracker import (
     DialogueStateTracker,
 )
-from moviebot.core.shared.intents.agent_intents import AgentIntents
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 

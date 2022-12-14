@@ -1,7 +1,6 @@
 """This file contains the list of slots available in the database.
 This approach will help the NLU to correctly identify slots"""
 
-__author__ = "Javeria Habib"
 
 from enum import Enum
 

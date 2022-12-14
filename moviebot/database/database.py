@@ -1,15 +1,15 @@
 """This file contains the Database class for IAI MovieBot. The classes mentioned handle the
 functinality of query processing for IAI MovieBot.
 Currently, the database class is implemented for SQL DB."""
-__author__ = "Javeria Habib"
+
 
 import sqlite3
 from copy import deepcopy
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.ontology.ontology import Ontology
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
+from moviebot.ontology.ontology import Ontology
 
 
 class DataBase:

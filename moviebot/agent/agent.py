@@ -1,9 +1,9 @@
 """Types of conversational agents are available here."""
 
-__author__ = "Javeria Habib"
 
 import os
 
+from moviebot.core.shared.utterance.utterance import AgentUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG
@@ -11,7 +11,6 @@ from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
-from moviebot.core.shared.utterance.utterance import AgentUtterance
 
 
 def _get_ontology(ontology_path):
@@ -124,7 +123,9 @@ class Agent:
         )
         self.nlu = NLU(data_config)
         self.nlg = NLG(dict(ontology=self.ontology))
-        data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
+        data_config["slots"] = list(
+            self.nlu.intents_checker.slot_values.keys()
+        )
 
         if self.config.get("TELEGRAM", False):
             self.isBot = True
@@ -174,7 +175,9 @@ class Agent:
         )
         if not self.isBot:
             print(
-                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
+                str(
+                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
+                )
             )
             print(
                 str(
@@ -232,7 +235,9 @@ class Agent:
         )
         if not self.isBot:
             print(
-                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
+                str(
+                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
+                )
             )
             print(
                 str(

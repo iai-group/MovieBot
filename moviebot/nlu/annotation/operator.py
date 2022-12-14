@@ -2,7 +2,6 @@
 It will be used to identify dialogue act item operator
 """
 
-__author__ = "Javeria Habib"
 
 from enum import Enum
 

@@ -1,7 +1,6 @@
 """Ontology is a class that loads ontology files (in .json format) into
 IAI MovieBot."""
 
-__author__ = "Javeria Habib"
 
 import json
 

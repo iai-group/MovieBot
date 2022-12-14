@@ -1,19 +1,18 @@
 """A rule-based policy developed as an initial step to generate action by the agent based on the
 previous conversation and current dialogue."""
 
-__author__ = "Javeria Habib"
 
 import random
 from copy import deepcopy
 
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
-from moviebot.ontology.ontology import Ontology
 from moviebot.nlu.annotation.slots import Slots
+from moviebot.ontology.ontology import Ontology
 
 
 class DialoguePolicy:
@@ -34,7 +33,9 @@ class DialoguePolicy:
         self.isBot = isBot
         self.new_user = new_user
 
-    def next_action(self, dialogue_state, dialogue_context=None, restart=False):
+    def next_action(
+        self, dialogue_state, dialogue_context=None, restart=False
+    ):
         """Decides the next action to be taken by the agent based on the current state and context.
 
         Args:
@@ -204,7 +205,9 @@ class DialoguePolicy:
                             ItemConstraint(
                                 "deny",
                                 Operator.EQ,
-                                dialogue_state.item_in_focus[Slots.TITLE.value],
+                                dialogue_state.item_in_focus[
+                                    Slots.TITLE.value
+                                ],
                             )
                         )
                     agent_dacts.append(deepcopy(agent_dact))

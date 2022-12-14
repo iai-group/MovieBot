@@ -1,7 +1,6 @@
 """This file contains the Controller class which controls the flow of the
 conversation while the user interacts with the agent using Telegram."""
 
-__author__ = "Javeria Habib"
 
 import json
 import logging
@@ -10,9 +9,6 @@ import time
 from copy import deepcopy
 
 import yaml
-from moviebot.agent.agent import Agent
-from moviebot.controller.controller import Controller
-from moviebot.core.shared.utterance.utterance import UserUtterance
 from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import (
     CommandHandler,
@@ -21,6 +17,10 @@ from telegram.ext import (
     MessageHandler,
     Updater,
 )
+
+from moviebot.agent.agent import Agent
+from moviebot.controller.controller import Controller
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
 # Enable logging
 logging.basicConfig(

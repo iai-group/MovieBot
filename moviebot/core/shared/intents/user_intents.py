@@ -2,7 +2,6 @@
 This approach will help the NLU to identify the intents from a limited set
 without making a mistake."""
 
-__author__ = "Javeria Habib"
 
 from enum import Enum
 

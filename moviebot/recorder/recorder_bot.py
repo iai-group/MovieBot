@@ -2,7 +2,6 @@
 If required, it also saves the dialogue acts.
 """
 
-__author__ = "Javeria Habib"
 
 import json
 import os

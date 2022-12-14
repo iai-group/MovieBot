@@ -1,7 +1,6 @@
 """This file contains a class which can be used to annotate slot values
 in the user utterance based on rules and keyword matching."""
 
-__author__ = "Javeria Habib"
 
 import re
 import string
@@ -10,12 +9,14 @@ from copy import deepcopy
 from nltk import ngrams
 from nltk.corpus import stopwords
 
-from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
-from moviebot.nlu.annotation.semantic_annotation import SemanticAnnotation
-from moviebot.nlu.annotation.semantic_annotation import AnnotationType
-from moviebot.nlu.annotation.semantic_annotation import EntityType
 from moviebot.nlu.annotation.operator import Operator
+from moviebot.nlu.annotation.semantic_annotation import (
+    AnnotationType,
+    EntityType,
+    SemanticAnnotation,
+)
+from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
 from moviebot.nlu.annotation.slots import Slots
 
 
@@ -89,7 +90,7 @@ class RBAnnotator(SlotAnnotator):
         if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
             params = self._person_name_annotator(user_utterance)
         else:
-            func = getattr(self, "_" + slot + "_annotator")
+            func = getattr(self, f"_{slot}_annotator")
             if slot == Slots.YEAR.value:
                 params = func(slot, user_utterance)
                 if params:
@@ -167,7 +168,9 @@ class RBAnnotator(SlotAnnotator):
         values = self.slot_values[slot]
         processed_values = set(values.values())
         # split into n-grams
-        for ngram_size in range(min(self.ngram_size[slot], len(tokens)), 0, -1):
+        for ngram_size in range(
+            min(self.ngram_size[slot], len(tokens)), 0, -1
+        ):
             options = {}
             for gram_list in ngrams(tokens, ngram_size):
                 gram = sum(gram_list).lemma
@@ -240,7 +243,9 @@ class RBAnnotator(SlotAnnotator):
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
-        for ngram_size in range(min(self.ngram_size[slot], len(tokens)), 0, -1):
+        for ngram_size in range(
+            min(self.ngram_size[slot], len(tokens)), 0, -1
+        ):
             for gram_list in ngrams(tokens, ngram_size):
                 gram = sum(gram_list).lemma
 
@@ -375,7 +380,9 @@ class RBAnnotator(SlotAnnotator):
                         )
                     ]
                 else:
-                    return [ItemConstraint(slot, Operator.EQ, year, annotation)]
+                    return [
+                        ItemConstraint(slot, Operator.EQ, year, annotation)
+                    ]
 
             if token.text[-2:] == "th":
                 year = token.text[:-2]

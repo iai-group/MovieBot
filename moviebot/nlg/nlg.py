@@ -1,18 +1,17 @@
 """NLG is a Natural Language Generator used to produce a human-like response for Dialogue Acts
 of the agent."""
 
-__author__ = "Javeria Habib"
 
 import random
 from copy import deepcopy
 from typing import List
 
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
 
@@ -169,7 +168,9 @@ class NLG:
 
         self.slot_not_found = {
             Slots.GENRES.value: ["I could not find the genres __replace__."],
-            Slots.KEYWORDS.value: ["I couldn't find the keywords __replace__."],
+            Slots.KEYWORDS.value: [
+                "I couldn't find the keywords __replace__."
+            ],
             Slots.DIRECTORS.value: [
                 "I could not find the the director name __replace__."
             ],
@@ -555,7 +556,9 @@ class NLG:
                     )
                 else:
                     response = (
-                        response + " named similar to " + CIN[Slots.TITLE.value]
+                        response
+                        + " named similar to "
+                        + CIN[Slots.TITLE.value]
                     )
         if (
             CIN[Slots.DIRECTORS.value]
@@ -611,7 +614,9 @@ class NLG:
                 DialogueAct(UserIntents.RESTART, []): [
                     "I want to restart for a new movie."
                 ],
-                DialogueAct(UserIntents.BYE, []): ["I would like to quit now."],
+                DialogueAct(UserIntents.BYE, []): [
+                    "I would like to quit now."
+                ],
             }
             return options
 
