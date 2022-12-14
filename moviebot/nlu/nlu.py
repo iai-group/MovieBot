@@ -2,16 +2,15 @@
 NLU understands the user requirements and intents for the system to generate an
 appropriate response."""
 
-__author__ = 'Javeria Habib'
 
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
 from moviebot.ontology.ontology import Ontology
-from moviebot.nlu.annotation.values import Values
 
 
 class NLU:
@@ -33,15 +32,17 @@ class NLU:
             config: Paths to ontology and database and tag words for slots in NLU
 
         """
-        self.ontology = config['ontology']
-        self.database = config['database']
+        self.ontology = config["ontology"]
+        self.database = config["database"]
         self.intents_checker = UserIntentsChecker(config)
 
-    def generate_dact(self,
-                      user_utterance,
-                      options,
-                      dialogue_state=None,
-                      dialogue_context=None):
+    def generate_dact(
+        self,
+        user_utterance,
+        options,
+        dialogue_state=None,
+        dialogue_context=None,
+    ):
         """Processes the utterance according to dialogue state and context and
         generate a user dialogue act for Agent to understand.
 
@@ -59,8 +60,9 @@ class NLU:
         """
         # this is the top priority. The agent must check if user selected
         # any option
-        selected_option = self.get_selected_option(user_utterance, options,
-                                                   dialogue_state.item_in_focus)
+        selected_option = self.get_selected_option(
+            user_utterance, options, dialogue_state.item_in_focus
+        )
         if selected_option:
             return selected_option
 
@@ -73,8 +75,10 @@ class NLU:
 
         # check if user is ending the conversation
         user_dacts.extend(
-            self.intents_checker.check_basic_intent(user_utterance,
-                                                    UserIntents.BYE))
+            self.intents_checker.check_basic_intent(
+                user_utterance, UserIntents.BYE
+            )
+        )
         if len(user_dacts) > 0:
             return user_dacts
 
@@ -82,11 +86,15 @@ class NLU:
         if not self.dialogue_state.last_agent_dacts:
             user_dacts.extend(
                 self.intents_checker.check_reveal_voluntary_intent(
-                    user_utterance))
+                    user_utterance
+                )
+            )
             if len(user_dacts) == 0:
                 user_dacts.extend(
                     self.intents_checker.check_basic_intent(
-                        user_utterance, UserIntents.HI))
+                        user_utterance, UserIntents.HI
+                    )
+                )
             if len(user_dacts) > 0:
                 return user_dacts
             else:
@@ -96,41 +104,56 @@ class NLU:
             if last_agent_dact.intent == AgentIntents.WELCOME:
                 user_dacts.extend(
                     self.intents_checker.check_reveal_voluntary_intent(
-                        user_utterance))
+                        user_utterance
+                    )
+                )
                 if len(user_dacts) == 0:
                     user_dacts.extend(
                         self.intents_checker.check_basic_intent(
-                            user_utterance, UserIntents.ACKNOWLEDGE))
+                            user_utterance, UserIntents.ACKNOWLEDGE
+                        )
+                    )
                 if len(user_dacts) > 0:
                     return user_dacts
             elif last_agent_dact.intent == AgentIntents.ELICIT:
                 user_dacts.extend(
                     self.intents_checker.check_reveal_intent(
-                        user_utterance, last_agent_dact))
-                if len(user_dacts) == 0 or any([
+                        user_utterance, last_agent_dact
+                    )
+                )
+                if len(user_dacts) == 0 or any(
+                    [
                         param.value in Values.__dict__.values()
                         for dact in user_dacts
                         for param in dact.params
-                ]):
+                    ]
+                ):
                     user_dacts.extend(
                         self.intents_checker.check_reveal_voluntary_intent(
-                            user_utterance))
+                            user_utterance
+                        )
+                    )
                 if len(user_dacts) > 0:
                     return user_dacts
 
         if dialogue_state.agent_made_offer:
             user_dacts.extend(
-                self.intents_checker.check_reject_intent(user_utterance))
+                self.intents_checker.check_reject_intent(user_utterance)
+            )
         if len(user_dacts) == 0:
             user_dacts.extend(
-                self.intents_checker.check_inquire_intent(user_utterance))
+                self.intents_checker.check_inquire_intent(user_utterance)
+            )
         if len(user_dacts) == 0:
             user_dacts.extend(
                 self.intents_checker.check_reveal_voluntary_intent(
-                    user_utterance))
+                    user_utterance
+                )
+            )
         if len(user_dacts) == 0:
             deny_dact = self.intents_checker.check_basic_intent(
-                user_utterance, UserIntents.DENY)
+                user_utterance, UserIntents.DENY
+            )
             if len(deny_dact) > 0:
                 deny_dact[0].intent = UserIntents.INQUIRE
                 user_dacts.extend(deny_dact)
@@ -145,11 +168,13 @@ class NLU:
         raw_utterance = user_utterance.get_text()
         dacts = []
         for dact, value in options.items():
-            if (isinstance(value, list)
-                    and value[0] == raw_utterance) or value == raw_utterance:
+            if (
+                isinstance(value, list) and value[0] == raw_utterance
+            ) or value == raw_utterance:
                 if dact.intent == UserIntents.CONTINUE_RECOMMENDATION:
                     dact.params = self.intents_checker.generate_params_continue_recommendation(
-                        item_in_focus)
+                        item_in_focus
+                    )
                 dacts.append(dact)
                 break
         return dacts
