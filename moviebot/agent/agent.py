@@ -1,6 +1,5 @@
 """Types of conversational agents are available here."""
 
-__author__ = "Javeria Habib"
 
 import logging
 import os
@@ -115,7 +114,8 @@ class Agent:
             nlu_tag_words_slots_path = self.config["NLU"]["tag_words_slots"]
         else:
             raise EnvironmentError(
-                "Conversational Agent: No tag words provided for slots in user utterance"
+                "Conversational Agent: No tag words provided for slots in user"
+                " utterance"
             )
 
         data_config = dict(

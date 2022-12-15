@@ -2,8 +2,6 @@
 If required, it also saves the dialogue acts.
 """
 
-__author__ = "Javeria Habib"
-
 
 class DialogueRecorder:
     """Record all the details of each dialogue in the conversation in it's raw form.
@@ -14,8 +12,8 @@ class DialogueRecorder:
 
         Args:
             path: Path where the file must be saved
-            nlp: If the Dialogue Acts must also be saved 
-            
+            nlp: If the Dialogue Acts must also be saved
+
         """
         self.path = path
         self.nlp = nlp

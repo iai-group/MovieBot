@@ -3,12 +3,11 @@ The user utterance is broken into tokens which contain additional information
 about the it.
 """
 
-from typing import Text, List, Optional
-
 import string
+from typing import List, Optional, Text
+
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
 
 
 class Span:
@@ -16,11 +15,13 @@ class Span:
     the original utterance.
     """
 
-    def __init__(self,
-                 text: Text,
-                 start: int,
-                 end: Optional[int] = None,
-                 lemma: Optional[Text] = None) -> None:
+    def __init__(
+        self,
+        text: Text,
+        start: int,
+        end: Optional[int] = None,
+        lemma: Optional[Text] = None,
+    ) -> None:
         self.text = text
 
         self.start = start
@@ -37,16 +38,15 @@ class Span:
         Returns:
             bool: True if there is overlap.
         """
-        return (self.start <= other.start
-                and self.end > other.start) or (other.start <= self.start
-                                                and other.end > self.start)
+        return (self.start <= other.start and self.end > other.start) or (
+            other.start <= self.start and other.end > self.start
+        )
 
     def __eq__(self, other):
-        return (self.start, self.end, self.text, self.lemma) == (
-            other.start,
-            other.end,
-            other.text,
-            other.lemma,
+        s_dict = vars(self)
+        o_dict = vars(other)
+        return type(self) is type(other) and all(
+            (s_dict.get(k) == v for k, v in o_dict.items())
         )
 
     def __lt__(self, other):
@@ -54,8 +54,8 @@ class Span:
 
     def __add__(self, other):
         sorted_spans = sorted((self, other))
-        text = ' '.join(span.text for span in sorted_spans)
-        lemma = ' '.join(span.lemma for span in sorted_spans)
+        text = " ".join(span.text for span in sorted_spans)
+        lemma = " ".join(span.lemma for span in sorted_spans)
 
         return Span(text, sorted_spans[0].start, sorted_spans[1].end, lemma)
 
@@ -72,29 +72,29 @@ class Token(Span):
     information about the word.
     """
 
-    def __init__(self,
-                 text: Text,
-                 start: int,
-                 end: Optional[int] = None,
-                 lemma: Optional[Text] = None,
-                 is_stop: Optional[bool] = False) -> None:
-
+    def __init__(
+        self,
+        text: Text,
+        start: int,
+        end: Optional[int] = None,
+        lemma: Optional[Text] = None,
+        is_stop: Optional[bool] = False,
+    ) -> None:
         super().__init__(text, start, end, lemma)
         self.is_stop = is_stop
 
 
 class Tokenizer:
-    """This class contains methods needed for preprocessing sentences.
-    """
+    """This class contains methods needed for preprocessing sentences."""
 
     def __init__(self, additional_stop_words: List[Text] = None) -> None:
-        stop_words = stopwords.words('english')
+        stop_words = stopwords.words("english")
         if additional_stop_words:
             stop_words.extend(additional_stop_words)
 
         self._stop_words = set(stop_words)
         self._lemmatizer = WordNetLemmatizer()
-        self._punctuation = set(string.punctuation.replace('\'', ''))
+        self._punctuation = set(string.punctuation.replace("'", ""))
 
     def process_text(self, text: Text) -> List[Token]:
         """Processes given text. The text is split into tokens which can be
@@ -107,7 +107,7 @@ class Tokenizer:
             List[Token]: List of Tokens
         """
         processed_text = self.remove_punctuation(text)
-        word_tokens = processed_text.split()  #word_tokenize(processed_text)
+        word_tokens = processed_text.split()  # word_tokenize(processed_text)
 
         return self.tokenize(word_tokens, text)
 
@@ -121,8 +121,9 @@ class Tokenizer:
         Returns:
             str: Sentence without punctuation.
         """
-        return ''.join(
-            ch if ch not in self._punctuation else ' ' for ch in text)
+        return "".join(
+            ch if ch not in self._punctuation else " " for ch in text
+        )
 
     def lemmatize_text(self, text: Text) -> Text:
         """Returns string lemma.
@@ -133,7 +134,7 @@ class Tokenizer:
         Returns:
             Text: Lemmatized string.
         """
-        text = text.replace('\'', '')
+        text = text.replace("'", "")
         return self._lemmatizer.lemmatize(text.lower())
 
     def tokenize(self, word_tokens: List[Text], text: Text) -> List[Token]:
