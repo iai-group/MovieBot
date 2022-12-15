@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from moviebot.core.shared.intents.user_intents import UserIntents
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.intents.user_intents import UserIntents
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
