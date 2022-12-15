@@ -132,9 +132,6 @@ class Agent:
             self.isBot = True
             # self.new_user = self.config['new_user'][user_id]
 
-        if self.config.get("MESSENGER", True):
-            self.isBot = True
-
         self.dialogue_manager = DialogueManager(
             data_config, self.isBot, self.new_user
         )
