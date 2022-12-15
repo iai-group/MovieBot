@@ -4,6 +4,9 @@ Dialogue Modeling
 We assume that recommendations happen via a multi-turn conversation with an *agent*, which is initiated and terminated by the *user*.
 The agent keeps eliciting user preferences until (a) the result set is sufficiently small or (b) it has reached the maximum amount of questions it is allowed to ask (to avoid fatiguing the user). Then, the agent makes recommendations for specific items and elicits feedback on them, until the user finds an item to their liking (or terminates the process).
 
+The figure below shows the dialogue flow in our system.
+
+.. image:: _static/dialogue_flow.png
 
 Dialogue Act
 ------------
