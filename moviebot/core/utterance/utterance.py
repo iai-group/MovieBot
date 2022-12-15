@@ -24,8 +24,8 @@ class Utterance(ABC):
                 fields.
 
         """
-        self._utterance = message.get('text', '')
-        self._timestamp = self._set_timestamp(message.get('date'))
+        self._utterance = message.get("text", "")
+        self._timestamp = self._set_timestamp(message.get("date"))
 
     def get_source(self) -> Text:
         """Returns the name of the inherited class which represents the source
@@ -48,7 +48,7 @@ class Utterance(ABC):
         return datetime.datetime.now(datetime.timezone.utc)
 
     def __str__(self):
-        return '{} - {}:\n\t{}'.format(
+        return "{} - {}:\n\t{}".format(
             self.get_timestamp(),
             self.get_source(),
             self.get_text(),
@@ -66,13 +66,13 @@ class UserUtterance(Utterance):
         Returns:
             List[Token]: List of tokens from the utterance.
         """
-        if not hasattr(self, '_tokens'):
+        if not hasattr(self, "_tokens"):
             self._tokens = Tokenizer().process_text(self._utterance)
 
         return self._tokens
 
 
 class AgentUtterance(Utterance):
-    """Stores the utterance that the agent returns.
-    """
+    """Stores the utterance that the agent returns."""
+
     pass

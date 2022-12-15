@@ -400,6 +400,4 @@ if __name__ == "__main__":
         print(f"\tPrecision (micro-averaged): {round(p, 5)}")
         print(f"\tRecall (micro-averaged): {round(r, 5)}")
         print(f"\tF1: {round(f1, 5)}")
-        print(
-            f'\nAnnotation took {round(res[slot]["duration"]/60, 3)} minutes'
-        )
+        print(f'\nAnnotation took {round(res[slot]["duration"]/60, 3)} minutes')

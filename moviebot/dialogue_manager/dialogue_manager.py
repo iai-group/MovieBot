@@ -1,9 +1,9 @@
-"""The Dialogue Manager controls the action-selection and state-tracking part of the IAI MovieBot
-agent. The agent can access the state, context and actions via the Dialogue Manager.
-Dialogue manager also access the database and ontology to carry on the conversation.
+"""The Dialogue Manager controls the action-selection and state-tracking part
+of the IAI MovieBot agent. The agent can access the state, context and actions
+via the Dialogue Manager. Dialogue manager also access the database and ontology
+to carry on the conversation.
 """
 
-__author__ = "Javeria Habib"
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
@@ -16,12 +16,15 @@ from moviebot.nlu.annotation.operator import Operator
 
 
 class DialogueManager:
-    """The Dialogue Manager controls the action-selection and state-tracking part of the IAI MovieBot
-    agent. The agent can access the state, context and actions via the Dialogue Manager.
-    Dialogue manager also access the database and ontology to carry on the conversation."""
+    """The Dialogue Manager controls the action-selection and state-tracking
+    part of the IAI MovieBot agent. The agent can access the state, context and
+    actions via the Dialogue Manager. Dialogue manager also access the database
+    and ontology to carry on the conversation.
+    """
 
     def __init__(self, config, isBot, new_user):
-        """Initialises the components of class DialogueStateTracking and ActionSelection
+        """Initialises the components of class DialogueStateTracking and
+        ActionSelection.
 
         Args:
             config: The settings for components to be initialized
@@ -69,8 +72,8 @@ class DialogueManager:
             self.dialogue_state_tracker.update_state_user(user_dacts)
 
     def generate_output(self, restart=False):
-        """Selects the next action based on the Dialogue Policy and generates system response.
-        Also accesses the database/ontology if required.
+        """Selects the next action based on the Dialogue Policy and generates
+        system response. Also accesses the database/ontology if required.
 
         :return: The system response in the form of Dialogue Acts
 
@@ -102,8 +105,8 @@ class DialogueManager:
         return agent_dacts
 
     def database_lookup(self):
-        """Performs a database query considering the current dialogue state (the current information
-        needs)
+        """Performs a database query considering the current dialogue state
+        (the current information needs).
 
         Returns:
             The list of results matching user information needs
@@ -116,7 +119,8 @@ class DialogueManager:
         return database_result
 
     def get_state(self):
-        """Returns the dialogue state. This can be used by the NLG to generate an appropriate output
+        """Returns the dialogue state. This can be used by the NLG to generate
+        an appropriate output.
 
         Returns:
             the current state of Dialogue

@@ -2,7 +2,6 @@
 NLU understands the user requirements and intents for the system to generate an
 appropriate response."""
 
-__author__ = "Javeria Habib"
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents

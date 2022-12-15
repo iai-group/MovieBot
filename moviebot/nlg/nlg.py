@@ -1,7 +1,6 @@
 """NLG is a Natural Language Generator used to produce a human-like response for Dialogue Acts
 of the agent."""
 
-__author__ = "Javeria Habib"
 
 import random
 from copy import deepcopy
@@ -18,8 +17,9 @@ from moviebot.nlu.annotation.values import Values
 
 
 class NLG:
-    """NLG is a Natural Language Generator used to produce a human-like response for Dialogue
-    Acts of the agent."""
+    """NLG is a Natural Language Generator used to produce a human-like response
+    for Dialogue Acts of the agent.
+    """
 
     def __init__(self, args=None):
         """Initializes any necessary components.
@@ -73,20 +73,25 @@ class NLG:
 
         self.agent_inform_nlg = {
             Slots.TITLE.value: [
-                f'The title of the movie is "{self.inform_key[Slots.TITLE.value]}".',
+                "The title of the movie is"
+                f' "{self.inform_key[Slots.TITLE.value]}".',
                 f'Its name is "{self.inform_key[Slots.TITLE.value]}".',
             ],
             Slots.GENRES.value: [
-                f"The genres it belongs to are {self.inform_key[Slots.GENRES.value]}.",
+                "The genres it belongs to are"
+                f" {self.inform_key[Slots.GENRES.value]}.",
                 f"Its genres are {self.inform_key[Slots.GENRES.value]}.",
             ],
             Slots.PLOT.value: [f"{self.inform_key[Slots.PLOT.value]}"],
             Slots.KEYWORDS.value: [
-                f"The plot of the movie revolves around {self.inform_key[Slots.KEYWORDS.value]}.",
-                f"The movie plot is about {self.inform_key[Slots.KEYWORDS.value]}.",
+                "The plot of the movie revolves around "
+                f"{self.inform_key[Slots.KEYWORDS.value]}.",
+                "The movie plot is about "
+                f"{self.inform_key[Slots.KEYWORDS.value]}.",
             ],
             Slots.DIRECTORS.value: [
-                f"The director of this movie is {self.inform_key[Slots.DIRECTORS.value]}.",
+                "The director of this movie is "
+                f"{self.inform_key[Slots.DIRECTORS.value]}.",
                 f"Its directed by {self.inform_key[Slots.DIRECTORS.value]}.",
             ],
             Slots.DURATION.value: [
@@ -94,23 +99,41 @@ class NLG:
                 f"This movie is {self.inform_key[Slots.DURATION.value]} long.",
             ],
             Slots.ACTORS.value: [
-                f"Some of the famous actors in this movie are "
-                f"{self.inform_key[Slots.ACTORS.value]}.",
-                f"Actors {self.inform_key[Slots.ACTORS.value]} have played prominent roles in "
-                f"this movie.",
+                (
+                    "Some of the famous actors in this movie are "
+                    f"{self.inform_key[Slots.ACTORS.value]}."
+                ),
+                (
+                    f"Actors {self.inform_key[Slots.ACTORS.value]} have played"
+                    " prominent roles in this movie."
+                ),
             ],
             Slots.YEAR.value: [
-                f"The movie was released in {self.inform_key[Slots.YEAR.value]}.",
-                f"It was released in the year {self.inform_key[Slots.YEAR.value]}.",
+                (
+                    "The movie was released in"
+                    f" {self.inform_key[Slots.YEAR.value]}."
+                ),
+                (
+                    "It was released in the year"
+                    f" {self.inform_key[Slots.YEAR.value]}."
+                ),
             ],
             Slots.MOVIE_LINK.value: [
-                f"The link of the movie on IMDb is {self.inform_key[Slots.MOVIE_LINK.value]}",
-                f"You can find more about the movie at this link: "
-                f"{self.inform_key[Slots.MOVIE_LINK.value]}",
+                (
+                    "The link of the movie on IMDb is"
+                    f" {self.inform_key[Slots.MOVIE_LINK.value]}"
+                ),
+                (
+                    "You can find more about the movie at this link: "
+                    f"{self.inform_key[Slots.MOVIE_LINK.value]}"
+                ),
             ],
             Slots.RATING.value: [
                 f"Its rating on IMDb is {self.inform_key[Slots.RATING.value]}.",
-                f"The rating of this movie on IMDb is {self.inform_key[Slots.RATING.value]}.",
+                (
+                    "The rating of this movie on IMDb is"
+                    f" {self.inform_key[Slots.RATING.value]}."
+                ),
             ],
         }
 
@@ -229,20 +252,36 @@ class NLG:
                         clarify_response = self._clarify_CIN(CIN, agent_dact)
                         if len(clarify_response.split()) == 1:
                             narrow_space = [
-                                "Can you guide me to narrow down the search space?",
-                                "Please answer a few questions to help me find a good "
-                                "movie.",
+                                (
+                                    "Can you guide me to narrow down the search"
+                                    " space?"
+                                ),
+                                (
+                                    "Please answer a few questions to help me"
+                                    " find a good movie."
+                                ),
                             ]
                             intent_response = random.choice(narrow_space)
                         else:
                             count_message = [
-                                f"There are almost {round_value} {clarify_response}.",
-                                f"I have found almost {round_value} {clarify_response}.",
+                                (
+                                    "There are almost"
+                                    f" {round_value} {clarify_response}."
+                                ),
+                                (
+                                    "I have found almost"
+                                    f" {round_value} {clarify_response}."
+                                ),
                             ]
                             narrow_space = [
-                                "Can you guide me more to narrow down the search space?",
-                                "Please answer a few more questions to help me find a "
-                                "good movie.",
+                                (
+                                    "Can you guide me more to narrow down the"
+                                    " search space?"
+                                ),
+                                (
+                                    "Please answer a few more questions to help"
+                                    " me find a good movie."
+                                ),
                             ]
                             intent_response = " ".join(
                                 [
@@ -272,12 +311,17 @@ class NLG:
                             Slots.MOVIE_LINK.value
                         ]
                         clarify_response = [
-                            f"I would like to recommend you {clarify_response} "
-                            f'named **"[{param.value}]({link})"**. Have '
-                            f"you watched it?",
-                            f"There is {clarify_response} named "
-                            f'**"[{param.value}]({link})"**. '
-                            f"Have you seen this one?",
+                            (
+                                "I would like to recommend you"
+                                f" {clarify_response} named"
+                                f' **"[{param.value}]({link})"**. Have you'
+                                " watched it?"
+                            ),
+                            (
+                                f"There is {clarify_response} named "
+                                f'**"[{param.value}]({link})"**. '
+                                "Have you seen this one?"
+                            ),
                         ]
                         intent_response = random.choice(clarify_response)
                         # if dialogue_state.agent_repeats_offer:
@@ -295,12 +339,16 @@ class NLG:
             elif agent_dact.intent == AgentIntents.NO_RESULTS:
                 intent_response = random.choice(
                     [
-                        "Sorry, I don't have any "
-                        f'{"other " if dialogue_state.items_in_context else ""}'
-                        f"{self._clarify_CIN(CIN, agent_dact)}.",
-                        "Sorry, I couldn't find any "
-                        f'{"other " if dialogue_state.items_in_context else ""}'
-                        f"{self._clarify_CIN(CIN, agent_dact)}.",
+                        (
+                            "Sorry, I don't have any "
+                            f'{"other " if dialogue_state.items_in_context else ""}'
+                            f"{self._clarify_CIN(CIN, agent_dact)}."
+                        ),
+                        (
+                            "Sorry, I couldn't find any "
+                            f'{"other " if dialogue_state.items_in_context else ""}'
+                            f"{self._clarify_CIN(CIN, agent_dact)}."
+                        ),
                     ]
                 )
                 intent_response += (
@@ -428,7 +476,10 @@ class NLG:
 
         """
         if self.dialogue_state.agent_should_offer_similar:
-            response = f' film similar to "{list(self.dialogue_state.similar_movies.keys())[0]}" '
+            response = (
+                " film similar to"
+                f' "{list(self.dialogue_state.similar_movies.keys())[0]}" '
+            )
             return response
         response = ""
         negate = ".NOT."
@@ -798,7 +849,7 @@ class NLG:
                         random.choice(
                             [
                                 f'I want {_a_an} "{value}" movie.',
-                                f'I would prefer {_a_an} "{value}" ' f"film.",
+                                f'I would prefer {_a_an} "{value}" film.',
                             ]
                         )
                     ]
@@ -806,7 +857,7 @@ class NLG:
                     options[param_key] = [
                         random.choice(
                             [
-                                f'Don\'t want {_a_an} "{value}" ' f"movie.",
+                                f'Don\'t want {_a_an} "{value}" movie.',
                                 f'Won\'t prefer {_a_an} "{value}" film.',
                             ]
                         )
@@ -825,7 +876,7 @@ class NLG:
                     options[param_key] = [
                         random.choice(
                             [
-                                f"Don't need movies based on " f'"{value}".',
+                                f'Don\'t need movies based on "{value}".',
                                 f'No need of {_a_an} "{value}" film.',
                             ]
                         )

@@ -1,7 +1,6 @@
 """Dialogue Act defines the action user or agent takes during the conversation.
 """
 
-__author__ = "Javeria Habib"
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents

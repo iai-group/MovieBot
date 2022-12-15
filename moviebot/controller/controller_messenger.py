@@ -99,8 +99,8 @@ class ControllerMessenger(Controller):
                         return token_config["MESSENGER_TOKEN"]
                     else:
                         raise ValueError(
-                            f"The token for Messenger bot is not found in the file "
-                            f"{bot_token_path}"
+                            "The token for Messenger bot is not found in the"
+                            f" file {bot_token_path}"
                         )
             else:
                 raise FileNotFoundError(f"File {bot_token_path} not found")
@@ -405,8 +405,8 @@ class ControllerMessenger(Controller):
 
         """
         policy = (
-            'Type "/delete" at any time to stop storing and delete conversation history.\n\n'
-            "Press start to continue."
+            'Type "/delete" at any time to stop storing and delete conversation'
+            " history.\n\nPress start to continue."
         )
         self.user_messages[user_id].text(policy)
 
@@ -420,7 +420,9 @@ class ControllerMessenger(Controller):
             {
                 "button_type": "web_url",
                 "title": "Privacy Policy",
-                "url": "https://iai-group.github.io/moviebot/Privacy_policy.html",
+                "url": (
+                    "https://iai-group.github.io/moviebot/Privacy_policy.html"
+                ),
             },
             {
                 "button_type": "postback",
@@ -441,10 +443,13 @@ class ControllerMessenger(Controller):
             "greeting": [
                 {
                     "locale": "default",
-                    "text": "Hi there. I am IAI MovieBot, your movie recommending buddy. "
-                    "I can recommend you movies based on your preferences.\n "
-                    "I will ask you a few questions and based on your answers, "
-                    "I will try to find a movie for you.\n\n",
+                    "text": (
+                        "Hi there. I am IAI MovieBot, your movie recommending"
+                        " buddy. I can recommend you movies based on your"
+                        " preferences.\n I will ask you a few questions and"
+                        " based on your answers, I will try to find a movie for"
+                        " you.\n\n"
+                    ),
                 }
             ]
         }

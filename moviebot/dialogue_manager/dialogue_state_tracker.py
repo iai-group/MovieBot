@@ -1,6 +1,5 @@
 """Dialogue State Tracker updates the current dialogue state."""
 
-__author__ = "Javeria Habib"
 
 from copy import deepcopy
 
@@ -63,13 +62,11 @@ class DialogueStateTracker:
         ):
             if time_value.startswith(">"):
                 value = (
-                    f"between {time_value.split()[-1]} and "
-                    f"{value.split()[-1]}"
+                    f"between {time_value.split()[-1]} and {value.split()[-1]}"
                 )
             else:
                 value = (
-                    f" between {value.split()[-1]} and"
-                    f" {time_value.split()[-1]}"
+                    f" between {value.split()[-1]} and {time_value.split()[-1]}"
                 )
             self.dialogue_state.frame_CIN[param.slot] = value
         else:

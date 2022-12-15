@@ -1,7 +1,7 @@
 """Types of conversational agents are available here."""
 
-__author__ = "Javeria Habib"
 
+import logging
 import os
 
 from moviebot.core.utterance.utterance import AgentUtterance
@@ -12,6 +12,8 @@ from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
+
+logger = logging.getLogger(__name__)
 
 
 def _get_ontology(ontology_path):
@@ -112,7 +114,8 @@ class Agent:
             nlu_tag_words_slots_path = self.config["NLU"]["tag_words_slots"]
         else:
             raise EnvironmentError(
-                "Conversational Agent: No tag words provided for slots in user utterance"
+                "Conversational Agent: No tag words provided for slots in user"
+                " utterance"
             )
 
         data_config = dict(
@@ -123,9 +126,7 @@ class Agent:
         )
         self.nlu = NLU(data_config)
         self.nlg = NLG(dict(ontology=self.ontology))
-        data_config["slots"] = list(
-            self.nlu.intents_checker.slot_values.keys()
-        )
+        data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
         if self.config.get("TELEGRAM", False):
             self.isBot = True
@@ -174,12 +175,10 @@ class Agent:
             AgentUtterance({"text": agent_response})
         )
         if not self.isBot:
-            print(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
-                )
+            logger.debug(
+                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
-            print(
+            logger.debug(
                 str(
                     self.dialogue_manager.dialogue_state_tracker.dialogue_context
                 )
@@ -234,12 +233,10 @@ class Agent:
             AgentUtterance({"text": agent_response})
         )
         if not self.isBot:
-            print(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
-                )
+            logger.debug(
+                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
-            print(
+            logger.debug(
                 str(
                     self.dialogue_manager.dialogue_state_tracker.dialogue_context
                 )
