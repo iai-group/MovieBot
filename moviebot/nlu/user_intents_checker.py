@@ -336,7 +336,7 @@ class UserIntentsChecker:
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         person_name_checks = False
-        for slot in self.ontology.get("slots_annotation", []):
+        for slot in self.ontology.slots_annotation:
             if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
                 if person_name_checks:
                     continue
@@ -486,7 +486,9 @@ class UserIntentsChecker:
                     results.remove(result)
             if len(results) > 0:
                 return [
-                    ItemConstraint(Slots.TITLE.value, Operator.EQ, str(results))
+                    ItemConstraint(
+                        Slots.TITLE.value, Operator.EQ, str(results)
+                    )
                 ]
 
     def _remove_param(self, param, dact):

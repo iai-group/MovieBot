@@ -13,6 +13,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
+_DEFAULT_CONFIG = "config/moviebot_config.yaml"
+
 
 def _validate_file(file_name, file_type):
     """Checks if the file is valid and is present
@@ -55,8 +57,8 @@ def arg_parse(args=None):
     argv = args if args else sys.argv
     cfg_parser = None
     if len(argv) < 3:
+        config_file = _DEFAULT_CONFIG
         logger.warning("Configuration file is not provided.")
-        config_file = r"config/moviebot_config.yaml"
         logger.warning(
             f"Default configuration file selected is '{config_file}'"
         )

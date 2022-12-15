@@ -14,16 +14,9 @@ class ControllerTerminal(Controller):
 
     def execute_agent(self) -> None:
         """Runs the conversational agent and executes the dialogue."""
-        agent = None
+        agent = self.initialize_agent()
+        agent_response, user_options = agent.start_dialogue()
         while True:
-            if not agent or self.restart(user_utterance):
-                agent = self.initialize_agent()
-                agent_response, user_options = agent.start_dialogue()
-            else:
-                agent_response, user_options = agent.continue_dialogue(
-                    user_utterance, user_options
-                )
-
             agent_prompt = f"AGENT: {agent_response}\n"
             if agent.terminated_dialogue():
                 questionary.print(f" {agent_prompt}", style="bold")
@@ -45,5 +38,13 @@ class ControllerTerminal(Controller):
                 ).ask()
 
             user_utterance = UserUtterance({"text": answer})
+
+            if self.restart(user_utterance):
+                agent = self.initialize_agent()
+                agent_response, user_options = agent.start_dialogue()
+            else:
+                agent_response, user_options = agent.continue_dialogue(
+                    user_utterance, user_options
+                )
 
         agent.end_dialogue()
