@@ -130,9 +130,7 @@ class NLG:
 
         self.slot_not_found = {
             Slots.GENRES.value: ["I could not find the genres __replace__."],
-            Slots.KEYWORDS.value: [
-                "I couldn't find the keywords __replace__."
-            ],
+            Slots.KEYWORDS.value: ["I couldn't find the keywords __replace__."],
             Slots.DIRECTORS.value: [
                 "I could not find the the director name __replace__."
             ],
@@ -488,9 +486,7 @@ class NLG:
                     )
                 else:
                     response = (
-                        response
-                        + " named similar to "
-                        + CIN[Slots.TITLE.value]
+                        response + " named similar to " + CIN[Slots.TITLE.value]
                     )
         if (
             CIN[Slots.DIRECTORS.value]
@@ -546,9 +542,7 @@ class NLG:
                 DialogueAct(UserIntents.RESTART, []): [
                     "I want to restart for a new movie."
                 ],
-                DialogueAct(UserIntents.BYE, []): [
-                    "I would like to quit now."
-                ],
+                DialogueAct(UserIntents.BYE, []): ["I would like to quit now."],
             }
             return options
 
@@ -614,10 +608,9 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    f'I want {_a_an} "{value}" '
-                                    f"genre movie.",
+                                    f'I want {_a_an} "{value}" genre movie.',
                                     f'I would prefer {_a_an} "{value}" '
-                                    f"genre film.",
+                                    "genre film.",
                                 ]
                             )
                         ]
@@ -626,9 +619,9 @@ class NLG:
                             random.choice(
                                 [
                                     f'Don\'t want {_a_an} "{value}" genre'
-                                    f"movie.",
+                                    "movie.",
                                     f'Won\'t prefer {_a_an} "{value}" '
-                                    f"genre film.",
+                                    "genre film.",
                                 ]
                             )
                         ]
@@ -650,8 +643,7 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    f"Don't need movies based on "
-                                    f'"{value}".',
+                                    f'Don\'t need movies based on "{value}".',
                                     f'No need of {_a_an} "{value}" film.',
                                 ]
                             )
@@ -670,8 +662,10 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    f'Don\'t want the director "{value.title()}".',
-                                    f'Shouldn\'t be directed by "{value.title()}".',
+                                    "Don't want the director "
+                                    f'"{value.title()}".',
+                                    "Shouldn't be directed by "
+                                    f'"{value.title()}".',
                                 ]
                             )
                         ]
@@ -685,7 +679,8 @@ class NLG:
                             random.choice(
                                 [
                                     f'Don\'t consider actor "{value.title()}".',
-                                    f'Remove "{value.title()}" from the list of actors.',
+                                    f'Remove "{value.title()}" from the list of'
+                                    " actors.",
                                 ]
                             )
                         ]
@@ -694,9 +689,9 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    f'Release year should be the "'
+                                    'Release year should be the "'
                                     f'{self._summarize_title_year(value)}".',
-                                    f'Need a movie from the "'
+                                    'Need a movie from the "'
                                     f'{self._summarize_title_year(value)}".',
                                 ]
                             )
@@ -705,9 +700,9 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    f"Release year shouldn't be the \""
+                                    "Release year shouldn't be the \""
                                     f'{self._summarize_title_year(value)}".',
-                                    f"Don't need a movie from the \""
+                                    "Don't need a movie from the \""
                                     f'{self._summarize_title_year(value)}".',
                                 ]
                             )
@@ -746,8 +741,6 @@ class NLG:
                     UserIntents.REJECT,
                     [ItemConstraint("reason", Operator.EQ, "dont_like")],
                 ): ["I don't like this recommendation."],
-                # [random.choice(['I don\'t like this recommendation.',
-                #                 'Recommend me something else please.'])],
                 DialogueAct(UserIntents.ACCEPT, []): [
                     "I like this recommendation."
                 ],
@@ -876,9 +869,9 @@ class NLG:
                     options[param_key] = [
                         random.choice(
                             [
-                                f'Release year should be the "'
+                                'Release year should be the "'
                                 f'{self._summarize_title_year(value)}".',
-                                f'Need a movie from the "'
+                                'Need a movie from the "'
                                 f'{self._summarize_title_year(value)}".',
                             ]
                         )
@@ -887,9 +880,9 @@ class NLG:
                     options[param_key] = [
                         random.choice(
                             [
-                                f"Release year shouldn't be the \""
+                                "Release year shouldn't be the \""
                                 f'{self._summarize_title_year(value)}".',
-                                f"Don't need a movie from the \""
+                                "Don't need a movie from the \""
                                 f'{self._summarize_title_year(value)}".',
                             ]
                         )

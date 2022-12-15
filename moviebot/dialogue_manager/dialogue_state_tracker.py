@@ -53,7 +53,7 @@ class DialogueStateTracker:
         """
         if param.value in Values.__dict__.values():
             return param.value
-        value = str(param.op) + " " + param.value
+        value = f"{str(param.op)} {param.value}"
         if value not in Values.__dict__.values():
             value = value.strip()
         time_value = self.dialogue_state.frame_CIN[param.slot]
@@ -151,9 +151,7 @@ class DialogueStateTracker:
                             if param.op == Operator.NE:
                                 if (
                                     param.value
-                                    in self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ]
+                                    in self.dialogue_state.frame_CIN[param.slot]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -172,9 +170,7 @@ class DialogueStateTracker:
                             else:
                                 if (
                                     f".NOT.{param.value}"
-                                    in self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ]
+                                    in self.dialogue_state.frame_CIN[param.slot]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -252,9 +248,7 @@ class DialogueStateTracker:
                             "inquire"
                         )
                 else:
-                    self.dialogue_context.movies_recommended[name] = [
-                        "inquire"
-                    ]
+                    self.dialogue_context.movies_recommended[name] = ["inquire"]
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.user_requestable:
                         self.dialogue_state.user_requestable.remove(param.slot)
