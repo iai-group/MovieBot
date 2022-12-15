@@ -1,13 +1,19 @@
+import logging
 import os
 import sys
-from os import environ
 
 import yaml
 
-# from moviebot.controller import server
-from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
+
+logging.basicConfig(
+    format="[%(asctime)s] %(levelname)-12s %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+logger = logging.getLogger()
+
+_DEFAULT_CONFIG = "config/moviebot_config.yaml"
 
 
 def _validate_file(file_name, file_type):
@@ -50,11 +56,12 @@ def arg_parse(args=None):
     """
     argv = args if args else sys.argv
     cfg_parser = None
-    print(argv)
     if len(argv) < 3:
-        print("WARNING: Configuration file is not provided.")
-        config_file = r"config/moviebot_config.yaml"
-        print(f"Default configuration file selected is '{config_file}'")
+        config_file = _DEFAULT_CONFIG
+        logger.warning("Configuration file is not provided.")
+        logger.warning(
+            f"Default configuration file selected is '{config_file}'"
+        )
     else:
         config_file = argv[2]
     file_val = _validate_file(config_file, "yaml")
@@ -74,7 +81,7 @@ def arg_parse(args=None):
         )
 
     if cfg_parser:
-        print(f'Configuration file "{config_file}" is loaded.')
+        logger.info(f'Configuration file "{config_file}" is loaded.')
         return (
             cfg_parser,
             cfg_parser["TELEGRAM"],
@@ -93,10 +100,11 @@ def get_config():
 
 
 if __name__ == "__main__":
-    print("Running")
     # Usage: python -m  moviebot.run -c <path_to_config.yaml>
     # Version: Python 3.10
     CONFIGURATION, BOT, MESSENGER, POLLING = arg_parse()
+    if CONFIGURATION["DEBUG"]:
+        logger.setLevel(logging.DEBUG)
     if BOT:
         if POLLING:
             CONTROLLER = ControllerTelegram()
@@ -104,9 +112,9 @@ if __name__ == "__main__":
         # else:
         #     server.run(CONFIGURATION)
     elif MESSENGER:
-        print("The Messenger version is currently not working.")
+        logger.warning("The Messenger version is currently not working.")
         # server.run(CONFIGURATION)
         # CONTROLLER = ControllerMessenger()
     else:
-        CONTROLLER = ControllerTerminal()
-        CONTROLLER.execute_agent(CONFIGURATION)
+        CONTROLLER = ControllerTerminal(CONFIGURATION)
+        CONTROLLER.execute_agent()

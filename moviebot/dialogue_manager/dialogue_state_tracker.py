@@ -65,7 +65,9 @@ class DialogueStateTracker:
                     f"between {time_value.split()[-1]} and {value.split()[-1]}"
                 )
             else:
-                value = f" between {value.split()[-1]} and {time_value.split()[-1]}"
+                value = (
+                    f" between {value.split()[-1]} and {time_value.split()[-1]}"
+                )
             self.dialogue_state.frame_CIN[param.slot] = value
         else:
             if value.startswith("="):
@@ -146,9 +148,7 @@ class DialogueStateTracker:
                             if param.op == Operator.NE:
                                 if (
                                     param.value
-                                    in self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ]
+                                    in self.dialogue_state.frame_CIN[param.slot]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -167,9 +167,7 @@ class DialogueStateTracker:
                             else:
                                 if (
                                     f".NOT.{param.value}"
-                                    in self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ]
+                                    in self.dialogue_state.frame_CIN[param.slot]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -247,9 +245,7 @@ class DialogueStateTracker:
                             "inquire"
                         )
                 else:
-                    self.dialogue_context.movies_recommended[name] = [
-                        "inquire"
-                    ]
+                    self.dialogue_context.movies_recommended[name] = ["inquire"]
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.user_requestable:
                         self.dialogue_state.user_requestable.remove(param.slot)
