@@ -5,7 +5,7 @@ conversation while the user interacts with the agent using python console.
 import questionary
 
 from moviebot.controller.controller import Controller
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 
 class ControllerTerminal(Controller):

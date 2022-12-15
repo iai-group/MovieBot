@@ -3,8 +3,8 @@
 
 from copy import deepcopy
 
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.core.intents.agent_intents import AgentIntents
+from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
@@ -52,7 +52,7 @@ class DialogueStateTracker:
         """
         if param.value in Values.__dict__.values():
             return param.value
-        value = str(param.op) + " " + param.value
+        value = f"{str(param.op)} {param.value}"
         if value not in Values.__dict__.values():
             value = value.strip()
         time_value = self.dialogue_state.frame_CIN[param.slot]

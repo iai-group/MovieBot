@@ -4,7 +4,7 @@
 import logging
 import os
 
-from moviebot.core.shared.utterance.utterance import AgentUtterance
+from moviebot.core.utterance.utterance import AgentUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG

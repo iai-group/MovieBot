@@ -9,7 +9,7 @@ import wikipedia
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator

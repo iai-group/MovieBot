@@ -2,7 +2,7 @@
 
 import pytest
 
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
 
 SLOT_VALUES = {

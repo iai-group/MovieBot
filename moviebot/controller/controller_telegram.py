@@ -20,7 +20,7 @@ from telegram.ext import (
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 # Enable logging
 logging.basicConfig(

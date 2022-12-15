@@ -6,8 +6,8 @@ import random
 from copy import deepcopy
 from typing import List
 
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.core.intents.agent_intents import AgentIntents
+from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
@@ -39,10 +39,8 @@ class NLG:
             ],
             Slots.KEYWORDS.value: [
                 "Can you give me a few keywords?",
-                (
-                    "What are you looking for in a movie? Some keywords "
-                    "would be good."
-                ),
+                "What are you looking for in a movie? Some keywords "
+                "would be good.",
             ],
             Slots.DIRECTORS.value: [
                 "Any specific director you are looking for?",
@@ -50,17 +48,13 @@ class NLG:
             ],
             Slots.ACTORS.value: [
                 "Do you have any favourite actor these days?",
-                (
-                    "Any hints regarding the cast? Can you give me a name of"
-                    " any actor?"
-                ),
+                "Any hints regarding the cast? Can you give me a name of any "
+                "actor?",
             ],
             Slots.YEAR.value: [
                 "Which timeline do you prefer? For example, 90s or 80s?",
-                (
-                    "Do you have any preference of when the movie was produced?"
-                    " For example, 1992 or  90s."
-                ),
+                "Do you have any preference of when the movie was produced? "
+                "For example, 1992 or  90s.",
             ],
         }
 
@@ -79,35 +73,25 @@ class NLG:
 
         self.agent_inform_nlg = {
             Slots.TITLE.value: [
-                (
-                    "The title of the movie is"
-                    f' "{self.inform_key[Slots.TITLE.value]}".'
-                ),
+                "The title of the movie is"
+                f' "{self.inform_key[Slots.TITLE.value]}".',
                 f'Its name is "{self.inform_key[Slots.TITLE.value]}".',
             ],
             Slots.GENRES.value: [
-                (
-                    "The genres it belongs to are"
-                    f" {self.inform_key[Slots.GENRES.value]}."
-                ),
+                "The genres it belongs to are"
+                f" {self.inform_key[Slots.GENRES.value]}.",
                 f"Its genres are {self.inform_key[Slots.GENRES.value]}.",
             ],
             Slots.PLOT.value: [f"{self.inform_key[Slots.PLOT.value]}"],
             Slots.KEYWORDS.value: [
-                (
-                    "The plot of the movie revolves around"
-                    f" {self.inform_key[Slots.KEYWORDS.value]}."
-                ),
-                (
-                    "The movie plot is about"
-                    f" {self.inform_key[Slots.KEYWORDS.value]}."
-                ),
+                "The plot of the movie revolves around "
+                f"{self.inform_key[Slots.KEYWORDS.value]}.",
+                "The movie plot is about "
+                f"{self.inform_key[Slots.KEYWORDS.value]}.",
             ],
             Slots.DIRECTORS.value: [
-                (
-                    "The director of this movie is"
-                    f" {self.inform_key[Slots.DIRECTORS.value]}."
-                ),
+                "The director of this movie is "
+                f"{self.inform_key[Slots.DIRECTORS.value]}.",
                 f"Its directed by {self.inform_key[Slots.DIRECTORS.value]}.",
             ],
             Slots.DURATION.value: [
@@ -386,8 +370,7 @@ class NLG:
                     if param.slot == Slots.MORE_INFO.value:
                         intent_response = random.choice(
                             [
-                                "What would you like to know "
-                                "about "
+                                "What would you like to know about "
                                 f'"{param.value}"?'
                             ]
                         )
@@ -453,10 +436,8 @@ class NLG:
             return random.choice(
                 [
                     f"{value} minutes",
-                    (
-                        f'{hours} {"hours" if hours > 1 else "hour"} and '
-                        f'{minutes} {"minutes" if minutes > 1 else "minute"}'
-                    ),
+                    f'{hours} {"hours" if hours > 1 else "hour"} and '
+                    f'{minutes} {"minutes" if minutes > 1 else "minute"}',
                 ]
             )
         else:
@@ -678,10 +659,8 @@ class NLG:
                             random.choice(
                                 [
                                     f'I want {_a_an} "{value}" genre movie.',
-                                    (
-                                        f'I would prefer {_a_an} "{value}" '
-                                        "genre film."
-                                    ),
+                                    f'I would prefer {_a_an} "{value}" '
+                                    "genre film.",
                                 ]
                             )
                         ]
@@ -689,14 +668,10 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    (
-                                        f'Don\'t want {_a_an} "{value}" genre'
-                                        "movie."
-                                    ),
-                                    (
-                                        f'Won\'t prefer {_a_an} "{value}" '
-                                        "genre film."
-                                    ),
+                                    f'Don\'t want {_a_an} "{value}" genre'
+                                    "movie.",
+                                    f'Won\'t prefer {_a_an} "{value}" '
+                                    "genre film.",
                                 ]
                             )
                         ]
@@ -737,14 +712,10 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    (
-                                        "Don't want the director"
-                                        f' "{value.title()}".'
-                                    ),
-                                    (
-                                        "Shouldn't be directed by"
-                                        f' "{value.title()}".'
-                                    ),
+                                    "Don't want the director "
+                                    f'"{value.title()}".',
+                                    "Shouldn't be directed by "
+                                    f'"{value.title()}".',
                                 ]
                             )
                         ]
@@ -758,10 +729,8 @@ class NLG:
                             random.choice(
                                 [
                                     f'Don\'t consider actor "{value.title()}".',
-                                    (
-                                        f'Remove "{value.title()}" from the'
-                                        " list of actors."
-                                    ),
+                                    f'Remove "{value.title()}" from the list of'
+                                    " actors.",
                                 ]
                             )
                         ]
@@ -770,14 +739,10 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    (
-                                        'Release year should be the "'
-                                        f'{self._summarize_title_year(value)}".'
-                                    ),
-                                    (
-                                        'Need a movie from the "'
-                                        f'{self._summarize_title_year(value)}".'
-                                    ),
+                                    'Release year should be the "'
+                                    f'{self._summarize_title_year(value)}".',
+                                    'Need a movie from the "'
+                                    f'{self._summarize_title_year(value)}".',
                                 ]
                             )
                         ]
@@ -785,14 +750,10 @@ class NLG:
                         options[param_key] = [
                             random.choice(
                                 [
-                                    (
-                                        "Release year shouldn't be the \""
-                                        f'{self._summarize_title_year(value)}".'
-                                    ),
-                                    (
-                                        "Don't need a movie from the \""
-                                        f'{self._summarize_title_year(value)}".'
-                                    ),
+                                    "Release year shouldn't be the \""
+                                    f'{self._summarize_title_year(value)}".',
+                                    "Don't need a movie from the \""
+                                    f'{self._summarize_title_year(value)}".',
                                 ]
                             )
                         ]
@@ -830,8 +791,6 @@ class NLG:
                     UserIntents.REJECT,
                     [ItemConstraint("reason", Operator.EQ, "dont_like")],
                 ): ["I don't like this recommendation."],
-                # [random.choice(['I don\'t like this recommendation.',
-                #                 'Recommend me something else please.'])],
                 DialogueAct(UserIntents.ACCEPT, []): [
                     "I like this recommendation."
                 ],
@@ -951,10 +910,8 @@ class NLG:
                         random.choice(
                             [
                                 f'Don\'t consider actor "{value.title()}".',
-                                (
-                                    f'Remove "{value.title()}" from the list of'
-                                    " actors."
-                                ),
+                                f'Remove "{value.title()}" from the list of '
+                                "actors.",
                             ]
                         )
                     ]
@@ -963,14 +920,10 @@ class NLG:
                     options[param_key] = [
                         random.choice(
                             [
-                                (
-                                    'Release year should be the "'
-                                    f'{self._summarize_title_year(value)}".'
-                                ),
-                                (
-                                    'Need a movie from the "'
-                                    f'{self._summarize_title_year(value)}".'
-                                ),
+                                'Release year should be the "'
+                                f'{self._summarize_title_year(value)}".',
+                                'Need a movie from the "'
+                                f'{self._summarize_title_year(value)}".',
                             ]
                         )
                     ]
@@ -978,14 +931,10 @@ class NLG:
                     options[param_key] = [
                         random.choice(
                             [
-                                (
-                                    "Release year shouldn't be the \""
-                                    f'{self._summarize_title_year(value)}".'
-                                ),
-                                (
-                                    "Don't need a movie from the \""
-                                    f'{self._summarize_title_year(value)}".'
-                                ),
+                                "Release year shouldn't be the \""
+                                f'{self._summarize_title_year(value)}".',
+                                "Don't need a movie from the \""
+                                f'{self._summarize_title_year(value)}".',
                             ]
                         )
                     ]

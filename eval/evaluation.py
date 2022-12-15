@@ -1,4 +1,5 @@
-import sys, os
+import os
+import sys
 
 if os.getcwd().endswith("eval"):
     os.chdir("..")
@@ -6,12 +7,13 @@ if os.getcwd().endswith("eval"):
 
 import json
 import time
-from copy import deepcopy
 from collections import defaultdict
+from copy import deepcopy
 
 from run_bot import arg_parse
+
 from moviebot.agent.agent import Agent
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 
 def get_data_path(filename):

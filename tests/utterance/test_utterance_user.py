@@ -2,7 +2,7 @@ from typing import List
 
 import pytest
 
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.text_processing import Token
 
 
