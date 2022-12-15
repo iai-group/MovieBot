@@ -1,7 +1,6 @@
 """This file contains the Controller class which controls the flow of the
 conversation while the user interacts with the agent using Telegram."""
 
-__author__ = "Javeria Habib"
 
 import json
 import logging
@@ -10,9 +9,6 @@ import time
 from copy import deepcopy
 
 import yaml
-from moviebot.agent.agent import Agent
-from moviebot.controller.controller import Controller
-from moviebot.core.shared.utterance.utterance import UserUtterance
 from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import (
     CommandHandler,
@@ -21,6 +17,10 @@ from telegram.ext import (
     MessageHandler,
     Updater,
 )
+
+from moviebot.agent.agent import Agent
+from moviebot.controller.controller import Controller
+from moviebot.core.shared.utterance.utterance import UserUtterance
 
 # Enable logging
 logging.basicConfig(
@@ -62,8 +62,8 @@ class ControllerTelegram(Controller):
                         return token_config["BOT_TOKEN"]
                     else:
                         raise ValueError(
-                            f"The token for Telegram bot is not found in the file "
-                            f"{bot_token_path}"
+                            "The token for Telegram bot is not found in the"
+                            f" file {bot_token_path}"
                         )
             else:
                 raise FileNotFoundError(f"File {bot_token_path} not found")
@@ -92,8 +92,8 @@ class ControllerTelegram(Controller):
         self.user_options[user_id] = {}
         self.agent[user_id].initialize(user_id)
         print(
-            f"Conversation is starting for user id = {user_id} and user name = '"
-            f"{update.effective_user['first_name']}'"
+            f"Conversation is starting for user id = {user_id} and user name ="
+            f" '{update.effective_user['first_name']}'"
         )
         (
             self.response[user_id],
@@ -158,8 +158,8 @@ class ControllerTelegram(Controller):
         self.user_options[user_id] = {}
         self.agent[user_id].initialize(user_id)
         print(
-            f"Conversation is starting for user id = {user_id} and user name = '"
-            f"{update.effective_user['first_name']}'"
+            f"Conversation is starting for user id = {user_id} and user name ="
+            f" '{update.effective_user['first_name']}'"
         )
         (
             self.response[user_id],
@@ -213,8 +213,8 @@ class ControllerTelegram(Controller):
                 user_id
             ].dialogue_manager.dialogue_state_tracker.dialogue_context.initialize()
             print(
-                f"Conversation is starting for user id = {user_id} and user name = '"
-                f"{update.effective_user['first_name']}'"
+                f"Conversation is starting for user id = {user_id} and user"
+                f" name = '{update.effective_user['first_name']}'"
             )
         start = time.time()
         user_utterance = UserUtterance(update.message.to_dict())
@@ -261,15 +261,18 @@ class ControllerTelegram(Controller):
             )
         if self.agent[user_id].terminated_dialogue():
             print(
-                f"Conversation is ending for user id = {user_id} and user name = '"
-                f"{update.effective_user['first_name']}'"
+                f"Conversation is ending for user id = {user_id} and user name"
+                f" = '{update.effective_user['first_name']}'"
             )
             del self.agent[user_id]
             feedback = (
                 "Help me improve myself. Give me a feedback [here]("
                 "https://forms.gle/hK9CrHu37dL89r1H6)."
             )
-            feedback += f"\nLastly, please remember to take a note of your user id: {user_id}"
+            feedback += (
+                "\nLastly, please remember to take a note of your user id:"
+                f" {user_id}"
+            )
             update.message.reply_text(feedback, parse_mode=ParseMode.MARKDOWN)
             return ConversationHandler.END
         else:
@@ -461,12 +464,13 @@ class ControllerTelegram(Controller):
                 "I will try to find a movie for you.\n\n"
             )
         return (
-            response + "INSTRUCTIONS:\n\n"
-            'To start the conversation, issue "/start", say Hi/Hello, or simply '
-            'enter you preferences ("I want a horror movie from the 90s").\n\n'
-            'To restart the recommendation process, issue "/restart".\n\n'
-            'To end the conversation, issue "/exit" or say Bye/Goodbye.\n\n'
-            'To see these instructions again, issue: "/help".'
+            response
+            + 'INSTRUCTIONS:\n\nTo start the conversation, issue "/start", say'
+            ' Hi/Hello, or simply enter you preferences ("I want a horror'
+            ' movie from the 90s").\n\nTo restart the recommendation process,'
+            ' issue "/restart".\n\nTo end the conversation, issue "/exit" or'
+            " say Bye/Goodbye.\n\nTo see these instructions again, issue:"
+            ' "/help".'
         )  # \n\n" \
         # "You can find more details online [here](" \
         # "https://javeriahabib09.github.io/jarvis_v1.github.io/)"

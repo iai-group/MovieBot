@@ -13,8 +13,9 @@ class SlotAnnotator(abc.ABC):
     """This class is used to annotate slot values in the user utterance."""
 
     @abc.abstractmethod
-    def slot_annotation(self, slot: Slots,
-                        utterance: UserUtterance) -> List[ItemConstraint]:
+    def slot_annotation(
+        self, slot: Slots, utterance: UserUtterance
+    ) -> List[ItemConstraint]:
         """Given utterance and a slot return a list of triplets of
         (slot, operator, value).
 

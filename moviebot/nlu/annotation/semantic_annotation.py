@@ -39,7 +39,6 @@ class SemanticAnnotation(Span):
         entity_type: Optional[EntityType] = None,
         **kwargs,
     ) -> None:
-
         if not isinstance(annotation_type, AnnotationType):
             raise NotImplementedError
 
@@ -52,7 +51,7 @@ class SemanticAnnotation(Span):
             self.entity_type = entity_type
 
     def get_type(self) -> Text:
-        entity_type = ' - ' + self.entity_type.name if self.entity_type else ''
+        entity_type = " - " + self.entity_type.name if self.entity_type else ""
         return (self.annotation_type.name + entity_type).lower()
 
     @classmethod
@@ -74,9 +73,11 @@ class SemanticAnnotation(Span):
         Returns:
             [type]: [description]
         """
-        return SemanticAnnotation(annotation_type,
-                                  entity_type,
-                                  text=span.text,
-                                  start=span.start,
-                                  end=span.end,
-                                  lemma=span.lemma)
+        return SemanticAnnotation(
+            annotation_type,
+            entity_type,
+            text=span.text,
+            start=span.start,
+            end=span.end,
+            lemma=span.lemma,
+        )
