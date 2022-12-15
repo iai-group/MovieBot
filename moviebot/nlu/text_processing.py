@@ -80,7 +80,6 @@ class Token(Span):
         lemma: Optional[Text] = None,
         is_stop: Optional[bool] = False,
     ) -> None:
-
         super().__init__(text, start, end, lemma)
         self.is_stop = is_stop
 

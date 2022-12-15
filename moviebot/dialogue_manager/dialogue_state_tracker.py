@@ -1,17 +1,16 @@
 """Dialogue State Tracker updates the current dialogue state."""
 
-__author__ = 'Javeria Habib'
 
 from copy import deepcopy
 
+from moviebot.core.shared.intents.agent_intents import AgentIntents
+from moviebot.core.shared.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
 
 
 class DialogueStateTracker:
@@ -25,12 +24,13 @@ class DialogueStateTracker:
             config: the set of parameters to initialize the state tracker
             isBot: if the conversation is via bot or not
         """
-        self.ontology = config['ontology']
-        self.database = config['database']
-        self.slots = config['slots']
+        self.ontology = config["ontology"]
+        self.database = config["database"]
+        self.slots = config["slots"]
         self.isBot = isBot
-        self.dialogue_state = DialogueState(self.ontology, self.slots,
-                                            self.isBot)
+        self.dialogue_state = DialogueState(
+            self.ontology, self.slots, self.isBot
+        )
         self.dialogue_context = DialogueContext()
 
     def initialize(self, config):
@@ -52,23 +52,24 @@ class DialogueStateTracker:
         """
         if param.value in Values.__dict__.values():
             return param.value
-        value = str(param.op) + ' ' + param.value
+        value = str(param.op) + " " + param.value
         if value not in Values.__dict__.values():
             value = value.strip()
         time_value = self.dialogue_state.frame_CIN[param.slot]
         if time_value and (
-                (time_value.startswith('>') and value.startswith('<')) or \
-                (time_value.startswith('<') and value.startswith('>'))):
-            if time_value.startswith('>'):
-                value = f'between {time_value.split()[-1]} and ' \
-                        f'{value.split()[-1]}'
+            (time_value.startswith(">") and value.startswith("<"))
+            or (time_value.startswith("<") and value.startswith(">"))
+        ):
+            if time_value.startswith(">"):
+                value = (
+                    f"between {time_value.split()[-1]} and {value.split()[-1]}"
+                )
             else:
-                value = f' between {value.split()[-1]} and' \
-                        f' {time_value.split()[-1]}'
+                value = f" between {value.split()[-1]} and {time_value.split()[-1]}"
             self.dialogue_state.frame_CIN[param.slot] = value
         else:
-            if value.startswith('='):
-                value = value.replace('=', '').strip()
+            if value.startswith("="):
+                value = value.replace("=", "").strip()
             self.dialogue_state.frame_CIN[param.slot] = value
 
     def update_state_user(self, user_dacts):
@@ -94,10 +95,12 @@ class DialogueStateTracker:
             # makes a back-up of current info needs if user wants to refine
             # those
             if user_dact.intent in [
-                    UserIntents.REMOVE_PREFERENCE, UserIntents.REVEAL
+                UserIntents.REMOVE_PREFERENCE,
+                UserIntents.REVEAL,
             ]:
                 self.dialogue_state.frame_PIN = deepcopy(
-                    self.dialogue_state.frame_CIN)
+                    self.dialogue_state.frame_CIN
+                )
                 self.dialogue_state.agent_should_offer_similar = False
 
             # user liked the movie
@@ -105,7 +108,8 @@ class DialogueStateTracker:
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                 if name in self.dialogue_context.movies_recommended:
                     self.dialogue_context.movies_recommended[name].append(
-                        'accept')
+                        "accept"
+                    )
 
             # change agent state to should make offer
             if user_dact.intent == UserIntents.REJECT:
@@ -114,7 +118,8 @@ class DialogueStateTracker:
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                 if name in self.dialogue_context.movies_recommended:
                     self.dialogue_context.movies_recommended[name].append(
-                        user_dact.params[0].value)
+                        user_dact.params[0].value
+                    )
                 else:
                     self.dialogue_context.movies_recommended[name] = [
                         user_dact.params[0].value
@@ -128,7 +133,8 @@ class DialogueStateTracker:
                 for param in user_dact.params:
                     if param.slot in self.ontology.multiple_values_CIN:
                         self.dialogue_state.frame_CIN[param.slot].remove(
-                            param.value)
+                            param.value
+                        )
                     else:
                         self.dialogue_state.frame_CIN[param.slot] = None
 
@@ -138,41 +144,65 @@ class DialogueStateTracker:
                     if param.slot in self.dialogue_state.frame_CIN:
                         if param.slot in self.ontology.multiple_values_CIN:
                             if param.op == Operator.NE:
-                                if param.value in self.dialogue_state.frame_CIN[
-                                        param.slot]:
+                                if (
+                                    param.value
+                                    in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
+                                ):
                                     self.dialogue_state.frame_CIN[
-                                        param.slot].remove(param.value)
+                                        param.slot
+                                    ].remove(param.value)
                                 else:
-                                    param.value = f'.NOT.{param.value}'
-                                    if param.value not in self.dialogue_state.frame_CIN[
-                                            param.slot]:
+                                    param.value = f".NOT.{param.value}"
+                                    if (
+                                        param.value
+                                        not in self.dialogue_state.frame_CIN[
+                                            param.slot
+                                        ]
+                                    ):
                                         self.dialogue_state.frame_CIN[
-                                            param.slot].append(param.value)
+                                            param.slot
+                                        ].append(param.value)
                             else:
-                                if f'.NOT.{param.value}' in self.dialogue_state.frame_CIN[
-                                        param.slot]:
+                                if (
+                                    f".NOT.{param.value}"
+                                    in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
+                                ):
                                     self.dialogue_state.frame_CIN[
-                                        param.slot].remove(
-                                            f'.NOT.{param.value}')
-                                if param.value not in self.dialogue_state.frame_CIN[
-                                        param.slot]:
+                                        param.slot
+                                    ].remove(f".NOT.{param.value}")
+                                if (
+                                    param.value
+                                    not in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
+                                ):
                                     self.dialogue_state.frame_CIN[
-                                        param.slot].append(param.value)
+                                        param.slot
+                                    ].append(param.value)
                         # elif param.slot == Slots.YEAR.value:
                         #     self._add_year_CIN(param)
                         else:
                             if param.op == Operator.NE:
-                                if self.dialogue_state.frame_CIN[
-                                        param.slot] == param.value:
+                                if (
+                                    self.dialogue_state.frame_CIN[param.slot]
+                                    == param.value
+                                ):
                                     self.dialogue_state.frame_CIN[
-                                        param.slot] = None
+                                        param.slot
+                                    ] = None
                                 else:
-                                    param.value = f'.NOT.{param.value}'
+                                    param.value = f".NOT.{param.value}"
                                     self.dialogue_state.frame_CIN[
-                                        param.slot] = param.value
+                                        param.slot
+                                    ] = param.value
                             else:
                                 self.dialogue_state.frame_CIN[
-                                    param.slot] = param.value
+                                    param.slot
+                                ] = param.value
 
                 # checks if two parameters have the same value:
                 self.dialogue_state.agent_must_clarify = False
@@ -196,8 +226,11 @@ class DialogueStateTracker:
                     }
                     self.dialogue_state.agent_must_clarify = True
 
-            if user_dact.intent in [UserIntents.REVEAL, UserIntents.REMOVE_PREFERENCE] and \
-                    self.dialogue_state.agent_made_offer:
+            if (
+                user_dact.intent
+                in [UserIntents.REVEAL, UserIntents.REMOVE_PREFERENCE]
+                and self.dialogue_state.agent_made_offer
+            ):
                 self.dialogue_state.agent_made_offer = False
 
             # remove from user requestables when user asks for anything
@@ -206,12 +239,17 @@ class DialogueStateTracker:
                     print(self.dialogue_state)  # debuggig here
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                 if name in self.dialogue_context.movies_recommended:
-                    if 'inquire' not in self.dialogue_context.movies_recommended[
-                            name]:
+                    if (
+                        "inquire"
+                        not in self.dialogue_context.movies_recommended[name]
+                    ):
                         self.dialogue_context.movies_recommended[name].append(
-                            'inquire')
+                            "inquire"
+                        )
                 else:
-                    self.dialogue_context.movies_recommended[name] = ['inquire']
+                    self.dialogue_context.movies_recommended[name] = [
+                        "inquire"
+                    ]
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.user_requestable:
                         self.dialogue_state.user_requestable.remove(param.slot)
@@ -224,8 +262,9 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_should_make_offer = True
                 self.dialogue_state.agent_should_offer_similar = True
                 self.dialogue_state.similar_movies = {
-                    self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                        eval(user_dact.params[0].value)
+                    self.dialogue_state.item_in_focus[Slots.TITLE.value]: eval(
+                        user_dact.params[0].value
+                    )
                 }
 
             if user_dact.intent == UserIntents.RESTART:
@@ -283,12 +322,14 @@ class DialogueStateTracker:
         for agent_dact in agent_dacts:
             if agent_dact.intent == AgentIntents.RECOMMEND:
                 self.dialogue_context.movies_recommended[
-                    agent_dact.params[0].value] = []
+                    agent_dact.params[0].value
+                ] = []
                 self.dialogue_state.agent_made_partial_offer = False
                 self.dialogue_state.agent_should_make_offer = False
                 self.dialogue_state.agent_made_offer = True
                 self.dialogue_state.user_requestable = deepcopy(
-                    self.ontology.user_requestable)
+                    self.ontology.user_requestable
+                )
 
     def update_state_db(self, database_result=None, backup_results=None):
         """Updates the state based on  the results fetched from the database
@@ -305,7 +346,8 @@ class DialogueStateTracker:
         if database_result:
             # get slots that have no value and can be a next elicit
             CIN_slots = [
-                key for key in self.dialogue_state.frame_CIN.keys()
+                key
+                for key in self.dialogue_state.frame_CIN.keys()
                 if not self.dialogue_state.frame_CIN[key]
                 and key != Slots.TITLE.value
             ]
@@ -321,23 +363,27 @@ class DialogueStateTracker:
 
             # random.shuffle(database_result)
             for result in database_result:
-                if result[
-                        Slots.TITLE.
-                        value] not in self.dialogue_context.movies_recommended.keys(
-                        ):
+                if (
+                    result[Slots.TITLE.value]
+                    not in self.dialogue_context.movies_recommended.keys()
+                ):
                     item_found = True
                     self.dialogue_state.item_in_focus = deepcopy(result)
                     break
                 else:
                     self.dialogue_state.items_in_context = True
 
-        if not item_found and self.dialogue_state.agent_should_offer_similar and backup_results:
+        if (
+            not item_found
+            and self.dialogue_state.agent_should_offer_similar
+            and backup_results
+        ):
             self.dialogue_state.agent_should_offer_similar = False
             for result in backup_results:
-                if result[
-                        Slots.TITLE.
-                        value] not in self.dialogue_context.movies_recommended.keys(
-                        ):
+                if (
+                    result[Slots.TITLE.value]
+                    not in self.dialogue_context.movies_recommended.keys()
+                ):
                     item_found = True
                     self.dialogue_state.item_in_focus = deepcopy(result)
                     break
