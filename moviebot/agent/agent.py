@@ -126,9 +126,7 @@ class Agent:
         )
         self.nlu = NLU(data_config)
         self.nlg = NLG(dict(ontology=self.ontology))
-        data_config["slots"] = list(
-            self.nlu.intents_checker.slot_values.keys()
-        )
+        data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
         if self.config.get("TELEGRAM", False):
             self.isBot = True
@@ -178,9 +176,7 @@ class Agent:
         )
         if not self.isBot:
             logger.debug(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
-                )
+                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
             logger.debug(
                 str(
@@ -238,9 +234,7 @@ class Agent:
         )
         if not self.isBot:
             logger.debug(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
-                )
+                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
             logger.debug(
                 str(

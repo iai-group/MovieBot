@@ -1,5 +1,6 @@
-"""This file contains a class which can be used to annotate slot values
-in the user utterance based on rules and keyword matching."""
+"""This file contains a class which can be used to annotate slot values in the
+user utterance based on rules and keyword matching.
+"""
 
 
 import re
@@ -21,8 +22,9 @@ from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):
-    """This is a rule based annotator. It uses regex and keyword matching
-    for annotation."""
+    """This is a rule based annotator. It uses regex and keyword matching for
+    annotation.
+    """
 
     def __init__(self, process_value, lemmatize_value, slot_values):
         self._process_value = process_value
@@ -168,9 +170,7 @@ class RBAnnotator(SlotAnnotator):
         values = self.slot_values[slot]
         processed_values = set(values.values())
         # split into n-grams
-        for ngram_size in range(
-            min(self.ngram_size[slot], len(tokens)), 0, -1
-        ):
+        for ngram_size in range(min(self.ngram_size[slot], len(tokens)), 0, -1):
             options = {}
             for gram_list in ngrams(tokens, ngram_size):
                 gram = sum(gram_list).lemma
@@ -243,9 +243,7 @@ class RBAnnotator(SlotAnnotator):
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
-        for ngram_size in range(
-            min(self.ngram_size[slot], len(tokens)), 0, -1
-        ):
+        for ngram_size in range(min(self.ngram_size[slot], len(tokens)), 0, -1):
             for gram_list in ngrams(tokens, ngram_size):
                 gram = sum(gram_list).lemma
 
@@ -380,9 +378,7 @@ class RBAnnotator(SlotAnnotator):
                         )
                     ]
                 else:
-                    return [
-                        ItemConstraint(slot, Operator.EQ, year, annotation)
-                    ]
+                    return [ItemConstraint(slot, Operator.EQ, year, annotation)]
 
             if token.text[-2:] == "th":
                 year = token.text[:-2]

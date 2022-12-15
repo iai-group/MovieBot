@@ -17,8 +17,9 @@ from moviebot.nlu.annotation.values import Values
 
 
 class NLG:
-    """NLG is a Natural Language Generator used to produce a human-like response for Dialogue
-    Acts of the agent."""
+    """NLG is a Natural Language Generator used to produce a human-like response
+    for Dialogue Acts of the agent.
+    """
 
     def __init__(self, args=None):
         """Initializes any necessary components.
@@ -168,9 +169,7 @@ class NLG:
 
         self.slot_not_found = {
             Slots.GENRES.value: ["I could not find the genres __replace__."],
-            Slots.KEYWORDS.value: [
-                "I couldn't find the keywords __replace__."
-            ],
+            Slots.KEYWORDS.value: ["I couldn't find the keywords __replace__."],
             Slots.DIRECTORS.value: [
                 "I could not find the the director name __replace__."
             ],
@@ -556,9 +555,7 @@ class NLG:
                     )
                 else:
                     response = (
-                        response
-                        + " named similar to "
-                        + CIN[Slots.TITLE.value]
+                        response + " named similar to " + CIN[Slots.TITLE.value]
                     )
         if (
             CIN[Slots.DIRECTORS.value]
@@ -614,9 +611,7 @@ class NLG:
                 DialogueAct(UserIntents.RESTART, []): [
                     "I want to restart for a new movie."
                 ],
-                DialogueAct(UserIntents.BYE, []): [
-                    "I would like to quit now."
-                ],
+                DialogueAct(UserIntents.BYE, []): ["I would like to quit now."],
             }
             return options
 

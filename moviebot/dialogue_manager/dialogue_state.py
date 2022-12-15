@@ -1,7 +1,7 @@
-"""DialogueState models the state of the agent. It is a basic SlotFilling model that keeps
-account of the question agents must answer or ask from the user. It also keeps track of the
-recommendation agent makes and previous states of the agent.
-State will be updated using the Dialogue State Tracker.
+"""DialogueState models the state of the agent. It is a basic SlotFilling model
+that keeps account of the question agents must answer or ask from the user. It
+also keeps track of the recommendation agent makes and previous states of the
+agent. State will be updated using the Dialogue State Tracker.
 """
 
 
@@ -11,10 +11,11 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DialogueState:
-    """DialogueState models the state of the agent. It is a basic SlotFilling model that keeps
-    account of the question agents must answer or ask from the user. It also keeps track of the
-    recommendation agent makes and previous states of the agent.
-    State will be updated using the Dialogue State Tracker."""
+    """DialogueState models the state of the agent. It is a basic SlotFilling
+    model that keeps account of the question agents must answer or ask from the
+    user. It also keeps track of the recommendation agent makes and previous
+    states of the agent. State will be updated using the Dialogue State Tracker.
+    """
 
     def __init__(self, ontology, slots, isBot):
         """Initializes the Slot Filling Dialogue State structures
@@ -40,7 +41,9 @@ class DialogueState:
             {}
         )  # previous information needs of the user in case user want to go back
         self.prev_agent_dacts = []  # list of agent dacts
-        self.last_agent_dacts = None  # the current agent dact (singular, must be updated carefully)
+        self.last_agent_dacts = (
+            None  # the current agent dact (singular, must be updated carefully)
+        )
         self.last_user_dacts = None  # the current user act
 
     def _agent_offer_state(self):

@@ -486,9 +486,7 @@ class UserIntentsChecker:
                     results.remove(result)
             if len(results) > 0:
                 return [
-                    ItemConstraint(
-                        Slots.TITLE.value, Operator.EQ, str(results)
-                    )
+                    ItemConstraint(Slots.TITLE.value, Operator.EQ, str(results))
                 ]
 
     def _remove_param(self, param, dact):
