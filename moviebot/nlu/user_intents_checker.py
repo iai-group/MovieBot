@@ -336,7 +336,7 @@ class UserIntentsChecker:
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         person_name_checks = False
-        for slot in self.ontology.get("slots_annotation", []):
+        for slot in self.ontology.slots_annotation:
             if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
                 if person_name_checks:
                     continue

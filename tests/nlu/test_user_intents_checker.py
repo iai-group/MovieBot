@@ -39,7 +39,7 @@ def uic1() -> UserIntentsChecker:
 def uic2() -> UserIntentsChecker:
     """Returns a user intent checker fixture with an ontology."""
     config = {
-        "ontology": MockOntology(None).load_ontolgy(),
+        "ontology": MockOntology(),
         "database": "",
         "slot_values_path": "",
         "tag_words_slots_path": "",

@@ -7,10 +7,11 @@ ontology = {
 
 
 class MockOntology:
-    def __init__(self, path):
-        pass
+    def __init__(self, path: str = None):
+        self.ontology = self.load_ontology()
+        self.slots_annotation = self.ontology["slots_annotation"]
 
-    def load_ontolgy(self):
+    def load_ontology(self):
         return ontology
 
     def test_method(self):
