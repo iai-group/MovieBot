@@ -295,10 +295,10 @@ class NLG:
             elif agent_dact.intent == AgentIntents.NO_RESULTS:
                 intent_response = random.choice(
                     [
-                        f"Sorry, I don't have any "
+                        "Sorry, I don't have any "
                         f'{"other " if dialogue_state.items_in_context else ""}'
                         f"{self._clarify_CIN(CIN, agent_dact)}.",
-                        f"Sorry, I couldn't find any "
+                        "Sorry, I couldn't find any "
                         f'{"other " if dialogue_state.items_in_context else ""}'
                         f"{self._clarify_CIN(CIN, agent_dact)}.",
                     ]
@@ -322,15 +322,14 @@ class NLG:
                     if param.slot == Slots.MORE_INFO.value:
                         intent_response = random.choice(
                             [
-                                f"What would you like to know "
-                                f"about "
+                                "What would you like to know about "
                                 f'"{param.value}"?'
                             ]
                         )
                     elif param.slot == "deny":
                         intent_response = random.choice(
                             [
-                                f"Would you want to know more about "
+                                "Would you want to know more about "
                                 f'"{param.value}"?'
                             ]
                         )
@@ -860,7 +859,8 @@ class NLG:
                         random.choice(
                             [
                                 f'Don\'t consider actor "{value.title()}".',
-                                f'Remove "{value.title()}" from the list of actors.',
+                                f'Remove "{value.title()}" from the list of '
+                                "actors.",
                             ]
                         )
                     ]
