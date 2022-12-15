@@ -1,24 +1,17 @@
 tag_words = {
-    "user_reveal": "",
-    "user_inquire": "",
-    "user_reveal_inquire": "",
+    'user_reveal': '',
+    'user_inquire': '',
+    'user_reveal_inquire': '',
 }
 
 slot_values = {
-    "actors": {
-        "Tom Hanks": "tom hank",
-        "Tim Allen": "tim allen",
-        "Don Rickles": "don rickles",
-    },
-    "directors": {
-        "John Lasseter": "john lasseter",
-        "Joe Johnston": "joe johnston",
-        "Howard Deutch": "howard deutch",
-    },
+    'actors': {},
+    'directors': {},
 }
 
 
 class MockDataLoader:
+
     def __init__(self, config, _lemmatize_value):
         pass
 
