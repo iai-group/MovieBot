@@ -3,12 +3,12 @@
 from unittest.mock import patch
 
 import pytest
-from tests.mocks.mock_data_loader import MockDataLoader
-from tests.mocks.mock_ontology import MockOntology
 
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
+from tests.mocks.mock_data_loader import MockDataLoader
+from tests.mocks.mock_ontology import MockOntology
 
 SLOT_VALUES = {
     "actors": {
@@ -29,7 +29,7 @@ SLOT_VALUES = {
 def uic() -> UserIntentsChecker:
     """Returns a user intent checker fixture with an ontology."""
     config = {
-        "ontology": MockOntology(None).load_ontolgy(),
+        "ontology": MockOntology(),
         "database": "",
         "slot_values_path": "",
         "tag_words_slots_path": "",
