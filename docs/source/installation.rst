@@ -8,7 +8,7 @@ To run the MovieBot in the console you only need to install the necessary Python
 Python Libraries
 ----------------
 
-- Execute the following commands to install necessary libraries for IAI MovieBot
+Execute the following commands to install necessary libraries for IAI MovieBot
 
 
 .. code-block:: shell
