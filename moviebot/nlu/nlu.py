@@ -39,7 +39,7 @@ class NLU:
         self.database = config["database"]
         self.intents_checker = UserIntentsChecker(config)
 
-    def generate_dact(
+    def generate_dact(  # noqa
         self,
         user_utterance: UserUtterance,
         options,

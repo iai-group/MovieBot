@@ -156,7 +156,7 @@ class NLG:
             Slots.YEAR.value: ["I couldn't find any timeline specification."],
         }
 
-    def generate_output(
+    def generate_output(  # noqa
         self, agent_dacts, dialogue_state: DialogueState = None, user_fname=None
     ) -> str:
         """Selects an appropriate response based on the dialogue acts.
@@ -459,7 +459,7 @@ class NLG:
         else:
             return f'year {"not " if negate else " "}' + value
 
-    def _clarify_CIN(self, CIN, agent_dact) -> str:
+    def _clarify_CIN(self, CIN, agent_dact) -> str:  # noqa
         """Clarifies the user CIN in the utterance.
 
         Args:
@@ -623,7 +623,7 @@ class NLG:
         options.update({"/restart": ["/restart"]})
         return options
 
-    def _user_options_remove_preference(self, dual_params):
+    def _user_options_remove_preference(self, dual_params):  # noqa
         """Generates options for user to select in case of two parameters have
         same value.
 
@@ -795,7 +795,7 @@ class NLG:
         )
         return options
 
-    def _user_options_remove_preference_CIN(self, CIN):
+    def _user_options_remove_preference_CIN(self, CIN):  # noqa
         """Generates options for user to select a parameter to remove.
 
         Args:

@@ -72,7 +72,7 @@ class DialogueStateTracker:
                 value = value.replace("=", "").strip()
             self.dialogue_state.frame_CIN[param.slot] = value
 
-    def update_state_user(self, user_dacts):
+    def update_state_user(self, user_dacts):  # noqa
         """Updates the current dialogue state and context based on user DActs.
 
         Args:

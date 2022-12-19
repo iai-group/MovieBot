@@ -62,7 +62,7 @@ class DataLoader:
             else:
                 slot_values[slot] = set(values)
 
-    def load_database(self):
+    def load_database(self):  # noqa
         """Loads the database to fill dialogue slots with a list of possible
         slot_values. This can be used further to understand what user intends
         to ask.
