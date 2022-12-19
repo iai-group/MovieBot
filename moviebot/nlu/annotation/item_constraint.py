@@ -1,8 +1,10 @@
 """The Dialogue Act Item defines the parameters for a Dialogue Act.
-It comprises ot the parameters mentioned in the conversation"""
+
+It comprises ot the parameters mentioned in the conversation
+"""
 
 
-from typing import Any, List, Optional, Text
+from typing import Any, Optional, Text
 
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.semantic_annotation import SemanticAnnotation
@@ -19,19 +21,18 @@ class ItemConstraint:
         value: Any,
         annotation: Optional[SemanticAnnotation] = None,
     ) -> None:
-        """Initializes a Dialogue Act Item (slot - operator - value)
+        """Initializes a Dialogue Act Item (slot - operator - value).
 
         Args:
-            slot (Text): a string, representing the slot
-            op (Operator): an Operator
-            value (Any): the value of the slot
-            annotation (Optional[SemanticAnnotation], optional): Semantic
-                annotation if the constraint is due to annotation. Defaults to
-                None.
+            slot: A string representing the slot.
+            op: An Operator.
+            value: The value of the slot.
+            annotation: Semantic annotation if the constraint is due to
+              annotation. Defaults to None.
 
         Raises:
-            ValueError: slot should be string
-            ValueError: op should be Operator class
+            ValueError: slot should be string.
+            ValueError: op should be Operator class.
         """
         if not isinstance(slot, str):
             raise ValueError("Unacceptable slot type: %s " % slot)
@@ -47,13 +48,12 @@ class ItemConstraint:
     def add_value(
         self, value: Any, annotation: Optional[SemanticAnnotation] = None
     ) -> None:
-        """Adds value
+        """Adds value.
 
         Args:
-            value (Any): value to add
-            annotation (Optional[SemanticAnnotation], optional): Semantic
-                annotation if adding value is due to annotation. Defaults to
-                None.
+            value: Value to add.
+            annotation: Semantic annotation if adding value is due to
+              annotation. Defaults to None.
         """
         self.value += " " + str(value)
         if annotation:
@@ -67,10 +67,10 @@ class ItemConstraint:
         )
 
     def __str__(self) -> Text:
-        """Prints the DAct Item to debug the agent
+        """Prints the DAct Item to debug the agent.
 
         Returns:
-            string having "<slot> <op> <value>"
+            String having "<slot> <op> <value>".
         """
         opr = str(self.op)
 

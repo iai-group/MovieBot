@@ -1,36 +1,39 @@
 """NLU (Natural Language Understander) is a main component of Dialogue Systems.
-NLU understands the user requirements and intents for the system to generate an
-appropriate response."""
+
+NLU understands the user requirements and intents for the system to
+generate an appropriate response.
+"""
 
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
-from moviebot.database.database import DataBase
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
-from moviebot.ontology.ontology import Ontology
 
 
 class NLU:
     """NLU is a basic natural language understander to generate DActs for the
-    Conversational Agent. Implementation of this NLU is designed to work for
-    Slot-Filling applications. The purpose of this class is to provide a quick
-    way of running Conversational Agents, sanity checks, and to aid debugging.
+    Conversational Agent.
+
+    Implementation of this NLU is designed to work for Slot-Filling
+    applications. The purpose of this class is to provide a quick way of
+    running Conversational Agents, sanity checks, and to aid debugging.
     """
 
     def __init__(self, config):
-        """Loads the ontology and database, and preprocess
-        the database so that we avoid some computations at runtime.
-        Also create patterns to understand natural language
+        """Loads the ontology and database, and preprocess the database so that
+        we avoid some computations at runtime. Also create patterns to
+        understand natural language.
 
         :type self.database: DataBase
         :type self.ontology: Ontology
 
         Args:
-            config: Paths to ontology and database and tag words for slots in NLU
-
+            config: Paths to ontology, database and tag words for slots in NLU.
         """
         self.ontology = config["ontology"]
         self.database = config["database"]
@@ -38,25 +41,24 @@ class NLU:
 
     def generate_dact(
         self,
-        user_utterance,
+        user_utterance: UserUtterance,
         options,
-        dialogue_state=None,
-        dialogue_context=None,
+        dialogue_state: DialogueState = None,
+        dialogue_context: DialogueContext = None,
     ):
         """Processes the utterance according to dialogue state and context and
         generate a user dialogue act for Agent to understand.
 
         Args:
-            user_utterance: UserUtterance class containing user input
-            options: a list of options provided to the user to choose from
-            dialogue_state: the current dialogue state, if available
-                (Default value = None)
-            dialogue_context: the current dialogue context, if available
-                (Default value = None)
+            user_utterance: UserUtterance class containing user input.
+            options: A list of options provided to the user to choose from.
+            dialogue_state: The current dialogue state, if available. Defaults
+              to None.
+            dialogue_context: The current dialogue context, if available.
+              Defaults to None.
 
         Returns:
-            a list of dialogue acts
-
+            A list of dialogue acts.
         """
         # this is the top priority. The agent must check if user selected
         # any option
@@ -172,7 +174,7 @@ class NLU:
                 isinstance(value, list) and value[0] == raw_utterance
             ) or value == raw_utterance:
                 if dact.intent == UserIntents.CONTINUE_RECOMMENDATION:
-                    dact.params = self.intents_checker.generate_params_continue_recommendation(
+                    dact.params = self.intents_checker.generate_params_continue_recommendation(  # noqa
                         item_in_focus
                     )
                 dacts.append(dact)

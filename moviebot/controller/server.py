@@ -5,6 +5,7 @@ from os import environ
 import telegram
 import yaml
 from flask import Flask, request
+
 from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 
@@ -29,7 +30,7 @@ bot = telegram.Bot(token=telegram_token)
 
 @app.route("/{}".format(telegram_token), methods=["POST"])
 def respond():
-    """Receives to Telegram POST request"""
+    """Receives to Telegram POST request."""
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     text = update.message.text.encode("utf-8").decode()
 
@@ -59,7 +60,6 @@ def run(config):
 
     Args:
         config: agent settings
-
     """
     controller_telegram.execute_agent(config)
     controller_messenger.execute_agent(config)
@@ -80,7 +80,7 @@ def verify_token():
 
 @app.route("/", methods=["GET", "POST"])
 def receive_message():
-    """Receives messenger POST requests"""
+    """Receives messenger POST requests."""
     if request.method == "GET":
         token_sent = request.args.get("hub.verify_token")
         return verify_fb_token(token_sent)
@@ -98,11 +98,11 @@ def verify_fb_token(token_sent):
 
 
 def action(output):
-    """Gets user id and payload from output and runs get_message in the controller.
+    """Gets user id and payload from output and runs get_message in the
+    controller.
 
     Args:
-        output: output from request
-
+        output: Output from request.
     """
     event = output["entry"][0]["messaging"][0]
     user_id = event["sender"]["id"]
@@ -116,12 +116,12 @@ def action(output):
 
 def get_message(output):
     """Gets payload from output.
+
     Args:
-        output: output from request
+        output: Output from request.
 
     Returns:
-        string with payload
-
+        String with payload.
     """
     for event in output["entry"]:
         for message in event["messaging"]:

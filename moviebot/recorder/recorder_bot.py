@@ -1,4 +1,6 @@
-"""Record all the details of each dialogue in the conversation in it's raw form.
+"""Record all the details of each dialogue in the conversation in it's raw
+form.
+
 If required, it also saves the dialogue acts.
 """
 
@@ -8,15 +10,17 @@ import os
 
 
 class RecorderBot:
-    """Record all the details of each dialogue in the conversation in it's raw form.
-    If required, it also saves the dialogue acts."""
+    """Record all the details of each dialogue in the conversation in it's raw
+    form.
 
-    def __init__(self, history_folder):
-        """Initializes the Recorder
+    If required, it also saves the dialogue acts.
+    """
+
+    def __init__(self, history_folder: str):
+        """Initializes the Recorder.
 
         Args:
-            history_folder: Path where the file must be saved
-
+            history_folder: Path where the file must be saved.
         """
         if os.path.isdir(history_folder):
             self.path = history_folder
@@ -28,12 +32,11 @@ class RecorderBot:
         self.previous_dialogue_record = {}
 
     def record_user_data(self, user_id, record_data):
-        """Records the current dialogue utterance for the user
+        """Records the current dialogue utterance for the user.
 
         Args:
-            user_id: Id of the use
+            user_id: Id of the user.
             record_data:
-
         """
         user_history_path = self.path + "user_" + user_id + ".json"
         if not os.path.isfile(user_history_path):
@@ -41,14 +44,13 @@ class RecorderBot:
         else:
             self.update_record(user_id, user_history_path, record_data)
 
-    def update_record(self, user_id, record_path, record_data):
-        """Update an already existing json file
+    def update_record(self, user_id, record_path: str, record_data):
+        """Updates an already existing json file.
 
         Args:
-            user_id: Id of the user
-            record_path: path to the json fil
+            user_id: Id of the user.
+            record_path: Path to the json file.
             record_data:
-
         """
         with open(record_path) as hist_file:
             data = json.load(hist_file)
@@ -56,24 +58,22 @@ class RecorderBot:
         with open(record_path, "w") as hist_file:
             json.dump(data, hist_file, indent=4)
 
-    def create_record(self, user_id, record_path, record_data):
-        """Saves all the dialogues in the conversation to a file
+    def create_record(self, user_id, record_path: str, record_data):
+        """Saves all the dialogues in the conversation to a file.
 
         Args:
-            user_id: Id of the user
-            record_path: path to the json fil
+            user_id: Id of the user.
+            record_path: Path to the json file.
             record_data:
-
         """
         with open(record_path, "w") as hist_file:
             json.dump([record_data], hist_file, indent=4)
 
     def load_user_data(self, user_id):
-        """Loads the previously saved conversation log
+        """Loads the previously saved conversation log.
 
         Args:
-            user_id: Id of the user
-
+            user_id: Id of the user.
         """
         user_history_path = self.path + "user_" + user_id + ".json"
         if os.path.isfile(user_history_path):
@@ -81,19 +81,19 @@ class RecorderBot:
                 user_context = json.load(hist_file)
                 return user_context
 
-    """ This part of the code is a backup in case we need to store all data in one place"""
+    """ This part of the code is a backup in case we need to store all data
+    in one place."""
 
     def initialize_bot_data(self, bot_id, user_id, context):
-        """Initialize the recording parameters for a specific user_id
+        """Initializes the recording parameters for a specific user_id.
 
         Args:
-            bot_id: bot ID
-            user_id: user ID
-            context: context of the conversation
+            bot_id: bot ID.
+            user_id: user ID.
+            context: Context of the conversation.
 
         Returns:
-            the dialogue record to be added to context
-
+            The dialogue record to be added to context.
         """
         if "previous_dialogue_record" in context.bot_data:
             self.previous_dialogue_record = context.bot_data[
@@ -107,13 +107,12 @@ class RecorderBot:
         return self.previous_dialogue_record
 
     def record_bot_data(self, bot_id, user_id, record_data):
-        """Records the current dialogue utterance
+        """Records the current dialogue utterance.
 
         Args:
-            bot_id: Id of the bot
-            user_id: Id of the use
+            bot_id: Id of the bot.
+            user_id: Id of the use.
             record_data:
-
         """
         previous_record = self.previous_dialogue_record[bot_id][user_id]
         if not previous_record:

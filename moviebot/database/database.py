@@ -1,6 +1,8 @@
-"""This file contains the Database class for IAI MovieBot. The classes mentioned handle the
-functinality of query processing for IAI MovieBot.
-Currently, the database class is implemented for SQL DB."""
+"""This file contains the Database class for IAI MovieBot.
+
+The classes mentioned handle the functionality of query processing for
+IAI MovieBot. Currently, the database class is implemented for SQL DB.
+"""
 
 
 import sqlite3
@@ -13,15 +15,17 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DataBase:
-    """DataBase class for SQL databases. It provides the functionality
-    to search the database according to user preferences."""
+    """DataBase class for SQL databases.
+
+    It provides the functionality to search the database according to
+    user preferences.
+    """
 
     def __init__(self, path):
-        """Initializes the internal structures of the DataBase class
+        """Initializes the internal structures of the DataBase class.
 
         Args:
-            path: path to the database file
-
+            path: Path to the database file.
         """
         self.db_file_path = path
         self.sql_connection = sqlite3.connect(
@@ -32,16 +36,17 @@ class DataBase:
         self.current_CIN = None
         self.backup_db_results = None
 
-    def database_lookup(self, dialogue_state, ontology):
+    def database_lookup(
+        self, dialogue_state: DialogueState, ontology: Ontology
+    ):
         """Performs an SQL query to answer a user requirement.
 
         Args:
-            dialogue_state: the current dialogue state
-            ontology: ontology to check specific parameters
+            dialogue_state: The current dialogue state.
+            ontology: Ontology to check specific parameters.
 
         Returns:
-            the results of the SQL query
-
+            The results of the SQL query.
         """
         if (
             dialogue_state.isBot
@@ -107,8 +112,9 @@ class DataBase:
         # print(sql_command)
         query_result = sql_cursor.execute(sql_command).fetchall()
 
-        # query_result, remove_title_from_CIN = self._remove_title_from_CIN(query_result,
-        # condition, args)
+        # query_result, remove_title_from_CIN = self._remove_title_from_CIN(
+        #     query_result, condition, args
+        # )
 
         slots = [x[0] for x in sql_cursor.description]
         result = []
@@ -189,10 +195,10 @@ class DataBase:
         return value
 
     def _get_table_name(self):
-        """Gets the SQL database's table name in the database
+        """Gets the SQL database's table name in the database.
 
         Returns:
-            the table name
+            The table name.
         """
         cursor = self.sql_connection.cursor()
         result = cursor.execute(

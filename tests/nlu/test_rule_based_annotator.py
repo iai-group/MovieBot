@@ -22,6 +22,7 @@ SLOT_VALUES = {
     },
 }
 
+
 @pytest.fixture()
 @patch("moviebot.ontology.ontology.Ontology", new=MockOntology)
 @patch("moviebot.nlu.user_intents_checker.DataLoader", new=MockDataLoader)
@@ -92,8 +93,16 @@ def test__person_name_annotator_empty(utterance: UserUtterance) -> None:
         ("im interested in something about kung-fu", "kung fu", 2, "kung fu"),
     ],
 )
-def test_find_in_raw_utterance(uic: UserIntentsChecker, raw_utterance: str, gram: str, ngram_size: int, expected: str):
-    annotator = RBAnnotator(uic._process_utterance, uic._lemmatize_value, SLOT_VALUES)
+def test_find_in_raw_utterance(
+    uic: UserIntentsChecker,
+    raw_utterance: str,
+    gram: str,
+    ngram_size: int,
+    expected: str,
+):
+    annotator = RBAnnotator(
+        uic._process_utterance, uic._lemmatize_value, SLOT_VALUES
+    )
     result = annotator.find_in_raw_utterance(raw_utterance, gram, ngram_size)
 
     assert result == expected

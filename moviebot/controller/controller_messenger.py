@@ -17,7 +17,8 @@ from moviebot.core.utterance.utterance import UserUtterance
 
 class ControllerMessenger(Controller):
     def __init__(self):
-        """Initializes structs for Controller and sends the get started button to the facebook API."""
+        """Initializes structs for Controller and sends the get started button
+        to the facebook API."""
         self.token = ""
         self.agent = {}
         self.record_data = {}
@@ -56,16 +57,16 @@ class ControllerMessenger(Controller):
         self.start = {"get_started": {"payload": "/start"}}
 
     def get_started(self):
-        """Displays 'Get Started' button at messenger weclome screen"""
+        """Displays 'Get Started' button at messenger welcome screen."""
         return requests.post(
-            "https://graph.facebook.com/v10.0/me/messenger_profile?access_token="
+            "https://graph.facebook.com/v10.0/me/messenger_profile?access_token="  # noqa
             + self.token,
             json=self.start,
         ).json()
 
     def store_user(self, user_id):
-        """True if user accepts licence agreement.
-        Data for this user is stored in conversation history.
+        """True if user accepts licence agreement. Data for this user is stored
+        in conversation history.
 
         Args:
             user_id:
@@ -76,20 +77,21 @@ class ControllerMessenger(Controller):
 
     def start_conversation(self, user_id):
         """Start conversation with agent and send instructions to user.
+
         Args:
             user_id:
         """
         self.start_agent(user_id)
         self.instructions(user_id)
 
-    def load_bot_token(self, bot_token_path):
-        """Loads the Token for the Telegram bot
-
-        :return: the token of the Telegram Bot
+    def load_bot_token(self, bot_token_path: str):
+        """Loads the Token for the Telegram bot.
 
         Args:
-            bot_token_path:
+            bot_token_path: Path to the configuration file with Messenger token.
 
+        Returns:
+            The token of the Messenger Bot.
         """
         if isinstance(bot_token_path, str):
             if os.path.isfile(bot_token_path):
@@ -109,6 +111,7 @@ class ControllerMessenger(Controller):
 
     def movie_info(self, movie_id, user_id):
         """Retrieve relevant movie info from database for selected user.
+
         Args:
             movie_id:
             user_id:
@@ -139,8 +142,7 @@ class ControllerMessenger(Controller):
         the basic components of IAI MovieBot.
 
         Args:
-            configuration: the settings for the agent
-
+            configuration: the settings for the agent.
         """
         self.configuration = configuration
         self.configuration["new_user"] = {}
@@ -155,7 +157,6 @@ class ControllerMessenger(Controller):
 
         Args:
             user_id:
-
         """
         self.start_agent(user_id, True)
 
@@ -165,7 +166,6 @@ class ControllerMessenger(Controller):
         Args:
             user_id:
             restart: True or False
-
         """
         self.agent[user_id] = Agent(self.configuration)
         self.agent[user_id].initialize(user_id)
@@ -188,7 +188,6 @@ class ControllerMessenger(Controller):
         Args:
             user_id:
             buttons: list of buttons
-
         """
         title = (
             self.info[user_id]["title"]
@@ -211,7 +210,6 @@ class ControllerMessenger(Controller):
 
         Args:
             user_id:
-
         """
         options = []
         for option in self.user_options[user_id].values():
@@ -230,7 +228,6 @@ class ControllerMessenger(Controller):
 
         Args:
             input: agent options
-
         """
         for key, value in self.short_answers.items():
             if key == input:
@@ -242,7 +239,6 @@ class ControllerMessenger(Controller):
 
         Args:
             response: agent response
-
         """
         if "/tt" in response:
             start = response.find("/tt")
@@ -255,7 +251,6 @@ class ControllerMessenger(Controller):
         Args:
             user_id:
             payload: payload from user
-
         """
         user_utterance = UserUtterance({"text": payload})
         (
@@ -276,7 +271,6 @@ class ControllerMessenger(Controller):
         Args:
             user_id:
             payload: user payload
-
         """
         if self.agent[user_id].bot_recorder:
             self.record_data[user_id] = {
@@ -289,11 +283,11 @@ class ControllerMessenger(Controller):
             )
 
     def load_user_data(self, user_id):
-        """Gets movie choices (accept/reject) for a user from conversation history.
+        """Gets movie choices (accept/reject) for a user from conversation
+        history.
 
         Args:
             user_id:
-
         """
         user_history_path = self.path + "user_" + user_id + ".json"
         self.load_data[user_id] = {}
@@ -311,7 +305,6 @@ class ControllerMessenger(Controller):
 
         Args:
             user_id:
-
         """
         user_history_path = self.path + "user_" + user_id + ".json"
         if os.path.isfile(user_history_path):
@@ -327,7 +320,6 @@ class ControllerMessenger(Controller):
         Args:
             user_id:
             payload: user_payload
-
         """
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
@@ -348,7 +340,6 @@ class ControllerMessenger(Controller):
 
         Args:
             user_id:
-
         """
         if user_id not in self.agent:
             self.user_options[user_id] = {}
@@ -364,7 +355,6 @@ class ControllerMessenger(Controller):
         Args:
             user_id:
             payload: user payload
-
         """
         for item in self.methods:
             if payload.lower() == item["payload"]:
@@ -377,7 +367,6 @@ class ControllerMessenger(Controller):
 
         Args:
             user_id:
-
         """
         self.agent_response[
             user_id
@@ -386,7 +375,8 @@ class ControllerMessenger(Controller):
         del self.agent[user_id]
 
     def instructions(self, user_id):
-        """Instructions when the conversation is started and when '/help' is issued."""
+        """Instructions when the conversation is started and when '/help' is
+        issued."""
 
         response = (
             "To start the conversation say Hi/Hello, or simply "
@@ -400,9 +390,9 @@ class ControllerMessenger(Controller):
 
     def store_data(self, user_id):
         """Instructions for deleting stored conversation history.
+
         Args:
             user_id:
-
         """
         policy = (
             'Type "/delete" at any time to stop storing and delete conversation'
@@ -454,7 +444,7 @@ class ControllerMessenger(Controller):
             ]
         }
         return requests.post(
-            "https://graph.facebook.com/v10.0/me/messenger_profile?access_token="
+            "https://graph.facebook.com/v10.0/me/messenger_profile?access_token="  # noqa
             + self.token,
             json=greeting,
         ).json()

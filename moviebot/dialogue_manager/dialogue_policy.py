@@ -1,5 +1,5 @@
-"""A rule-based policy developed as an initial step to generate action by the agent based on the
-previous conversation and current dialogue."""
+"""A rule-based policy developed as an initial step to generate action by the
+agent based on the previous conversation and current dialogue."""
 
 
 import random
@@ -8,7 +8,6 @@ from copy import deepcopy
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
@@ -19,32 +18,30 @@ class DialoguePolicy:
     """A rule-based policy developed as an initial step to generate action by
     the agent based on the previous conversation and current dialogue."""
 
-    def __init__(self, ontology, isBot, new_user):
-        """Loads all necessary parameters for the policy to work
-
-        :type ontology: Ontology
+    def __init__(self, ontology: Ontology, isBot: bool, new_user):
+        """Loads all necessary parameters for the policy to work.
 
         Args:
-            ontology: rules for the slots in the database
-            isBot: if the conversation is via bot or not
-
+            ontology: Rules for the slots in the database.
+            isBot: If the conversation is via bot or not.
         """
         self.ontology = ontology
         self.isBot = isBot
         self.new_user = new_user
 
-    def next_action(self, dialogue_state, dialogue_context=None, restart=False):
-        """Decides the next action to be taken by the agent based on the current
-        state and context.
+    def next_action(
+        self, dialogue_state, dialogue_context=None, restart: bool = False
+    ):
+        """Decides the next action to be taken by the agent based on the
+        current state and context.
 
         Args:
-            dialogue_state: current dialogue state
-            dialogue_context: context of the dialogue (Default value = None)
-            restart:  (Default value = False)
+            dialogue_state: Current dialogue state.
+            dialogue_context: Context of the dialogue. Defaults to None.
+            restart: Whether or not to restart the dialogue. Defaults to False.
 
         Returns:
-            a list of Dialogue Acts
-
+            A list of Dialogue Acts.
         """
         agent_dacts = []
         slots = deepcopy(dialogue_state.agent_requestable)
@@ -208,13 +205,19 @@ class DialoguePolicy:
                             )
                         )
                     agent_dacts.append(deepcopy(agent_dact))
-                # elif user_dact.intent == UserIntents.REVEAL and Slots.TITLE.value in [param.slot for
-                #                                                                      param in
-                #                                                                      user_dact.params]:
+                # elif (
+                #     user_dact.intent == UserIntents.REVEAL
+                #     and Slots.TITLE.value
+                #     in [param.slot for param in user_dact.params]
+                # ):
                 #     agent_dact.intent = AgentIntents.INFORM
-                #     agent_dact.params.append(ItemConstraint(Slots.MORE_INFO.value, Operator.EQ,
-                #                                             dialogue_state.item_in_focus[
-                #                                                 Slots.TITLE.value]))
+                #     agent_dact.params.append(
+                #         ItemConstraint(
+                #             Slots.MORE_INFO.value,
+                #             Operator.EQ,
+                #             dialogue_state.item_in_focus[Slots.TITLE.value],
+                #         )
+                #     )
                 #     agent_dacts.append(deepcopy(agent_dact))
                 elif user_dact.intent == UserIntents.ACCEPT:
                     agent_dact.intent = AgentIntents.CONTINUE_RECOMMENDATION

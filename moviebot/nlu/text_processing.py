@@ -1,6 +1,7 @@
 """This module is used for preprocessing user inputs before further analysis.
-The user utterance is broken into tokens which contain additional information
-about the it.
+
+The user utterance is broken into tokens which contain additional
+information about the it.
 """
 
 import string
@@ -11,8 +12,10 @@ from nltk.stem import WordNetLemmatizer
 
 
 class Span:
-    """Subpart of an utterance. Contains mapping of start and end positions in
-    the original utterance.
+    """Subpart of an utterance.
+
+    Contains mapping of start and end positions in the original
+    utterance.
     """
 
     def __init__(
@@ -33,10 +36,10 @@ class Span:
         """Checks whether two spans overlap in the original utterance.
 
         Args:
-            other (Span): Span to compare against
+            other: Span to compare against.
 
         Returns:
-            bool: True if there is overlap.
+            True if there is overlap.
         """
         return (self.start <= other.start and self.end > other.start) or (
             other.start <= self.start and other.end > self.start
@@ -67,9 +70,10 @@ class Span:
 
 
 class Token(Span):
-    """Token is a smaller unit than Span. While Span can stretch over several
-    words, Token contains only single words. Token stores additional
-    information about the word.
+    """Token is a smaller unit than Span.
+
+    While Span can stretch over several words, Token contains only
+    single words. Token stores additional information about the word.
     """
 
     def __init__(
@@ -101,10 +105,10 @@ class Tokenizer:
         mapped back to the original text.
 
         Args:
-            text (Text): Input text, user utterance.
+            text: Input text, user utterance.
 
         Returns:
-            List[Token]: List of Tokens
+            List of tokens.
         """
         processed_text = self.remove_punctuation(text)
         word_tokens = processed_text.split()  # word_tokenize(processed_text)
@@ -112,14 +116,13 @@ class Tokenizer:
         return self.tokenize(word_tokens, text)
 
     def remove_punctuation(self, text: Text) -> Text:
-        """Defines patterns of punctuation marks to remove in the
-        utterance.
+        """Defines patterns of punctuation marks to remove in the utterance.
 
         Args:
-            text (str): Sentence.
+            text: Sentence.
 
         Returns:
-            str: Sentence without punctuation.
+            Sentence without punctuation.
         """
         return "".join(
             ch if ch not in self._punctuation else " " for ch in text
@@ -129,10 +132,10 @@ class Tokenizer:
         """Returns string lemma.
 
         Args:
-            text (Text): Input text.
+            text: Input text.
 
         Returns:
-            Text: Lemmatized string.
+            Lemmatized string.
         """
         text = text.replace("'", "")
         return self._lemmatizer.lemmatize(text.lower())
@@ -141,10 +144,10 @@ class Tokenizer:
         """Returns a tokenized copy of text.
 
         Args:
-            text (str): Sentence to tokenize.
+            text: Sentence to tokenize.
 
         Returns:
-            List[str]: List of tokens.
+            List of tokens.
         """
         end = 0
         tokens = []

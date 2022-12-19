@@ -46,13 +46,13 @@ class ControllerTelegram(Controller):
         self.token = ""
 
     def load_bot_token(self, bot_token_path):
-        """Loads the Token for the Telegram bot
-
-        :return: the token of the Telegram Bot
+        """Loads the Token for the Telegram bot.
 
         Args:
-            bot_token_path:
+            bot_token_path: Path to the file with Telegram token.
 
+        Returns:
+            The token of the Telegram Bot.
         """
         if isinstance(bot_token_path, str):
             if os.path.isfile(bot_token_path):
@@ -72,13 +72,12 @@ class ControllerTelegram(Controller):
 
     def start(self, update, context):
         """Starts the conversation. This indicates initializing the components
-        and start the conversation from scratch and identifying if the users are
-        new or have used this system before.
+        and start the conversation from scratch and identifying if the users
+        are new or have used this system before.
 
         Args:
             update:
             context:
-
         """
         # create a new agent
         user_id = str(update.effective_user["id"])
@@ -124,12 +123,11 @@ class ControllerTelegram(Controller):
         return CONTINUE
 
     def help(self, update, context):
-        """Sends the users the instructions if they ask for help
+        """Sends the users the instructions if they ask for help.
 
         Args:
             update:
             context:
-
         """
         update.message.reply_text(
             self._instruction(help=True), parse_mode=ParseMode.MARKDOWN
@@ -144,7 +142,6 @@ class ControllerTelegram(Controller):
         Args:
             update:
             context:
-
         """
         # create a new agent
         user_id = str(update.effective_user["id"])
@@ -193,7 +190,6 @@ class ControllerTelegram(Controller):
         Args:
             update:
             context:
-
         """
         user_id = str(update.effective_user["id"])
         if user_id not in self.configuration["new_user"] or self.configuration[
@@ -206,12 +202,8 @@ class ControllerTelegram(Controller):
             self.agent[user_id] = Agent(self.configuration)
             self.user_options[user_id] = {}
             self.agent[user_id].initialize(user_id)
-            self.agent[
-                user_id
-            ].dialogue_manager.dialogue_state_tracker.dialogue_state.initialize()
-            self.agent[
-                user_id
-            ].dialogue_manager.dialogue_state_tracker.dialogue_context.initialize()
+            self.agent[user_id].dialogue_manager.get_state().initialize()
+            self.agent[user_id].dialogue_manager.get_context().initialize()
             print(
                 f"Conversation is starting for user id = {user_id} and user"
                 f" name = '{update.effective_user['first_name']}'"
@@ -228,7 +220,9 @@ class ControllerTelegram(Controller):
             user_fname=update.effective_user["first_name"],
         )
         if self.user_options[user_id]:
-            # d = {str(key):val for key,val in self.user_options[user_id].items()}
+            # d = {
+            #   str(key):val for key,val in self.user_options[user_id].items()
+            # }
             # print(user_id + str(d))
             reply_keyboard = self._recheck_user_options(
                 deepcopy(list(self.user_options[user_id].values()))
@@ -284,7 +278,6 @@ class ControllerTelegram(Controller):
         Args:
             update:
             context:
-
         """
         user_id = str(update.effective_user["id"])
         self.response[
@@ -322,12 +315,11 @@ class ControllerTelegram(Controller):
         return ConversationHandler.END
 
     def error(self, update, context):
-        """Log Errors caused by Updates.
+        """Log Errors caused by updates.
 
         Args:
             update:
             context:
-
         """
         logger.warning(
             f"Error {context.error} is caused by update {str(update)}."
@@ -338,8 +330,7 @@ class ControllerTelegram(Controller):
         the basic components of IAI MovieBot.
 
         Args:
-            configuration: the settings for the agent
-
+            configuration: The settings for the agent.
         """
         self.configuration = configuration
         self.configuration["new_user"] = {}
@@ -349,8 +340,8 @@ class ControllerTelegram(Controller):
         if polling:
             updater = Updater(self.token, use_context=True)
             dp = updater.dispatcher
-            # Add conversation handler with states START, CONTINUE_RECOMMENDATION
-            # and END
+            # Add conversation handler with states START,
+            # CONTINUE_RECOMMENDATION and END
             conv_handler = ConversationHandler(
                 entry_points=[
                     CommandHandler("start", self.start),
@@ -373,9 +364,10 @@ class ControllerTelegram(Controller):
             dp.add_error_handler(self.error)
             # Start the Bot
             updater.start_polling()
-            # Run the controller until you press Ctrl-C or the process receives SIGINT,
-            # SIGTERM or SIGABRT. This should be used most of the time, since
-            # start_polling() is non-blocking and will stop the controller gracefully.
+            # Run the controller until you press Ctrl-C or the process receives
+            # SIGINT, SIGTERM or SIGABRT. This should be used most of the time,
+            # since start_polling() is non-blocking and will stop the
+            # controller gracefully.
             updater.idle()
         print(
             "The components for the conversation are initialized successfully."
@@ -387,11 +379,10 @@ class ControllerTelegram(Controller):
         system before.
 
         Args:
-            user_id: ID of the user
+            user_id: ID of the user.
 
         Returns:
-            Flag indication if users are new
-
+            Flag indication if users are new.
         """
         file_path = "conversation_history/user_list.json"
         if not os.path.isfile(file_path):
@@ -415,7 +406,6 @@ class ControllerTelegram(Controller):
 
         Args:
             options:
-
         """
         final_options = []
         row = []
@@ -448,12 +438,11 @@ class ControllerTelegram(Controller):
         final_options.append(deepcopy(list_row))
         return final_options
 
-    def _instruction(self, help=False):
-        """Instructions for new user
+    def _instruction(self, help: bool = False):
+        """Instructions for new user.
 
         Args:
-            help:  (Default value = False)
-
+            help: Whether to provide instructions or not.Defaults to False.
         """
         response = ""
         if not help:

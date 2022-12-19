@@ -1,6 +1,5 @@
 """This file contains a class which can be used to annotate slot values in the
-user utterance based on rules and keyword matching.
-"""
+user utterance based on rules and keyword matching."""
 
 import re
 import string
@@ -21,8 +20,9 @@ from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):
-    """This is a rule based annotator. It uses regex and keyword matching for
-    annotation.
+    """This is a rule based annotator.
+
+    It uses regex and keyword matching for annotation.
     """
 
     def __init__(self, process_value, lemmatize_value, slot_values):
@@ -157,13 +157,12 @@ class RBAnnotator(SlotAnnotator):
             return [param]
 
     def _title_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie title.
-        Sometimes the user can just enter a part of the name.
+        """This annotator is used to check the movie title. Sometimes the user
+        can just enter a part of the name.
 
         Args:
             slot:
             utterance:
-
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -232,13 +231,12 @@ class RBAnnotator(SlotAnnotator):
                     return [param]
 
     def _keywords_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie keywords.
-        If the ngram has only keywords, it will be ignored.
+        """This annotator is used to check the movie keywords. If the ngram has
+        only keywords, it will be ignored.
 
         Args:
             slot:
             utterance:
-
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -292,7 +290,6 @@ class RBAnnotator(SlotAnnotator):
         Args:
             utterance:
             slots:  (Default value = None)
-
         """
         tokens = user_utterance.get_tokens()
         if not slots:
@@ -392,15 +389,16 @@ class RBAnnotator(SlotAnnotator):
                     ]
 
             if token.text.isdigit() and len(token.text) == 4:
-                return [ItemConstraint(slot, Operator.EQ, token.text, annotation)]
+                return [
+                    ItemConstraint(slot, Operator.EQ, token.text, annotation)
+                ]
 
         return potential_item_constraint[:1]
 
     def find_in_raw_utterance(
         self, raw_utterance: str, gram: str, ngram_size: int
     ) -> str:
-        """
-        Finds the ngram in the raw utterance.
+        """Finds the ngram in the raw utterance.
 
         If the ngram is found in the utterance it is returned with removed
         punctuation.

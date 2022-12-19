@@ -1,4 +1,5 @@
-"""This file contains a Messenger class which sends post requests to the facebook API."""
+"""This file contains a Messenger class which sends post requests to the
+facebook API."""
 
 import requests
 
@@ -70,7 +71,6 @@ class Messenger:
 
         Returns:
             list of buttons
-
         """
         buttons = []
         for option in options:
@@ -161,7 +161,6 @@ class Messenger:
 
         Returns:
             post request with template json and template uri
-
         """
         template = {
             "recipient": {"id": self.user_id},
@@ -198,7 +197,6 @@ class Messenger:
 
         Returns:
             post request with button template json and button template uri
-
         """
         template = {
             "recipient": {"id": self.user_id},
