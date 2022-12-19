@@ -125,18 +125,11 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if self.config.get("TELEGRAM", False):
+        if self.config.get("TELEGRAM", False) or self.config.get(
+            "MESSENGER", True
+        ):
             self.isBot = True
             # self.new_user = self.config['new_user'][user_id]
-
-        if self.config.get("MESSENGER", True):
-            self.isBot = True
-
-        self.dialogue_manager = DialogueManager(
-            data_config, self.isBot, self.new_user
-        )
-
-        if self.isBot:
             if (
                 self.config["BOT_HISTORY"]
                 and self.config["BOT_HISTORY"]["save"]
@@ -149,6 +142,10 @@ class Agent:
                     raise ValueError(
                         "Path to save conversation is not provided."
                     )
+
+        self.dialogue_manager = DialogueManager(
+            data_config, self.isBot, self.new_user
+        )
 
     def start_dialogue(self, user_fname=None, restart: bool = False):
         """Starts the conversation.

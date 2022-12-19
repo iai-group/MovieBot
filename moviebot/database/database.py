@@ -7,6 +7,7 @@ IAI MovieBot. Currently, the database class is implemented for SQL DB.
 
 import sqlite3
 from copy import deepcopy
+from typing import Union
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.slots import Slots
@@ -28,13 +29,53 @@ class DataBase:
             path: Path to the database file.
         """
         self.db_file_path = path
-        self.sql_connection = sqlite3.connect(
-            self.db_file_path
-        )  # SQL connection required to
-        # access the database
-        self.db_table_name = self._get_table_name()  # name of the table
+        # self.sql_connection = sqlite3.connect(
+        #     self.db_file_path
+        # )  # SQL connection required to
+        # # access the database
+        # self.db_table_name = self._get_table_name()  # name of the table
+        self._initialize_sql()
         self.current_CIN = None
         self.backup_db_results = None
+
+    def _initialize_sql(self):
+        """Initializes the SQL connection and the name of the table to query."""
+        self.sql_connection = sqlite3.connect(self.db_file_path)
+        self.db_table_name = self._get_table_name()
+
+    def get_sql_condition(
+        self, dialogue_state: DialogueState, ontology: Ontology
+    ) -> Union[str, None]:
+        """Returns the condition for a SQL query based on dialogue state.
+
+        Args:
+            dialogue_state: Dialogue state.
+            ontology: Ontology to check specific parameters.
+
+        Returns:
+            SQL condition if possible.
+        """
+        args = []
+        if dialogue_state.agent_should_offer_similar:
+            similar_movies = list(dialogue_state.similar_movies.values())[0]
+            if len(similar_movies) > 0:
+                for title in similar_movies:
+                    args.append(f'{Slots.TITLE.value} = "{title}"')
+                return " OR ".join(args) if len(args) > 0 else None
+
+        for slot, values in dialogue_state.frame_CIN.items():
+            if slot in ontology.multiple_values_CIN:
+                for value in values:
+                    if value and value not in Values.__dict__.values():
+                        args.append(
+                            slot + " " + self._get_value_for_query(slot, value)
+                        )
+            elif values and values not in Values.__dict__.values():
+                args.append(
+                    slot + " " + self._get_value_for_query(slot, values)
+                )
+
+        return " AND ".join(args) if len(args) > 0 else None
 
     def database_lookup(
         self, dialogue_state: DialogueState, ontology: Ontology
@@ -52,42 +93,11 @@ class DataBase:
             dialogue_state.isBot
         ):  # restart the SQL connection if the app is running as a
             # client-server app
-            self.sql_connection = sqlite3.connect(
-                self.db_file_path
-            )  # SQL connection required
-            # to access the database
-            self.db_table_name = self._get_table_name()  # name of the table
+            self._initialize_sql()
 
         sql_cursor = self.sql_connection.cursor()
         sql_command = f"SELECT * FROM {self.db_table_name}"
-        condition = ""
-
-        if dialogue_state.agent_should_offer_similar:
-            args = []
-            similar_movies = list(dialogue_state.similar_movies.values())[0]
-            if len(similar_movies) > 0:
-                for title in similar_movies:
-                    args.append(f'{Slots.TITLE.value} = "{title}"')
-                condition = " OR ".join(args) if len(args) > 0 else None
-            if len(args) == 0:
-                return []  # return no result if nothing similar found
-        else:
-            args = []
-            for slot, values in dialogue_state.frame_CIN.items():
-                if slot in ontology.multiple_values_CIN:
-                    for value in values:
-                        if value and value not in Values.__dict__.values():
-                            args.append(
-                                slot
-                                + " "
-                                + self._get_value_for_query(slot, value)
-                            )
-                elif values and values not in Values.__dict__.values():
-                    args.append(
-                        slot + " " + self._get_value_for_query(slot, values)
-                    )
-
-            condition = " AND ".join(args) if len(args) > 0 else None
+        condition = self.get_sql_condition(dialogue_state, ontology)
 
         if (
             self.current_CIN
@@ -109,7 +119,6 @@ class DataBase:
                 f" {Slots.RATING.value} DESC;"
             )
 
-        # print(sql_command)
         query_result = sql_cursor.execute(sql_command).fetchall()
 
         # query_result, remove_title_from_CIN = self._remove_title_from_CIN(
