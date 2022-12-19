@@ -8,3 +8,4 @@ python-telegram-bot
 wikipedia
 nltk
 flask
+questionary

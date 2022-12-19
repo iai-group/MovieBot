@@ -9,7 +9,7 @@ import wikipedia
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
@@ -336,7 +336,7 @@ class UserIntentsChecker:
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         person_name_checks = False
-        for slot in self.ontology.get("slots_annotation", []):
+        for slot in self.ontology.slots_annotation:
             if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
                 if person_name_checks:
                     continue

@@ -2,8 +2,8 @@
 """
 
 
-from moviebot.core.shared.intents.agent_intents import AgentIntents
-from moviebot.core.shared.intents.user_intents import UserIntents
+from moviebot.core.intents.agent_intents import AgentIntents
+from moviebot.core.intents.user_intents import UserIntents
 
 
 class DialogueAct:
@@ -36,11 +36,7 @@ class DialogueAct:
 
         """
         if self.intent:
-            return (
-                str(self.intent)
-                + "("
-                + ", ".join([str(param) for param in self.params])
-                + ")"
-            )
+            params = ", ".join([str(param) for param in self.params])
+            return f"{self.intent}({params})"
         else:
             return "None (DialogueAct)"

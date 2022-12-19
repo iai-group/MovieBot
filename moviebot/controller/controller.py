@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 from moviebot.agent.agent import Agent
-from moviebot.core.shared.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import UserUtterance
 
 RESTART = "/restart"
 
