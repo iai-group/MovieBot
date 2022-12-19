@@ -2,6 +2,8 @@ Installation
 ============
 
 The IAI MovieBot can run in the console and on Telegram.
+To run the MovieBot in the console you only need to install the necessary Python libraries and nltk resources.
+:ref:`Additional installation steps <_telegram_installation>` are needed to run MovieBot on Telegram: install Telegram, set up a bot.
 
 Python Libraries
 ----------------
@@ -16,6 +18,9 @@ Python Libraries
 nltk Resources
 --------------
 
+After installing the necessary libraries, you need to download nltk resources.
+To do so run the following code in a Python console.
+
 .. code-block:: python
 
     import nltk
@@ -23,6 +28,8 @@ nltk Resources
     nltk.download('wordnet')
     nltk.download('stopwords')
     nltk.download('omw-1.4')
+
+.. _telegram_installation::
 
 Extra steps for Telegram 
 --------------

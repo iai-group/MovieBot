@@ -4,6 +4,10 @@ Usage
 Running IAI MovieBot
 --------------------
 
+
+* A YAML configuration file is necessary to start the MovieBot, see example `config/moviebot_config.yaml`. 
+* Execute the command below to run the MovieBot.
+
 .. code-block:: shell
 
    $ python -m moviebot.run -c <path_to_config.yaml>
@@ -11,8 +15,8 @@ Running IAI MovieBot
 
 Note: To create Slot-Values, execute the code once by setting `BOT: False` in the configuration file.
 
-Quickstart running IAI MovieBot in the console
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Quickstart IAI MovieBot in the console
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To run MovieBot with default configuration execute the command below.
 
@@ -20,11 +24,11 @@ To run MovieBot with default configuration execute the command below.
 
    $ python -m moviebot.run -c config/moviebot_config.yaml
 
-Quickstart running IAI MovieBot with Telegram
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Quickstart IAI MovieBot with Telegram
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To run MovieBot with Telegram you need to create a configuration file as below.
-Then, you can run the command to start the MovieBot with the new configuration.
+Then, you can run the command to start the MovieBot with this file.
 
 .. code-block:: yaml
 
