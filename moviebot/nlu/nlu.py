@@ -39,7 +39,7 @@ class NLU:
         self.database = config["database"]
         self.intents_checker = UserIntentsChecker(config)
 
-    def generate_dact(  # noqa
+    def generate_dact(  # noqa: C901
         self,
         user_utterance: UserUtterance,
         options,
@@ -174,7 +174,7 @@ class NLU:
                 isinstance(value, list) and value[0] == raw_utterance
             ) or value == raw_utterance:
                 if dact.intent == UserIntents.CONTINUE_RECOMMENDATION:
-                    dact.params = self.intents_checker.generate_params_continue_recommendation(  # noqa
+                    dact.params = self.intents_checker.generate_params_continue_recommendation(  # noqa: E501
                         item_in_focus
                     )
                 dacts.append(dact)

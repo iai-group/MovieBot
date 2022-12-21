@@ -29,7 +29,7 @@ class DialoguePolicy:
         self.isBot = isBot
         self.new_user = new_user
 
-    def next_action(  # noqa
+    def next_action(  # noqa: C901
         self, dialogue_state, dialogue_context=None, restart: bool = False
     ):
         """Decides the next action to be taken by the agent based on the

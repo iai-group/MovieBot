@@ -156,7 +156,7 @@ class NLG:
             Slots.YEAR.value: ["I couldn't find any timeline specification."],
         }
 
-    def generate_output(  # noqa
+    def generate_output(  # noqa: C901
         self, agent_dacts, dialogue_state: DialogueState = None, user_fname=None
     ) -> str:
         """Selects an appropriate response based on the dialogue acts.
@@ -190,7 +190,7 @@ class NLG:
                                 utterance.append(
                                     not_found_response.replace(
                                         "__replace__",
-                                        dialogue_state.user_utterance.get_text(),  # noqa
+                                        dialogue_state.user_utterance.get_text(),  # noqa: E501
                                     )
                                 )
                             else:
@@ -336,12 +336,12 @@ class NLG:
                     [
                         (
                             "Sorry, I don't have any "
-                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa
+                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa: E501
                             f"{self._clarify_CIN(CIN, agent_dact)}."
                         ),
                         (
                             "Sorry, I couldn't find any "
-                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa
+                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa: E501
                             f"{self._clarify_CIN(CIN, agent_dact)}."
                         ),
                     ]
@@ -459,7 +459,7 @@ class NLG:
         else:
             return f'year {"not " if negate else " "}' + value
 
-    def _clarify_CIN(self, CIN, agent_dact) -> str:  # noqa
+    def _clarify_CIN(self, CIN, agent_dact) -> str:  # noqa: C901
         """Clarifies the user CIN in the utterance.
 
         Args:
@@ -623,7 +623,7 @@ class NLG:
         options.update({"/restart": ["/restart"]})
         return options
 
-    def _user_options_remove_preference(self, dual_params):  # noqa
+    def _user_options_remove_preference(self, dual_params):  # noqa: C901
         """Generates options for user to select in case of two parameters have
         same value.
 
@@ -795,7 +795,7 @@ class NLG:
         )
         return options
 
-    def _user_options_remove_preference_CIN(self, CIN):  # noqa
+    def _user_options_remove_preference_CIN(self, CIN):  # noqa: C901
         """Generates options for user to select a parameter to remove.
 
         Args:

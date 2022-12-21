@@ -326,7 +326,7 @@ class RBAnnotator(SlotAnnotator):
             if len(params) > 0:
                 return params
 
-    def _year_annotator(self, slot, user_utterance):  # noqa
+    def _year_annotator(self, slot, user_utterance):  # noqa: C901
         """
 
         Args:

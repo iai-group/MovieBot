@@ -1,6 +1,6 @@
 """The Dialogue Act Item defines the parameters for a Dialogue Act.
 
-It comprises ot the parameters mentioned in the conversation
+It comprises ot the parameters mentioned in the conversation.
 """
 
 

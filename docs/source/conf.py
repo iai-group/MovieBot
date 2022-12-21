@@ -37,10 +37,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
-    # 'sphinx.ext.coverage',  # in ll
-    # 'sphinx.ext.ifconfig',
-    # 'sphinx.ext.viewcode',
-    # 'sphinx.ext.todo',
     "autoapi.extension",
 ]
 

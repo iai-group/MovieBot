@@ -490,7 +490,7 @@ class UserIntentsChecker:
                 dact.params.remove(p)
                 return
 
-    def _filter_dact(self, dact, raw_utterance):  # noqa
+    def _filter_dact(self, dact, raw_utterance):  # noqa: C901
         """This algorithm filters the DActs parameters and remove if one is a
         sub-string of another. More filters are applied to remove the params or
         change slots in a specified sequence if these qualify specific

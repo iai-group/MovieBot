@@ -29,11 +29,6 @@ class DataBase:
             path: Path to the database file.
         """
         self.db_file_path = path
-        # self.sql_connection = sqlite3.connect(
-        #     self.db_file_path
-        # )  # SQL connection required to
-        # # access the database
-        # self.db_table_name = self._get_table_name()  # name of the table
         self._initialize_sql()
         self.current_CIN = None
         self.backup_db_results = None
@@ -56,26 +51,29 @@ class DataBase:
             SQL condition if possible.
         """
         args = []
+        operator = " AND "
         if dialogue_state.agent_should_offer_similar:
             similar_movies = list(dialogue_state.similar_movies.values())[0]
             if len(similar_movies) > 0:
                 for title in similar_movies:
                     args.append(f'{Slots.TITLE.value} = "{title}"')
-                return " OR ".join(args) if len(args) > 0 else None
+                operator = " OR "
+        else:
+            for slot, values in dialogue_state.frame_CIN.items():
+                if slot in ontology.multiple_values_CIN:
+                    for value in values:
+                        if value and value not in Values.__dict__.values():
+                            args.append(
+                                slot
+                                + " "
+                                + self._get_value_for_query(slot, value)
+                            )
+                elif values and values not in Values.__dict__.values():
+                    args.append(
+                        slot + " " + self._get_value_for_query(slot, values)
+                    )
 
-        for slot, values in dialogue_state.frame_CIN.items():
-            if slot in ontology.multiple_values_CIN:
-                for value in values:
-                    if value and value not in Values.__dict__.values():
-                        args.append(
-                            slot + " " + self._get_value_for_query(slot, value)
-                        )
-            elif values and values not in Values.__dict__.values():
-                args.append(
-                    slot + " " + self._get_value_for_query(slot, values)
-                )
-
-        return " AND ".join(args) if len(args) > 0 else None
+        return operator.join(args) if len(args) > 0 else None
 
     def database_lookup(
         self, dialogue_state: DialogueState, ontology: Ontology
@@ -98,6 +96,9 @@ class DataBase:
         sql_cursor = self.sql_connection.cursor()
         sql_command = f"SELECT * FROM {self.db_table_name}"
         condition = self.get_sql_condition(dialogue_state, ontology)
+
+        if dialogue_state.agent_should_offer_similar and condition is None:
+            return []
 
         if (
             self.current_CIN

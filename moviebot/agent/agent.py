@@ -61,7 +61,7 @@ class Agent:
         components.
 
         Args:
-            config: Configuration.Defaults to None.
+            config: Configuration. Defaults to None.
         """
         self.config = config
 
@@ -85,7 +85,7 @@ class Agent:
         configuration.
 
         Args:
-            user_id:  User id.Defaults to None.
+            user_id:  User id. Defaults to None.
         """
         if (
             "CONVERSATION_LOGS" in self.config
@@ -179,7 +179,7 @@ class Agent:
             record_data.update({"Agent_Output": agent_response})
             record_data.update(
                 {
-                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa
+                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa: E501
                 }
             )
             return agent_response, record_data, options
@@ -227,7 +227,7 @@ class Agent:
             record_data.update({"Agent_Output": agent_response})
             record_data.update(
                 {
-                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa
+                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa: E501
                 }
             )
             if options:

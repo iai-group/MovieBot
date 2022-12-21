@@ -442,7 +442,7 @@ class ControllerTelegram(Controller):
         """Instructions for new user.
 
         Args:
-            help: Whether to provide instructions or not.Defaults to False.
+            help: Whether to provide instructions or not. Defaults to False.
         """
         response = ""
         if not help:
