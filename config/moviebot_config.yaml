@@ -17,8 +17,6 @@ TELEGRAM: False # execute the code on Telegram
 
 POLLING: False # True when using Telegram without server
 
-MESSENGER: False
-
 BOT_TOKEN_PATH: config/bot_token.yaml
 
 BOT_HISTORY: # save the conversational logs for Telegram users
