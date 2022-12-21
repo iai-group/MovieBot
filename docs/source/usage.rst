@@ -22,7 +22,7 @@ To run MovieBot with default configuration execute the command below.
 
 .. code-block:: shell
 
-   $ python -m moviebot.run -c config/moviebot_config.yaml
+   $ python -m moviebot.run
 
 Quickstart IAI MovieBot with Telegram
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

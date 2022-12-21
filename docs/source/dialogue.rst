@@ -62,7 +62,7 @@ Agent intents
 +------------------------+------------+
 | Continue recommendation  | If the user likes a recommendation, they can either restart, quit or continue the process to get a similar recommendation.        | 
 +------------------------+------------+
-| Restart  | The user wants to restart the recommendation process.        | 
+| Restart  | The agent restarts the recommendation process based on the user's wish.        | 
 +------------------------+------------+
 | Acknowledge  | Acknowledge the user's query where required.        | 
 +------------------------+------------+
