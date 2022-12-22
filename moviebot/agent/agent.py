@@ -130,6 +130,12 @@ class Agent:
         ):
             self.isBot = True
             # self.new_user = self.config['new_user'][user_id]
+
+        self.dialogue_manager = DialogueManager(
+            data_config, self.isBot, self.new_user
+        )
+
+        if self.isBot:
             if (
                 self.config["BOT_HISTORY"]
                 and self.config["BOT_HISTORY"]["save"]

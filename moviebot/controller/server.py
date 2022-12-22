@@ -6,11 +6,9 @@ import telegram
 import yaml
 from flask import Flask, request
 
-from moviebot.controller.controller_messenger import ControllerMessenger
 from moviebot.controller.controller_telegram import ControllerTelegram
 
 app = Flask(__name__)
-controller_messenger = ControllerMessenger()
 controller_telegram = ControllerTelegram()
 URL = "https://636d944311f9.ngrok.io/"  # Webhook url
 
@@ -56,79 +54,11 @@ def set_webhook():
 
 
 def run(config):
-    """Runs execute_agent in ControllerMessenger and starts flask server.
+    """Runs execute_agent in ControllerTelegram and starts flask server.
 
     Args:
         config: agent settings
     """
     controller_telegram.execute_agent(config)
-    controller_messenger.execute_agent(config)
-    # Messenger verify token
-    verify_token()
     set_webhook()
     app.run(host="0.0.0.0", port=environ.get("PORT", 5000))
-
-
-def verify_token():
-    """Gets verify token from config file."""
-    path = "config/bot_token.yaml"
-    with open(path, "r") as file:
-        config = yaml.load(file, Loader=yaml.Loader)
-        VERIFY_TOKEN = config["MESSENGER_VERIFY_TOKEN"]
-        return VERIFY_TOKEN
-
-
-@app.route("/", methods=["GET", "POST"])
-def receive_message():
-    """Receives messenger POST requests."""
-    if request.method == "GET":
-        token_sent = request.args.get("hub.verify_token")
-        return verify_fb_token(token_sent)
-    else:
-        output = request.get_json()
-        print(output)
-        action(output)
-        return "Message Processed"
-
-
-def verify_fb_token(token_sent):
-    if token_sent == verify_token():
-        return request.args.get("hub.challenge")
-    return "Invalid verification token"
-
-
-def action(output):
-    """Gets user id and payload from output and runs get_message in the
-    controller.
-
-    Args:
-        output: Output from request.
-    """
-    event = output["entry"][0]["messaging"][0]
-    user_id = event["sender"]["id"]
-    controller_messenger.initialize(user_id)
-    payload = get_message(output)
-    print(payload)
-    if payload is not None:
-        if controller_messenger.run_method(user_id, payload):
-            controller_messenger.send_message(user_id, payload)
-
-
-def get_message(output):
-    """Gets payload from output.
-
-    Args:
-        output: Output from request.
-
-    Returns:
-        String with payload.
-    """
-    for event in output["entry"]:
-        for message in event["messaging"]:
-            if message.get("message"):
-                if message["message"].get("quick_reply"):
-                    return message["message"]["quick_reply"]["payload"]
-                if message["message"].get("text"):
-                    return message["message"]["text"]
-            if message.get("postback"):
-                return message["postback"]["payload"]
