@@ -80,12 +80,12 @@ class Agent:
         # Dialogue component agent controls
         self.dialogue_manager = None
 
-    def initialize(self, user_id=None):
+    def initialize(self, user_id=None):  # noqa: C901
         """Initializes the components and set their values as on the
         configuration.
 
         Args:
-            user_id:  User id. Defaults to None.
+            user_id: User id. Defaults to None.
         """
         if (
             "CONVERSATION_LOGS" in self.config
@@ -125,9 +125,7 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if self.config.get("TELEGRAM", False) or self.config.get(
-            "MESSENGER", True
-        ):
+        if self.config.get("TELEGRAM", False):
             self.isBot = True
             # self.new_user = self.config['new_user'][user_id]
 
@@ -148,10 +146,6 @@ class Agent:
                     raise ValueError(
                         "Path to save conversation is not provided."
                     )
-
-        self.dialogue_manager = DialogueManager(
-            data_config, self.isBot, self.new_user
-        )
 
     def start_dialogue(self, user_fname=None, restart: bool = False):
         """Starts the conversation.
