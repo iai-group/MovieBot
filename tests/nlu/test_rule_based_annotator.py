@@ -3,12 +3,12 @@
 from unittest.mock import patch
 
 import pytest
-from tests.mocks.mock_data_loader import MockDataLoader
-from tests.mocks.mock_ontology import MockOntology
 
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
+from tests.mocks.mock_data_loader import MockDataLoader
+from tests.mocks.mock_ontology import MockOntology
 
 SLOT_VALUES = {
     "actors": {
@@ -29,7 +29,7 @@ SLOT_VALUES = {
 def uic() -> UserIntentsChecker:
     """Returns a user intent checker fixture with an ontology."""
     config = {
-        "ontology": MockOntology(None).load_ontolgy(),
+        "ontology": MockOntology(),
         "database": "",
         "slot_values_path": "",
         "tag_words_slots_path": "",
@@ -45,7 +45,9 @@ def uic() -> UserIntentsChecker:
         for name in SLOT_VALUES["actors"].values()
     ],
 )
-def test__person_name_annotator_actors(utterance: UserUtterance, expected: str) -> None:
+def test__person_name_annotator_actors(
+    utterance: UserUtterance, expected: str
+) -> None:
     annotator = RBAnnotator(None, None, SLOT_VALUES)
     result = annotator._person_name_annotator(utterance)
 
@@ -98,7 +100,9 @@ def test_find_in_raw_utterance(
     ngram_size: int,
     expected: str,
 ):
-    annotator = RBAnnotator(uic._process_utterance, uic._lemmatize_value, SLOT_VALUES)
+    annotator = RBAnnotator(
+        uic._process_utterance, uic._lemmatize_value, SLOT_VALUES
+    )
     result = annotator.find_in_raw_utterance(raw_utterance, gram, ngram_size)
 
     assert result == expected

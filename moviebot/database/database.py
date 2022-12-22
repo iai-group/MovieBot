@@ -1,10 +1,13 @@
-"""This file contains the Database class for IAI MovieBot. The classes mentioned handle the
-functinality of query processing for IAI MovieBot.
-Currently, the database class is implemented for SQL DB."""
+"""This file contains the Database class for IAI MovieBot.
+
+The classes mentioned handle the functionality of query processing for
+IAI MovieBot. Currently, the database class is implemented for SQL DB.
+"""
 
 
 import sqlite3
 from copy import deepcopy
+from typing import Union
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.slots import Slots
@@ -13,61 +16,49 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DataBase:
-    """DataBase class for SQL databases. It provides the functionality
-    to search the database according to user preferences."""
+    """DataBase class for SQL databases.
+
+    It provides the functionality to search the database according to
+    user preferences.
+    """
 
     def __init__(self, path):
-        """Initializes the internal structures of the DataBase class
+        """Initializes the internal structures of the DataBase class.
 
         Args:
-            path: path to the database file
-
+            path: Path to the database file.
         """
         self.db_file_path = path
-        self.sql_connection = sqlite3.connect(
-            self.db_file_path
-        )  # SQL connection required to
-        # access the database
-        self.db_table_name = self._get_table_name()  # name of the table
+        self._initialize_sql()
         self.current_CIN = None
         self.backup_db_results = None
 
-    def database_lookup(self, dialogue_state, ontology):
-        """Performs an SQL query to answer a user requirement.
+    def _initialize_sql(self):
+        """Initializes the SQL connection and the name of the table to query."""
+        self.sql_connection = sqlite3.connect(self.db_file_path)
+        self.db_table_name = self._get_table_name()
+
+    def get_sql_condition(
+        self, dialogue_state: DialogueState, ontology: Ontology
+    ) -> Union[str, None]:
+        """Returns the condition for a SQL query based on dialogue state.
 
         Args:
-            dialogue_state: the current dialogue state
-            ontology: ontology to check specific parameters
+            dialogue_state: Dialogue state.
+            ontology: Ontology to check specific parameters.
 
         Returns:
-            the results of the SQL query
-
+            SQL condition if possible.
         """
-        if (
-            dialogue_state.isBot
-        ):  # restart the SQL connection if the app is running as a
-            # client-server app
-            self.sql_connection = sqlite3.connect(
-                self.db_file_path
-            )  # SQL connection required
-            # to access the database
-            self.db_table_name = self._get_table_name()  # name of the table
-
-        sql_cursor = self.sql_connection.cursor()
-        sql_command = f"SELECT * FROM {self.db_table_name}"
-        condition = ""
-
+        args = []
+        operator = " AND "
         if dialogue_state.agent_should_offer_similar:
-            args = []
             similar_movies = list(dialogue_state.similar_movies.values())[0]
             if len(similar_movies) > 0:
                 for title in similar_movies:
                     args.append(f'{Slots.TITLE.value} = "{title}"')
-                condition = " OR ".join(args) if len(args) > 0 else None
-            if len(args) == 0:
-                return []  # return no result if nothing similar found
+                operator = " OR "
         else:
-            args = []
             for slot, values in dialogue_state.frame_CIN.items():
                 if slot in ontology.multiple_values_CIN:
                     for value in values:
@@ -82,7 +73,32 @@ class DataBase:
                         slot + " " + self._get_value_for_query(slot, values)
                     )
 
-            condition = " AND ".join(args) if len(args) > 0 else None
+        return operator.join(args) if len(args) > 0 else None
+
+    def database_lookup(
+        self, dialogue_state: DialogueState, ontology: Ontology
+    ):
+        """Performs an SQL query to answer a user requirement.
+
+        Args:
+            dialogue_state: The current dialogue state.
+            ontology: Ontology to check specific parameters.
+
+        Returns:
+            The results of the SQL query.
+        """
+        if (
+            dialogue_state.isBot
+        ):  # restart the SQL connection if the app is running as a
+            # client-server app
+            self._initialize_sql()
+
+        sql_cursor = self.sql_connection.cursor()
+        sql_command = f"SELECT * FROM {self.db_table_name}"
+        condition = self.get_sql_condition(dialogue_state, ontology)
+
+        if dialogue_state.agent_should_offer_similar and condition is None:
+            return []
 
         if (
             self.current_CIN
@@ -104,11 +120,11 @@ class DataBase:
                 f" {Slots.RATING.value} DESC;"
             )
 
-        # print(sql_command)
         query_result = sql_cursor.execute(sql_command).fetchall()
 
-        # query_result, remove_title_from_CIN = self._remove_title_from_CIN(query_result,
-        # condition, args)
+        # query_result, remove_title_from_CIN = self._remove_title_from_CIN(
+        #     query_result, condition, args
+        # )
 
         slots = [x[0] for x in sql_cursor.description]
         result = []
@@ -189,10 +205,10 @@ class DataBase:
         return value
 
     def _get_table_name(self):
-        """Gets the SQL database's table name in the database
+        """Gets the SQL database's table name in the database.
 
         Returns:
-            the table name
+            The table name.
         """
         cursor = self.sql_connection.cursor()
         result = cursor.execute(

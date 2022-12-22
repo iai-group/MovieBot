@@ -28,7 +28,7 @@ bot = telegram.Bot(token=telegram_token)
 
 @app.route("/{}".format(telegram_token), methods=["POST"])
 def respond():
-    """Receives to Telegram POST request"""
+    """Receives to Telegram POST request."""
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     text = update.message.text.encode("utf-8").decode()
 
@@ -58,7 +58,6 @@ def run(config):
 
     Args:
         config: agent settings
-
     """
     controller_telegram.execute_agent(config)
     set_webhook()

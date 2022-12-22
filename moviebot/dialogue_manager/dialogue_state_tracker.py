@@ -7,7 +7,6 @@ from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
@@ -16,13 +15,13 @@ from moviebot.nlu.annotation.values import Values
 class DialogueStateTracker:
     """Dialogue State Tracker updates the current dialogue state."""
 
-    def __init__(self, config, isBot):
+    def __init__(self, config, isBot: bool):
         """Loads the database and ontology and creates an initial dialogue
         state.
 
         Args:
-            config: the set of parameters to initialize the state tracker
-            isBot: if the conversation is via bot or not
+            config: The set of parameters to initialize the state tracker.
+            isBot: If the conversation is via bot or not.
         """
         self.ontology = config["ontology"]
         self.database = config["database"]
@@ -39,8 +38,7 @@ class DialogueStateTracker:
         run from scratch.
 
         Args:
-            config: the database and ontology to load for further use
-
+            config: The database and ontology to load for further use.
         """
 
     def _add_year_CIN(self, param):
@@ -74,12 +72,11 @@ class DialogueStateTracker:
                 value = value.replace("=", "").strip()
             self.dialogue_state.frame_CIN[param.slot] = value
 
-    def update_state_user(self, user_dacts):
-        """Updates the current dialogue state and context based on user DActs
+    def update_state_user(self, user_dacts):  # noqa: C901
+        """Updates the current dialogue state and context based on user DActs.
 
         Args:
-            user_dacts: dialogue acts) which is the output of NLU.
-
+            user_dacts: Dialogue acts which is the output of NLU.
         """
         # re-filtering the dacts
         user_dacts_copy = deepcopy(user_dacts)
@@ -295,11 +292,10 @@ class DialogueStateTracker:
                     break
 
     def update_state_agent(self, agent_dacts):
-        """Updates the current dialogue state and context based on agent DActs
+        """Updates the current dialogue state and context based on agent DActs.
 
         Args:
-            agent_dacts: dialogue acts) which is the output of dialogue policy.
-
+            agent_dacts: Dialogue acts which is the output of dialogue policy.
         """
         # re-filtering the dacts
         agent_dacts_copy = deepcopy(agent_dacts)
@@ -328,13 +324,12 @@ class DialogueStateTracker:
                 )
 
     def update_state_db(self, database_result=None, backup_results=None):
-        """Updates the state based on  the results fetched from the database
+        """Updates the state based on  the results fetched from the database.
 
         Args:
-            database_result: the database results based on user information
-                needs (Default value = None)
-            backup_results:  (Default value = None)
-
+            database_result: The database results based on user information
+                needs. Defaults to None.
+            backup_results: Defaults to None.
         """
 
         item_found = False
@@ -397,20 +392,18 @@ class DialogueStateTracker:
             self.dialogue_state.agent_should_make_offer = False
             self.dialogue_state.agent_made_offer = False
 
-    def get_state(self):
+    def get_state(self) -> DialogueState:
         """Returns the current dialogue state.
 
         Returns:
-            the current dialogue state
-
+            The current dialogue state.
         """
         return self.dialogue_state
 
-    def get_context(self):
-        """Returns the history for a specific user
+    def get_context(self) -> DialogueContext:
+        """Returns the history for a specific user.
 
         Returns:
-            the current user context
-
+            The current user context.
         """
         # return self.dialogue_context

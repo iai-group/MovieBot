@@ -1,4 +1,5 @@
-""" This file contains the main functions for loading database and tag_words files for NLU."""
+"""This file contains the main functions for loading database and tag_words
+files for NLU."""
 
 
 import json
@@ -8,11 +9,14 @@ from moviebot.nlu.annotation.slots import Slots
 
 
 class DataLoader:
-    """LoadData class loads the database as slot-value pairs and the tag-words for slots. This
-    data will be used by NLU to check user intents."""
+    """LoadData class loads the database as slot-value pairs and the tag-words
+    for slots.
+
+    This data will be used by NLU to check user intents.
+    """
 
     def __init__(self, config, _lemmatize_value):
-        """Initialize the data loader and load database, tag words etc
+        """Initializes the data loader and load database, tag words etc.
 
         :type self.database: DataBase
         :type self.ontology: Ontology
@@ -20,22 +24,21 @@ class DataLoader:
         Args:
             config:
             _lemmatize_value:
-
         """
         self.ontology = config["ontology"]
         self.database = config["database"]
         self.slot_values_path = config["slot_values_path"]
         self.lemmatize_value = _lemmatize_value
 
-    def load_tag_words(self, file_path):
-        """Load the tag words for the path provided. This can be for the slots in the database or the patterns.
+    def load_tag_words(self, file_path: str):
+        """Loads the tag words for the path provided. This can be for the slots
+        in the database or the patterns.
 
         Args:
-            file_path: The path to the input json file
+            file_path: The path to the input json file.
 
         Returns:
-            The output dictionary extracted from the file
-
+            The output dictionary extracted from the file.
         """
         if os.path.isfile(file_path):
             with open(file_path) as file:
@@ -59,13 +62,13 @@ class DataLoader:
             else:
                 slot_values[slot] = set(values)
 
-    def load_database(self):
-        """Loads the database to fill dialogue slots with a list of possible slot_values.
-        This can be used further to understand what user intends to ask
+    def load_database(self):  # noqa: C901
+        """Loads the database to fill dialogue slots with a list of possible
+        slot_values. This can be used further to understand what user intends
+        to ask.
 
         Returns:
-            slot values pairs
-
+            Slot values pairs.
         """
         if self.slot_values_path and os.path.isfile(self.slot_values_path):
             with open(self.slot_values_path) as slot_val_file:

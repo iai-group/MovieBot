@@ -1,15 +1,16 @@
-""" This file contains the main functions for checking the user intents."""
+"""This file contains the main functions for checking the user intents."""
 
 import re
 import string
 from copy import deepcopy
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import wikipedia
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from moviebot.core.intents.user_intents import UserIntents
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
@@ -21,9 +22,11 @@ from moviebot.nlu.data_loader import DataLoader
 
 class UserIntentsChecker:
     """CheckUserIntents is a class to detect the intents for the class NLU.
+
     It receives the utterance and matches it to the patterns created. If
-    required, CheckUserIntents calls annotators to check which slot user refers
-    to."""
+    required, CheckUserIntents calls annotators to check which slot user
+    refers to.
+    """
 
     def __init__(self, config: Dict[str, Any]):
         """Initializes the intents checker and load database, tag words etc.
@@ -54,16 +57,15 @@ class UserIntentsChecker:
         )
         self._lemmatize_value("temp")
 
-    def _punctuation_remover(self, remove_ques=True):
+    def _punctuation_remover(self, remove_ques: bool = True):
         """Defines a patterns of punctuation marks to remove/keep in the
-        utterance
+        utterance.
 
         TODO (Ivica Kostric) This should be removed. Move all preprocessing
         operations to moviebot.nlu.text_processing.Tokenizer
 
         Args:
-            remove_ques:  (Default value = True)
-
+            remove_ques: Defaults to True.
         """
         punctuation = string.punctuation  # .replace('-', '')
         if not remove_ques:
@@ -72,20 +74,19 @@ class UserIntentsChecker:
             punctuation, " " * len(punctuation)
         )
 
-    def _process_utterance(self, value, last_sys_act=None):
+    def _process_utterance(self, value, last_sys_act=None) -> str:
         """Preprocesses the user input to get a raw sentence.
 
         TODO (Ivica Kostric) This should be removed. Move all preprocessing
         operations to moviebot.nlu.text_processing.Tokenizer
 
         Args:
-            value: a string containing user input or values
-            last_sys_act: the previous DAct by the Conversational Agent
-                (Default value = None)
+            value: A string containing user input or values.
+            last_sys_act: The previous DAct by the Conversational Agent.
+              Defaults to None.
 
         Returns:
-            string having the processed utterance
-
+            String having the processed utterance.
         """
         value = value.rstrip().lower()
         value = value.replace("'", "")
@@ -94,14 +95,12 @@ class UserIntentsChecker:
         return value
 
     def _lemmatize_value(self, value, skip_number=False):
-        """
-        TODO (Ivica Kostric) This should be removed. Move all preprocessing
-        operations to moviebot.nlu.text_processing.Tokenizer
+        """TODO (Ivica Kostric) This should be removed. Move all preprocessing
+        operations to moviebot.nlu.text_processing.Tokenizer.
 
         Args:
-            value [str]: value to lemmatize
-            skip_number:  (Default value = False)
-
+            value: Value to lemmatize.
+            skip_number: Defaults to False.
         """
         value = self._process_utterance(value)
         return " ".join(
@@ -109,7 +108,7 @@ class UserIntentsChecker:
         )
 
     def _intent_patterns(self):
-        """Designing some patterns to understand the utterance better"""
+        """Designing some patterns to understand the utterance better."""
 
         self.basic_patterns = {
             UserIntents.ACKNOWLEDGE: ["yes", "okay", "fine", "sure"],
@@ -175,15 +174,12 @@ class UserIntentsChecker:
         ]
 
     def is_dontcare(self, user_utterance):
-        """
-
-        TODO (Ivica Kostric): This can be partially merged with
+        """TODO (Ivica Kostric): This can be partially merged with
         check_basic_intent. Regex can be dropped since we are only looking for
         complete tokens anyway.
 
         Args:
             utterance:
-
         """
         for token in user_utterance.get_tokens():
             for pattern in self.dont_care_pattern:
@@ -206,18 +202,18 @@ class UserIntentsChecker:
         else:
             return False
 
-    def check_basic_intent(self, user_utterance, intent):
-        """Given intent and list of intent patterns checks if any token in
-        user utterance match the pattern.
+    def check_basic_intent(
+        self, user_utterance: UserUtterance, intent: UserIntents
+    ) -> List[DialogueAct]:
+        """Given intent and list of intent patterns checks if any token in user
+        utterance match the pattern.
 
         Args:
-            user_utterance (UserUtterance): class containing raw utterance and
-                processed tokens
-            intent (UserIntents): Intent for which to compare patterns.
+            user_utterance: Class containing raw utterance and processed tokens.
+            intent: Intent for which to compare patterns.
 
         Returns:
-            List[DialogueAct]: If pattern exists returns that intents dialogue
-                act
+            If pattern exists returns that intents dialogue act.
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
@@ -234,14 +230,12 @@ class UserIntentsChecker:
         return user_dacts
 
     def check_acknowledge_intent(self, utterance):
-        """
-        TODO (Ivica Kostric): This is not needed anymore and should be removed.
-        Handling of basic intents is merged into a single method
+        """TODO (Ivica Kostric): This is not needed anymore and should be
+        removed. Handling of basic intents is merged into a single method
         (check_basic_intent) due to similarities.
 
         Args:
             utterance:
-
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
@@ -255,14 +249,12 @@ class UserIntentsChecker:
         return user_dacts
 
     def check_deny_intent(self, utterance):
-        """
-        TODO (Ivica Kostric): This is not needed anymore and should be removed.
-        Handling of basic intents is merged into a single method
+        """TODO (Ivica Kostric): This is not needed anymore and should be
+        removed. Handling of basic intents is merged into a single method
         (check_basic_intent) due to similarities.
 
         Args:
             utterance:
-
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
@@ -276,14 +268,12 @@ class UserIntentsChecker:
         return user_dacts
 
     def check_bye_intent(self, utterance):
-        """
-        TODO (Ivica Kostric): This is not needed anymore and should be removed.
-        Handling of basic intents is merged into a single method
+        """TODO (Ivica Kostric): This is not needed anymore and should be
+        removed. Handling of basic intents is merged into a single method
         (check_basic_intent) due to similarities.
 
         Args:
             utterance:
-
         """
         # checking for intent = 'bye'
         user_dacts = []
@@ -301,7 +291,7 @@ class UserIntentsChecker:
         return user_dacts
 
     def check_hi_intent(self, utterance):
-        """Checking for a starting message
+        """Checking for a starting message.
 
         TODO (Ivica Kostric): This is not needed anymore and should be removed.
         Handling of basic intents is merged into a single method
@@ -309,7 +299,6 @@ class UserIntentsChecker:
 
         Args:
             utterance:
-
         """
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
@@ -360,13 +349,12 @@ class UserIntentsChecker:
 
     def check_reveal_intent(self, user_utterance, last_agent_dact):
         """This function is only called if the intent of agent is ELicit to see
-        if user has answered the query
+        if user has answered the query.
 
         Args:
             utterance:
             raw_utterance:
             last_agent_dact:
-
         """
         user_dacts = []
         for param in last_agent_dact.params:
@@ -502,16 +490,15 @@ class UserIntentsChecker:
                 dact.params.remove(p)
                 return
 
-    def _filter_dact(self, dact, raw_utterance):
-        """This algorithm filters the DActs parameters and remove if one is
-        a sub-string of another. More filters are applied to remove the params
-        or change slots in a specified sequence if these qualify specific
-        conditions
+    def _filter_dact(self, dact, raw_utterance):  # noqa: C901
+        """This algorithm filters the DActs parameters and remove if one is a
+        sub-string of another. More filters are applied to remove the params or
+        change slots in a specified sequence if these qualify specific
+        conditions.
 
         Args:
             dact:
             raw_utterance:
-
         """
         slot_filter_priority = [
             Slots.GENRES,
@@ -663,16 +650,14 @@ class UserIntentsChecker:
         return dual_values
 
     def _get_annotation_relevance(self, dact, raw_utterance, dual_person):
-        """Get the relevance if user really want a preference or wants to remove
-        it from the list
+        """Gets the relevance if user really want a preference or wants to
+        remove it from the list.
 
         Args:
             dact:
             raw_utterance:
             dual_person:
-
         """
-        words_seq = word_tokenize(raw_utterance)
         # first sequence the params:
         values = sorted([p.value for p in dact.params], key=raw_utterance.find)
         words_pre_req = dict.fromkeys(values)

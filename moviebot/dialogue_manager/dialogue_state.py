@@ -1,7 +1,9 @@
-"""DialogueState models the state of the agent. It is a basic SlotFilling model
-that keeps account of the question agents must answer or ask from the user. It
-also keeps track of the recommendation agent makes and previous states of the
-agent. State will be updated using the Dialogue State Tracker.
+"""DialogueState models the state of the agent.
+
+It is a basic SlotFilling model that keeps account of the question
+agents must answer or ask from the user. It also keeps track of the
+recommendation agent makes and previous states of the agent. State will
+be updated using the Dialogue State Tracker.
 """
 
 
@@ -11,28 +13,28 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DialogueState:
-    """DialogueState models the state of the agent. It is a basic SlotFilling
-    model that keeps account of the question agents must answer or ask from the
-    user. It also keeps track of the recommendation agent makes and previous
-    states of the agent. State will be updated using the Dialogue State Tracker.
+    """DialogueState models the state of the agent.
+
+    It is a basic SlotFilling model that keeps account of the question
+    agents must answer or ask from the user. It also keeps track of the
+    recommendation agent makes and previous states of the agent. State
+    will be updated using the Dialogue State Tracker.
     """
 
-    def __init__(self, ontology, slots, isBot):
-        """Initializes the Slot Filling Dialogue State structures
-
-        :type ontology: Ontology
+    def __init__(self, ontology: Ontology, slots, isBot):
+        """Initializes the Slot Filling Dialogue State structures.
 
         Args:
-            ontology: the ontology of the domain
-            slots: the slots to find information needs
-            isBot: if the conversation is via bot or not
-
+            ontology: The ontology of the domain.
+            slots: The slots to find information needs.
+            isBot: If the conversation is via bot or not.
         """
         self.isBot = isBot
         self.ontology = ontology
-        self.item_in_focus = None  # the recommended movie and all it's attributes from the database
-        # self.requestable_slots_filled = {} # user requestable attributes of item_in_focus and
-        # system answers
+        # the recommended movie and all it's attributes from the database
+        self.item_in_focus = None
+        # user requestable attributes of item_in_focus and system answers
+        # self.requestable_slots_filled = {}
         self.agent_requestable = deepcopy(self.ontology.agent_requestable)
         self.user_requestable = deepcopy(self.ontology.user_requestable)
         self.frame_CIN = dict.fromkeys(slots)  # user requirements before
@@ -59,12 +61,11 @@ class DialogueState:
         }
         return str([x for x, y in offer_state.items() if y])
 
-    def _dict(self):
+    def _dict(self) -> str:
         """Prints the state to debug the position of the agent.
 
         Returns:
-            a string having basic info about the state
-
+            A string having basic info about the state.
         """
         dstate = {}
         dstate["Previous_Information_Need"] = str(
@@ -97,7 +98,8 @@ class DialogueState:
                 self.frame_CIN[slot] = []
             else:
                 self.frame_CIN[slot] = None
-        self.item_in_focus = None  # the recommended movie and all it's attributes from the database
+        # the recommended movie and all it's attributes from the database
+        self.item_in_focus = None
         self.items_in_context = False
         self.agent_requestable = deepcopy(self.ontology.agent_requestable)
         self.user_requestable = deepcopy(self.ontology.user_requestable)

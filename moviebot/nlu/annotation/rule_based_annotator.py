@@ -1,6 +1,5 @@
 """This file contains a class which can be used to annotate slot values in the
-user utterance based on rules and keyword matching.
-"""
+user utterance based on rules and keyword matching."""
 
 import re
 import string
@@ -21,8 +20,9 @@ from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):
-    """This is a rule based annotator. It uses regex and keyword matching for
-    annotation.
+    """This is a rule based annotator.
+
+    It uses regex and keyword matching for annotation.
     """
 
     def __init__(self, process_value, lemmatize_value, slot_values):
@@ -138,7 +138,9 @@ class RBAnnotator(SlotAnnotator):
             # dictionary at initialization time.
             for key, value in self.genres_alternatives.items():
                 len_key = len(key.split())
-                token = tokens[i] if len_key == 1 else sum(tokens[i : i + len_key])
+                token = (
+                    tokens[i] if len_key == 1 else sum(tokens[i : i + len_key])
+                )
 
                 if token.lemma.startswith(self._process_value(key)):
                     annotation = SemanticAnnotation.from_span(
@@ -155,13 +157,12 @@ class RBAnnotator(SlotAnnotator):
             return [param]
 
     def _title_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie title.
-        Sometimes the user can just enter a part of the name.
+        """This annotator is used to check the movie title. Sometimes the user
+        can just enter a part of the name.
 
         Args:
             slot:
             utterance:
-
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -175,7 +176,11 @@ class RBAnnotator(SlotAnnotator):
                     if (
                         processed_value == gram
                         and len(
-                            [x.lemma for x in gram_list if x.lemma in self.stop_words]
+                            [
+                                x.lemma
+                                for x in gram_list
+                                if x.lemma in self.stop_words
+                            ]
                         )
                         < ngram_size
                     ):
@@ -184,17 +189,25 @@ class RBAnnotator(SlotAnnotator):
                             AnnotationType.NAMED_ENTITY,
                             EntityType.TITLE,
                         )
-                        param = ItemConstraint(slot, Operator.EQ, gram, annotation)
+                        param = ItemConstraint(
+                            slot, Operator.EQ, gram, annotation
+                        )
                         return [param]
                 if (
-                    len([x for x in gram_list if x.lemma in self.stop_words]) == 0
-                    and len([int(val) for val in re.findall(r"\b\d+", gram)]) == 0
+                    len([x for x in gram_list if x.lemma in self.stop_words])
+                    == 0
+                    and len([int(val) for val in re.findall(r"\b\d+", gram)])
+                    == 0
                 ):
                     # check if
                     # all words are in the list of stop words and no numbers
                     if ngram_size == 1:
                         gram_occurrence = len(
-                            [value for value in processed_values if gram == value]
+                            [
+                                value
+                                for value in processed_values
+                                if gram == value
+                            ]
                         )
                     else:
                         gram_occurrence = len(
@@ -208,20 +221,22 @@ class RBAnnotator(SlotAnnotator):
                         options[gram] = gram_occurrence
             if options:
                 options = {
-                    k: v for k, v in sorted(options.items(), key=lambda item: item[1])
+                    k: v
+                    for k, v in sorted(
+                        options.items(), key=lambda item: item[1]
+                    )
                 }
                 for gram in options:
                     param = ItemConstraint(slot, Operator.EQ, gram.strip())
                     return [param]
 
     def _keywords_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie keywords.
-        If the ngram has only keywords, it will be ignored.
+        """This annotator is used to check the movie keywords. If the ngram has
+        only keywords, it will be ignored.
 
         Args:
             slot:
             utterance:
-
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -238,7 +253,13 @@ class RBAnnotator(SlotAnnotator):
 
                 if (
                     len([int(val) for val in re.findall(r"\b\d+", gram)]) == 0
-                    and len([x.lemma for x in gram_list if x.lemma in self.stop_words])
+                    and len(
+                        [
+                            x.lemma
+                            for x in gram_list
+                            if x.lemma in self.stop_words
+                        ]
+                    )
                     == 0
                 ):
                     for _, lem_value in values.items():
@@ -246,7 +267,9 @@ class RBAnnotator(SlotAnnotator):
                             annotation = SemanticAnnotation.from_span(
                                 sum(gram_list), AnnotationType.KEYWORD
                             )
-                            param = ItemConstraint(slot, Operator.EQ, gram, annotation)
+                            param = ItemConstraint(
+                                slot, Operator.EQ, gram, annotation
+                            )
 
                             return [param]
                         elif (ngram_size == 1 and gram == lem_value) or (
@@ -255,7 +278,9 @@ class RBAnnotator(SlotAnnotator):
                             annotation = SemanticAnnotation.from_span(
                                 sum(gram_list), AnnotationType.KEYWORD
                             )
-                            param = ItemConstraint(slot, Operator.EQ, gram, annotation)
+                            param = ItemConstraint(
+                                slot, Operator.EQ, gram, annotation
+                            )
                             return [param]
 
     def _person_name_annotator(self, user_utterance, slots=None):
@@ -265,7 +290,6 @@ class RBAnnotator(SlotAnnotator):
         Args:
             utterance:
             slots:  (Default value = None)
-
         """
         tokens = user_utterance.get_tokens()
         if not slots:
@@ -279,7 +303,10 @@ class RBAnnotator(SlotAnnotator):
             for gram_list in ngrams(tokens, ngram_size):
                 gram = sum(gram_list).lemma
                 for _, lem_value in person_names.items():
-                    if f" {gram} " in f" {lem_value} " and gram not in self.stop_words:
+                    if (
+                        f" {gram} " in f" {lem_value} "
+                        and gram not in self.stop_words
+                    ):
                         # gramR = self.find_in_raw_utterance(raw_utterance,
                         #                                   ngram_size,
                         #                                   gram)
@@ -291,13 +318,15 @@ class RBAnnotator(SlotAnnotator):
                                     EntityType.PERSON,
                                 )
                                 params.append(
-                                    ItemConstraint(slot, Operator.EQ, gram, annotation)
+                                    ItemConstraint(
+                                        slot, Operator.EQ, gram, annotation
+                                    )
                                 )
                         break
             if len(params) > 0:
                 return params
 
-    def _year_annotator(self, slot, user_utterance):
+    def _year_annotator(self, slot, user_utterance):  # noqa: C901
         """
 
         Args:
@@ -309,7 +338,9 @@ class RBAnnotator(SlotAnnotator):
         tokens = user_utterance.get_tokens()
         potential_item_constraint = []
         for token in tokens:
-            annotation = SemanticAnnotation.from_span(token, AnnotationType.TEMPORAL)
+            annotation = SemanticAnnotation.from_span(
+                token, AnnotationType.TEMPORAL
+            )
             if token.lemma.startswith(("new", "latest")):
                 potential_item_constraint.append(
                     ItemConstraint(slot, Operator.GT, "2010", annotation)
@@ -358,15 +389,16 @@ class RBAnnotator(SlotAnnotator):
                     ]
 
             if token.text.isdigit() and len(token.text) == 4:
-                return [ItemConstraint(slot, Operator.EQ, token.text, annotation)]
+                return [
+                    ItemConstraint(slot, Operator.EQ, token.text, annotation)
+                ]
 
         return potential_item_constraint[:1]
 
     def find_in_raw_utterance(
         self, raw_utterance: str, gram: str, ngram_size: int
     ) -> str:
-        """
-        Finds the ngram in the raw utterance.
+        """Finds the ngram in the raw utterance.
 
         If the ngram is found in the utterance it is returned with removed
         punctuation.

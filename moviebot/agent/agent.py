@@ -17,14 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 def _get_ontology(ontology_path):
-    """Checks if the ontology exists and get the file
+    """Checks if the ontology exists and get the file.
 
     Args:
-        ontology_path: the path to the file
+        ontology_path: The path to the file.
 
     Returns:
-        the ontology class instance
-
+        The ontology class instance.
     """
     if os.path.isfile(ontology_path):
         return Ontology(ontology_path)
@@ -35,14 +34,13 @@ def _get_ontology(ontology_path):
 
 
 def _get_db(db_path):
-    """Checks if the database file exists and get the file
+    """Checks if the database file exists and get the file.
 
     Args:
-        db_path: the path to the file
+        db_path: The path to the file.
 
     Returns:
-        the database class instance
-
+        The database class instance.
     """
     if os.path.isfile(db_path):
         return DataBase(db_path)
@@ -52,18 +50,18 @@ def _get_db(db_path):
 
 class Agent:
     """The class Agent controls all the components of the basic architecture of
-    IAI MovieBot. Initially the Conversational Agent is able to interact with
-    human users via text."""
+    IAI MovieBot.
+
+    Initially the Conversational Agent is able to interact with human
+    users via text.
+    """
 
     def __init__(self, config=None):
-        """Initializes the internal structure of the agent and other components.
-
-        :type self.bot_recorder: RecorderBot
-        :type self.dialogue_manager: DialogueManager
+        """Initializes the internal structure of the agent and other
+        components.
 
         Args:
-            config: (Default value = None)
-
+            config: Configuration. Defaults to None.
         """
         self.config = config
 
@@ -82,13 +80,12 @@ class Agent:
         # Dialogue component agent controls
         self.dialogue_manager = None
 
-    def initialize(self, user_id=None):
+    def initialize(self, user_id=None):  # noqa: C901
         """Initializes the components and set their values as on the
         configuration.
 
         Args:
-            user_id:  (Default value = None)
-
+            user_id: User id. Defaults to None.
         """
         if (
             "CONVERSATION_LOGS" in self.config
@@ -150,16 +147,16 @@ class Agent:
                         "Path to save conversation is not provided."
                     )
 
-    def start_dialogue(self, user_fname=None, restart=False):
-        """Starts the conversation
-
+    def start_dialogue(self, user_fname=None, restart: bool = False):
+        """Starts the conversation.
 
         Args:
-            ser_fname:  (Default value = None)
-            estart:  (Default value = False)
+            user_fname: User's first name. Defaults to None.
+            restart: Whether to restart the conversation or not. Defaults to
+              False.
 
         Returns:
-            agent response
+            Agent response.
         """
         if not restart:
             agent_dacts = self.dialogue_manager.start_dialogue(self.new_user)
@@ -168,27 +165,21 @@ class Agent:
         agent_response, options = self.nlg.generate_output(
             agent_dacts, user_fname=user_fname
         )
-        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+        self.dialogue_manager.get_context().add_utterance(
             AgentUtterance({"text": agent_response})
         )
         if not self.isBot:
             logger.debug(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
-            logger.debug(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_context
-                )
-            )
+            logger.debug(str(self.dialogue_manager.get_context()))
             return agent_response, options
         else:
-            record_data = (
-                self.dialogue_manager.dialogue_state_tracker.dialogue_state._dict()
-            )
+            record_data = self.dialogue_manager.get_state()._dict()
             record_data.update({"Agent_Output": agent_response})
             record_data.update(
                 {
-                    "Context": self.dialogue_manager.dialogue_state_tracker.dialogue_context.movies_recommended
+                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa: E501
                 }
             )
             return agent_response, record_data, options
@@ -198,20 +189,15 @@ class Agent:
         state of dialogue.
 
         Args:
-            user_utterance: The input received from the user
+            user_utterance: The input received from the user.
             user_options:
-            user_fname:  (Default value = None)
+            user_fname: User's first name. Defaults to None.
 
         Returns:
-            The agent response
-
+            The agent response.
         """
-        self.dialogue_manager.dialogue_state_tracker.dialogue_state.user_utterance = (
-            user_utterance
-        )
-        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
-            user_utterance
-        )
+        self.dialogue_manager.get_state().user_utterance = user_utterance
+        self.dialogue_manager.get_context().add_utterance(user_utterance)
         user_dacts = self.nlu.generate_dact(
             user_utterance,
             user_options,
@@ -226,28 +212,22 @@ class Agent:
         agent_response, options = self.nlg.generate_output(
             agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname
         )
-        self.dialogue_manager.dialogue_state_tracker.dialogue_context.add_utterance(
+        self.dialogue_manager.get_context().add_utterance(
             AgentUtterance({"text": agent_response})
         )
         if not self.isBot:
             logger.debug(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
-            logger.debug(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_context
-                )
-            )
+            logger.debug(str(self.dialogue_manager.get_context()))
             return agent_response, options
         else:
             record_data = {"User_Input": user_utterance.get_text()}
-            record_data.update(
-                self.dialogue_manager.dialogue_state_tracker.dialogue_state._dict()
-            )
+            record_data.update(self.dialogue_manager.get_state()._dict())
             record_data.update({"Agent_Output": agent_response})
             record_data.update(
                 {
-                    "Context": self.dialogue_manager.dialogue_state_tracker.dialogue_context.movies_recommended
+                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa: E501
                 }
             )
             if options:
@@ -259,16 +239,14 @@ class Agent:
             return agent_response, record_data, options
 
     def end_dialogue(self):
-        """Ends the dialogue and save the experience if required"""
+        """Ends the dialogue and save the experience if required."""
         # TODO: Save the experience
 
     def terminated_dialogue(self):
         """Checks if the dialogue is terminated by either user or the number of
-        dialogues have reached a maximum limit
+        dialogues have reached a maximum limit.
 
         Returns:
-            True or False
+            True or False.
         """
-        return (
-            self.dialogue_manager.dialogue_state_tracker.dialogue_state.at_terminal_state
-        )
+        return self.dialogue_manager.get_state().at_terminal_state

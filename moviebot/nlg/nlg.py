@@ -1,10 +1,9 @@
-"""NLG is a Natural Language Generator used to produce a human-like response for Dialogue Acts
-of the agent."""
+"""NLG is a Natural Language Generator used to produce a human-like response
+for Dialogue Acts of the agent."""
 
 
 import random
 from copy import deepcopy
-from typing import List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
@@ -17,18 +16,14 @@ from moviebot.nlu.annotation.values import Values
 
 
 class NLG:
-    """NLG is a Natural Language Generator used to produce a human-like response
-    for Dialogue Acts of the agent.
-    """
+    """NLG is a Natural Language Generator used to produce a human-like
+    response for Dialogue Acts of the agent."""
 
     def __init__(self, args=None):
         """Initializes any necessary components.
 
-        :type self.dialogue_state: DialogueState
-
         Args:
-            args: basic settings of NLG
-
+            args: Basic settings of NLG.
         """
         self.dialogue_state = None
         self.previous_count = 0
@@ -161,19 +156,18 @@ class NLG:
             Slots.YEAR.value: ["I couldn't find any timeline specification."],
         }
 
-    def generate_output(
-        self, agent_dacts, dialogue_state=None, user_fname=None
-    ):
+    def generate_output(  # noqa: C901
+        self, agent_dacts, dialogue_state: DialogueState = None, user_fname=None
+    ) -> str:
         """Selects an appropriate response based on the dialogue acts.
 
         Args:
-            agent_dacts: a list of agent dialogue acts
-            dialogue_state: the current dialogue state (Default value = None)
-            user_fname:  (Default value = None)
+            agent_dacts: A list of agent dialogue acts.
+            dialogue_state: The current dialogue state. Defaults to None.
+            user_fname: User's first name. Defaults to None.
 
         Returns:
-            string containing natural response
-
+            String containing natural response.
         """
         if dialogue_state:
             CIN = deepcopy(dialogue_state.frame_CIN)
@@ -196,7 +190,7 @@ class NLG:
                                 utterance.append(
                                     not_found_response.replace(
                                         "__replace__",
-                                        dialogue_state.user_utterance.get_text(),
+                                        dialogue_state.user_utterance.get_text(),  # noqa: E501
                                     )
                                 )
                             else:
@@ -325,9 +319,10 @@ class NLG:
                         ]
                         intent_response = random.choice(clarify_response)
                         # if dialogue_state.agent_repeats_offer:
-                        #     intent_response = "(This has been recommended before but I am out " \
-                        #                       "of options. Sorry)\n" + \
-                        #                       intent_response
+                        #     intent_response = (
+                        #         "(This has been recommended before but I am "
+                        #         "out of options. Sorry)\n" + intent_response
+                        #     )
                         utterance.append(intent_response)
                         user_options.update(self._user_options_recommend())
                         if dialogue_state.agent_must_clarify:
@@ -341,12 +336,12 @@ class NLG:
                     [
                         (
                             "Sorry, I don't have any "
-                            f'{"other " if dialogue_state.items_in_context else ""}'
+                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa: E501
                             f"{self._clarify_CIN(CIN, agent_dact)}."
                         ),
                         (
                             "Sorry, I couldn't find any "
-                            f'{"other " if dialogue_state.items_in_context else ""}'
+                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa: E501
                             f"{self._clarify_CIN(CIN, agent_dact)}."
                         ),
                     ]
@@ -464,16 +459,15 @@ class NLG:
         else:
             return f'year {"not " if negate else " "}' + value
 
-    def _clarify_CIN(self, CIN, agent_dact):
-        """Clarify the user CIN in the utterance
+    def _clarify_CIN(self, CIN, agent_dact) -> str:  # noqa: C901
+        """Clarifies the user CIN in the utterance.
 
         Args:
-            CIN: current information need
-            agent_dact: agent dialogue act
+            CIN: Current information need.
+            agent_dact: Agent dialogue act.
 
         Returns:
-            a string for system utterance
-
+            A string for system utterance.
         """
         if self.dialogue_state.agent_should_offer_similar:
             response = (
@@ -578,11 +572,10 @@ class NLG:
         return response.strip()
 
     def _user_options_continue(self, agent_dact):
-        """Give user options to continue when needed
+        """Gives user options to continue when needed.
 
         Args:
             agent_dact:
-
         """
         if agent_dact.intent == AgentIntents.CONTINUE_RECOMMENDATION:
             options = {
@@ -597,11 +590,10 @@ class NLG:
             return options
 
     def _user_options_recommend(self):
-        """Give use button options when making a recommendation
+        """Gives use button options when making a recommendation.
 
         Returns:
-            a list of button options
-
+            A list of button options.
         """
         options = {
             DialogueAct(
@@ -631,15 +623,15 @@ class NLG:
         options.update({"/restart": ["/restart"]})
         return options
 
-    def _user_options_remove_preference(self, dual_params):
-        """Generate options for user to select in case of two parameters have same value
+    def _user_options_remove_preference(self, dual_params):  # noqa: C901
+        """Generates options for user to select in case of two parameters have
+        same value.
 
         Args:
-            dual_params: The current parameters with two slots
+            dual_params: The current parameters with two slots.
 
         Returns:
-            a list of button options
-
+            A list of button options.
         """
         options = {}
         for value, params in dual_params.items():
@@ -767,8 +759,7 @@ class NLG:
             dialogue_state:
 
         Returns:
-            list of user requestables as buttons
-
+            List of user requestables as buttons.
         """
         options = {}
         requestables = {
@@ -804,15 +795,14 @@ class NLG:
         )
         return options
 
-    def _user_options_remove_preference_CIN(self, CIN):
-        """Generate options for user to select a parameter to remove
+    def _user_options_remove_preference_CIN(self, CIN):  # noqa: C901
+        """Generates options for user to select a parameter to remove.
 
         Args:
-            CIN: The current information needs
+            CIN: The current information needs.
 
         Returns:
-            a list of button options
-
+            A list of button options.
         """
         options = {}
         params = []
