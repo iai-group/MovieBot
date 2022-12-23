@@ -14,7 +14,9 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DialogueState:
-    def __init__(self, ontology: Ontology, slots: Iterable, isBot: bool):
+    def __init__(
+        self, ontology: Ontology, slots: Iterable, isBot: bool
+    ) -> None:
         """Initializes the SlotFilling dialogue state structures.
 
         Args:

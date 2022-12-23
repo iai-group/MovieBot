@@ -22,7 +22,7 @@ from moviebot.nlu.annotation.operator import Operator
 
 
 class DialogueManager:
-    def __init__(self, config: Dict, isBot: bool, new_user: bool):
+    def __init__(self, config: Dict, isBot: bool, new_user: bool) -> None:
         """Initializes the dialogue manager including the state tracker and
         dialogue policy.
 

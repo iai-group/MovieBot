@@ -15,7 +15,7 @@ from moviebot.nlu.annotation.values import Values
 
 
 class DialogueStateTracker:
-    def __init__(self, config: Dict, isBot: bool):
+    def __init__(self, config: Dict, isBot: bool) -> None:
         """Loads the database and ontology and creates an initial dialogue
         state.
 

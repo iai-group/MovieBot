@@ -18,7 +18,7 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DialoguePolicy:
-    def __init__(self, ontology: Ontology, isBot: bool, new_user: bool):
+    def __init__(self, ontology: Ontology, isBot: bool, new_user: bool) -> None:
         """Loads all necessary parameters for the policy.
 
         Args:

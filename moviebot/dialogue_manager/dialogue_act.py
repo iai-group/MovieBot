@@ -10,7 +10,7 @@ from moviebot.core.intents.user_intents import UserIntents
 
 
 class DialogueAct:
-    def __init__(self, intent=None, params=None):
+    def __init__(self, intent=None, params=None) -> None:
         """Initializes a Dialogue Act.
 
         Args:

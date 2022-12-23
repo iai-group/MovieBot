@@ -10,7 +10,7 @@ from moviebot.core.utterance.utterance import Utterance
 
 
 class DialogueContext:
-    def __init__(self):
+    def __init__(self) -> None:
         """Initializes the basic parameters of the context."""
         self.movies_recommended = {}
         self.previous_utterances = []
