@@ -7,7 +7,7 @@ from typing import Any
 
 
 class Ontology:
-    def __init__(self, path: str):
+    def __init__(self, path: str) -> None:
         """Initializes the internal structures of the domain.
 
         Args:
