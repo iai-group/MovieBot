@@ -1,10 +1,12 @@
-"""Dialogue State Tracker updates the current dialogue state."""
+"""Dialogue state tracker updates the current dialogue state."""
 
 
 from copy import deepcopy
+from typing import Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.operator import Operator
@@ -13,9 +15,7 @@ from moviebot.nlu.annotation.values import Values
 
 
 class DialogueStateTracker:
-    """Dialogue State Tracker updates the current dialogue state."""
-
-    def __init__(self, config, isBot: bool):
+    def __init__(self, config: Dict, isBot: bool):
         """Loads the database and ontology and creates an initial dialogue
         state.
 
@@ -42,7 +42,7 @@ class DialogueStateTracker:
         """
 
     def _add_year_CIN(self, param):
-        """
+        """TODO
 
         Args:
             param:
@@ -72,11 +72,14 @@ class DialogueStateTracker:
                 value = value.replace("=", "").strip()
             self.dialogue_state.frame_CIN[param.slot] = value
 
-    def update_state_user(self, user_dacts):  # noqa: C901
-        """Updates the current dialogue state and context based on user DActs.
+    def update_state_user(  # noqa: C901
+        self, user_dacts: List[DialogueAct]
+    ) -> None:
+        """Updates the current dialogue state and context based on user
+        dialogue acts.
 
         Args:
-            user_dacts: Dialogue acts which is the output of NLU.
+            user_dacts: List of dialogue acts which is the output of NLU.
         """
         # re-filtering the dacts
         user_dacts_copy = deepcopy(user_dacts)
@@ -291,11 +294,13 @@ class DialogueStateTracker:
                     self.dialogue_state.agent_can_lookup = True
                     break
 
-    def update_state_agent(self, agent_dacts):
-        """Updates the current dialogue state and context based on agent DActs.
+    def update_state_agent(self, agent_dacts: List[DialogueAct]) -> None:
+        """Updates the current dialogue state and context based on agent
+        dialogue acts.
 
         Args:
-            agent_dacts: Dialogue acts which is the output of dialogue policy.
+            agent_dacts: List of dialogue acts which is the output of dialogue
+              policy.
         """
         # re-filtering the dacts
         agent_dacts_copy = deepcopy(agent_dacts)
@@ -323,13 +328,16 @@ class DialogueStateTracker:
                     self.ontology.user_requestable
                 )
 
-    def update_state_db(self, database_result=None, backup_results=None):
-        """Updates the state based on  the results fetched from the database.
+    def update_state_db(
+        self, database_result: List = None, backup_results: List = None
+    ) -> None:
+        """Updates the state based on the results fetched from the database.
 
         Args:
             database_result: The database results based on user information
-                needs. Defaults to None.
-            backup_results: Defaults to None.
+              needs. Defaults to None.
+            backup_results: Previous results stored in the database. Defaults
+              to None.
         """
 
         item_found = False
@@ -406,4 +414,4 @@ class DialogueStateTracker:
         Returns:
             The current user context.
         """
-        # return self.dialogue_context
+        return self.dialogue_context

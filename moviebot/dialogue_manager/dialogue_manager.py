@@ -1,11 +1,13 @@
-"""The Dialogue Manager controls the action-selection and state-tracking part
+"""The dialogue manager controls the action-selection and state-tracking part
 of the IAI MovieBot agent.
 
-The agent can access the state, context and actions via the Dialogue
-Manager. Dialogue manager also access the database and ontology to carry
+The agent can access the state, context and actions via the dialogue
+manager. Dialogue manager also access the database and ontology to carry
 on the conversation.
 """
 
+
+from typing import Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
@@ -20,21 +22,14 @@ from moviebot.nlu.annotation.operator import Operator
 
 
 class DialogueManager:
-    """The Dialogue Manager controls the action-selection and state-tracking
-    part of the IAI MovieBot agent.
-
-    The agent can access the state, context and actions via the Dialogue
-    Manager. Dialogue manager also access the database and ontology to
-    carry on the conversation.
-    """
-
-    def __init__(self, config, isBot, new_user):
-        """Initializes the components of class DialogueStateTracking and
-        ActionSelection.
+    def __init__(self, config: Dict, isBot: bool, new_user: bool):
+        """Initializes the dialogue manager including the state tracker and
+        dialogue policy.
 
         Args:
             config: The settings for components to be initialized.
             isBot: if the conversation is via bot or not.
+            new_user: Whether the user is new or not.
         """
         self.ontology = config["ontology"]
         self.database = config["database"]
@@ -45,14 +40,14 @@ class DialogueManager:
             self.ontology, self.isBot, self.new_user
         )
 
-    def start_dialogue(self, new_user: bool = False):
+    def start_dialogue(self, new_user: bool = False) -> List[DialogueAct]:
         """Starts the dialogue by generating a response from the agent.
 
         Args:
-            new_user: Defaults to False.
+            new_user: Whether the user is new or not. Defaults to False.
 
         Returns:
-            First agent response.
+            A list with the first agent response.
         """
         self.dialogue_state_tracker.dialogue_state.initialize()
         self.dialogue_state_tracker.dialogue_context.initialize()
@@ -66,24 +61,26 @@ class DialogueManager:
         self.dialogue_state_tracker.update_state_agent([agent_dact])
         return [agent_dact]
 
-    def receive_input(self, user_dacts):
+    def receive_input(self, user_dacts: List[DialogueAct]) -> None:
         """Receives the input from the agent and updates state/context.
 
         Args:
-            user_dacts: The user utterance in the form of Dialogue Acts.
+            user_dacts: The user utterance in the form of dialogue acts.
         """
         if user_dacts:
             self.dialogue_state_tracker.update_state_user(user_dacts)
 
-    def generate_output(self, restart: bool = False):
-        """Selects the next action based on the Dialogue Policy and generates
-        system response. Also accesses the database/ontology if required.
+    def generate_output(self, restart: bool = False) -> List[DialogueAct]:
+        """Selects the next action based on the dialogue policy and generates
+        system response.
+
+        Also accesses the database/ontology if required.
 
         Args:
             restart: Whether to restart the dialogue or not. Defaults to False.
 
         Returns:
-            The system response in the form of Dialogue Acts.
+            The system response in the form of dialogue acts list.
         """
         # access the database if required according to the dialogue state
         # and update the state
@@ -109,7 +106,7 @@ class DialogueManager:
 
         return agent_dacts
 
-    def database_lookup(self):
+    def database_lookup(self) -> List:
         """Performs a database query considering the current dialogue state
         (the current information needs).
 
@@ -123,8 +120,9 @@ class DialogueManager:
         return database_result
 
     def get_state(self) -> DialogueState:
-        """Returns the dialogue state. This can be used by the NLG to generate
-        an appropriate output.
+        """Returns the dialogue state.
+
+        This can be used by the NLG to generate an appropriate output.
 
         Returns:
             The current state of dialogue.
@@ -132,9 +130,9 @@ class DialogueManager:
         return self.dialogue_state_tracker.dialogue_state
 
     def get_context(self) -> DialogueContext:
-        """Returns current context of the conversation.
+        """Returns current context of the dialogue.
 
         Returns:
-            The current context of the conversation with a specific user.
+            The current context of the dialogue with a specific user.
         """
         return self.dialogue_state_tracker.dialogue_context

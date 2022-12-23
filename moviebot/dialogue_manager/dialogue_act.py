@@ -1,4 +1,7 @@
 """Dialogue Act defines the action user or agent takes during the conversation.
+
+The DialogueAct comprises of an intent with a list of parameters
+(DialogueActItem) for a particular dialogue.
 """
 
 
@@ -7,16 +10,12 @@ from moviebot.core.intents.user_intents import UserIntents
 
 
 class DialogueAct:
-    """The DialogueAct comprises of an intent with a list of parameters
-    (DialogueActItem) for a particular dialogue."""
-
     def __init__(self, intent=None, params=None):
-        """Initialises a Dialogue Act.
+        """Initializes a Dialogue Act.
 
         Args:
-            intent: intent of the DAct
-            parmas: parameters for the particular intent.
-
+            intent: Intent of the dialogue act.
+            params: Parameters for the particular intent.
         """
         self.intent = None
         if (
@@ -28,12 +27,11 @@ class DialogueAct:
 
         self.params = params or []
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Prints a dialogue act to debug the agent.
 
         Returns:
-            string representation of the Dialogue Act
-
+            String representation of the DialogueAct.
         """
         if self.intent:
             params = ", ".join([str(param) for param in self.params])
