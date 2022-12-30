@@ -40,7 +40,7 @@ class UserIntentsChecker:
         self._punctuation_remover()
         self.lemmatizer = WordNetLemmatizer()
         self.data_loader = DataLoader(config, self._lemmatize_value)
-        self.slot_values = self.data_loader.load_database()
+        self.slot_values = self.data_loader.load_slot_value_pairs()
         # load the tag-words from the DB
         tag_words_slots = self.data_loader.load_tag_words(
             config["tag_words_slots_path"]
