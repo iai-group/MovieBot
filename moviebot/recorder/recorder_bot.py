@@ -27,7 +27,7 @@ class RecorderBot:
         self.previous_dialogue_record = {}
 
     def get_user_history_path(self, user_id: str) -> str:
-        """Return full path to the conversation log for user.
+        """Returns full path to the conversation log for user.
 
         Args:
             user_id: User ID.
@@ -118,8 +118,8 @@ class RecorderBot:
         """Records the current dialogue utterance.
 
         Args:
-            bot_id: Id of the bot.
-            user_id: Id of the use.
+            bot_id: Bot ID.
+            user_id: User ID.
             record_data: Dictionary with data to record.
         """
         previous_record = self.previous_dialogue_record[bot_id][user_id]
