@@ -1,20 +1,17 @@
-"""Ontology is a class that loads ontology files (in .json format) into
-IAI MovieBot."""
+"""Ontology is a class that loads ontology files (in .json format) into IAI
+MovieBot."""
 
 
 import json
+from typing import Any
 
 
 class Ontology:
-    """Ontology is a class that loads ontology files (in .json format) into
-    IAI MovieBot."""
-
-    def __init__(self, path):
-        """Initializes the internal structures of the Domain
+    def __init__(self, path: str) -> None:
+        """Initializes the internal structures of the domain.
 
         Args:
-            path: path to load the ontology from
-
+            path: Path to load the ontology from.
         """
         self.ontology_file_path = path
         self.ontology = self.load_ontology()  # ontology as a dictionary
@@ -24,12 +21,11 @@ class Ontology:
         self.slots_annotation = self.ontology["slots_annotation"]
         self.multiple_values_CIN = self.ontology["multiple_values"]
 
-    def load_ontology(self):
-        """Loads the ontology file
+    def load_ontology(self) -> Any:
+        """Loads the ontology file.
 
         Returns:
-            nothing
-
+            Object representing the ontology loaded from JSON file.
         """
         with open(self.ontology_file_path) as ont_file:
             ontology = json.load(ont_file)
