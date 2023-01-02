@@ -123,7 +123,7 @@ class DataBase:
         return result
 
     def _get_value_for_query(self, slot: str, value: str) -> str:
-        """Convert value to SQL query condition.
+        """Converts value to SQL query condition.
 
         Args:
             slot: Slot the value belongs to.
