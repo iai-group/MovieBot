@@ -96,8 +96,8 @@ class ControllerTelegram(Controller):
         )
         (
             self.response[user_id],
-            self.record_data_agent[user_id],
             _,
+            self.record_data_agent[user_id],
         ) = self.agent[user_id].start_dialogue(
             user_fname=update.effective_user["first_name"]
         )
@@ -159,8 +159,8 @@ class ControllerTelegram(Controller):
         )
         (
             self.response[user_id],
-            self.record_data_agent[user_id],
             _,
+            self.record_data_agent[user_id],
         ) = self.agent[user_id].start_dialogue(
             user_fname=update.effective_user["first_name"], restart=True
         )
@@ -210,8 +210,8 @@ class ControllerTelegram(Controller):
         user_utterance = UserUtterance(update.message.to_dict())
         (
             self.response[user_id],
-            self.record_data_agent[user_id],
             self.user_options[user_id],
+            self.record_data_agent[user_id],
         ) = self.agent[user_id].continue_dialogue(
             user_utterance,
             self.user_options[user_id],

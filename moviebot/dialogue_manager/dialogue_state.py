@@ -63,10 +63,10 @@ class DialogueState:
         return str([x for x, y in offer_state.items() if y])
 
     def to_dict(self) -> Dict[str, Any]:
-        """Prints the state to debug the position of the agent.
+        """Returns the dialogue state as a dictionary.
 
         Returns:
-            A string having basic info about the state.
+            Dictionary having basic info about the state.
         """
         dstate = {}
         dstate["Previous_Information_Need"] = str(

@@ -116,7 +116,7 @@ class Agent:
         self, user_fname: str = None, restart: bool = False
     ) -> Union[
         Tuple[str, DialogueOptions],
-        Tuple[str, Dict[str, Any], DialogueOptions],
+        Tuple[str, DialogueOptions, Dict[str, Any]],
     ]:
         """Starts the conversation.
 
@@ -151,7 +151,7 @@ class Agent:
             record_data.update(
                 {"Agent_Output": agent_response, "Context": context}
             )
-            return agent_response, record_data, options
+            return agent_response, options, record_data
 
     def continue_dialogue(
         self,
@@ -160,7 +160,7 @@ class Agent:
         user_fname: str = None,
     ) -> Union[
         Tuple[str, DialogueOptions],
-        Tuple[str, Dict[str, Any], DialogueOptions],
+        Tuple[str, DialogueOptions, Dict[str, Any]],
     ]:
         """Performs the next dialogue according to user response and current
         state of dialogue.
@@ -217,7 +217,7 @@ class Agent:
                     for key, val in options.items()
                 }
                 record_data.update({"Agent_Options": str(_options)})
-            return agent_response, record_data, options
+            return agent_response, options, record_data
 
     def end_dialogue(self) -> None:
         """Ends the dialogue and save the experience if required."""
