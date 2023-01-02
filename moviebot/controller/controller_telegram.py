@@ -7,6 +7,7 @@ import logging
 import os
 import time
 from copy import deepcopy
+from typing import Dict
 
 import yaml
 from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -37,7 +38,7 @@ class ControllerTelegram(Controller):
 
     def __init__(self):
         """Initializes some basic structs for the Controller."""
-        self.agent = {}
+        self.agent: Dict[str, Agent] = {}
         self.configuration = None
         self.user_options = {}
         self.response = {}
@@ -89,7 +90,6 @@ class ControllerTelegram(Controller):
             )
         self.agent[user_id] = Agent(self.configuration)
         self.user_options[user_id] = {}
-        self.agent[user_id].initialize(user_id)
         print(
             f"Conversation is starting for user id = {user_id} and user name ="
             f" '{update.effective_user['first_name']}'"
@@ -153,7 +153,6 @@ class ControllerTelegram(Controller):
             )
         self.agent[user_id] = Agent(self.configuration)
         self.user_options[user_id] = {}
-        self.agent[user_id].initialize(user_id)
         print(
             f"Conversation is starting for user id = {user_id} and user name ="
             f" '{update.effective_user['first_name']}'"
@@ -201,7 +200,6 @@ class ControllerTelegram(Controller):
         if user_id not in self.agent:
             self.agent[user_id] = Agent(self.configuration)
             self.user_options[user_id] = {}
-            self.agent[user_id].initialize(user_id)
             self.agent[user_id].dialogue_manager.get_state().initialize()
             self.agent[user_id].dialogue_manager.get_context().initialize()
             print(
