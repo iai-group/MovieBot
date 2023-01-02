@@ -1,33 +1,25 @@
-"""Record all the details of each dialogue in the conversation in it's raw
-form.
-
-If required, it also saves the dialogue acts.
-"""
+"""Records the dialogue details of the conversation in it's raw form."""
 
 
 class DialogueRecorder:
-    """Record all the details of each dialogue in the conversation in it's raw
-    form.
-
-    If required, it also saves the dialogue acts.
-    """
-
-    def __init__(self, path, nlp):
+    def __init__(self, path: str, nlp: bool) -> None:
         """Initializes the recorder.
 
+        If required, it also saves the dialogue acts.
+
         Args:
-            path: Path where the file must be saved.
-            nlp: If the Dialogue Acts must also be saved.
+            path: Path to the save file.
+            nlp: If true, the Dialogue Acts will also be saved.
         """
         self.path = path
         self.nlp = nlp
         # TODO: Check if file or folder exists/create file or change name
         # TODO: create a file with unique ID here
 
-    def record(self):
+    def record(self) -> None:
         """Records the current dialogue utterance."""
         # TODO: record the data
 
-    def save(self):
+    def save(self) -> None:
         """Saves all the dialogues in the conversation to a file."""
         # TODO: save the file
