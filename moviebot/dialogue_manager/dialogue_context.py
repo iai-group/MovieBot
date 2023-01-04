@@ -15,16 +15,10 @@ class DialogueContext:
         self.movies_recommended = {}
         self.previous_utterances = []
 
-    def initialize(self, previous_recommendation={}):
-        """Initializes the dialogue context by loading previous context.
-
-        Args:
-            previous_recommendation: Set with previous recommendations.
-              Defaults to empty set.
-        """
+    def initialize(self) -> None:
+        """Initializes the dialogue context."""
         self.movies_recommended = {}
         self.previous_utterances = []
-        # self.movies_recommended.update(previous_recommendation)
 
     def add_utterance(self, utterance: Utterance) -> None:
         """Adds an utterance to the context.

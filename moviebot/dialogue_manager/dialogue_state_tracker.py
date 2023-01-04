@@ -32,46 +32,6 @@ class DialogueStateTracker:
         )
         self.dialogue_context = DialogueContext()
 
-    def initialize(self, config):
-        """Loads the database results and initialize the dialogue state and
-        context. This function also initializes the state if dialogue needs to
-        run from scratch.
-
-        Args:
-            config: The database and ontology to load for further use.
-        """
-
-    def _add_year_CIN(self, param):
-        """TODO
-
-        Args:
-            param:
-
-        """
-        if param.value in Values.__dict__.values():
-            return param.value
-        value = f"{str(param.op)} {param.value}"
-        if value not in Values.__dict__.values():
-            value = value.strip()
-        time_value = self.dialogue_state.frame_CIN[param.slot]
-        if time_value and (
-            (time_value.startswith(">") and value.startswith("<"))
-            or (time_value.startswith("<") and value.startswith(">"))
-        ):
-            if time_value.startswith(">"):
-                value = (
-                    f"between {time_value.split()[-1]} and {value.split()[-1]}"
-                )
-            else:
-                value = (
-                    f" between {value.split()[-1]} and {time_value.split()[-1]}"
-                )
-            self.dialogue_state.frame_CIN[param.slot] = value
-        else:
-            if value.startswith("="):
-                value = value.replace("=", "").strip()
-            self.dialogue_state.frame_CIN[param.slot] = value
-
     def update_state_user(  # noqa: C901
         self, user_dacts: List[DialogueAct]
     ) -> None:
