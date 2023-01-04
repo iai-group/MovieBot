@@ -22,7 +22,7 @@ class Operator(Enum):
     IN = 10
     BETWEEN = 11
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Prints the Operator
 
@@ -46,4 +46,4 @@ class Operator(Enum):
         elif self.name in ["AND", "OR", "NOT", "IN", "BETWEEN"]:
             opr = self.name
 
-        return f"{opr}"
+        return opr

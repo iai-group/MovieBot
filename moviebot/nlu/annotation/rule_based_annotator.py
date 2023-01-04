@@ -4,10 +4,12 @@ user utterance based on rules and keyword matching."""
 import re
 import string
 from copy import deepcopy
+from typing import Any, Callable, Dict, List
 
 from nltk import ngrams
 from nltk.corpus import stopwords
 
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.semantic_annotation import (
@@ -20,12 +22,21 @@ from moviebot.nlu.annotation.slots import Slots
 
 
 class RBAnnotator(SlotAnnotator):
-    """This is a rule based annotator.
+    def __init__(
+        self,
+        process_value: Callable[[str], str],
+        lemmatize_value: Callable[[str], str],
+        slot_values: Dict[str, Any],
+    ) -> None:
+        """A rule based annotator.
 
-    It uses regex and keyword matching for annotation.
-    """
+        It uses regex and keyword matching for annotation.
 
-    def __init__(self, process_value, lemmatize_value, slot_values):
+        Args:
+            process_value: Function for processing text.
+            lemmatize_value: Function for text lemmatization.
+            slot_values: Dictionary with slot-value pairs.
+        """
         self._process_value = process_value
         self._lemmatize_value = lemmatize_value
         self.slot_values = slot_values
@@ -78,14 +89,17 @@ class RBAnnotator(SlotAnnotator):
         for slot in [Slots.ACTORS.value, Slots.DIRECTORS.value]:
             self.person_names.update(deepcopy(self.slot_values[slot]))
 
-    def slot_annotation(self, slot, user_utterance):
-        """
+    def slot_annotation(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """Annotates user utterance for specified slot.
 
         Args:
-            slot:
-            utterance:
-            raw_utterance:
+            slot: Slot name.
+            utterance: User utterance.
 
+        Returns:
+            List of item constraints.
         """
         # utterance = utterance.replace('?','')
         if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
@@ -103,13 +117,17 @@ class RBAnnotator(SlotAnnotator):
                 params = func(slot, user_utterance)
         return params
 
-    def _genres_annotator(self, slot, user_utterance):
-        """
+    def _genres_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """Annotates user utterance for slot "genre".
 
         Args:
-            slot:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
 
+        Returns:
+            List of item constraints.
         """
         param = None
         values = self.slot_values[slot]
@@ -156,13 +174,19 @@ class RBAnnotator(SlotAnnotator):
         if param:
             return [param]
 
-    def _title_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie title. Sometimes the user
-        can just enter a part of the name.
+    def _title_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """This annotator is used to check the movie title.
+
+        Sometimes the user can just enter a part of the name.
 
         Args:
-            slot:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -230,13 +254,19 @@ class RBAnnotator(SlotAnnotator):
                     param = ItemConstraint(slot, Operator.EQ, gram.strip())
                     return [param]
 
-    def _keywords_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie keywords. If the ngram has
-        only keywords, it will be ignored.
+    def _keywords_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """This annotator is used to check the movie keywords.
+
+        If the ngram has only keywords, it will be ignored.
 
         Args:
-            slot:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -283,13 +313,18 @@ class RBAnnotator(SlotAnnotator):
                             )
                             return [param]
 
-    def _person_name_annotator(self, user_utterance, slots=None):
+    def _person_name_annotator(
+        self, user_utterance: UserUtterance, slots: List[str] = None
+    ) -> List[ItemConstraint]:
         """This annotator is used to check the movie actor and/or director
         names. Sometimes the user can just enter a part of the name.
 
         Args:
-            utterance:
-            slots:  (Default value = None)
+            utterance: User utterance.
+            slots: List of slot names.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         if not slots:
@@ -326,14 +361,17 @@ class RBAnnotator(SlotAnnotator):
             if len(params) > 0:
                 return params
 
-    def _year_annotator(self, slot, user_utterance):  # noqa: C901
-        """
+    def _year_annotator(  # noqa: C901
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """Annotates user utterance for slot "year".
 
         Args:
-            slot:
-            user_utterance:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
 
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         potential_item_constraint = []

@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 class DataLoader:
     def __init__(
-        self, config: Dict[str, Any], lemmatize_value: Callable
+        self,
+        config: Dict[str, Any],
+        lemmatize_value: Callable[[str, bool], str],
     ) -> None:
         """LoadData class loads the database as slot-value pairs and the
         tag-words for slots.
