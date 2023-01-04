@@ -8,7 +8,7 @@ be updated using the dialogue state tracker.
 
 
 from copy import deepcopy
-from typing import Iterable
+from typing import Any, Dict, Iterable
 
 from moviebot.ontology.ontology import Ontology
 
@@ -57,11 +57,11 @@ class DialogueState:
         }
         return str([x for x, y in offer_state.items() if y])
 
-    def _dict(self) -> str:
-        """Prints the state to debug the position of the agent.
+    def to_dict(self) -> Dict[str, Any]:
+        """Returns the dialogue state as a dictionary.
 
         Returns:
-            A string having basic info about the state.
+            Dictionary having basic info about the state.
         """
         dstate = {}
         dstate["Previous_Information_Need"] = str(
@@ -85,7 +85,7 @@ class DialogueState:
 
     def __str__(self) -> str:
         """Returns the string representation of the dialogue state."""
-        return str(self._dict())
+        return str(self.to_dict())
 
     def initialize(self) -> None:
         """Initializes the state if the dialogue starts again."""
