@@ -33,7 +33,6 @@ class Controller(ABC):
     def initialize_agent(self) -> Agent:
         """Initializes and returns an agent based on configuration."""
         agent = Agent(self.configuration)
-        agent.initialize()
         logger.debug(
             "The components for the conversation are initialized successfully."
         )

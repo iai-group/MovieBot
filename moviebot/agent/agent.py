@@ -3,9 +3,11 @@
 
 import logging
 import os
+from typing import Any, Dict, List, Tuple, Union
 
-from moviebot.core.utterance.utterance import AgentUtterance
+from moviebot.core.utterance.utterance import AgentUtterance, UserUtterance
 from moviebot.database.database import DataBase
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG
 from moviebot.nlu.nlu import NLU
@@ -14,9 +16,10 @@ from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
 
 logger = logging.getLogger(__name__)
+DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
 
 
-def _get_ontology(ontology_path):
+def _get_ontology(ontology_path: str) -> Ontology:
     """Checks if the ontology exists and get the file.
 
     Args:
@@ -28,12 +31,10 @@ def _get_ontology(ontology_path):
     if os.path.isfile(ontology_path):
         return Ontology(ontology_path)
     else:
-        raise FileNotFoundError(
-            "Ontology file {} not found.".format(ontology_path)
-        )
+        raise FileNotFoundError(f"Ontology file {ontology_path} not found.")
 
 
-def _get_db(db_path):
+def _get_db(db_path: str) -> DataBase:
     """Checks if the database file exists and get the file.
 
     Args:
@@ -45,71 +46,44 @@ def _get_db(db_path):
     if os.path.isfile(db_path):
         return DataBase(db_path)
     else:
-        raise FileNotFoundError("Database file {} not found.".format(db_path))
+        raise FileNotFoundError(f"Database file {db_path} not found.")
 
 
 class Agent:
-    """The class Agent controls all the components of the basic architecture of
-    IAI MovieBot.
+    def __init__(self, config: Dict[str, Any] = None) -> None:
+        """The class Agent controls all the components of the basic architecture
+        of IAI MovieBot.
 
-    Initially the Conversational Agent is able to interact with human
-    users via text.
-    """
-
-    def __init__(self, config=None):
-        """Initializes the internal structure of the agent and other
-        components.
+        Initially the Conversational Agent is able to interact with human
+        users via text.
 
         Args:
             config: Configuration. Defaults to None.
         """
         self.config = config
+        self.new_user = False
 
-        # Parameters that need to be loaded using the configuration file
-        self.record = False
-        self.recorder = None
-        self.ontology = None
-        self.database = None
-        self.slot_values_path = None
-        self.nlu = None
-        self.nlg = None
-        self.isBot = False
-        self.new_user = False  # a parameter for Bot
-        self.bot_recorder = None
-
-        # Dialogue component agent controls
-        self.dialogue_manager = None
-
-    def initialize(self, user_id=None):  # noqa: C901
-        """Initializes the components and set their values as on the
-        configuration.
-
-        Args:
-            user_id: User id. Defaults to None.
-        """
-        if (
-            "CONVERSATION_LOGS" in self.config
-            and self.config["CONVERSATION_LOGS"]["save"]
-        ):
-            self.record = True
-            self.recorder = DialogueRecorder(
+        self.record = self.config.get("CONVERSATION_LOGS", {}).get("save")
+        self.recorder = (
+            DialogueRecorder(
                 self.config["CONVERSATION_LOGS"]["path"],
                 self.config["CONVERSATION_LOGS"]["nlp"],
             )
-        if "DATA" in self.config:
-            if "ontology_path" in self.config["DATA"]:
-                self.ontology = _get_ontology(
-                    self.config["DATA"]["ontology_path"]
-                )
-            if "db_path" in self.config["DATA"]:
-                self.database = _get_db(self.config["DATA"]["db_path"])
-            if "slot_values_path" in self.config["DATA"]:
-                self.slot_values_path = self.config["DATA"]["slot_values_path"]
+            if self.record
+            else None
+        )
+        ontology_path = self.config.get("DATA", {}).get("ontology_path")
+        self.ontology = _get_ontology(ontology_path) if ontology_path else None
+        db_path = self.config.get("DATA", {}).get("db_path")
+        self.database = _get_db(db_path) if db_path else None
+        self.slot_values_path = self.config.get("DATA", {}).get(
+            "slot_values_path"
+        )
 
-        nlu_tag_words_slots_path = None
-        if "NLU" in self.config and "tag_words_slots" in self.config["NLU"]:
-            nlu_tag_words_slots_path = self.config["NLU"]["tag_words_slots"]
-        else:
+        nlu_tag_words_slots_path = self.config.get("NLU", {}).get(
+            "tag_words_slots"
+        )
+        if not nlu_tag_words_slots_path:
             raise EnvironmentError(
                 "Conversational Agent: No tag words provided for slots in user"
                 " utterance"
@@ -125,29 +99,25 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        if self.config.get("TELEGRAM", False):
-            self.isBot = True
-            # self.new_user = self.config['new_user'][user_id]
+        self.isBot = self.config.get("TELEGRAM", False)
 
         self.dialogue_manager = DialogueManager(
             data_config, self.isBot, self.new_user
         )
 
-        if self.isBot:
-            if (
-                self.config["BOT_HISTORY"]
-                and self.config["BOT_HISTORY"]["save"]
-            ):
-                if self.config["BOT_HISTORY"]["path"]:
-                    self.bot_recorder = RecorderBot(
-                        self.config["BOT_HISTORY"]["path"]
-                    )
-                else:
-                    raise ValueError(
-                        "Path to save conversation is not provided."
-                    )
+        if self.isBot and self.config.get("BOT_HISTORY", {}).get("save"):
+            path = self.config.get("BOT_HISTORY", {}).get("path")
+            if path:
+                self.bot_recorder = RecorderBot(path)
+            else:
+                raise ValueError("Path to save conversation is not provided.")
 
-    def start_dialogue(self, user_fname=None, restart: bool = False):
+    def start_dialogue(
+        self, user_fname: str = None, restart: bool = False
+    ) -> Union[
+        Tuple[str, DialogueOptions],
+        Tuple[str, DialogueOptions, Dict[str, Any]],
+    ]:
         """Starts the conversation.
 
         Args:
@@ -156,7 +126,8 @@ class Agent:
               False.
 
         Returns:
-            Agent response.
+            Agent response, dialogue options for quick reply, and data to be
+              recorded if self.isBot is true.
         """
         if not restart:
             agent_dacts = self.dialogue_manager.start_dialogue(self.new_user)
@@ -175,26 +146,34 @@ class Agent:
             logger.debug(str(self.dialogue_manager.get_context()))
             return agent_response, options
         else:
-            record_data = self.dialogue_manager.get_state()._dict()
-            record_data.update({"Agent_Output": agent_response})
+            record_data = self.dialogue_manager.get_state().to_dict()
+            context = self.dialogue_manager.get_context().movies_recommended
             record_data.update(
-                {
-                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa: E501
-                }
+                {"Agent_Output": agent_response, "Context": context}
             )
-            return agent_response, record_data, options
+            return agent_response, options, record_data
 
-    def continue_dialogue(self, user_utterance, user_options, user_fname=None):
+    def continue_dialogue(
+        self,
+        user_utterance: UserUtterance,
+        user_options: DialogueOptions,
+        user_fname: str = None,
+    ) -> Union[
+        Tuple[str, DialogueOptions],
+        Tuple[str, DialogueOptions, Dict[str, Any]],
+    ]:
         """Performs the next dialogue according to user response and current
         state of dialogue.
 
         Args:
             user_utterance: The input received from the user.
-            user_options:
+            user_options: Dialogue options that were provided to the user in
+              previous turn.
             user_fname: User's first name. Defaults to None.
 
         Returns:
-            The agent response.
+            Agent response, dialogue options for quick reply, and data to be
+              recorded if self.isBot is true.
         """
         self.dialogue_manager.get_state().user_utterance = user_utterance
         self.dialogue_manager.get_context().add_utterance(user_utterance)
@@ -222,31 +201,34 @@ class Agent:
             logger.debug(str(self.dialogue_manager.get_context()))
             return agent_response, options
         else:
-            record_data = {"User_Input": user_utterance.get_text()}
-            record_data.update(self.dialogue_manager.get_state()._dict())
-            record_data.update({"Agent_Output": agent_response})
+            record_data = self.dialogue_manager.get_state().to_dict()
+            context = self.dialogue_manager.get_context().movies_recommended
             record_data.update(
                 {
-                    "Context": self.dialogue_manager.get_context().movies_recommended  # noqa: E501
+                    "Agent_Output": agent_response,
+                    "User_Input": user_utterance.get_text(),
+                    "Context": context,
                 }
             )
-            if options:
-                _options = {str(x): y for x, y in options.items()}
-                for key, val in _options.items():
-                    if isinstance(val, list):
-                        _options[key] = val[0]
-                record_data.update({"Agent_Options": str(_options)})
-            return agent_response, record_data, options
 
-    def end_dialogue(self):
+            if options:
+                _options = {
+                    str(key): val[0] if isinstance(val, list) else val
+                    for key, val in options.items()
+                }
+                record_data.update({"Agent_Options": str(_options)})
+            return agent_response, options, record_data
+
+    def end_dialogue(self) -> None:
         """Ends the dialogue and save the experience if required."""
         # TODO: Save the experience
+        pass
 
-    def terminated_dialogue(self):
+    def terminated_dialogue(self) -> bool:
         """Checks if the dialogue is terminated by either user or the number of
         dialogues have reached a maximum limit.
 
         Returns:
-            True or False.
+            True if conversation is finished.
         """
         return self.dialogue_manager.get_state().at_terminal_state

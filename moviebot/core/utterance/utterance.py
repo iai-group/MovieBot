@@ -3,46 +3,54 @@
 
 Classes that contain basic information about the utterance.
 """
-from typing import Text, List, Dict, Any
-from abc import ABC
 import datetime
+from abc import ABC
+from typing import Any, Dict, List
 
 from moviebot.nlu.text_processing import Token, Tokenizer
 
 
 class Utterance(ABC):
-    """This is an abstract class for storing utterances. It contains
-    relevant information about the utterance like what was said, who said
-    it and when.
-    """
+    def __init__(self, message: Dict[str, Any]) -> None:
+        """This is an abstract class for storing utterances.
 
-    def __init__(self, message: Dict[Text, Any]) -> None:
-        """Initializes the Utterance class with an utterance and a timestamp.
+        The class contains relevant information about the utterance like what
+        was said, who said it and when.
 
         Args:
-            message (Dict[Text, Any]): Dictionary should contain text and date
-                fields.
-
+            message: Dictionary should contain text and date fields.
         """
         self._utterance = message.get("text", "")
         self._timestamp = self._set_timestamp(message.get("date"))
 
-    def get_source(self) -> Text:
+    def get_source(self) -> str:
         """Returns the name of the inherited class which represents the source
         of the utterance.
 
         Returns:
-            str: Name of the source class.
+            Name of the source class.
         """
         return self.__class__.__name__
 
-    def get_text(self) -> Text:
+    def get_text(self) -> str:
+        """Returns raw utterance text."""
         return self._utterance
 
-    def get_timestamp(self) -> Text:
+    def get_timestamp(self) -> str:
+        """Returns utterance timestamp in string format."""
         return str(self._timestamp)
 
     def _set_timestamp(self, timestamp: int = None) -> datetime.datetime:
+        """Create new datetime object from timestamp.
+
+        If timestamp is None, generates new datetime object with current time.
+
+        Args:
+            timestamp: Timestamp when the message was created.
+
+        Returns:
+            Datetime object from timestamp.
+        """
         if timestamp:
             return datetime.datetime.fromtimestamp(timestamp)
         return datetime.datetime.now(datetime.timezone.utc)
