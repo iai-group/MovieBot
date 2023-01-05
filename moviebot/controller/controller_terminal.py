@@ -3,6 +3,7 @@ conversation while the user interacts with the agent using python console.
 """
 
 import questionary
+from questionary.constants import INDICATOR_SELECTED
 
 from moviebot.controller.controller import Controller
 from moviebot.core.utterance.utterance import UserUtterance
@@ -29,10 +30,16 @@ class ControllerTerminal(Controller):
                     qmark="",
                 ).ask()
             else:
-                options = [item[0] for item in user_options.values()]
-                formatted_options = "\n     ".join(options)
+                options = [
+                    item if isinstance(item, str) else item[0]
+                    for item in user_options.values()
+                ]
+                formatted_options = f"\n    {INDICATOR_SELECTED}  ".join(
+                    options
+                )
                 answer = questionary.autocomplete(
-                    f"{agent_prompt}     {formatted_options}\n {user_prompt}",
+                    f"{agent_prompt}    {INDICATOR_SELECTED}  "
+                    f"{formatted_options}\n {user_prompt}",
                     qmark="",
                     choices=options,
                 ).ask()
