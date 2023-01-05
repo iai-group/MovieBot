@@ -38,7 +38,7 @@ class DialogueAct:
         """Prints a dialogue act to debug the agent.
 
         Returns:
-            string representation of the Dialogue Act
+            String representation of the dialogue act.
 
         """
         if self.intent:

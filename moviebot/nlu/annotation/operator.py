@@ -23,13 +23,7 @@ class Operator(Enum):
     BETWEEN = 11
 
     def __str__(self) -> str:
-        """
-        Prints the Operator
-
-        Returns:
-            a string representation of the Operator
-
-        """
+        """Returns a string representation of the Operator."""
         opr = "UNK"
         if self.name == "EQ":
             opr = "="

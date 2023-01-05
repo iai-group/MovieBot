@@ -85,7 +85,7 @@ PATTERN_WATCHED = [
 
 
 class UserIntentsChecker:
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any]) -> None:
         """CheckUserIntents is a class to detect the intents for the class NLU.
 
         It receives the utterance and matches it to the patterns created. If
@@ -419,8 +419,8 @@ class UserIntentsChecker:
     def _filter_dact(  # noqa: C901
         self, dact: DialogueAct, raw_utterance: str
     ) -> None:
-        """Filters the DActs parameters and remove if one is a sub-string of
-        another.
+        """Filters and removes dialogue act parameters if one is a sub-string
+        of another.
 
         More filters are applied to remove the params or
         change slots in a specified sequence if these qualify specific

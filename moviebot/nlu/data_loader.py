@@ -21,7 +21,7 @@ class DataLoader:
         config: Dict[str, Any],
         lemmatize_value: Callable[[str, bool], str],
     ) -> None:
-        """LoadData class loads the database as slot-value pairs and the
+        """DataLoader class loads the database as slot-value pairs and the
         tag-words for slots.
 
         This data will be used by NLU to check user intents.

@@ -23,8 +23,8 @@ DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
 
 class NLU:
     def __init__(self, config):
-        """NLU is a basic natural language understander to generate DActs for
-        the Conversational Agent.
+        """NLU is a basic natural language understander to generate dialogue
+        acts for the Conversational Agent.
 
         Implementation of this NLU is designed to work for Slot-Filling
         applications. The purpose of this class is to provide a quick way of
