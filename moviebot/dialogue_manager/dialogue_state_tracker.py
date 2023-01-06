@@ -2,7 +2,7 @@
 
 
 from copy import deepcopy
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
@@ -15,7 +15,7 @@ from moviebot.nlu.annotation.values import Values
 
 
 class DialogueStateTracker:
-    def __init__(self, config: Dict, isBot: bool) -> None:
+    def __init__(self, config: Dict[str, Any], isBot: bool) -> None:
         """Loads the database and ontology and creates an initial dialogue
         state.
 
@@ -289,7 +289,9 @@ class DialogueStateTracker:
                 )
 
     def update_state_db(
-        self, database_result: List = None, backup_results: List = None
+        self,
+        database_result: List[Dict[str, Any]] = None,
+        backup_results: List[Dict[str, Any]] = None,
     ) -> None:
         """Updates the state based on the results fetched from the database.
 

@@ -29,5 +29,5 @@ class DialogueContext:
         self.previous_utterances.append(utterance)
 
     def __str__(self) -> str:
-        """Returns the string representation of the movie recommended."""
+        """Returns the string representation of the movies recommended."""
         return str(self.movies_recommended)

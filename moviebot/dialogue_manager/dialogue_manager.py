@@ -7,7 +7,7 @@ on the conversation.
 """
 
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
@@ -22,7 +22,9 @@ from moviebot.nlu.annotation.operator import Operator
 
 
 class DialogueManager:
-    def __init__(self, config: Dict, isBot: bool, new_user: bool) -> None:
+    def __init__(
+        self, config: Dict[str, Any], isBot: bool, new_user: bool
+    ) -> None:
         """Initializes the dialogue manager including the state tracker and
         dialogue policy.
 
@@ -106,7 +108,7 @@ class DialogueManager:
 
         return agent_dacts
 
-    def database_lookup(self) -> List:
+    def database_lookup(self) -> List[Dict[str, Any]]:
         """Performs a database query considering the current dialogue state
         (the current information needs).
 

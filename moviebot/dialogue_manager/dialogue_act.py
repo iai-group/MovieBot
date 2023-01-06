@@ -1,21 +1,28 @@
 """Dialogue Act defines the action user or agent takes during the conversation.
 
-The DialogueAct comprises of an intent with a list of parameters
+The DialogueAct comprises an intent with a list of parameters
 (DialogueActItem) for a particular dialogue.
 """
 
 
+from typing import List, Union
+
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
 
 
 class DialogueAct:
-    def __init__(self, intent=None, params=None) -> None:
+    def __init__(
+        self,
+        intent: Union[AgentIntents, UserIntents] = None,
+        params: List[ItemConstraint] = None,
+    ) -> None:
         """Initializes a Dialogue Act.
 
         Args:
-            intent: Intent of the dialogue act.
-            params: Parameters for the particular intent.
+            intent: Intent of the dialogue act. Defaults to None.
+            params: Parameters for the particular intent. Defaults to None.
         """
         self.intent = None
         if (

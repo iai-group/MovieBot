@@ -4,7 +4,7 @@ agent based on the previous conversation and current dialogue."""
 
 import random
 from copy import deepcopy
-from typing import List
+from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
@@ -266,7 +266,9 @@ class DialoguePolicy:
                     )
         return agent_dacts
 
-    def _generate_examples(self, database_result: List, slot: str) -> str:
+    def _generate_examples(
+        self, database_result: List[Dict[str, Any]], slot: str
+    ) -> str:
         """Generates a list of examples for specific slot.
 
         Args:

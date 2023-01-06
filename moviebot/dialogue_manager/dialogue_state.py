@@ -8,14 +8,14 @@ be updated using the dialogue state tracker.
 
 
 from copy import deepcopy
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, List
 
 from moviebot.ontology.ontology import Ontology
 
 
 class DialogueState:
     def __init__(
-        self, ontology: Ontology, slots: Iterable, isBot: bool
+        self, ontology: Ontology, slots: List[str], isBot: bool
     ) -> None:
         """Initializes the SlotFilling dialogue state structures.
 
