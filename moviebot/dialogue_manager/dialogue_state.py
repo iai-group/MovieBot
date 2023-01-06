@@ -1,29 +1,23 @@
-"""DialogueState models the state of the agent.
+"""Dialogue state models the state of the agent.
 
 It is a basic SlotFilling model that keeps account of the question
 agents must answer or ask from the user. It also keeps track of the
 recommendation agent makes and previous states of the agent. State will
-be updated using the Dialogue State Tracker.
+be updated using the dialogue state tracker.
 """
 
 
 from copy import deepcopy
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from moviebot.ontology.ontology import Ontology
 
 
 class DialogueState:
-    """DialogueState models the state of the agent.
-
-    It is a basic SlotFilling model that keeps account of the question
-    agents must answer or ask from the user. It also keeps track of the
-    recommendation agent makes and previous states of the agent. State
-    will be updated using the Dialogue State Tracker.
-    """
-
-    def __init__(self, ontology: Ontology, slots, isBot):
-        """Initializes the Slot Filling Dialogue State structures.
+    def __init__(
+        self, ontology: Ontology, slots: List[str], isBot: bool
+    ) -> None:
+        """Initializes the SlotFilling dialogue state structures.
 
         Args:
             ontology: The ontology of the domain.
@@ -49,7 +43,8 @@ class DialogueState:
         )
         self.last_user_dacts = None  # the current user act
 
-    def _agent_offer_state(self):
+    def _agent_offer_state(self) -> str:
+        """Returns string representation of the agent's offer state."""
         offer_state = {
             "agent_req_filled": self.agent_req_filled,
             "agent_can_lookup": self.agent_can_lookup,
@@ -88,11 +83,12 @@ class DialogueState:
         dstate["Agent_Offer_State"] = self._agent_offer_state()
         return dstate
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Returns the string representation of the dialogue state."""
         return str(self.to_dict())
 
-    def initialize(self):
-        """Initializes/resets the state if the dialogue starts again."""
+    def initialize(self) -> None:
+        """Initializes the state if the dialogue starts again."""
         # set the structure of CIN based of their value count
         for slot in self.frame_CIN:
             if slot in self.ontology.multiple_values_CIN:
