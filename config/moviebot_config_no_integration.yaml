@@ -24,3 +24,5 @@ BOT_TOKEN_PATH: config/bot_token.yaml
 BOT_HISTORY: # save the conversational logs for Telegram users
     save: True
     path: conversation_history
+
+DEBUG: False

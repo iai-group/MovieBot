@@ -14,8 +14,7 @@ def run(config):
     """Runs execute_agent in ControllerTelegram and starts flask server.
 
     Args:
-        config: agent settings
-
+        config: Agent configuration.
     """
     controller_flask.execute_agent(config)
     app.run(host="0.0.0.0", port=environ.get("PORT", 5001))
@@ -33,11 +32,11 @@ def receive_message():
 
 
 def action(output):
-    """Gets user id and payload from output and runs get_message in the controller.
+    """Gets user id and payload from output and runs get_message in the
+    controller.
 
     Args:
         output: output from request
-
     """
     event = output["entry"][0]["messaging"][0]
     user_id = event["sender"]["id"]
@@ -46,7 +45,7 @@ def action(output):
     print(payload)
     if payload is not None:
         run_method_response = controller_flask.run_method(user_id, payload)
-        if run_method_response == True:
+        if run_method_response is True:
             return controller_flask.send_message(user_id, payload)
         elif run_method_response:
             return run_method_response

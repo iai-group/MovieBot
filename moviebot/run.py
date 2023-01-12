@@ -4,6 +4,7 @@ import sys
 
 import yaml
 
+from moviebot.controller import server
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 
@@ -108,8 +109,8 @@ if __name__ == "__main__":
         if POLLING:
             CONTROLLER = ControllerTelegram()
             CONTROLLER.execute_agent(CONFIGURATION)
-        # else:
-        #     server.run(CONFIGURATION)
+        else:
+            server.run(CONFIGURATION)
     else:
         CONTROLLER = ControllerTerminal(CONFIGURATION)
         CONTROLLER.execute_agent()

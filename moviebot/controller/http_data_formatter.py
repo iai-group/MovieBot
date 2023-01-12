@@ -1,21 +1,14 @@
-"""This file contains a Messenger class which sends post requests to the facebook API."""
+"""This file contains a Messenger class to format data for HTTP requests."""
 
-import requests
+from typing import Any, Dict, List
 
 
-class MessengerFlask:
-    def __init__(self, user_id, token):
-        """Initializes structs and uri's for Messenger."""
+class HTTPDataFormatter:
+    def __init__(self, user_id: str) -> None:
+        """Initializes object to format utterance for HTTP requests."""
 
         self.user_id = user_id
         self.buttons = {}
-        self.token = token
-        self.typing_on_uri = (
-            "https://graph.facebook.com/v2.6/me/messages?access_token=" + self.token
-        )
-        self.mark_seen_uri = (
-            "https://graph.facebook.com/v2.6/me/messages?access_token=" + self.token
-        )
 
     def quickreply(self, text, title, payload):
         """Posts a list of quickreply buttons.
@@ -40,15 +33,16 @@ class MessengerFlask:
         }
         return quick_reply
 
-    def create_buttons(self, options):
+    def create_buttons(
+        self, options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """Creates a list of buttons.
 
         Args:
-            options: structs with values
+            options: List of options to use for the buttons.
 
         Returns:
-            list of buttons
-
+            List of buttons
         """
         buttons = []
         for option in options:
@@ -72,13 +66,13 @@ class MessengerFlask:
 
     def url_button(self, title, options):
         """Posts a button template of type url_button.
+
         Args:
             title: button title
             options: structs with values
 
         Returns:
             post request containing url_button json and url_button uri
-
         """
         buttons = self.create_buttons(options)
         template = {
@@ -96,24 +90,17 @@ class MessengerFlask:
         }
         return template
 
-    def typing_on(self):
-        """Displays typing bubble."""
-        typing = {"recipient": {"id": self.user_id}, "sender_action": "typing_on"}
-        return requests.post(self.typing_on_uri, json=typing).json()
-
-    def mark_seen(self):
-        """Displays mark seen icon until new reply is recieved."""
-        mark_seen = {"recipient": {"id": self.user_id}, "sender_action": "mark_seen"}
-        return requests.post(self.mark_seen_uri, json=mark_seen).json()
-
-    def text(self, message, intent="UNK"):
+    def text(
+        self, message: str, intent: str = "UNK"
+    ) -> Dict[str, Dict[str, str]]:
         """Sends text response.
+
         Args:
-            message: string
+            message: Message to send.
+            intent: Intent of the message. Defaults to 'UNK'.
 
         Returns:
-            post request with text json and text uri
-
+            Object to send to Flask server.
         """
         text = {
             "recipient": {"id": self.user_id},
@@ -121,7 +108,7 @@ class MessengerFlask:
         }
         return text
 
-    def template(self, buttons, image, url, subtitle, title):
+    def template(self, buttons, image, url, subtitle, title) -> Dict[str, Any]:
         """Sends a template response.
 
         Args:
@@ -133,9 +120,8 @@ class MessengerFlask:
 
         Returns:
             post request with template json and template uri
-
         """
-        template = {
+        return {
             "recipient": {"id": self.user_id},
             "message": {
                 "attachment": {
@@ -159,7 +145,6 @@ class MessengerFlask:
                 }
             },
         }
-        return template
 
     def buttons_template(self, buttons, text, intent="UNK"):
         """Sends a button template with different button types.
@@ -170,7 +155,6 @@ class MessengerFlask:
 
         Returns:
             post request with button template json and button template uri
-
         """
         template = {
             "recipient": {"id": self.user_id},
