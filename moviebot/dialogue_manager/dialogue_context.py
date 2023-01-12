@@ -1,35 +1,33 @@
 """DialogueContext models a record of previous conversation.
-It keeps track of the recommendations agent made with user response to those
-recommendations.
+
+It keeps track of the recommendations agent made with user response to
+those recommendations. In addition, it keeps track of all previous
+utterances from both the user and the agent.
 """
 
-__author__ = 'Javeria Habib'
+
+from moviebot.core.utterance.utterance import Utterance
 
 
 class DialogueContext:
-    """DialogueContext models a record of previous conversation. It keeps track
-    of the recommendations agent made with user response to those
-    recommendations. I addition it keeps track of all previous utterances from
-    both user and the agent."""
-
-    def __init__(self):
-        """Initializes the basic parameters of the context"""
+    def __init__(self) -> None:
+        """Initializes the basic parameters of the context."""
         self.movies_recommended = {}
         self.previous_utterances = []
 
-    def initialize(self, previous_recommendation={}):
-        """Initialize the dialogue context by loading previous context
+    def initialize(self) -> None:
+        """Initializes the dialogue context."""
+        self.movies_recommended = {}
+        self.previous_utterances = []
+
+    def add_utterance(self, utterance: Utterance) -> None:
+        """Adds an utterance to the context.
 
         Args:
-            previous_recommendation:  (Default value = {})
-
+            utterance: Utterance to add.
         """
-        self.movies_recommended = {}
-        self.previous_utterances = []
-        # self.movies_recommended.update(previous_recommendation)
-
-    def add_utterance(self, utterance):
         self.previous_utterances.append(utterance)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Returns the string representation of the movies recommended."""
         return str(self.movies_recommended)

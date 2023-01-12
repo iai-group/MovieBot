@@ -1,26 +1,30 @@
 """This module is used for preprocessing user inputs before further analysis.
-The user utterance is broken into tokens which contain additional information
-about the it.
+
+The user utterance is broken into tokens which contain additional
+information about the it.
 """
 
-from typing import Text, List, Optional
-
 import string
+from typing import List, Optional, Text
+
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
 
 
 class Span:
-    """Subpart of an utterance. Contains mapping of start and end positions in
-    the original utterance.
+    """Subpart of an utterance.
+
+    Contains mapping of start and end positions in the original
+    utterance.
     """
 
-    def __init__(self,
-                 text: Text,
-                 start: int,
-                 end: Optional[int] = None,
-                 lemma: Optional[Text] = None) -> None:
+    def __init__(
+        self,
+        text: Text,
+        start: int,
+        end: Optional[int] = None,
+        lemma: Optional[Text] = None,
+    ) -> None:
         self.text = text
 
         self.start = start
@@ -32,21 +36,20 @@ class Span:
         """Checks whether two spans overlap in the original utterance.
 
         Args:
-            other (Span): Span to compare against
+            other: Span to compare against.
 
         Returns:
-            bool: True if there is overlap.
+            True if there is overlap.
         """
-        return (self.start <= other.start
-                and self.end > other.start) or (other.start <= self.start
-                                                and other.end > self.start)
+        return (self.start <= other.start and self.end > other.start) or (
+            other.start <= self.start and other.end > self.start
+        )
 
     def __eq__(self, other):
-        return (self.start, self.end, self.text, self.lemma) == (
-            other.start,
-            other.end,
-            other.text,
-            other.lemma,
+        s_dict = vars(self)
+        o_dict = vars(other)
+        return type(self) is type(other) and all(
+            (s_dict.get(k) == v for k, v in o_dict.items())
         )
 
     def __lt__(self, other):
@@ -54,8 +57,8 @@ class Span:
 
     def __add__(self, other):
         sorted_spans = sorted((self, other))
-        text = ' '.join(span.text for span in sorted_spans)
-        lemma = ' '.join(span.lemma for span in sorted_spans)
+        text = " ".join(span.text for span in sorted_spans)
+        lemma = " ".join(span.lemma for span in sorted_spans)
 
         return Span(text, sorted_spans[0].start, sorted_spans[1].end, lemma)
 
@@ -67,83 +70,84 @@ class Span:
 
 
 class Token(Span):
-    """Token is a smaller unit than Span. While Span can stretch over several
-    words, Token contains only single words. Token stores additional
-    information about the word.
+    """Token is a smaller unit than Span.
+
+    While Span can stretch over several words, Token contains only
+    single words. Token stores additional information about the word.
     """
 
-    def __init__(self,
-                 text: Text,
-                 start: int,
-                 end: Optional[int] = None,
-                 lemma: Optional[Text] = None,
-                 is_stop: Optional[bool] = False) -> None:
-
+    def __init__(
+        self,
+        text: Text,
+        start: int,
+        end: Optional[int] = None,
+        lemma: Optional[Text] = None,
+        is_stop: Optional[bool] = False,
+    ) -> None:
         super().__init__(text, start, end, lemma)
         self.is_stop = is_stop
 
 
 class Tokenizer:
-    """This class contains methods needed for preprocessing sentences.
-    """
+    """This class contains methods needed for preprocessing sentences."""
 
     def __init__(self, additional_stop_words: List[Text] = None) -> None:
-        stop_words = stopwords.words('english')
+        stop_words = stopwords.words("english")
         if additional_stop_words:
             stop_words.extend(additional_stop_words)
 
         self._stop_words = set(stop_words)
         self._lemmatizer = WordNetLemmatizer()
-        self._punctuation = set(string.punctuation.replace('\'', ''))
+        self._punctuation = set(string.punctuation.replace("'", ""))
 
     def process_text(self, text: Text) -> List[Token]:
         """Processes given text. The text is split into tokens which can be
         mapped back to the original text.
 
         Args:
-            text (Text): Input text, user utterance.
+            text: Input text, user utterance.
 
         Returns:
-            List[Token]: List of Tokens
+            List of tokens.
         """
         processed_text = self.remove_punctuation(text)
-        word_tokens = processed_text.split()  #word_tokenize(processed_text)
+        word_tokens = processed_text.split()  # word_tokenize(processed_text)
 
         return self.tokenize(word_tokens, text)
 
     def remove_punctuation(self, text: Text) -> Text:
-        """Defines patterns of punctuation marks to remove in the
-        utterance.
+        """Defines patterns of punctuation marks to remove in the utterance.
 
         Args:
-            text (str): Sentence.
+            text: Sentence.
 
         Returns:
-            str: Sentence without punctuation.
+            Sentence without punctuation.
         """
-        return ''.join(
-            ch if ch not in self._punctuation else ' ' for ch in text)
+        return "".join(
+            ch if ch not in self._punctuation else " " for ch in text
+        )
 
     def lemmatize_text(self, text: Text) -> Text:
         """Returns string lemma.
 
         Args:
-            text (Text): Input text.
+            text: Input text.
 
         Returns:
-            Text: Lemmatized string.
+            Lemmatized string.
         """
-        text = text.replace('\'', '')
+        text = text.replace("'", "")
         return self._lemmatizer.lemmatize(text.lower())
 
     def tokenize(self, word_tokens: List[Text], text: Text) -> List[Token]:
         """Returns a tokenized copy of text.
 
         Args:
-            text (str): Sentence to tokenize.
+            text: Sentence to tokenize.
 
         Returns:
-            List[str]: List of tokens.
+            List of tokens.
         """
         end = 0
         tokens = []
