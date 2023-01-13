@@ -22,14 +22,8 @@ class Operator(Enum):
     IN = 10
     BETWEEN = 11
 
-    def __str__(self):
-        """
-        Prints the Operator
-
-        Returns:
-            a string representation of the Operator
-
-        """
+    def __str__(self) -> str:
+        """Returns a string representation of the Operator."""
         opr = "UNK"
         if self.name == "EQ":
             opr = "="
@@ -46,4 +40,4 @@ class Operator(Enum):
         elif self.name in ["AND", "OR", "NOT", "IN", "BETWEEN"]:
             opr = self.name
 
-        return f"{opr}"
+        return opr
