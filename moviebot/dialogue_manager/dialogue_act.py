@@ -1,4 +1,7 @@
 """Dialogue Act defines the action user or agent takes during the conversation.
+
+The DialogueAct comprises an intent with a list of parameters
+(DialogueActItem) for a particular dialogue.
 """
 
 
@@ -10,19 +13,16 @@ from moviebot.nlu.annotation.item_constraint import ItemConstraint
 
 
 class DialogueAct:
-    """The DialogueAct comprises of an intent with a list of parameters
-    (DialogueActItem) for a particular dialogue."""
-
     def __init__(
         self,
         intent: Union[AgentIntents, UserIntents] = None,
         params: List[ItemConstraint] = None,
     ) -> None:
-        """Initialises a Dialogue Act.
+        """Initializes a Dialogue Act.
 
         Args:
-            intent: Intent of the dialogue act.
-            parmas: Parameters for the particular intent.
+            intent: Intent of the dialogue act. Defaults to None.
+            params: Parameters for the particular intent. Defaults to None.
         """
         self.intent = None
         if (
@@ -39,7 +39,6 @@ class DialogueAct:
 
         Returns:
             String representation of the dialogue act.
-
         """
         if self.intent:
             params = ", ".join([str(param) for param in self.params])
