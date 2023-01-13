@@ -36,7 +36,7 @@ class SemanticAnnotation(Span):
         Span stores information about what section of the text is used in this
         annotation. Item constraint tells us how this annotation is relevant. In
         the case of named entity it holds entity type, and in the case of
-        temporal annotation stores time period or a year.
+        temporal annotation it stores time period or a year.
 
         Args:
             annotation_type: Type of annotation.
