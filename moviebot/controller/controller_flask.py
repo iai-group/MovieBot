@@ -166,8 +166,8 @@ class ControllerFlask(Controller):
         if restart:
             (
                 self.agent_response[user_id],
-                self.record_data_agent[user_id],
                 self.user_options[user_id],
+                self.record_data_agent[user_id],
             ) = self.agent[user_id].start_dialogue(None, restart)
             return self.user_messages[user_id].text(
                 self.agent_response[user_id], intent=self.agent_intent
@@ -175,7 +175,7 @@ class ControllerFlask(Controller):
         else:
             return {"message": {"text": "", "intent": self.agent_intent}}
 
-    def movie_template(self, user_id: str, buttons):
+    def movie_template(self, user_id: str):
         """Sends template for recommended movie.
 
         Args:
@@ -236,8 +236,8 @@ class ControllerFlask(Controller):
         user_utterance = UserUtterance({"text": payload})
         (
             self.agent_response[user_id],
-            self.record_data_agent[user_id],
             self.user_options[user_id],
+            self.record_data_agent[user_id],
         ) = self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
@@ -401,8 +401,8 @@ class ControllerFlask(Controller):
             Object with instructions message to send to the server.
         """
         policy = (
-            'Type "/delete" at any time to stop storing and delete conversation history.\n\n'
-            "Press start to continue."
+            'Type "/delete" at any time to stop storing and delete conversation'
+            " history.\n\nPress start to continue."
         )
         return self.user_messages[user_id].text(
             policy, intent="REVEAL.DISCLOSE"
