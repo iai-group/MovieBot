@@ -1,6 +1,7 @@
 """This file contains the flask server."""
 
 from os import environ
+from typing import Any, Dict
 
 from flask import Flask, request
 
@@ -10,8 +11,8 @@ app = Flask(__name__)
 controller_flask = ControllerFlask()
 
 
-def run(config):
-    """Runs execute_agent in ControllerTelegram and starts flask server.
+def run(config: Dict[str, Any]) -> None:
+    """Runs execute_agent in ControllerFlask and starts flask server.
 
     Args:
         config: Agent configuration.
@@ -20,23 +21,29 @@ def run(config):
     app.run(host="0.0.0.0", port=environ.get("PORT", 5001))
 
 
-@app.route("/", methods=["POST"])
-def receive_message():
+@app.route("/", methods=["GET", "POST"])
+def receive_message() -> None:
     """Receives POST requests send from client."""
-    output = request.get_json()
-    print(output)
-    response = action(output)
-    if response:
-        return response
-    return "Message Processed"
+    if request.method == "GET":
+        return "MovieBot is alive", 200
+    else:
+        output = request.get_json()
+        print(output)
+        response = action(output)
+        if response:
+            return response
+        return "Message Processed"
 
 
-def action(output):
+def action(output: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
     """Gets user id and payload from output and runs get_message in the
     controller.
 
     Args:
-        output: output from request
+        output: Output from request.
+
+    Returns:
+        Object with message to send to the server.
     """
     event = output["entry"][0]["messaging"][0]
     user_id = event["sender"]["id"]
@@ -51,14 +58,14 @@ def action(output):
             return run_method_response
 
 
-def get_message(output):
+def get_message(output: Dict[str, Any]) -> str:
     """Gets payload from output.
+
     Args:
-        output: output from request
+        output: Output from request.
 
     Returns:
-        string with payload
-
+        String with payload.
     """
     for event in output["entry"]:
         for message in event["messaging"]:

@@ -12,6 +12,8 @@ from moviebot.controller.controller import Controller
 from moviebot.controller.http_data_formatter import HTTPDataFormatter
 from moviebot.core.utterance.utterance import UserUtterance
 
+HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
+
 SHORT_ANSWER = {
     "I like this recommendation.": "I like this",
     "I have already watched it.": "Seen it",
@@ -41,9 +43,9 @@ def shorten(input: str) -> str:
 
 
 class ControllerFlask(Controller):
-    def __init__(self):
+    def __init__(self) -> None:
         """Initializes structs for Controller and sends the get started button
-        to the facebook API."""
+        to the client."""
         self.token = ""
         self.agent = {}
         self.record_data = {}
@@ -80,7 +82,7 @@ class ControllerFlask(Controller):
         """Initializes structs for a new user.
 
         Args:
-            user_id: User id
+            user_id: User id.
         """
         if user_id not in self.agent:
             self.user_options[user_id] = {}
@@ -88,7 +90,7 @@ class ControllerFlask(Controller):
             self.user_messages[user_id] = HTTPDataFormatter(user_id)
             self.start_agent(user_id)
 
-    def start_conversation(self, user_id: str) -> Dict[str, Dict[str, str]]:
+    def start_conversation(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
         """Starts conversation with agent and sends instructions to user.
 
         Args:
@@ -127,10 +129,7 @@ class ControllerFlask(Controller):
             }
 
     def execute_agent(self, configuration: Dict[str, Any]) -> None:
-        """Gets conversation_history path from config file.
-
-        Runs the conversational agent and executes the dialogue by calling
-        the basic components of IAI MovieBot.
+        """Configures the controller.
 
         Args:
             configuration: Configuration for the agent.
@@ -144,9 +143,7 @@ class ControllerFlask(Controller):
         """Restarts agent for this user."""
         return self.start_agent(user_id, True)
 
-    def start_agent(
-        self, user_id: str, restart=False
-    ) -> Dict[str, Dict[str, str]]:
+    def start_agent(self, user_id: str, restart=False) -> HTTP_OBJECT_MESSAGE:
         """Starts conversation with agent.
 
         Args:
@@ -175,12 +172,14 @@ class ControllerFlask(Controller):
         else:
             return {"message": {"text": "", "intent": self.agent_intent}}
 
-    def movie_template(self, user_id: str):
+    def movie_template(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
         """Sends template for recommended movie.
 
         Args:
             user_id: User id.
-            buttons: list of buttons
+
+        Returns:
+            Object with movie message to send to the server.
         """
         title = (
             self.info[user_id]["title"]
@@ -202,6 +201,9 @@ class ControllerFlask(Controller):
 
         Args:
             user_id: User id.
+
+        Returns:
+            List of possible options.
         """
         options = []
         for option in self.user_options[user_id].values():
@@ -220,6 +222,9 @@ class ControllerFlask(Controller):
 
         Args:
             response: Agent response.
+
+        Returns:
+            Movie id.
         """
         if "/tt" in response:
             start = response.find("/tt")
@@ -309,7 +314,7 @@ class ControllerFlask(Controller):
                 "No conversation history.", intent=self.agent_intent
             )
 
-    def send_message(self, user_id, payload) -> Dict[str, Dict[str, str]]:
+    def send_message(self, user_id: str, payload: str) -> HTTP_OBJECT_MESSAGE:
         """Sends template, buttons or text based on current agent options.
 
         Args:
@@ -325,7 +330,7 @@ class ControllerFlask(Controller):
                 self.get_options(user_id)
             )
             if "**" in self.agent_response[user_id]:
-                return self.movie_template(user_id, buttons)
+                return self.movie_template(user_id)
             else:
                 return self.user_messages[user_id].buttons_template(
                     buttons,
@@ -367,7 +372,7 @@ class ControllerFlask(Controller):
         )
         del self.agent[user_id]
 
-    def instructions(self, user_id: str) -> Dict[str, Dict[str, str]]:
+    def instructions(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
         """Creates utterance with usage instructions.
 
         The instructions are sent when the conversation starts and when '/help'
@@ -391,11 +396,11 @@ class ControllerFlask(Controller):
             response, intent="REVEAL.DISCLOSE"
         )
 
-    def store_data(self, user_id: str) -> Dict[str, Dict[str, str]]:
+    def store_data(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
         """Instructions for deleting stored conversation history.
 
         Args:
-            user_id:
+            user_id: User id.
 
         Returns:
             Object with instructions message to send to the server.
@@ -408,7 +413,15 @@ class ControllerFlask(Controller):
             policy, intent="REVEAL.DISCLOSE"
         )
 
-    def first_time_message(self, user_id: str):
+    def first_time_message(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
+        """Creates utterance with greetings message.
+
+        Args:
+            user_id: User id.
+
+        Returns:
+            Object with greetings message to send to the server.
+        """
         start_text = self.start_agent(user_id)
         greet = self.greeting()
 
@@ -416,8 +429,11 @@ class ControllerFlask(Controller):
             greet["message"]["text"], intent="REVEAL.DISCLOSE"
         )
 
-    def privacy_policy(self, user_id: str = None) -> Dict[str, Dict[str, str]]:
+    def privacy_policy(self, user_id: str = None) -> HTTP_OBJECT_MESSAGE:
         """Creates utterance with policy.
+
+        Args:
+            user_id: User id. Defaults to None.
 
         Returns:
             Object with privacy message to send to the server.
@@ -433,8 +449,8 @@ class ControllerFlask(Controller):
         message = {"message": {"text": title, "intent": self.agent_intent}}
         return message
 
-    def greeting(self) -> Dict[str, Dict[str, str]]:
-        """Posts greeting text on welcome screen.
+    def greeting(self) -> HTTP_OBJECT_MESSAGE:
+        """Creates greeting message.
 
         Returns:
             Object with greetings message to send to the server.
