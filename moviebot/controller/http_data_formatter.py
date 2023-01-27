@@ -2,6 +2,37 @@
 
 from typing import Any, Dict, List
 
+from moviebot.agent.agent import DialogueOptions
+
+HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
+
+SHORT_ANSWER = {
+    "I like this recommendation.": "I like this",
+    "I have already watched it.": "Seen it",
+    "Tell me more about it.": "Tell me more",
+    "Recommend me something else please.": "Something else",
+    "Tell me something about it.": "More information",
+    "/restart": "Restart",
+    "I would like a similar recommendation.": "Similar",
+    "I want to restart for a new movie.": "Restart",
+    "I would like to quit now.": "Quit",
+}
+
+
+def shorten(input: str) -> str:
+    """Creates shorter versions of agent responses.
+
+    Args:
+        input: Agent response.
+
+    Returns:
+        Shorter version of input message.
+    """
+    for key, value in SHORT_ANSWER.items():
+        if key == input:
+            return value
+    return input
+
 
 class HTTPDataFormatter:
     def __init__(self, user_id: str) -> None:
@@ -10,90 +41,33 @@ class HTTPDataFormatter:
         self.user_id = user_id
         self.buttons = {}
 
-    def quickreply(self, text, title, payload):
-        """Posts a list of quickreply buttons.
-        Args:
-            text: quickreply title
-            title: button text
-            payload: button payload
-
-        Returns:
-            post request containing quickreply json and quickreply uri
-
-        """
-        replies = []
-        for i, title in enumerate(title):
-            replies.append(
-                {"content_type": "text", "title": title, "payload": payload[i]}
-            )
-        quick_reply = {
-            "recipient": {"id": self.user_id},
-            "messaging_type": "RESPONSE",
-            "message": {"text": text, "quick_replies": replies},
-        }
-        return quick_reply
-
     def create_buttons(
-        self, options: List[Dict[str, Any]]
+        self, user_options: DialogueOptions
     ) -> List[Dict[str, Any]]:
-        """Creates a list of buttons.
+        """Creates a list of buttons for each agent's option.
 
         Args:
-            options: List of options to use for the buttons.
+            user_options: Agent's options
 
         Returns:
-            List of buttons
+            List of buttons objects.
         """
-        buttons = []
-        for option in options:
-            if option["button_type"] == "postback":
-                buttons.append(
+        options = []
+        for option in user_options.values():
+            if isinstance(option, str):
+                option = [option]
+            for item in option:
+                options.append(
                     {
-                        "type": option["button_type"],
-                        "title": option["title"],
-                        "payload": option["payload"],
+                        "button_type": "postback",
+                        "title": shorten(item),
+                        "payload": item,
                     }
                 )
-            if option["button_type"] == "web_url":
-                buttons.append(
-                    {
-                        "type": option["button_type"],
-                        "title": option["title"],
-                        "url": option["url"],
-                    }
-                )
-        return buttons
+        return options
 
-    def url_button(self, title, options):
-        """Posts a button template of type url_button.
-
-        Args:
-            title: button title
-            options: structs with values
-
-        Returns:
-            post request containing url_button json and url_button uri
-        """
-        buttons = self.create_buttons(options)
-        template = {
-            "recipient": {"id": self.user_id},
-            "message": {
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "button",
-                        "text": title,
-                        "buttons": buttons,
-                    },
-                }
-            },
-        }
-        return template
-
-    def text(
-        self, message: str, intent: str = "UNK"
-    ) -> Dict[str, Dict[str, str]]:
-        """Sends text response.
+    def text(self, message: str, intent: str = "UNK") -> HTTP_OBJECT_MESSAGE:
+        """Creates a message with a text response.
 
         Args:
             message: Message to send.
@@ -108,53 +82,18 @@ class HTTPDataFormatter:
         }
         return text
 
-    def template(self, buttons, image, url, subtitle, title) -> Dict[str, Any]:
-        """Sends a template response.
+    def buttons_template(
+        self, buttons: List[Dict[str, Any]], message: str, intent="UNK"
+    ) -> HTTP_OBJECT_MESSAGE:
+        """Creates a message along with a list of buttons.
 
         Args:
-            buttons: list of buttons
-            image: image url
-            url: url
-            subtitle: text below title
-            title: template title
+            buttons: List of buttons.
+            message: Message to send.
+            intent: Intent of the message.
 
         Returns:
-            post request with template json and template uri
-        """
-        return {
-            "recipient": {"id": self.user_id},
-            "message": {
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "generic",
-                        "elements": [
-                            {
-                                "title": title,
-                                "image_url": image,
-                                "subtitle": subtitle,
-                                "default_action": {
-                                    "type": "web_url",
-                                    "url": url,
-                                    "webview_height_ratio": "full",
-                                },
-                                "buttons": buttons,
-                            }
-                        ],
-                    },
-                }
-            },
-        }
-
-    def buttons_template(self, buttons, text, intent="UNK"):
-        """Sends a button template with different button types.
-
-        Args:
-            buttons: list of buttons
-            text: template title
-
-        Returns:
-            post request with button template json and button template uri
+            Object with message and buttons to send to Flask server.
         """
         template = {
             "recipient": {"id": self.user_id},
@@ -163,13 +102,32 @@ class HTTPDataFormatter:
                     "type": "template",
                     "payload": {
                         "template_type": "button",
-                        "text": text,
                         "buttons": buttons,
                     },
-                }
+                },
+                "text": message,
+                "intent": intent,
             },
         }
+        return template
+
+    def movie_template(
+        self, info: Dict[str, Any], intent: str
+    ) -> HTTP_OBJECT_MESSAGE:
+        """Creates a message with movie information.
+
+        Args:
+            info: Movie information.
+            intent: Intent of the message.
+
+        Returns:
+            Object with movie message to send to the server.
+        """
+        title = f"{info['title']} {info['rating']} {info['duration']} min"
+
         return {
-            "recipient": {"id": self.user_id},
-            "message": {"text": text, "intent": intent},
+            "message": {
+                "text": f"Do you like: {title}",
+                "intent": intent,
+            }
         }

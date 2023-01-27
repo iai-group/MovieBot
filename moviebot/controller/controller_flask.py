@@ -5,41 +5,15 @@ import json
 import os
 import sqlite3
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, Union
 
 from moviebot.agent.agent import Agent
 from moviebot.controller.controller import Controller
-from moviebot.controller.http_data_formatter import HTTPDataFormatter
+from moviebot.controller.http_data_formatter import (
+    HTTP_OBJECT_MESSAGE,
+    HTTPDataFormatter,
+)
 from moviebot.core.utterance.utterance import UserUtterance
-
-HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
-
-SHORT_ANSWER = {
-    "I like this recommendation.": "I like this",
-    "I have already watched it.": "Seen it",
-    "Tell me more about it.": "Tell me more",
-    "Recommend me something else please.": "Something else",
-    "Tell me something about it.": "More information",
-    "/restart": "Restart",
-    "I would like a similar recommendation.": "Similar",
-    "I want to restart for a new movie.": "Restart",
-    "I would like to quit now.": "Quit",
-}
-
-
-def shorten(input: str) -> str:
-    """Creates shorter versions of agent responses.
-
-    Args:
-        input: Agent response.
-
-    Returns:
-        Shorter version of input message.
-    """
-    for key, value in SHORT_ANSWER.items():
-        if key == input:
-            return value
-    return input
 
 
 class ControllerFlask(Controller):
@@ -172,51 +146,6 @@ class ControllerFlask(Controller):
         else:
             return {"message": {"text": "", "intent": self.agent_intent}}
 
-    def movie_template(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
-        """Sends template for recommended movie.
-
-        Args:
-            user_id: User id.
-
-        Returns:
-            Object with movie message to send to the server.
-        """
-        title = (
-            self.info[user_id]["title"]
-            + " "
-            + str(self.info[user_id]["rating"])
-            + " "
-            + str(self.info[user_id]["duration"])
-            + " min"
-        )
-        return {
-            "message": {
-                "text": f"Do you like: {title}",
-                "intent": self.agent_intent,
-            }
-        }
-
-    def get_options(self, user_id: str) -> List[Dict[str, Any]]:
-        """Gets options from agent.
-
-        Args:
-            user_id: User id.
-
-        Returns:
-            List of possible options.
-        """
-        options = []
-        for option in self.user_options[user_id].values():
-            for item in option:
-                options.append(
-                    {
-                        "button_type": "postback",
-                        "title": shorten(item),
-                        "payload": item,
-                    }
-                )
-        return options
-
     def get_movie_id(self, response: str) -> str:
         """Retrieves movie id from agent response string.
 
@@ -326,12 +255,14 @@ class ControllerFlask(Controller):
         """
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
-            buttons = self.user_messages[user_id].create_buttons(
-                self.get_options(user_id)
-            )
             if "**" in self.agent_response[user_id]:
-                return self.movie_template(user_id)
+                return self.user_messages[user_id].movie_template(
+                    self.info[user_id], self.agent_intent
+                )
             else:
+                buttons = self.user_messages[user_id].create_buttons(
+                    self.user_options[user_id]
+                )
                 return self.user_messages[user_id].buttons_template(
                     buttons,
                     self.agent_response[user_id],
@@ -422,7 +353,7 @@ class ControllerFlask(Controller):
         Returns:
             Object with greetings message to send to the server.
         """
-        start_text = self.start_agent(user_id)
+        self.start_agent(user_id)
         greet = self.greeting()
 
         return self.user_messages[user_id].text(
@@ -442,7 +373,7 @@ class ControllerFlask(Controller):
             "We may store some information to improve recommendations.\n"
             "You may delete stored data at any time.\n"
             "Read more in our privacy policy\n"
-            "Privacy Policy: https://iai-group.github.io/moviebot/Privacy_policy.html\n"
+            "Privacy Policy: https://iai-group.github.io/moviebot/Privacy_policy.html\n"  # noqa
             'To accept the privacy policy write "/store"\n'
             'To continue without accepting write "/continue"'
         )
@@ -458,9 +389,9 @@ class ControllerFlask(Controller):
         return {
             "message": {
                 "locale": "default",
-                "text": "Hi there. I am IAI MovieBot, your movie recommending buddy. "
-                "I can recommend you movies based on your preferences.\n "
-                "I will ask you a few questions and based on your answers, "
+                "text": "Hi there. I am IAI MovieBot, your movie recommending"
+                " buddy. I can recommend you movies based on your preferences."
+                "\nI will ask you a few questions and based on your answers, "
                 "I will try to find a movie for you.\n\n",
                 "intent": self.agent_intent,
             }
