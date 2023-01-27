@@ -635,6 +635,7 @@ class NLG:
         """
         options = {}
         for value, params in dual_params.items():
+            value = str(value)
             for param in params:
                 negative = False
                 # TODO (Ivica Kostric): Look into this. Looks like a bug.
