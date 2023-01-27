@@ -223,11 +223,16 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_made_offer = False
                 self.dialogue_state.agent_should_make_offer = True
                 self.dialogue_state.agent_should_offer_similar = True
-                self.dialogue_state.similar_movies = {
-                    self.dialogue_state.item_in_focus[Slots.TITLE.value]: eval(
-                        user_dact.params[0].value
-                    )
-                }
+                # Quick fix for TypeError: 'NoneType' object is not subscriptable
+                self.dialogue_state.similar_movies = (
+                    {
+                        self.dialogue_state.item_in_focus[
+                            Slots.TITLE.value
+                        ]: eval(user_dact.params[0].value)
+                    }
+                    if self.dialogue_state.item_in_focus
+                    else {}
+                )
 
             if user_dact.intent == UserIntents.RESTART:
                 self.dialogue_state.initialize()
