@@ -99,9 +99,8 @@ class HTTPDataFormatter:
             "recipient": {"id": self.user_id},
             "message": {
                 "attachment": {
-                    "type": "template",
+                    "type": "buttons",
                     "payload": {
-                        "template_type": "button",
                         "buttons": buttons,
                     },
                 },
