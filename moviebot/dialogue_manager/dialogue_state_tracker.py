@@ -193,9 +193,8 @@ class DialogueStateTracker:
 
             # remove from user requestables when user asks for anything
             if user_dact.intent == UserIntents.INQUIRE:
-                # if not self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                # BUG TypeError: 'NoneType' object is not subscriptable
-                # print(self.dialogue_state)  # debuggig here
+                # Quick fix for issue #123
+                # See details: https://github.com/iai-group/MovieBot/issues/123
                 if self.dialogue_state.item_in_focus:
                     name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
                     if name in self.dialogue_context.movies_recommended:
@@ -223,7 +222,8 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_made_offer = False
                 self.dialogue_state.agent_should_make_offer = True
                 self.dialogue_state.agent_should_offer_similar = True
-                # Quick fix for TypeError: 'NoneType' object is not subscriptable
+                # Quick fix for issue #123
+                # See details: https://github.com/iai-group/MovieBot/issues/123
                 self.dialogue_state.similar_movies = (
                     {
                         self.dialogue_state.item_in_focus[
