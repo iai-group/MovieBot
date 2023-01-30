@@ -87,6 +87,7 @@ def arg_parse(args=None):
             cfg_parser,
             cfg_parser["TELEGRAM"],
             cfg_parser["POLLING"],
+            cfg_parser["FLASK"],
         )
     else:
         raise ValueError(
@@ -102,15 +103,15 @@ def get_config():
 if __name__ == "__main__":
     # Usage: python -m  moviebot.run -c <path_to_config.yaml>
     # Version: Python 3.10
-    CONFIGURATION, BOT, POLLING = arg_parse()
+    CONFIGURATION, BOT, POLLING, FLASK = arg_parse()
     if CONFIGURATION["DEBUG"]:
         logger.setLevel(logging.DEBUG)
     if BOT:
         if POLLING:
             CONTROLLER = ControllerTelegram()
             CONTROLLER.execute_agent(CONFIGURATION)
-        else:
-            server.run(CONFIGURATION)
+    elif FLASK:
+        server.run(CONFIGURATION)
     else:
         CONTROLLER = ControllerTerminal(CONFIGURATION)
         CONTROLLER.execute_agent()
