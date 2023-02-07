@@ -1,0 +1,35 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-4">
+
+        <!-- Collapsed chat -->
+        <div class="collapse card" id="collapseChat" style="position: fixed; bottom: 100px;right: 28px;">
+            <div class=" card-body">
+                <h5 class="card-title">Chat with MovieBot</h5>
+
+                <div id="chat">
+                    <div class="msg-wrapper" id="msg-box" style="height: 500px; width: 600px; overflow-y: scroll;">
+                    </div>
+                    <div id="action-buttons" class="btn-group flex-wrap" role="group" style="width: 500px;">
+                    </div>
+                    <div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="msg_text" placeholder="Enter your message here">
+                            <!-- onkeypress="keyPressed(event)"> -->
+                            <button type="button" id="send" class="btn btn-outline-success"><i
+                                    class="bi bi-send-fill"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons trigger collapse -->
+        <p style="position: fixed; bottom: 23px;right: 28px;">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseChat" role="button"
+                aria-expanded="false" aria-controls="collapseChat">
+                <i class="bi bi-chat-fill"></i>
+            </a>
+
+        </p>
+    </div>
+</div>

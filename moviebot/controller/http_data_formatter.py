@@ -128,5 +128,11 @@ class HTTPDataFormatter:
             "message": {
                 "text": f"Do you like: {title}",
                 "intent": intent,
+                "attachment": {
+                    "type": "images",
+                    "payload": {
+                        "images": [info["image_url"]],
+                    },
+                },
             }
         }
