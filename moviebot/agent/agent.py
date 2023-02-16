@@ -1,6 +1,4 @@
 """Types of conversational agents are available here."""
-
-
 import logging
 import os
 from typing import Any, Dict, List, Tuple, Union
@@ -99,7 +97,9 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        self.isBot = self.config.get("TELEGRAM", False)
+        self.isBot = self.config.get("TELEGRAM", False) or self.config.get(
+            "FLASK", False
+        )
 
         self.dialogue_manager = DialogueManager(
             data_config, self.isBot, self.new_user
