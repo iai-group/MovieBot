@@ -193,19 +193,24 @@ class DialogueStateTracker:
 
             # remove from user requestables when user asks for anything
             if user_dact.intent == UserIntents.INQUIRE:
-                if not self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                    print(self.dialogue_state)  # debuggig here
-                name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                if name in self.dialogue_context.movies_recommended:
-                    if (
-                        "inquire"
-                        not in self.dialogue_context.movies_recommended[name]
-                    ):
-                        self.dialogue_context.movies_recommended[name].append(
+                # Quick fix for issue #123
+                # See details: https://github.com/iai-group/MovieBot/issues/123
+                if self.dialogue_state.item_in_focus:
+                    name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
+                    if name in self.dialogue_context.movies_recommended:
+                        if (
                             "inquire"
-                        )
-                else:
-                    self.dialogue_context.movies_recommended[name] = ["inquire"]
+                            not in self.dialogue_context.movies_recommended[
+                                name
+                            ]
+                        ):
+                            self.dialogue_context.movies_recommended[
+                                name
+                            ].append("inquire")
+                    else:
+                        self.dialogue_context.movies_recommended[name] = [
+                            "inquire"
+                        ]
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.user_requestable:
                         self.dialogue_state.user_requestable.remove(param.slot)
@@ -217,11 +222,17 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_made_offer = False
                 self.dialogue_state.agent_should_make_offer = True
                 self.dialogue_state.agent_should_offer_similar = True
-                self.dialogue_state.similar_movies = {
-                    self.dialogue_state.item_in_focus[Slots.TITLE.value]: eval(
-                        user_dact.params[0].value
-                    )
-                }
+                # Quick fix for issue #123
+                # See details: https://github.com/iai-group/MovieBot/issues/123
+                self.dialogue_state.similar_movies = (
+                    {
+                        self.dialogue_state.item_in_focus[
+                            Slots.TITLE.value
+                        ]: eval(user_dact.params[0].value)
+                    }
+                    if self.dialogue_state.item_in_focus
+                    else {}
+                )
 
             if user_dact.intent == UserIntents.RESTART:
                 self.dialogue_state.initialize()
