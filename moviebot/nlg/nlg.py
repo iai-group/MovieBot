@@ -635,13 +635,13 @@ class NLG:
         """
         options = {}
         for value, params in dual_params.items():
+            # Quick fix for issue #124
+            # See details: https://github.com/iai-group/MovieBot/issues/124
+            value = str(value)
             for param in params:
                 negative = False
-                # TODO (Ivica Kostric): Look into this. Looks like a bug.
-                # value is not a string in some (all?) cases. It can be
-                # of class Values.
                 if value.startswith(".NOT."):
-                    negative = True  # TODO. Add changes here
+                    negative = True
                     value = value.replace(".NOT.", "")
                 _a_an = "an" if value[0] in ["a", "e", "i", "o", "u"] else "a"
                 param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])
