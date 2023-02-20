@@ -9,3 +9,5 @@ wikipedia
 nltk
 flask
 questionary
+flask-socketio
+gevent-websocket

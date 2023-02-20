@@ -1,75 +1,42 @@
-#chat1 .form-outline ~ .form-notch div {
-  pointer-events: none;
-  border: 1px solid;
-  border-color: #eee;
-  box-sizing: border-box;
-  background: transparent;
+.chat-widget-container{
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  width: 80px;
+  height: 80px;
+  z-index: 999;
+  overflow: visible;
+  transition: all 0.3s ease-in-out;
 }
 
-#chat1 .form-outline ~ .form-notch .form-notch-leading {
-  left: 0;
-  top: 0;
-  height: 100%;
-  border-right: none;
-  border-radius: 0.65rem 0 0 0.65rem;
+.chat-widget-box{
+opacity: 1;
+position: absolute;
+bottom : 100px;
+right: 0;
+width: 500px;
+min-height: 170px;
+transition: all 0.3s ease-in-out;
 }
 
-#chat1 .form-outline ~ .form-notch .form-notch-middle {
-  flex: 0 0 auto;
-  max-width: calc(100% - 1rem);
-  height: 100%;
-  border-right: none;
-  border-left: none;
+.chat-widget-box .card-body{
+ overflow-y: auto;
+ max-height: 600px;
+ display: flex;
+ flex-direction: column-reverse;
 }
 
-#chat1 .form-outline ~ .form-notch .form-notch-trailing {
-  flex-grow: 1;
-  height: 100%;
-  border-left: none;
-  border-radius: 0 0.65rem 0.65rem 0;
+.chat-widget-icon{
+text-align: center;
+width: 80px;
+height: 80px;
+border-radius: 50%;
+background: #fff;
+border: 1px solid #eee;
+box-shadow: 0 0 10px rgba(0,0,0,0.2);
+transition: all 0.3s ease;
 }
-
-#chat1 .form-outline:focus ~ .form-notch .form-notch-leading {
-  border-top: 0.125rem solid #39c0ed;
-  border-bottom: 0.125rem solid #39c0ed;
-  border-left: 0.125rem solid #39c0ed;
-}
-
-#chat1 .form-outline:focus ~ .form-notch .form-notch-leading,
-#chat1 .form-outline.active ~ .form-notch .form-notch-leading {
-  border-right: none;
-  transition: all 0.2s linear;
-}
-
-#chat1 .form-outline:focus ~ .form-notch .form-notch-middle {
-  border-bottom: 0.125rem solid;
-  border-color: #39c0ed;
-}
-
-#chat1 .form-outline:focus ~ .form-notch .form-notch-middle,
-#chat1 .form-outline.active ~ .form-notch .form-notch-middle {
-  border-top: none;
-  border-right: none;
-  border-left: none;
-  transition: all 0.2s linear;
-}
-
-#chat1 .form-outline .form-control:focus ~ .form-notch .form-notch-trailing {
-  border-top: 0.125rem solid #39c0ed;
-  border-bottom: 0.125rem solid #39c0ed;
-  border-right: 0.125rem solid #39c0ed;
-}
-
-#chat1 .form-outline .form-control:focus ~ .form-notch .form-notch-trailing,
-#chat1 .form-outline .form-control.active ~ .form-notch .form-notch-trailing {
-  border-left: none;
-  transition: all 0.2s linear;
-}
-
-#chat1 .form-outline .form-control:focus ~ .form-label {
-  color: #39c0ed;
-}
-
-#chat1 .form-outline .form-control ~ .form-label {
-  color: #bfbfbf;
+.chat-widget-icon i{
+font-size: 40px;
+line-height: 75px;
 }

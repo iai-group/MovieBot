@@ -126,6 +126,12 @@ class HTTPDataFormatter:
 
         return {
             "message": {
+                "attachment": {
+                    "type": "movie",
+                    "payload": {
+                        "url": info["image_url"],
+                    },
+                },
                 "text": f"Do you like: {title}",
                 "intent": intent,
             }

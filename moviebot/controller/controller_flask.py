@@ -21,9 +21,9 @@ class ControllerFlask(Controller):
         """Initializes structs for Controller and sends the get started button
         to the client."""
         self.token = ""
-        self.agent = {}
+        self.agent: Dict[str, Agent] = {}
         self.record_data = {}
-        self.user_messages = {}
+        self.user_messages: Dict[str, HTTPDataFormatter] = {}
         self.record_data_agent = {}
         self.user_options = {}
         self.agent_response = {}
