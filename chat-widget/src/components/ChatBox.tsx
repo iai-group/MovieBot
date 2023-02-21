@@ -26,6 +26,36 @@ export default function ChatBox({
   const inputRef = useRef<HTMLInputElement>(null);
   const connector = useSocketConnection();
 
+  const handleInput = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (inputValue.trim() === "") return;
+    chatMessagesRef.current = [
+      ...chatMessagesRef.current,
+      <UserChatMessage
+        key={chatMessagesRef.current.length}
+        message={inputValue}
+      />,
+    ];
+    setChatMessages(chatMessagesRef.current);
+    connector.sendMessage({ message: inputValue });
+    setInputValue("");
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
+  const handleQuickReply = (message: string) => {
+    chatMessagesRef.current = [
+      ...chatMessagesRef.current,
+      <UserChatMessage
+        key={chatMessagesRef.current.length}
+        message={message}
+      />,
+    ];
+    setChatMessages(chatMessagesRef.current);
+    connector.quickReply({ message: message });
+  };
+
   useEffect(() => {
     connector.onMessage((message: ChatMessage) => {
       if (!!message.text) {
@@ -59,44 +89,14 @@ export default function ChatBox({
         setChatButtons([]);
       }
     });
-  }, [chatMessages]);
+  }, [connector, chatMessages]);
 
   useEffect(() => {
     connector.onRestart(() => {
       setChatMessages([]);
       setChatButtons([]);
     });
-  }, [chatMessages, chatButtons]);
-
-  const handleInput = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (inputValue.trim() === "") return;
-    chatMessagesRef.current = [
-      ...chatMessagesRef.current,
-      <UserChatMessage
-        key={chatMessagesRef.current.length}
-        message={inputValue}
-      />,
-    ];
-    setChatMessages(chatMessagesRef.current);
-    connector.sendMessage({ message: inputValue });
-    setInputValue("");
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
-  };
-
-  const handleQuickReply = (message: string) => {
-    chatMessagesRef.current = [
-      ...chatMessagesRef.current,
-      <UserChatMessage
-        key={chatMessagesRef.current.length}
-        message={message}
-      />,
-    ];
-    setChatMessages(chatMessagesRef.current);
-    connector.quickReply({ message: message });
-  };
+  }, [connector]);
 
   return (
     <MDBCard
@@ -112,7 +112,7 @@ export default function ChatBox({
         }}
       >
         <p className="mb-0 fw-bold">MovieBot</p>
-        <a href="#" onClick={onClose} style={{ color: "white" }}>
+        <a href="!#" onClick={onClose} style={{ color: "white" }}>
           <MDBIcon fas icon="angle-down" />
         </a>
       </MDBCardHeader>

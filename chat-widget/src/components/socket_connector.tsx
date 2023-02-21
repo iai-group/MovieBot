@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import io, { Socket } from "socket.io-client";
 import { AgentMessage, UserMessage, ChatMessage } from "../types";
 
@@ -23,7 +23,7 @@ export default function useSocketConnection(
     return () => {
       newSocket.disconnect();
     };
-  }, []);
+  }, [url]);
 
   const sendMessage = (message: UserMessage) => {
     socket?.emit("message", message);

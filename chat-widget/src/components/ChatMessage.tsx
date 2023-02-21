@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
 
 function UserChatMessage({ message }: { message: string }): JSX.Element {
@@ -35,26 +35,20 @@ function AgentChatMessage({
   useEffect(() => {
     if (!!thumbsUp.current) {
       thumbsUp.current.addEventListener("click", () => {
-        //TODO change display of thumbs up
-        {
-          setLiked(true);
-          feedback(message, "thumbs_up");
-        }
+        setLiked(true);
+        feedback(message, "thumbs_up");
       });
     }
-  }, [thumbsUp]);
+  }, [thumbsUp, feedback, message]);
 
   useEffect(() => {
     if (!!thumbsDown.current) {
       thumbsDown.current.addEventListener("click", () => {
-        //TODO change display of thumbs down
-        {
-          setLiked(false);
-          feedback(message, "thumbs_down");
-        }
+        setLiked(false);
+        feedback(message, "thumbs_down");
       });
     }
-  }, [thumbsDown]);
+  }, [thumbsDown, feedback, message]);
 
   return (
     <div className="d-flex flex-row justify-content-start mb-4">

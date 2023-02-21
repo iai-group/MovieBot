@@ -1,12 +1,15 @@
 """This file contains the flask server."""
 
+import logging
 from os import environ
 from typing import Any, Dict
 
 from flask import Flask, request
-from flask_socketio import Namespace, SocketIO, send
+from flask_socketio import Namespace, SocketIO, emit, send
 
 from moviebot.controller.controller_flask import ControllerFlask
+
+logger = logging.getLogger()
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -33,7 +36,6 @@ def action(user_id: str, message: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
     Returns:
         Object with message to send to the server.
     """
-    controller_flask.initialize(user_id)
     if message is not None:
         run_method_response = controller_flask.run_method(user_id, message)
         if run_method_response is True:
@@ -43,22 +45,26 @@ def action(user_id: str, message: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
 
 
 class ChatNamespace(Namespace):
-    def on_connect(self):
-        print("Client connected")
+    def on_connect(self, data: Dict[str, Any]) -> None:
+        controller_flask.initialize(request.sid)
+        first_message = controller_flask.first_time_message(request.sid)
+        logger.info("Client connected")
+        emit("message", first_message)
 
-    def on_disconnect(self):
-        print("Client disconnected")
+    def on_disconnect(self) -> None:
+        controller_flask.exit(request.sid)
+        logger.info("Client disconnected")
 
     def on_message(self, data: dict) -> None:
-        print(data)
+        logger.info("Message received")
         response = action(request.sid, data["message"])
         if response:
             return send(response)
-        return send({"info": "Message Processed"})
+        send({"info": "Message Processed"})
 
     def on_feedback(self, data: dict) -> None:
-        print("Feedback received", data)
-        return send({"info": "Feedback received"})
+        logger.info("Feedback received", data)
+        send({"info": "Feedback received"})
 
 
 socketio.on_namespace(ChatNamespace("/chat"))
