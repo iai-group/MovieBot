@@ -1,4 +1,4 @@
-"""This file contains a class to format data for HTTP requests."""
+"""This file contains methods to format data for HTTP requests."""
 
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List
@@ -46,94 +46,88 @@ class Button:
     button_type: str = field(default="postback")
 
 
-class HTTPDataFormatter:
-    def __init__(self, user_id: str) -> None:
-        """Initializes object to format utterance for HTTP requests."""
+def create_buttons(user_options: DialogueOptions) -> List[Dict[str, Any]]:
+    """Creates a list of buttons for each agent's option.
 
-        self.user_id = user_id
-        self.buttons = {}
+    Args:
+        user_options: Agent's options
 
-    def create_buttons(
-        self, user_options: DialogueOptions
-    ) -> List[Dict[str, Any]]:
-        """Creates a list of buttons for each agent's option.
+    Returns:
+        List of buttons objects.
+    """
+    options = []
+    for option in user_options.values():
+        if isinstance(option, str):
+            option = [option]
+        for item in option:
+            button = Button(
+                title=shorten(item),
+                payload=item,
+                button_type="postback",
+            )
+            options.append(asdict(button))
+    return options
 
-        Args:
-            user_options: Agent's options
 
-        Returns:
-            List of buttons objects.
-        """
-        options = []
-        for option in user_options.values():
-            if isinstance(option, str):
-                option = [option]
-            for item in option:
-                button = Button(
-                    title=shorten(item),
-                    payload=item,
-                    button_type="postback",
-                )
-                options.append(asdict(button))
-        return options
+def text_message(
+    user_id: str, message: str, intent: str = "UNK"
+) -> HTTP_OBJECT_MESSAGE:
+    """Creates a message with a text response.
 
-    def text_message(
-        self, message: str, intent: str = "UNK"
-    ) -> HTTP_OBJECT_MESSAGE:
-        """Creates a message with a text response.
+    Args:
+        user_id: Id of the recipient.
+        message: Message to send.
+        intent: Intent of the message. Defaults to 'UNK'.
 
-        Args:
-            message: Message to send.
-            intent: Intent of the message. Defaults to 'UNK'.
+    Returns:
+        Object to send to Flask server.
+    """
+    message = Message(text=message, intent=intent)
+    text = {
+        "recipient": {"id": user_id},
+        "message": asdict(message),
+    }
+    return text
 
-        Returns:
-            Object to send to Flask server.
-        """
-        message = Message(text=message, intent=intent)
-        text = {
-            "recipient": {"id": self.user_id},
-            "message": asdict(message),
-        }
-        return text
 
-    def buttons_message(
-        self, buttons: List[Dict[str, Any]], text: str, intent="UNK"
-    ) -> HTTP_OBJECT_MESSAGE:
-        """Creates a message along with a list of buttons.
+def buttons_message(
+    user_id: str, buttons: List[Dict[str, Any]], text: str, intent="UNK"
+) -> HTTP_OBJECT_MESSAGE:
+    """Creates a message along with a list of buttons.
 
-        Args:
-            buttons: List of buttons.
-            text: Message to send.
-            intent: Intent of the message.
+    Args:
+        user_id: Id of the recipient.
+        buttons: List of buttons.
+        text: Message to send.
+        intent: Intent of the message.
 
-        Returns:
-            Object with message and buttons to send to Flask server.
-        """
-        attachment = {
-            "type": "buttons",
-            "payload": {
-                "buttons": buttons,
-            },
-        }
-        message = Message(text=text, intent=intent, attachment=attachment)
-        template = {
-            "recipient": {"id": self.user_id},
-            "message": asdict(message),
-        }
-        return template
+    Returns:
+        Object with message and buttons to send to Flask server.
+    """
+    attachment = {
+        "type": "buttons",
+        "payload": {
+            "buttons": buttons,
+        },
+    }
+    message = Message(text=text, intent=intent, attachment=attachment)
+    template = {
+        "recipient": {"id": user_id},
+        "message": asdict(message),
+    }
+    return template
 
-    def movie_message(
-        self, info: Dict[str, Any], intent: str
-    ) -> HTTP_OBJECT_MESSAGE:
-        """Creates a message with movie information.
 
-        Args:
-            info: Movie information.
-            intent: Intent of the message.
+def movie_message(info: Dict[str, Any], intent: str) -> HTTP_OBJECT_MESSAGE:
+    """Creates a message with movie information.
 
-        Returns:
-            Object with movie message to send to the server.
-        """
-        title = f"{info['title']} {info['rating']} {info['duration']} min"
-        message = Message(text=f"Do you like: {title}", intent=intent)
-        return asdict(message)
+    Args:
+        info: Movie information.
+        intent: Intent of the message.
+
+    Returns:
+        Object with movie message to send to the server.
+    """
+    title = f"{info['title']} {info['rating']} {info['duration']} min"
+    message = Message(text=f"Do you like: {title}", intent=intent)
+    return asdict(message)
