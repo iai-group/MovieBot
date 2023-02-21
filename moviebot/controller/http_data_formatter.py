@@ -1,5 +1,6 @@
-"""This file contains a Messenger class to format data for HTTP requests."""
+"""This file contains a class to format data for HTTP requests."""
 
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List
 
 from moviebot.agent.agent import DialogueOptions
@@ -28,10 +29,21 @@ def shorten(input: str) -> str:
     Returns:
         Shorter version of input message.
     """
-    for key, value in SHORT_ANSWER.items():
-        if key == input:
-            return value
-    return input
+    return SHORT_ANSWER.get(input, input)
+
+
+@dataclass
+class Message:
+    text: str
+    intent: str
+    attachment: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class Button:
+    title: str
+    payload: str
+    button_type: str = field(default="postback")
 
 
 class HTTPDataFormatter:
@@ -57,16 +69,17 @@ class HTTPDataFormatter:
             if isinstance(option, str):
                 option = [option]
             for item in option:
-                options.append(
-                    {
-                        "button_type": "postback",
-                        "title": shorten(item),
-                        "payload": item,
-                    }
+                button = Button(
+                    title=shorten(item),
+                    payload=item,
+                    button_type="postback",
                 )
+                options.append(asdict(button))
         return options
 
-    def text(self, message: str, intent: str = "UNK") -> HTTP_OBJECT_MESSAGE:
+    def text_message(
+        self, message: str, intent: str = "UNK"
+    ) -> HTTP_OBJECT_MESSAGE:
         """Creates a message with a text response.
 
         Args:
@@ -76,41 +89,40 @@ class HTTPDataFormatter:
         Returns:
             Object to send to Flask server.
         """
+        message = Message(text=message, intent=intent)
         text = {
             "recipient": {"id": self.user_id},
-            "message": {"text": message, "intent": intent},
+            "message": asdict(message),
         }
         return text
 
-    def buttons_template(
-        self, buttons: List[Dict[str, Any]], message: str, intent="UNK"
+    def buttons_message(
+        self, buttons: List[Dict[str, Any]], text: str, intent="UNK"
     ) -> HTTP_OBJECT_MESSAGE:
         """Creates a message along with a list of buttons.
 
         Args:
             buttons: List of buttons.
-            message: Message to send.
+            text: Message to send.
             intent: Intent of the message.
 
         Returns:
             Object with message and buttons to send to Flask server.
         """
+        attachment = {
+            "type": "buttons",
+            "payload": {
+                "buttons": buttons,
+            },
+        }
+        message = Message(text=text, intent=intent, attachment=attachment)
         template = {
             "recipient": {"id": self.user_id},
-            "message": {
-                "attachment": {
-                    "type": "buttons",
-                    "payload": {
-                        "buttons": buttons,
-                    },
-                },
-                "text": message,
-                "intent": intent,
-            },
+            "message": asdict(message),
         }
         return template
 
-    def movie_template(
+    def movie_message(
         self, info: Dict[str, Any], intent: str
     ) -> HTTP_OBJECT_MESSAGE:
         """Creates a message with movie information.
@@ -123,10 +135,5 @@ class HTTPDataFormatter:
             Object with movie message to send to the server.
         """
         title = f"{info['title']} {info['rating']} {info['duration']} min"
-
-        return {
-            "message": {
-                "text": f"Do you like: {title}",
-                "intent": intent,
-            }
-        }
+        message = Message(text=f"Do you like: {title}", intent=intent)
+        return asdict(message)
