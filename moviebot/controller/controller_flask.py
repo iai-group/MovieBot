@@ -1,18 +1,14 @@
 """This file contains the Controller class which controls the flow of the
-conversation while the user interacts with the agent using Messenger."""
+conversation while the user interacts with the agent using Flask."""
 
 import json
 import os
-import sqlite3
 from datetime import datetime
 from typing import Any, Callable, Dict, Union
 
-from moviebot.agent.agent import Agent
+import moviebot.controller.http_data_formatter as http_formatter
+from moviebot.agent.agent import Agent, DialogueOptions
 from moviebot.controller.controller import Controller
-from moviebot.controller.http_data_formatter import (
-    HTTP_OBJECT_MESSAGE,
-    HTTPDataFormatter,
-)
 from moviebot.core.utterance.utterance import UserUtterance
 
 
@@ -21,36 +17,28 @@ class ControllerFlask(Controller):
         """Initializes structs for Controller and sends the get started button
         to the client."""
         self.token = ""
-        self.agent = {}
-        self.record_data = {}
-        self.user_messages = {}
-        self.record_data_agent = {}
-        self.user_options = {}
-        self.agent_response = {}
-        self.configuration = {}
-        self.info = {}
-        self.users = {}
-        self.load_data = {}
+        self.agent: Dict[str, Agent] = {}
+        self.record_data: Dict[str, Dict[str, Any]] = {}
+        self.record_data_agent: Dict[str, Dict[str, Any]] = {}
+        self.user_options: Dict[str, DialogueOptions] = {}
+        self.agent_response: Dict[str, str] = {}
+        self.configuration: Dict[str, Any] = {}
+        self.info: Dict[str, Any] = {}
+        self.users: Dict[str, bool] = {}
+        self.load_data: Dict[str, Any] = {}
         self.path = ""
         self.methods = [
-            {"payload": "/start", "action": self.first_time_message},
+            {"payload": "/start", "action": self.start_conversation},
             {"payload": "/help", "action": self.instructions},
-            {"payload": "/accept", "action": self.store_user},
-            {"payload": "/reject", "action": self.start_conversation},
+            {"payload": "/accept", "action": self.accept_license},
+            {"payload": "/reject", "action": self.reject_license},
             {"payload": "/restart", "action": self.restart},
             {"payload": "/exit", "action": self.exit},
             {"payload": "/delete", "action": self.delete_data},
-            {"payload": "/test", "action": self.privacy_policy},
-            {"payload": "/store", "action": self.store_user},
-            {"payload": "/continue", "action": self.start_conversation},
+            {"payload": "/policy", "action": self.privacy_policy},
+            {"payload": "/store", "action": self.accept_license},
         ]
         self.agent_intent = ""
-
-    def lookup(self) -> sqlite3.Cursor:
-        """Returns SQL cursor."""
-        conn = sqlite3.connect(self.configuration["DATA"]["db_path"])
-        c = conn.cursor()
-        return c
 
     def initialize(self, user_id: str) -> None:
         """Initializes structs for a new user.
@@ -60,28 +48,45 @@ class ControllerFlask(Controller):
         """
         if user_id not in self.agent:
             self.user_options[user_id] = {}
-            self.users[user_id] = {}
-            self.user_messages[user_id] = HTTPDataFormatter(user_id)
-            self.start_agent(user_id)
+            # By defaults the user accepts license agreement.
+            self.users[user_id] = True
+            self.agent[user_id] = self.initialize_agent()
 
-    def start_conversation(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
+    def start_conversation(
+        self, user_id: str, restart=False
+    ) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Starts conversation with agent and sends instructions to user.
 
         Args:
             user_id: User id.
+            restart: Whether or not to restart the agent.
 
         Returns:
             Object with start message to send to the server.
         """
-        start_text = self.start_agent(user_id)
-        instructions_text = self.instructions(user_id)
-        start_text["message"]["text"] = "\n\n".join(
-            [
-                start_text["message"]["text"],
-                instructions_text["message"]["text"],
-            ]
+        (
+            self.agent_response[user_id],
+            self.user_options[user_id],
+            self.record_data_agent[user_id],
+        ) = self.agent[user_id].start_dialogue(user_id, restart)
+        msg = self.greetings()
+        if restart:
+            msg = self.agent_response[user_id]
+        else:
+            instructions = self.instructions(user_id)
+            msg = "\n\n".join(
+                [
+                    msg,
+                    "INSTRUCTIONS",
+                    instructions["message"]["text"],
+                ]
+            )
+
+        return http_formatter.text_message(
+            user_id=user_id,
+            message=msg,
+            intent=self.agent_intent,
         )
-        return start_text
 
     def movie_info(self, movie_id: str, user_id: str) -> None:
         """Retrieves relevant movie info from database for selected user.
@@ -90,7 +95,7 @@ class ControllerFlask(Controller):
             movie_id: Movie id.
             user_id: User id.
         """
-        for row in self.lookup().execute(
+        for row in self.get_cursor().execute(
             f'SELECT * FROM movies_v2 WHERE ID="{movie_id}"'
         ):
             self.info[user_id] = {
@@ -103,7 +108,8 @@ class ControllerFlask(Controller):
             }
 
     def execute_agent(self, configuration: Dict[str, Any]) -> None:
-        """Configures the controller.
+        """Runs the conversational agent and executes the dialogue by calling
+        the basic components of IAI MovieBot.
 
         Args:
             configuration: Configuration for the agent.
@@ -115,36 +121,7 @@ class ControllerFlask(Controller):
 
     def restart(self, user_id: str) -> Callable:
         """Restarts agent for this user."""
-        return self.start_agent(user_id, True)
-
-    def start_agent(self, user_id: str, restart=False) -> HTTP_OBJECT_MESSAGE:
-        """Starts conversation with agent.
-
-        Args:
-            user_id: User id.
-            restart: Whether or not to restart the agent.
-
-        Returns:
-            Object with start message to send to the server.
-        """
-        self.agent[user_id] = Agent(self.configuration)
-
-        (
-            self.agent_response[user_id],
-            self.record_data_agent[user_id],
-            self.user_options[user_id],
-        ) = self.agent[user_id].start_dialogue()
-        if restart:
-            (
-                self.agent_response[user_id],
-                self.user_options[user_id],
-                self.record_data_agent[user_id],
-            ) = self.agent[user_id].start_dialogue(None, restart)
-            return self.user_messages[user_id].text(
-                self.agent_response[user_id], intent=self.agent_intent
-            )
-        else:
-            return {"message": {"text": "", "intent": self.agent_intent}}
+        return self.start_conversation(user_id, True)
 
     def get_movie_id(self, response: str) -> str:
         """Retrieves movie id from agent response string.
@@ -175,20 +152,31 @@ class ControllerFlask(Controller):
         ) = self.agent[user_id].continue_dialogue(
             user_utterance, self.user_options[user_id]
         )
-        if self.users[user_id]:
+        if self.users.get(user_id, True):
             self.record(user_id, payload)
         movie_id = self.get_movie_id(self.agent_response[user_id])
         self.movie_info(movie_id, user_id)
 
-    def store_user(self, user_id: str) -> Callable:
-        """True if user accepts license agreement. Data for this user is stored
+    def accept_license(self, user_id: str, b_accept: bool = True) -> Callable:
+        """User accepts license agreement. Data for this user is stored
+        in conversation history.
+
+        Args:
+            user_id: User id.
+            b_accept: Whether or not the user accepts the license agreement.
+              Defaults to True.
+        """
+        self.users[user_id] = b_accept
+        return self.storage_instructions(user_id, b_accept)
+
+    def reject_license(self, user_id: str) -> Callable:
+        """User rejects license agreement. Data for this user is not stored
         in conversation history.
 
         Args:
             user_id: User id.
         """
-        self.users[user_id] = True
-        return self.store_data(user_id)
+        return self.accept_license(user_id=user_id, b_accept=False)
 
     def record(self, user_id: str, payload: str) -> None:
         """Records user conversation if user has accepted privacy policy.
@@ -207,43 +195,30 @@ class ControllerFlask(Controller):
                 user_id, self.record_data[user_id]
             )
 
-    def load_user_data(self, user_id: str) -> None:
-        """Gets movie choices (accept/reject) for a user from conversation
-        history.
-
-        Args:
-            user_id: User id.
-        """
-        user_history_path = f"{self.path}user_{user_id}.json"
-        self.load_data[user_id] = {}
-        if os.path.isfile(user_history_path):
-            with open(user_history_path) as json_file:
-                data = json.load(json_file)
-                for conversation in data:
-                    for movie in conversation["Context"]:
-                        self.load_data[user_id][movie] = conversation[
-                            "Context"
-                        ][movie]
-
-    def delete_data(self, user_id: str) -> None:
+    def delete_data(self, user_id: str) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Deletes stored conversation history for user.
 
         Args:
             user_id: User id.
         """
-        user_history_path = f"{self.path}user_{user_id}.json"
-        if os.path.isfile(user_history_path):
-            os.remove(user_history_path)
+        deleted = self.delete_history(self.path, user_id)
+        if deleted:
             self.users[user_id] = False
-            self.user_messages[user_id].text(
-                "Conversation history deleted.", intent=self.agent_intent
-            )
-        else:
-            self.user_messages[user_id].text(
-                "No conversation history.", intent=self.agent_intent
+            return http_formatter.text_message(
+                user_id=user_id,
+                message="Conversation history deleted.",
+                intent=self.agent_intent,
             )
 
-    def send_message(self, user_id: str, payload: str) -> HTTP_OBJECT_MESSAGE:
+        return http_formatter.text_message(
+            user_id=user_id,
+            message="No conversation history.",
+            intent=self.agent_intent,
+        )
+
+    def send_message(
+        self, user_id: str, payload: str
+    ) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Sends template, buttons or text based on current agent options.
 
         Args:
@@ -256,21 +231,24 @@ class ControllerFlask(Controller):
         self.continue_dialogue(user_id, payload)
         if self.user_options[user_id]:
             if "**" in self.agent_response[user_id]:
-                return self.user_messages[user_id].movie_template(
-                    self.info[user_id], self.agent_intent
+                return http_formatter.movie_message(
+                    info=self.info[user_id], intent=self.agent_intent
                 )
             else:
-                buttons = self.user_messages[user_id].create_buttons(
+                buttons = http_formatter.create_buttons(
                     self.user_options[user_id]
                 )
-                return self.user_messages[user_id].buttons_template(
-                    buttons,
-                    self.agent_response[user_id],
+                return http_formatter.buttons_message(
+                    user_id=user_id,
+                    buttons=buttons,
+                    text=self.agent_response[user_id],
                     intent=self.agent_intent,
                 )
         else:
-            return self.user_messages[user_id].text(
-                self.agent_response[user_id], intent=self.agent_intent
+            return http_formatter.text_message(
+                user_id=user_id,
+                message=self.agent_response[user_id],
+                intent=self.agent_intent,
             )
 
     def run_method(self, user_id: str, payload: str) -> Union[bool, Callable]:
@@ -289,7 +267,7 @@ class ControllerFlask(Controller):
                 return func(user_id)
         return True
 
-    def exit(self, user_id: str) -> None:
+    def exit(self, user_id: str) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Ends conversation and deletes user id from agent.
 
         Args:
@@ -298,12 +276,15 @@ class ControllerFlask(Controller):
         self.agent_response[
             user_id
         ] = "You are exiting. I hope you found a movie. Bye."
-        self.user_messages[user_id].text(
-            self.agent_response[user_id], intent=self.agent_intent
-        )
+        self.agent[user_id].end_dialogue()
         del self.agent[user_id]
+        return http_formatter.text_message(
+            user_id=user_id,
+            message=self.agent_response[user_id],
+            intent=self.agent_intent,
+        )
 
-    def instructions(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
+    def instructions(self, user_id: str) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Creates utterance with usage instructions.
 
         The instructions are sent when the conversation starts and when '/help'
@@ -323,44 +304,38 @@ class ControllerFlask(Controller):
             'To see these instructions again, issue: "/help".'
         )
 
-        return self.user_messages[user_id].text(
-            response, intent="REVEAL.DISCLOSE"
+        return http_formatter.text_message(
+            user_id=user_id, message=response, intent="REVEAL.DISCLOSE"
         )
 
-    def store_data(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
+    def storage_instructions(
+        self, user_id: str, b_accept: bool
+    ) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Instructions for deleting stored conversation history.
 
         Args:
             user_id: User id.
+            b_accept: Whether or not the user accepts the license agreement.
 
         Returns:
-            Object with instructions message to send to the server.
+            Object with storage information to send to the server.
         """
         policy = (
             'Type "/delete" at any time to stop storing and delete conversation'
-            " history.\n\nPress start to continue."
+            ' history.\n\nType "/start" to continue.'
         )
-        return self.user_messages[user_id].text(
-            policy, intent="REVEAL.DISCLOSE"
-        )
-
-    def first_time_message(self, user_id: str) -> HTTP_OBJECT_MESSAGE:
-        """Creates utterance with greetings message.
-
-        Args:
-            user_id: User id.
-
-        Returns:
-            Object with greetings message to send to the server.
-        """
-        self.start_agent(user_id)
-        greet = self.greeting()
-
-        return self.user_messages[user_id].text(
-            greet["message"]["text"], intent="REVEAL.DISCLOSE"
+        if not b_accept:
+            policy = (
+                "Your conversation history will not be saved.\n\n"
+                'Type "/start" to continue.'
+            )
+        return http_formatter.text_message(
+            user_id=user_id, message=policy, intent="REVEAL.DISCLOSE"
         )
 
-    def privacy_policy(self, user_id: str = None) -> HTTP_OBJECT_MESSAGE:
+    def privacy_policy(
+        self, user_id: str
+    ) -> http_formatter.HTTP_OBJECT_MESSAGE:
         """Creates utterance with policy.
 
         Args:
@@ -369,30 +344,23 @@ class ControllerFlask(Controller):
         Returns:
             Object with privacy message to send to the server.
         """
-        title = (
+        policy = (
             "We may store some information to improve recommendations.\n"
             "You may delete stored data at any time.\n"
             "Read more in our privacy policy\n"
             "Privacy Policy: https://iai-group.github.io/moviebot/Privacy_policy.html\n"  # noqa
             'To accept the privacy policy write "/store"\n'
-            'To continue without accepting write "/continue"'
+            'To continue without accepting write "/reject"'
         )
-        message = {"message": {"text": title, "intent": self.agent_intent}}
-        return message
+        return http_formatter.text_message(
+            user_id=user_id, message=policy, intent=self.agent_intent
+        )
 
-    def greeting(self) -> HTTP_OBJECT_MESSAGE:
-        """Creates greeting message.
-
-        Returns:
-            Object with greetings message to send to the server.
-        """
-        return {
-            "message": {
-                "locale": "default",
-                "text": "Hi there. I am IAI MovieBot, your movie recommending"
-                " buddy. I can recommend you movies based on your preferences."
-                "\nI will ask you a few questions and based on your answers, "
-                "I will try to find a movie for you.\n\n",
-                "intent": self.agent_intent,
-            }
-        }
+    def greetings(self) -> str:
+        """Returns a greeting message."""
+        return (
+            "Hi there. I am IAI MovieBot, your movie recommending buddy. I"
+            " can recommend you movies based on your preferences.\nI will ask"
+            " you a few questions and based on your answers, I will try to"
+            " find a movie for you.\n\n"
+        )
