@@ -1,8 +1,6 @@
 """This file contains the Controller class which controls the flow of the
 conversation while the user interacts with the agent using Flask."""
 
-import json
-import os
 from datetime import datetime
 from typing import Any, Callable, Dict, Union
 
