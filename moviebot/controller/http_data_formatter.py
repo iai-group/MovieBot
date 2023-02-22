@@ -20,7 +20,7 @@ SHORT_ANSWER = {
 }
 
 
-def shorten(input: str) -> str:
+def _shorten(input: str) -> str:
     """Creates shorter versions of agent responses.
 
     Args:
@@ -33,10 +33,16 @@ def shorten(input: str) -> str:
 
 
 @dataclass
+class Attachment:
+    type: str
+    payload: Dict[str, Any]
+
+
+@dataclass
 class Message:
     text: str
     intent: str
-    attachment: Dict[str, Any] = field(default_factory=dict)
+    attachment: Attachment = field(default=None)
 
 
 @dataclass
@@ -61,7 +67,7 @@ def create_buttons(user_options: DialogueOptions) -> List[Dict[str, Any]]:
             option = [option]
         for item in option:
             button = Button(
-                title=shorten(item),
+                title=_shorten(item),
                 payload=item,
                 button_type="postback",
             )
@@ -90,6 +96,28 @@ def text_message(
     return text
 
 
+def attachment_message(
+    user_id: str, message: str, attachment: Attachment, intent: str = "UNK"
+) -> HTTP_OBJECT_MESSAGE:
+    """Creates a message containing an attachment.
+
+    Args:
+        user_id: Id of the recipient.
+        message: Message to send.
+        attachment: Attachment to send.
+        intent: Intent of the message.
+
+    Returns:
+        Object with message containing an attachment to send to Flask server.
+    """
+    message = Message(text=message, intent=intent, attachment=attachment)
+    template = {
+        "recipient": {"id": user_id},
+        "message": asdict(message),
+    }
+    return template
+
+
 def buttons_message(
     user_id: str, buttons: List[Dict[str, Any]], text: str, intent="UNK"
 ) -> HTTP_OBJECT_MESSAGE:
@@ -104,30 +132,30 @@ def buttons_message(
     Returns:
         Object with message and buttons to send to Flask server.
     """
-    attachment = {
-        "type": "buttons",
-        "payload": {
-            "buttons": buttons,
-        },
-    }
-    message = Message(text=text, intent=intent, attachment=attachment)
-    template = {
-        "recipient": {"id": user_id},
-        "message": asdict(message),
-    }
-    return template
+    attachment = Attachment(type="buttons", payload={"buttons": buttons})
+    return attachment_message(
+        user_id=user_id, message=text, attachment=attachment, intent=intent
+    )
 
 
-def movie_message(info: Dict[str, Any], intent: str) -> HTTP_OBJECT_MESSAGE:
+def movie_message(
+    user_id: str, info: Dict[str, Any], intent: str
+) -> HTTP_OBJECT_MESSAGE:
     """Creates a message with movie information.
 
     Args:
+        user_id: Id of the recipient.
         info: Movie information.
         intent: Intent of the message.
 
     Returns:
         Object with movie message to send to the server.
     """
-    title = f"{info['title']} {info['rating']} {info['duration']} min"
-    message = Message(text=f"Do you like: {title}", intent=intent)
-    return asdict(message)
+    text = f"{info['title']} {info['rating']} {info['duration']} min"
+    attachment = Attachment(
+        type="images", payload={"images": [info["image_url"]]}
+    )
+
+    return attachment_message(
+        user_id=user_id, message=text, attachment=attachment, intent=intent
+    )
