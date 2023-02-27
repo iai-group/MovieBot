@@ -42,7 +42,7 @@ class Attachment:
 class Message:
     text: str
     intent: str
-    attachment: Attachment = field(default=None)
+    attachments: List[Attachment] = field(default_factory=list)
 
 
 @dataclass
@@ -97,20 +97,23 @@ def text_message(
 
 
 def attachment_message(
-    user_id: str, message: str, attachment: Attachment, intent: str = "UNK"
+    user_id: str,
+    message: str,
+    attachments: List[Attachment],
+    intent: str = "UNK",
 ) -> HTTP_OBJECT_MESSAGE:
     """Creates a message containing an attachment.
 
     Args:
         user_id: Id of the recipient.
         message: Message to send.
-        attachment: Attachment to send.
+        attachments: Attachments to send.
         intent: Intent of the message.
 
     Returns:
         Object with message containing an attachment to send to Flask server.
     """
-    message = Message(text=message, intent=intent, attachment=attachment)
+    message = Message(text=message, intent=intent, attachments=attachments)
     template = {
         "recipient": {"id": user_id},
         "message": asdict(message),
@@ -134,7 +137,7 @@ def buttons_message(
     """
     attachment = Attachment(type="buttons", payload={"buttons": buttons})
     return attachment_message(
-        user_id=user_id, message=text, attachment=attachment, intent=intent
+        user_id=user_id, message=text, attachments=[attachment], intent=intent
     )
 
 
@@ -157,5 +160,5 @@ def movie_message(
     )
 
     return attachment_message(
-        user_id=user_id, message=text, attachment=attachment, intent=intent
+        user_id=user_id, message=text, attachments=[attachment], intent=intent
     )
