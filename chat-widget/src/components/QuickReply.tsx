@@ -10,7 +10,6 @@ export default function QuickReplyButton({
   click: (message: string) => void;
 }): JSX.Element {
   const handleClick = () => {
-    console.log("Quick reply button clicked");
     click(message);
   };
 

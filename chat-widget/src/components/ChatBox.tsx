@@ -1,7 +1,6 @@
 import "./ChatBox.css";
 
-import React, { useState, useEffect, useRef } from "react";
-import useSocketConnection from "./socket_connector";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import QuickReplyButton from "./QuickReply";
 
 import {
@@ -16,27 +15,39 @@ import { ChatMessage } from "../types";
 
 export default function ChatBox({
   onClose,
+  connector,
+  use_feedback,
 }: {
   onClose: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  connector: {
+    sendMessage: (message: { message: string }) => void;
+    quickReply: (message: { message: string }) => void;
+    giveFeedback: (message: string, event: string) => void;
+    onMessage: (callback: (response: ChatMessage) => void) => void;
+    onRestart: (callback: () => void) => void;
+  };
+  use_feedback: boolean;
 }) {
   const [chatMessages, setChatMessages] = useState<JSX.Element[]>([]);
   const [chatButtons, setChatButtons] = useState<JSX.Element[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const chatMessagesRef = useRef(chatMessages);
   const inputRef = useRef<HTMLInputElement>(null);
-  const connector = useSocketConnection();
+
+  const updateMessages = (message: JSX.Element) => {
+    chatMessagesRef.current = [...chatMessagesRef.current, message];
+    setChatMessages(chatMessagesRef.current);
+  };
 
   const handleInput = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputValue.trim() === "") return;
-    chatMessagesRef.current = [
-      ...chatMessagesRef.current,
+    updateMessages(
       <UserChatMessage
         key={chatMessagesRef.current.length}
         message={inputValue}
-      />,
-    ];
-    setChatMessages(chatMessagesRef.current);
+      />
+    );
     connector.sendMessage({ message: inputValue });
     setInputValue("");
     if (inputRef.current) {
@@ -44,33 +55,38 @@ export default function ChatBox({
     }
   };
 
-  const handleQuickReply = (message: string) => {
-    chatMessagesRef.current = [
-      ...chatMessagesRef.current,
-      <UserChatMessage
-        key={chatMessagesRef.current.length}
-        message={message}
-      />,
-    ];
-    setChatMessages(chatMessagesRef.current);
-    connector.quickReply({ message: message });
-  };
+  const handleQuickReply = useCallback(
+    (message: string) => {
+      updateMessages(
+        <UserChatMessage
+          key={chatMessagesRef.current.length}
+          message={message}
+        />
+      );
+      connector.quickReply({ message: message });
+    },
+    [connector, chatMessagesRef]
+  );
 
-  useEffect(() => {
-    connector.onMessage((message: ChatMessage) => {
+  const handelMessage = useCallback(
+    (message: ChatMessage) => {
       if (!!message.text) {
         const movie_url = message.attachment?.payload.url;
-        chatMessagesRef.current = [
-          ...chatMessages,
+        updateMessages(
           <AgentChatMessage
-            key={chatMessages.length}
-            feedback={connector.giveFeedback}
+            key={chatMessagesRef.current.length}
+            feedback={use_feedback ? connector.giveFeedback : null}
             message={message.text}
             movie_url={movie_url}
-          />,
-        ];
-        setChatMessages(chatMessagesRef.current);
+          />
+        );
       }
+    },
+    [connector, chatMessagesRef, use_feedback]
+  );
+
+  const handleButtons = useCallback(
+    (message: ChatMessage) => {
       const buttons = message.attachment?.payload.buttons;
       if (!!buttons && buttons.length > 0) {
         setChatButtons(
@@ -88,8 +104,16 @@ export default function ChatBox({
       } else {
         setChatButtons([]);
       }
+    },
+    [handleQuickReply]
+  );
+
+  useEffect(() => {
+    connector.onMessage((message: ChatMessage) => {
+      handelMessage(message);
+      handleButtons(message);
     });
-  }, [connector, chatMessages]);
+  }, [connector, handleButtons, handelMessage]);
 
   useEffect(() => {
     connector.onRestart(() => {
@@ -112,7 +136,7 @@ export default function ChatBox({
         }}
       >
         <p className="mb-0 fw-bold">MovieBot</p>
-        <a href="!#" onClick={onClose} style={{ color: "white" }}>
+        <a href="#!" onClick={onClose} style={{ color: "white" }}>
           <MDBIcon fas icon="angle-down" />
         </a>
       </MDBCardHeader>
@@ -140,13 +164,8 @@ export default function ChatBox({
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Type message"
                 ></MTDTextArea> */}
-          <button type="submit" className="btn btn-link">
-            <MDBIcon
-              fas
-              size="2x"
-              style={{ color: "Green" }}
-              icon="paper-plane"
-            />
+          <button type="submit" className="btn btn-link text-muted">
+            <MDBIcon fas size="2x" icon="paper-plane" />
           </button>
         </form>
       </MDBCardFooter>

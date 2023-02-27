@@ -2,6 +2,7 @@
   "name": "chat-widget",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://github.com/iai-group/moviebot-fork/chat-widget/build",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@testing-library/jest-dom": "^5.16.5",

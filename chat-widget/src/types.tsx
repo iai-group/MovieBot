@@ -1,3 +1,9 @@
+export type Config = {
+  serverUrl: string | undefined;
+  useFeedback: boolean | undefined;
+  useLogin: boolean | undefined;
+};
+
 export type ChatMessageButton = {
   title: string;
   payload: string;

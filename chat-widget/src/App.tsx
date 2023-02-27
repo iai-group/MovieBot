@@ -1,37 +1,37 @@
 import "./App.css";
-import React, { useState, useEffect, useRef, MouseEvent } from "react";
+import { useState, MouseEvent } from "react";
 import ChatBox from "./components/ChatBox";
 import { MDBIcon } from "mdb-react-ui-kit";
+import useSocketConnection from "./components/socket_connector";
+import { Config } from "./types";
 
-export default function App() {
-  const [isChatBoxOpen, setIsChatBoxOpen] = useState<Boolean>(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const elementRef = useRef<HTMLDivElement>(null);
+export default function App(props: Config) {
+  const [isChatBoxOpen, setIsChatBoxOpen] = useState<boolean>(false);
+  const connector = useSocketConnection(props.serverUrl, isChatBoxOpen);
 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
     setIsChatBoxOpen(isChatBoxOpen ? false : true);
   }
 
-  // useEffect(() => {
-  //   if (contentRef.current && elementRef.current) {
-  //     const contentHeight = contentRef.current.offsetHeight;
-  //     elementRef.current.style.height = `${contentHeight}px`;
-  //   }
-  // }, []);
-
   return (
     <div className="chat-widget-container">
       <div className="chat-widget-icon">
-        <a href="#" onClick={handleClick}>
+        <a href="#!" onClick={handleClick} className="text-muted">
           <MDBIcon fas icon="robot" />
         </a>
       </div>
       {/* <MDBContainer className="py-5">
         <MDBRow className="d-flex justify-content-center">
           <MDBCol md="8" lg="6" xl="4"> */}
-      <div className="chat-widget-box" ref={elementRef}>
-        <div className="chat-widget-content" ref={contentRef}>
-          {isChatBoxOpen && <ChatBox onClose={handleClick} />}
+      <div className="chat-widget-box">
+        <div className="chat-widget-content">
+          {isChatBoxOpen && (
+            <ChatBox
+              onClose={handleClick}
+              connector={connector}
+              use_feedback={props.useFeedback || false}
+            />
+          )}
         </div>
       </div>
       {/* </MDBCol>

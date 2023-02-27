@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
+import Feedback from "./Feedback";
 
 function UserChatMessage({ message }: { message: string }): JSX.Element {
   return (
@@ -26,42 +26,13 @@ function AgentChatMessage({
 }: {
   message: string;
   movie_url?: string;
-  feedback: (message: string, event: string) => void;
+  feedback: ((message: string, event: string) => void) | null;
 }): JSX.Element {
-  const [liked, setLiked] = useState<boolean | null>(null);
-  const thumbsUp = useRef<HTMLAnchorElement>(null);
-  const thumbsDown = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    if (!!thumbsUp.current) {
-      thumbsUp.current.addEventListener("click", () => {
-        setLiked(true);
-        feedback(message, "thumbs_up");
-      });
-    }
-  }, [thumbsUp, feedback, message]);
-
-  useEffect(() => {
-    if (!!thumbsDown.current) {
-      thumbsDown.current.addEventListener("click", () => {
-        setLiked(false);
-        feedback(message, "thumbs_down");
-      });
-    }
-  }, [thumbsDown, feedback, message]);
-
   return (
     <div className="d-flex flex-row justify-content-start mb-4">
-      {/* <img
-          src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-          alt="Agent"
-          style={{ width: "45px", height: "100%" }}
-        /> */}
-      <div
-      // style={{ width: "50px", height: "40px", borderRadius: "25px", backgroundColor: "lightblue"}}
-      // className="d-flex align-items-center"
-      >
-        <MDBIcon fas size="2x" style={{ color: "black" }} icon="robot" />
+      <div className="text-center">
+        <MDBIcon fas size="2x" className="text-muted" icon="robot" />
+        {feedback && <Feedback message={message} on_feedback={feedback} />}
       </div>
       <div
         className="p-3 ms-3"
@@ -80,24 +51,6 @@ function AgentChatMessage({
           </div>
         )}
         <p className="small mb-0">{message}</p>
-        <div className="d-flex flex-row justify-content-end">
-          <a className="p-1 text-muted" href="#!" ref={thumbsUp}>
-            <MDBIcon
-              className={`${liked ? "fas" : "far"}`}
-              style={{ color: "DodgerBlue" }}
-              size="lg"
-              icon="thumbs-up"
-            />
-          </a>
-          <a className="p-1 text-muted" href="#!" ref={thumbsDown}>
-            <MDBIcon
-              className={`${liked !== null && !liked ? "fas" : "far"}`}
-              style={{ color: "DodgerBlue" }}
-              size="lg"
-              icon="thumbs-down"
-            />
-          </a>
-        </div>
       </div>
     </div>
   );

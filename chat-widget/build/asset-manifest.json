@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/iai-group/moviebot-fork/chat-widget/build/static/css/main.77b538ff.css",
+    "main.js": "/iai-group/moviebot-fork/chat-widget/build/static/js/main.f9c33f58.js",
+    "static/js/787.1d0d702d.chunk.js": "/iai-group/moviebot-fork/chat-widget/build/static/js/787.1d0d702d.chunk.js",
+    "static/media/fa-solid-900.ttf": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-solid-900.2877d54f94f30c5d563c.ttf",
+    "static/media/fa-brands-400.ttf": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-brands-400.13e40630e5866f777de8.ttf",
+    "static/media/fa-solid-900.woff2": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-solid-900.bdb9e23299f9d1320a8b.woff2",
+    "static/media/fa-brands-400.woff2": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-brands-400.7be2266f1be21c44ecd4.woff2",
+    "static/media/fa-regular-400.ttf": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-regular-400.146404900f7550a9719d.ttf",
+    "static/media/fa-regular-400.woff2": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-regular-400.8bedd7cfa43a6c358cdd.woff2",
+    "static/media/fa-v4compatibility.ttf": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-v4compatibility.6c0a7b774ffa1cf0a059.ttf",
+    "static/media/fa-v4compatibility.woff2": "/iai-group/moviebot-fork/chat-widget/build/static/media/fa-v4compatibility.497d535001197a9c5b38.woff2",
+    "index.html": "/iai-group/moviebot-fork/chat-widget/build/index.html",
+    "main.77b538ff.css.map": "/iai-group/moviebot-fork/chat-widget/build/static/css/main.77b538ff.css.map",
+    "main.f9c33f58.js.map": "/iai-group/moviebot-fork/chat-widget/build/static/js/main.f9c33f58.js.map",
+    "787.1d0d702d.chunk.js.map": "/iai-group/moviebot-fork/chat-widget/build/static/js/787.1d0d702d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.77b538ff.css",
+    "static/js/main.f9c33f58.js"
+  ]
+}

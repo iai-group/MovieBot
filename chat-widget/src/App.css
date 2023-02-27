@@ -21,7 +21,7 @@ transition: all 0.3s ease-in-out;
 
 .chat-widget-box .card-body{
  overflow-y: auto;
- max-height: 600px;
+ max-height: 450px;
  display: flex;
  flex-direction: column-reverse;
 }
