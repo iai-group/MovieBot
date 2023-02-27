@@ -4,24 +4,22 @@ It comprises ot the parameters mentioned in the conversation.
 """
 
 
-from typing import Any, Optional, Text
+from typing import Any, Optional
 
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.semantic_annotation import SemanticAnnotation
 
 
 class ItemConstraint:
-    """The Item Constraint models the parameter of a DialogueAct and is a
-    triplet of (slot, operator, value)."""
-
     def __init__(
         self,
-        slot: Text,
+        slot: str,
         op: Operator,
         value: Any,
         annotation: Optional[SemanticAnnotation] = None,
     ) -> None:
-        """Initializes a Dialogue Act Item (slot - operator - value).
+        """The Item Constraint models the parameter of a DialogueAct and is a
+        triplet of (slot, operator, value).
 
         Args:
             slot: A string representing the slot.
@@ -48,14 +46,14 @@ class ItemConstraint:
     def add_value(
         self, value: Any, annotation: Optional[SemanticAnnotation] = None
     ) -> None:
-        """Adds value.
+        """Adds value and annotation if any.
 
         Args:
             value: Value to add.
             annotation: Semantic annotation if adding value is due to
               annotation. Defaults to None.
         """
-        self.value += " " + str(value)
+        self.value += f" {str(value)}"
         if annotation:
             self.annotation.append(annotation)
 
@@ -66,7 +64,7 @@ class ItemConstraint:
             other.value,
         )
 
-    def __str__(self) -> Text:
+    def __str__(self) -> str:
         """Prints the DAct Item to debug the agent.
 
         Returns:

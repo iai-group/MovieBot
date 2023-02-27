@@ -1,8 +1,8 @@
 """Semantic annotation is annotation that stores certain insight from text. Some
-text can have many such annotatins. """
+text can have many such annotations."""
 
-from typing import Text, Optional
 from enum import Enum
+from typing import Optional
 
 from moviebot.nlu.text_processing import Span
 
@@ -25,20 +25,24 @@ class EntityType(Enum):
 
 
 class SemanticAnnotation(Span):
-    """Stores annotation type, span and item constraint. Span stores
-    information about what section of the text is used in this annotation.
-    Item constraint tells us how this annotation is relevant. In the case of
-    named entity it holds entity type, and in the case of temporal annotation
-    stores time period or a year.
-
-    """
-
     def __init__(
         self,
         annotation_type: AnnotationType,
         entity_type: Optional[EntityType] = None,
         **kwargs,
     ) -> None:
+        """Stores annotation type, span and item constraint.
+
+        Span stores information about what section of the text is used in this
+        annotation. Item constraint tells us how this annotation is relevant. In
+        the case of named entity it holds entity type, and in the case of
+        temporal annotation it stores time period or a year.
+
+        Args:
+            annotation_type: Type of annotation.
+            entity_type: Type of entity. Defaults to None.
+            kwargs: Additional span parameters.
+        """
         if not isinstance(annotation_type, AnnotationType):
             raise NotImplementedError
 
@@ -50,9 +54,12 @@ class SemanticAnnotation(Span):
         if annotation_type == AnnotationType.NAMED_ENTITY:
             self.entity_type = entity_type
 
-    def get_type(self) -> Text:
-        entity_type = " - " + self.entity_type.name if self.entity_type else ""
-        return (self.annotation_type.name + entity_type).lower()
+    def get_type(self) -> str:
+        """Returns semantic annotation type as string."""
+        entity_type_str = (
+            f" - {self.entity_type.name}" if self.entity_type else ""
+        )
+        return (self.annotation_type.name + entity_type_str).lower()
 
     @classmethod
     def from_span(
@@ -60,18 +67,18 @@ class SemanticAnnotation(Span):
         span: Span,
         annotation_type: AnnotationType,
         entity_type: Optional[EntityType] = None,
-    ):
-        """Create semantic annotation from already existing span or token. This
+    ) -> "SemanticAnnotation":
+        """Creates semantic annotation from already existing span or token. This
         is the most common way to create new annotation.
 
         Args:
-            span (Span): span with text, start and end
-            annotation_type (AnnotationType): Type of annotation
-            entity_type (Optional[EntityType], optional): Type of entity for
-                AnnotationType.NAMED_ENTITY. Defaults to None.
+            span: Span with text, start and end.
+            annotation_type: Type of annotation.
+            entity_type: Type of entity for AnnotationType.NAMED_ENTITY.
+              Defaults to None.
 
         Returns:
-            [type]: [description]
+            New semantic annotation retaining span information.
         """
         return SemanticAnnotation(
             annotation_type,
