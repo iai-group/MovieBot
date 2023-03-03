@@ -230,7 +230,9 @@ class ControllerFlask(Controller):
         if self.user_options[user_id]:
             if "**" in self.agent_response[user_id]:
                 return http_formatter.movie_message(
-                    info=self.info[user_id], intent=self.agent_intent
+                    user_id=user_id,
+                    info=self.info[user_id],
+                    intent=self.agent_intent,
                 )
             else:
                 buttons = http_formatter.create_buttons(
