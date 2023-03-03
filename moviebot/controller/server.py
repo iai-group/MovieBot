@@ -1,14 +1,25 @@
 """This file contains the flask server."""
 
+import json
+from dataclasses import dataclass, field
 from os import environ
 from typing import Any, Dict
 
+from dataclasses_json import dataclass_json
 from flask import Flask, request
 
 from moviebot.controller.controller_flask import ControllerFlask
 
 app = Flask(__name__)
 controller_flask = ControllerFlask()
+
+
+@dataclass_json
+@dataclass
+class Message:
+    text: str = field(default=None)
+    quick_reply: Dict[str, str] = field(default=None)
+    postback: Dict[str, str] = field(default=None)
 
 
 def run(config: Dict[str, Any]) -> None:
@@ -32,12 +43,22 @@ def receive_message() -> None:
         response = action(output)
         if response:
             return response
-        return "Message Processed"
+        return {"info": "Message Processed"}
 
 
 def action(output: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
     """Gets user id and payload from output and runs get_message in the
     controller.
+
+    The data should be sent with the following template:
+    {
+        "message": {
+            "text": "TEXT_SENT",
+            "quick_reply": {"payload": "QR_PAYLOAD"},
+            "postback": {"payload": "PB_PAYLOAD"},
+        },
+        "sender": {"id": "SENDER_ID"},
+    }
 
     Args:
         output: Output from request.
@@ -45,8 +66,7 @@ def action(output: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
     Returns:
         Object with message to send to the server.
     """
-    event = output["entry"][0]["messaging"][0]
-    user_id = event["sender"]["id"]
+    user_id = output["sender"]["id"]
     controller_flask.initialize(user_id)
     payload = get_message(output)
     print(payload)
@@ -67,12 +87,10 @@ def get_message(output: Dict[str, Any]) -> str:
     Returns:
         String with payload.
     """
-    for event in output["entry"]:
-        for message in event["messaging"]:
-            if message.get("message"):
-                if message["message"].get("quick_reply"):
-                    return message["message"]["quick_reply"]["payload"]
-                if message["message"].get("text"):
-                    return message["message"]["text"]
-            if message.get("postback"):
-                return message["postback"]["payload"]
+    message = Message.from_json(json.dumps(output.get("message")))
+    if message.quick_reply:
+        return message.quick_reply["payload"]
+    elif message.text:
+        return message.text
+    elif message.postback:
+        return message.postback["payload"]

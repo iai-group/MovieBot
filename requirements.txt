@@ -9,3 +9,4 @@ wikipedia
 nltk
 flask
 questionary
+dataclasses_json
