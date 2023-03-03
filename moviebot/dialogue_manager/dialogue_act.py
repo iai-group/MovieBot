@@ -38,10 +38,17 @@ class DialogueAct:
         """Prints a dialogue act to debug the agent.
 
         Returns:
-            String representation of the DialogueAct.
+            String representation of the dialogue act.
         """
         if self.intent:
             params = ", ".join([str(param) for param in self.params])
             return f"{self.intent}({params})"
         else:
             return "None (DialogueAct)"
+
+    def remove_constraint(self, constraint: ItemConstraint) -> None:
+        """Removes constraint from the list of parameters."""
+        for p in self.params:
+            if p.slot == constraint.slot and p.value == constraint.value:
+                self.params.remove(p)
+                return

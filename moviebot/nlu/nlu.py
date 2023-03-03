@@ -5,44 +5,45 @@ generate an appropriate response.
 """
 
 
+from typing import Any, Dict, List, Union
+
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
+from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
+from moviebot.ontology.ontology import Ontology
+
+DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
 
 
 class NLU:
-    """NLU is a basic natural language understander to generate DActs for the
-    Conversational Agent.
-
-    Implementation of this NLU is designed to work for Slot-Filling
-    applications. The purpose of this class is to provide a quick way of
-    running Conversational Agents, sanity checks, and to aid debugging.
-    """
-
     def __init__(self, config):
-        """Loads the ontology and database, and preprocess the database so that
+        """NLU is a basic natural language understander to generate dialogue
+        acts for the Conversational Agent.
+
+        Implementation of this NLU is designed to work for Slot-Filling
+        applications. The purpose of this class is to provide a quick way of
+        running Conversational Agents, sanity checks, and to aid debugging.
+        Loads the ontology and database, and preprocess the database so that
         we avoid some computations at runtime. Also create patterns to
         understand natural language.
-
-        :type self.database: DataBase
-        :type self.ontology: Ontology
 
         Args:
             config: Paths to ontology, database and tag words for slots in NLU.
         """
-        self.ontology = config["ontology"]
-        self.database = config["database"]
+        self.ontology: Ontology = config["ontology"]
+        self.database: DataBase = config["database"]
         self.intents_checker = UserIntentsChecker(config)
 
     def generate_dact(  # noqa: C901
         self,
         user_utterance: UserUtterance,
-        options,
+        options: DialogueOptions,
         dialogue_state: DialogueState = None,
         dialogue_context: DialogueContext = None,
     ):
@@ -166,7 +167,22 @@ class NLU:
             user_dacts.append(DialogueAct(UserIntents.UNK, []))
         return user_dacts
 
-    def get_selected_option(self, user_utterance, options, item_in_focus):
+    def get_selected_option(
+        self,
+        user_utterance: UserUtterance,
+        options: DialogueOptions,
+        item_in_focus: Union[Dict[str, Any], None],
+    ) -> List[DialogueAct]:
+        """Checks if user selected any of the suggested options.
+
+        Args:
+            user_utterance: User utterance.
+            options: Options given to the user.
+            item_in_focus: Item recommended to user on previous turn.
+
+        Returns:
+            A list with at most one item (i.e., the selected option).
+        """
         raw_utterance = user_utterance.get_text()
         dacts = []
         for dact, value in options.items():
