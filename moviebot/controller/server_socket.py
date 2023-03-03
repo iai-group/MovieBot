@@ -16,35 +16,6 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 controller_flask = ControllerFlask()
 
 
-def run(config: Dict[str, Any]) -> None:
-    """Runs execute_agent in ControllerFlask and starts flask server.
-
-    Args:
-        config: Agent configuration.
-    """
-    controller_flask.execute_agent(config)
-    socketio.run(app, host="127.0.0.1", port=environ.get("PORT", 5000))
-
-
-def action(user_id: str, message: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
-    """Passes message to ControllerFlask and returns response.
-
-    Args:
-        user_id: User id.
-        message: Message to be processed.
-
-    Returns:
-        Response from ControllerFlask.
-    """
-
-    if message is not None:
-        run_method_response = controller_flask.run_method(user_id, message)
-        if run_method_response is True:
-            return controller_flask.send_message(user_id, message)
-        elif run_method_response:
-            return run_method_response
-
-
 class ChatNamespace(Namespace):
     def on_connect(self, data: Dict[str, Any]) -> None:
         """Connects client to server.
@@ -84,4 +55,31 @@ class ChatNamespace(Namespace):
         send({"info": "Feedback received"})
 
 
-socketio.on_namespace(ChatNamespace("/chat"))
+def run(config: Dict[str, Any]) -> None:
+    """Runs execute_agent in ControllerFlask and starts flask server.
+
+    Args:
+        config: Agent configuration.
+    """
+    controller_flask.execute_agent(config)
+    socketio.run(app, host="127.0.0.1", port=environ.get("PORT", 5000))
+    socketio.on_namespace(ChatNamespace("/chat"))
+
+
+def action(user_id: str, message: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
+    """Passes message to ControllerFlask and returns response.
+
+    Args:
+        user_id: User id.
+        message: Message to be processed.
+
+    Returns:
+        Response from ControllerFlask.
+    """
+
+    if message is not None:
+        run_method_response = controller_flask.run_method(user_id, message)
+        if run_method_response is True:
+            return controller_flask.send_message(user_id, message)
+        elif run_method_response:
+            return run_method_response
