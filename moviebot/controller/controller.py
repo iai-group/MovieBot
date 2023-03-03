@@ -55,6 +55,15 @@ class Controller(ABC):
         c = conn.cursor()
         return c
 
+    def get_user_history_path(self, path: str, user_id: str) -> str:
+        """Returns the path to conversation history for a given user.
+
+        Args:
+            path: Path to conversation histories.
+            user_id: User id.
+        """
+        return os.path.join(path, f"user_{user_id}.json")
+
     def load_user_data(self, path: str, user_id: str) -> Dict[str, Any]:
         """Loads movie choices (accept/reject) for a user from conversation
         history.
@@ -66,7 +75,7 @@ class Controller(ABC):
         Returns:
             Object with previous movie choices.
         """
-        user_history_path = f"{path}user_{user_id}.json"
+        user_history_path = self.get_user_history_path(path, user_id)
         loaded_data = {}
         if os.path.isfile(user_history_path):
             with open(user_history_path) as json_file:
@@ -86,7 +95,7 @@ class Controller(ABC):
         Returns:
             A boolean indicating whether or not history was deleted.
         """
-        user_history_path = f"{path}user_{user_id}.json"
+        user_history_path = self.get_user_history_path(path, user_id)
         if os.path.isfile(user_history_path):
             os.remove(user_history_path)
             return True
