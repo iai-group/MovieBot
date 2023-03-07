@@ -75,6 +75,6 @@ class ItemConstraint:
         result = self.slot
 
         if self.value:
-            result += " " + opr + " " + str(self.value)
+            result += f" {opr} {str(self.value)}"
 
         return result

@@ -20,7 +20,32 @@ SLOT_VALUES = {
     "directors": {
         "Tom Hanks": "tom hank",
     },
+    "genres": {
+        "Action": "action",
+        "Adventure": "adventure",
+        "Crime": "crime",
+    },
+    "title": {
+        "The Godfather": "the godfather",
+        "The Godfather: Part II": "the godfather part ii",
+        "Othello": "othello",
+        "The Lion King": "the lion king",
+    },
+    "keywords": {
+        "a birthday party": "a birthday party",
+        "action figure": "action figure",
+    },
 }
+
+
+def process_value(text: str) -> str:
+    """Returns a process value fixture."""
+    return text
+
+
+def lematize_value(text: str) -> str:
+    """Returns a lematize value fixture."""
+    return text
 
 
 @pytest.fixture()
@@ -39,9 +64,136 @@ def uic() -> UserIntentsChecker:
 
 
 @pytest.mark.parametrize(
+    "slot, message",
+    [
+        ("year", {"text": "a good movie"}),
+        ("plot", {"text": "Some movie with a plot"}),
+    ],
+)
+def test_slot_annotation_empty(slot, message) -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator.slot_annotation(slot, UserUtterance(message))
+
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize(
+    "slot, message, operator, value",
+    [
+        ("year", {"text": "a new movie"}, "=", "> 2010"),
+        (
+            "actors",
+            {"text": "a movie starring tom handley"},
+            "=",
+            "tom handley",
+        ),
+        (
+            "genres",
+            {"text": "a movie with action."},
+            "=",
+            "action",
+        ),
+    ],
+)
+def test_slot_annotation(slot, message, operator, value) -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator.slot_annotation(slot, UserUtterance(message))
+
+    assert len(result) == 1
+    assert result[0].value == value
+    assert str(result[0].op) == operator
+
+
+def test__genres_annotator_empty() -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator._genres_annotator(
+        "genres", UserUtterance({"text": "a movie"})
+    )
+
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize(
+    "message, operator, value",
+    [
+        ({"text": "a crime movie"}, "=", "crime"),
+        (
+            {"text": "a movie with action and adventure"},
+            "=",
+            "action adventure",
+        ),
+        ({"text": "a dramatical movie"}, "=", "dramatical"),
+        ({"text": "a crime movie, but animated"}, "=", "crime animated"),
+    ],
+)
+def test__genres_annotator(message, operator, value) -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator._genres_annotator("genres", UserUtterance(message))
+
+    assert len(result) == 1
+    assert result[0].value == value
+    assert str(result[0].op) == operator
+
+
+def test__title_annotator_empty() -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator._title_annotator(
+        "title", UserUtterance({"text": "a weekend trip movie"})
+    )
+
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize(
+    "message, operator, value",
+    [
+        ({"text": "One of the godfather movies"}, "=", "the godfather"),
+        ({"text": "How about Othello"}, "=", "othello"),
+        ({"text": "Movie about a lion king"}, "=", "lion king"),
+    ],
+)
+def test__title_annotator(message, operator, value) -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator._title_annotator("title", UserUtterance(message))
+
+    assert len(result) == 1
+    assert result[0].value == value
+    assert str(result[0].op) == operator
+
+
+def test__keywords_annotator_empty() -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator._keywords_annotator(
+        "keywords", UserUtterance({"text": "a weekend trip movie"})
+    )
+
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize(
+    "message, operator, value",
+    [
+        ({"text": "Something with action figures"}, "=", "action figure"),
+        (
+            {"text": "I like movies with birthday party"},
+            "=",
+            "birthday party",
+        ),
+    ],
+)
+def test__keywords_annotator(message, operator, value) -> None:
+    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+    result = annotator._keywords_annotator("keywords", UserUtterance(message))
+
+    assert len(result) == 1
+    assert result[0].value == value
+    assert str(result[0].op) == operator
+
+
+@pytest.mark.parametrize(
     "utterance, expected",
     [
-        (UserUtterance({"text": "some other {} text".format(name)}), name)
+        (UserUtterance({"text": f"some other {name} text"}), name)
         for name in SLOT_VALUES["actors"].values()
     ],
 )
@@ -83,7 +235,31 @@ def test__person_name_annotator_actor_and_director() -> None:
 def test__person_name_annotator_empty(utterance: UserUtterance) -> None:
     annotator = RBAnnotator(None, None, SLOT_VALUES)
     result = annotator._person_name_annotator(utterance)
-    assert result is None
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize(
+    "message, operator, value",
+    [
+        ({"text": "i would like to watch a movie from 1999"}, "=", "1999"),
+        ({"text": "i would like to watch a movie from 1999s"}, "=", "1999"),
+        ({"text": "i would like to watch a new movie"}, ">", "2010"),
+        ({"text": "i would like to watch a old movie"}, "<", "2010"),
+        ({"text": "Give me a movie from 1970s"}, "BETWEEN", "1970 AND 1980"),
+        ({"text": "Anything from the 50s?"}, "BETWEEN", "1950 AND 1960"),
+        ({"text": "A movie from 20th century"}, "BETWEEN", "1900 AND 2000"),
+        ({"text": "A movie from 21st century"}, "BETWEEN", "2000 AND 2100"),
+    ],
+)
+def test__year_annotator(message, operator, value) -> None:
+    annotator = RBAnnotator(None, None, SLOT_VALUES)
+
+    utterance = UserUtterance(message)
+    result = annotator._year_annotator("year", utterance)
+
+    assert len(result) == 1
+    assert result[0].value == value
+    assert str(result[0].op) == operator
 
 
 @pytest.mark.parametrize(
