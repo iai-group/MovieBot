@@ -1,64 +1,96 @@
 """This file contains the flask server."""
 
+import json
+from dataclasses import dataclass, field
 from os import environ
+from typing import Any, Dict
 
-import telegram
-import yaml
+from dataclasses_json import dataclass_json
 from flask import Flask, request
 
-from moviebot.controller.controller_telegram import ControllerTelegram
+from moviebot.controller.controller_flask import ControllerFlask
 
 app = Flask(__name__)
-controller_telegram = ControllerTelegram()
-URL = "https://636d944311f9.ngrok.io/"  # Webhook url
+controller_flask = ControllerFlask()
 
 
-def bot_token():
-    """Gets bot token from config file."""
-    path = "config/bot_token.yaml"
-    with open(path, "r") as file:
-        config = yaml.load(file, Loader=yaml.Loader)
-        BOT_TOKEN = config["BOT_TOKEN"]
-        return BOT_TOKEN
+@dataclass_json
+@dataclass
+class Message:
+    text: str = field(default=None)
+    quick_reply: Dict[str, str] = field(default=None)
+    postback: Dict[str, str] = field(default=None)
 
 
-telegram_token = bot_token()
-bot = telegram.Bot(token=telegram_token)
-
-
-@app.route("/{}".format(telegram_token), methods=["POST"])
-def respond():
-    """Receives to Telegram POST request."""
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
-    text = update.message.text.encode("utf-8").decode()
-
-    if text == "/start":
-        controller_telegram.start(update, True)
-    elif text == "/restart":
-        controller_telegram.start(update, True)
-    elif text == "/help":
-        controller_telegram.help(update, True)
-    elif text == "/exit":
-        controller_telegram.exit(update, True)
-    else:
-        controller_telegram.continue_conv(update, True)
-    return "ok"
-
-
-def set_webhook():
-    s = bot.setWebhook("{URL}{HOOK}".format(URL=URL, HOOK=telegram_token))
-    if s:
-        return "webhook ok"
-    else:
-        return "webhook failed"
-
-
-def run(config):
-    """Runs execute_agent in ControllerTelegram and starts flask server.
+def run(config: Dict[str, Any]) -> None:
+    """Runs execute_agent in ControllerFlask and starts flask server.
 
     Args:
-        config: agent settings
+        config: Agent configuration.
     """
-    controller_telegram.execute_agent(config)
-    set_webhook()
-    app.run(host="0.0.0.0", port=environ.get("PORT", 5000))
+    controller_flask.execute_agent(config)
+    app.run(host="0.0.0.0", port=environ.get("PORT", 5001))
+
+
+@app.route("/", methods=["GET", "POST"])
+def receive_message() -> None:
+    """Receives POST requests send from client."""
+    if request.method == "GET":
+        return "MovieBot is alive", 200
+    else:
+        output = request.get_json()
+        print(output)
+        response = action(output)
+        if response:
+            return response
+        return {"info": "Message Processed"}
+
+
+def action(output: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
+    """Gets user id and payload from output and runs get_message in the
+    controller.
+
+    The data should be sent with the following template:
+    {
+        "message": {
+            "text": "TEXT_SENT",
+            "quick_reply": {"payload": "QR_PAYLOAD"},
+            "postback": {"payload": "PB_PAYLOAD"},
+        },
+        "sender": {"id": "SENDER_ID"},
+    }
+
+    Args:
+        output: Output from request.
+
+    Returns:
+        Object with message to send to the server.
+    """
+    user_id = output["sender"]["id"]
+    controller_flask.initialize(user_id)
+    payload = get_message(output)
+    print(payload)
+    if payload is not None:
+        run_method_response = controller_flask.run_method(user_id, payload)
+        if run_method_response is True:
+            return controller_flask.send_message(user_id, payload)
+        elif run_method_response:
+            return run_method_response
+
+
+def get_message(output: Dict[str, Any]) -> str:
+    """Gets payload from output.
+
+    Args:
+        output: Output from request.
+
+    Returns:
+        String with payload.
+    """
+    message = Message.from_json(json.dumps(output.get("message")))
+    if message.quick_reply:
+        return message.quick_reply["payload"]
+    elif message.text:
+        return message.text
+    elif message.postback:
+        return message.postback["payload"]

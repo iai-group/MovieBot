@@ -10,3 +10,4 @@ nltk
 flask
 flask-socketio
 questionary
+dataclasses_json
