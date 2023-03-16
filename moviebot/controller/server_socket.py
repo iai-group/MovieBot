@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
-controller_flask = ControllerFlask()
+controller_flask: ControllerFlask = ControllerFlask()
 
 
 class ChatNamespace(Namespace):
@@ -63,7 +63,7 @@ def run(config: Dict[str, Any]) -> None:
     """
     controller_flask.execute_agent(config)
     socketio.run(app, host="127.0.0.1", port=environ.get("PORT", 5000))
-    socketio.on_namespace(ChatNamespace("/chat"))
+    socketio.on_namespace(ChatNamespace("/"))
 
 
 def action(user_id: str, message: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
