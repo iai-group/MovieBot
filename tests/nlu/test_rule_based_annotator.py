@@ -1,5 +1,6 @@
 """Test rule based annotator (RBAnnotator)."""
 
+from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -38,14 +39,20 @@ SLOT_VALUES = {
 }
 
 
-def process_value(text: str) -> str:
-    """Returns a process value fixture."""
+def mock_process_value(text: str) -> str:
+    """Returns a mock process value fixture."""
     return text
 
 
-def lematize_value(text: str) -> str:
-    """Returns a lematize value fixture."""
+def mock_lematize_value(text: str) -> str:
+    """Returns a mocked lematize value fixture."""
     return text
+
+
+@pytest.fixture()
+def annotator() -> RBAnnotator:
+    """Returns a rule based annotator fixture."""
+    return RBAnnotator(mock_process_value, mock_lematize_value, SLOT_VALUES)
 
 
 @pytest.fixture()
@@ -70,8 +77,9 @@ def uic() -> UserIntentsChecker:
         ("plot", {"text": "Some movie with a plot"}),
     ],
 )
-def test_slot_annotation_empty(slot, message) -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test_slot_annotation_empty(
+    annotator: RBAnnotator, slot: str, message: Dict[str, str]
+) -> None:
     result = annotator.slot_annotation(slot, UserUtterance(message))
 
     assert len(result) == 0
@@ -95,8 +103,13 @@ def test_slot_annotation_empty(slot, message) -> None:
         ),
     ],
 )
-def test_slot_annotation(slot, message, operator, value) -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test_slot_annotation(
+    annotator: RBAnnotator,
+    slot: str,
+    message: Dict[str, str],
+    operator: str,
+    value: str,
+) -> None:
     result = annotator.slot_annotation(slot, UserUtterance(message))
 
     assert len(result) == 1
@@ -104,8 +117,7 @@ def test_slot_annotation(slot, message, operator, value) -> None:
     assert str(result[0].op) == operator
 
 
-def test__genres_annotator_empty() -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test__genres_annotator_empty(annotator: RBAnnotator) -> None:
     result = annotator._genres_annotator(
         "genres", UserUtterance({"text": "a movie"})
     )
@@ -126,8 +138,9 @@ def test__genres_annotator_empty() -> None:
         ({"text": "a crime movie, but animated"}, "=", "crime animated"),
     ],
 )
-def test__genres_annotator(message, operator, value) -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test__genres_annotator(
+    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+) -> None:
     result = annotator._genres_annotator("genres", UserUtterance(message))
 
     assert len(result) == 1
@@ -135,8 +148,7 @@ def test__genres_annotator(message, operator, value) -> None:
     assert str(result[0].op) == operator
 
 
-def test__title_annotator_empty() -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test__title_annotator_empty(annotator: RBAnnotator) -> None:
     result = annotator._title_annotator(
         "title", UserUtterance({"text": "a weekend trip movie"})
     )
@@ -152,8 +164,9 @@ def test__title_annotator_empty() -> None:
         ({"text": "Movie about a lion king"}, "=", "lion king"),
     ],
 )
-def test__title_annotator(message, operator, value) -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test__title_annotator(
+    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+) -> None:
     result = annotator._title_annotator("title", UserUtterance(message))
 
     assert len(result) == 1
@@ -161,8 +174,7 @@ def test__title_annotator(message, operator, value) -> None:
     assert str(result[0].op) == operator
 
 
-def test__keywords_annotator_empty() -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test__keywords_annotator_empty(annotator: RBAnnotator) -> None:
     result = annotator._keywords_annotator(
         "keywords", UserUtterance({"text": "a weekend trip movie"})
     )
@@ -181,8 +193,9 @@ def test__keywords_annotator_empty() -> None:
         ),
     ],
 )
-def test__keywords_annotator(message, operator, value) -> None:
-    annotator = RBAnnotator(process_value, lematize_value, SLOT_VALUES)
+def test__keywords_annotator(
+    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+) -> None:
     result = annotator._keywords_annotator("keywords", UserUtterance(message))
 
     assert len(result) == 1
@@ -198,9 +211,8 @@ def test__keywords_annotator(message, operator, value) -> None:
     ],
 )
 def test__person_name_annotator_actors(
-    utterance: UserUtterance, expected: str
+    annotator: RBAnnotator, utterance: UserUtterance, expected: str
 ) -> None:
-    annotator = RBAnnotator(None, None, SLOT_VALUES)
     result = annotator._person_name_annotator(utterance)
 
     assert len(result) == 1
@@ -208,9 +220,9 @@ def test__person_name_annotator_actors(
     assert result[0].value == expected
 
 
-def test__person_name_annotator_actor_and_director() -> None:
-    annotator = RBAnnotator(None, None, SLOT_VALUES)
-
+def test__person_name_annotator_actor_and_director(
+    annotator: RBAnnotator,
+) -> None:
     utterance = UserUtterance(
         {"text": "some other text tom hank and after tom handley"}
     )
@@ -232,8 +244,9 @@ def test__person_name_annotator_actor_and_director() -> None:
         (UserUtterance({"text": "im interested in something like hi cousin"})),
     ],
 )
-def test__person_name_annotator_empty(utterance: UserUtterance) -> None:
-    annotator = RBAnnotator(None, None, SLOT_VALUES)
+def test__person_name_annotator_empty(
+    annotator: RBAnnotator, utterance: UserUtterance
+) -> None:
     result = annotator._person_name_annotator(utterance)
     assert len(result) == 0
 
@@ -251,9 +264,9 @@ def test__person_name_annotator_empty(utterance: UserUtterance) -> None:
         ({"text": "A movie from 21st century"}, "BETWEEN", "2000 AND 2100"),
     ],
 )
-def test__year_annotator(message, operator, value) -> None:
-    annotator = RBAnnotator(None, None, SLOT_VALUES)
-
+def test__year_annotator(
+    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+) -> None:
     utterance = UserUtterance(message)
     result = annotator._year_annotator("year", utterance)
 

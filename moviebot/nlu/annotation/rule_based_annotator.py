@@ -95,6 +95,9 @@ class RBAnnotator(SlotAnnotator):
     ) -> List[ItemConstraint]:
         """Annotates user utterance for specified slot.
 
+        Returns empty list if there is no annotation or the annotator is not
+        defined for the slot.
+
         Args:
             slot: Slot name.
             utterance: User utterance.
@@ -116,7 +119,7 @@ class RBAnnotator(SlotAnnotator):
         if slot == Slots.YEAR.value:
             for c in constraints:
                 if c.op != Operator.EQ:
-                    c.value = f"{str(c.op)} {c.value}"
+                    c.value = f"{c.op} {c.value}"
                     c.op = Operator.EQ
         return constraints
 
@@ -174,9 +177,7 @@ class RBAnnotator(SlotAnnotator):
                             slot, Operator.EQ, key.lower(), annotation
                         )
 
-        if param:
-            return [param]
-        return []
+        return [param] if param else []
 
     def _title_annotator(
         self, slot: str, user_utterance: UserUtterance
@@ -370,7 +371,7 @@ class RBAnnotator(SlotAnnotator):
                 return params
         return []
 
-    def _get_digit_groups(self, token: Token) -> Tuple[str]:
+    def _get_digit_groups(self, token: Token) -> Tuple[str, str]:
         """Extracts digits from token.
 
         This is primarily used to parse instances like "20th century" or
