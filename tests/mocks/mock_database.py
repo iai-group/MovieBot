@@ -43,7 +43,7 @@ class MockDataBase(DataBase):
                 8.3,
                 851172,
                 81,
-                "Tom Hanks, Tim Allen, Don Rickles, Jim Varney, Wallace Shawn"
+                "Tom Hanks, Tim Allen, Don Rickles, Jim Varney, Wallace Shawn",
                 "John Lasseter",
                 "https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@.jpg",  # noqa
                 "A little boy named Andy loves to be in his room, playing with"
