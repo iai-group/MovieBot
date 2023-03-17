@@ -410,12 +410,12 @@ class NLG:
         value = int(value)
         hours = value // 60
         minutes = value - hours * 60
-        if minutes > 60:
+        if value > 60:
             return random.choice(
                 [
                     f"{value} minutes",
                     f'{hours} {"hours" if hours > 1 else "hour"} and '
-                    f'{minutes} {"minutes" if minutes == 1 else "minute"}',
+                    f'{minutes} {"minute" if minutes == 1 else "minutes"}',
                 ]
             )
         else:
