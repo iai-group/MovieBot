@@ -164,7 +164,6 @@ def get_slot_annotator(config):
         SlotAnnotator: Returns a SlotAnnotator instance.
     """
     agent = Agent(config)
-    agent.initialize()
     return agent.nlu.intents_checker.slot_annotator
 
 

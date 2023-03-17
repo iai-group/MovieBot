@@ -7,7 +7,7 @@ IAI MovieBot. Currently, the database class is implemented for SQL DB.
 
 import sqlite3
 from copy import deepcopy
-from typing import Union
+from typing import Any, Dict, List, Union
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.slots import Slots
@@ -22,7 +22,7 @@ class DataBase:
     user preferences.
     """
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         """Initializes the internal structures of the DataBase class.
 
         Args:
@@ -33,7 +33,7 @@ class DataBase:
         self.current_CIN = None
         self.backup_db_results = None
 
-    def _initialize_sql(self):
+    def _initialize_sql(self) -> None:
         """Initializes the SQL connection and the name of the table to query."""
         self.sql_connection = sqlite3.connect(self.db_file_path)
         self.db_table_name = self._get_table_name()
@@ -48,36 +48,33 @@ class DataBase:
             ontology: Ontology to check specific parameters.
 
         Returns:
-            SQL condition if possible.
+            SQL condition if there is any.
         """
-        args = []
-        operator = " AND "
         if dialogue_state.agent_should_offer_similar:
             similar_movies = list(dialogue_state.similar_movies.values())[0]
-            if len(similar_movies) > 0:
-                for title in similar_movies:
-                    args.append(f'{Slots.TITLE.value} = "{title}"')
-                operator = " OR "
-        else:
-            for slot, values in dialogue_state.frame_CIN.items():
-                if slot in ontology.multiple_values_CIN:
-                    for value in values:
-                        if value and value not in Values.__dict__.values():
-                            args.append(
-                                slot
-                                + " "
-                                + self._get_value_for_query(slot, value)
-                            )
-                elif values and values not in Values.__dict__.values():
-                    args.append(
-                        slot + " " + self._get_value_for_query(slot, values)
-                    )
+            args = [
+                f'{Slots.TITLE.value} = "{title}"' for title in similar_movies
+            ]
+            return " OR ".join(args) if len(args) > 0 else None
 
-        return operator.join(args) if len(args) > 0 else None
+        args = []
+        for slot, values in dialogue_state.frame_CIN.items():
+            if slot not in ontology.multiple_values_CIN:
+                values = [values]
+
+            args.extend(
+                [
+                    f"{slot} {self._get_value_for_query(slot, value)}"
+                    for value in values
+                    if value and value not in set(Values)
+                ]
+            )
+
+        return " AND ".join(args) if len(args) > 0 else None
 
     def database_lookup(
         self, dialogue_state: DialogueState, ontology: Ontology
-    ):
+    ) -> List[Dict[str, Any]]:
         """Performs an SQL query to answer a user requirement.
 
         Args:
@@ -109,82 +106,31 @@ class DataBase:
         else:
             self.current_CIN = deepcopy(dialogue_state.frame_CIN)
 
-        if condition:
-            sql_command = (
-                f"{sql_command} WHERE {condition} AND {Slots.RATING.value} > 5"
-                f" ORDER BY {Slots.RATING.value} DESC;"
-            )
-        else:
-            sql_command = (
-                f"{sql_command} WHERE {Slots.RATING.value} > 5 ORDER BY"
-                f" {Slots.RATING.value} DESC;"
-            )
+        condition = f"{condition} AND " if condition else ""
+        sql_command = (
+            f"{sql_command} WHERE {condition}{Slots.RATING.value} > 5 "
+            f"ORDER BY {Slots.RATING.value} DESC;"
+        )
 
-        query_result = sql_cursor.execute(sql_command).fetchall()
-
-        # query_result, remove_title_from_CIN = self._remove_title_from_CIN(
-        #     query_result, condition, args
-        # )
+        query_result = sql_cursor.execute(sql_command).fetchall() or []
 
         slots = [x[0] for x in sql_cursor.description]
-        result = []
-        if query_result:
-            for row in query_result:
-                result.append(dict(zip(slots, row)))
+        result = [dict(zip(slots, row)) for row in query_result]
 
         if not dialogue_state.agent_should_offer_similar:
             self.backup_db_results = result
 
-        return result  # , remove_title_from_CIN
+        return result
 
-    def _remove_title_from_CIN(self, query_result, condition, args):
-        """
-
-        Args:
-            query_result:
-            condition:
-            args:
-
-        """
-        # extra check that name can be misleading
-        remove_title_from_CIN = False
-        if len(query_result) == 0 and any(
-            [arg.startswith(Slots.TITLE.vlaue) for arg in args]
-        ):
-            condition = (
-                " AND ".join(
-                    [
-                        arg
-                        for arg in args
-                        if not arg.startswith(Slots.TITLE.vlaue)
-                    ]
-                )
-                if len(args) > 0
-                else None
-            )
-            sql_cursor = self.sql_connection.cursor()
-            sql_command = f"SELECT * FROM {self.db_table_name}"
-            if condition:
-                sql_command = (
-                    f"{sql_command} WHERE {condition} ORDER BY"
-                    f" {Slots.RATING.value} DESC;"
-                )
-            else:
-                sql_command = (
-                    f"{sql_command} ORDER BY {Slots.RATING.value} DESC;"
-                )
-            query_result = sql_cursor.execute(sql_command).fetchall()
-            if len(query_result) > 0:
-                remove_title_from_CIN = True
-        return query_result, remove_title_from_CIN
-
-    def _get_value_for_query(self, slot, value):
-        """
+    def _get_value_for_query(self, slot: str, value: str) -> str:
+        """Converts value to SQL query condition.
 
         Args:
-            slot:
-            value:
+            slot: Slot the value belongs to.
+            value: Slot value.
 
+        Returns:
+            String that can be used as a condition in an SQL query.
         """
         if value.startswith(".NOT."):
             value = value.replace(".NOT.", "")
@@ -204,7 +150,7 @@ class DataBase:
                 value = f"= {value}"
         return value
 
-    def _get_table_name(self):
+    def _get_table_name(self) -> str:
         """Gets the SQL database's table name in the database.
 
         Returns:
@@ -220,6 +166,6 @@ class DataBase:
         else:
             raise ValueError(
                 "Dialogue State Tracker cannot specify Table Name from "
-                "database {0}".format(self.db_file_path)
+                f"database {self.db_file_path}"
             )
         return db_table_name

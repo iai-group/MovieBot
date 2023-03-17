@@ -17,6 +17,14 @@ IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/I
 
 The installation instructions and documentation can be found on [Read the Docs](https://iai-moviebot.readthedocs.io/).
 
+## Run with Flask
+
+Run the following command to start the IAI MovieBot with Flask:
+
+```shell
+python -m moviebot.run -c config/moviebot_config_no_integration.yaml
+```
+
 ## Contributions
 
 Contributions are welcome. Changes to IAI MovieBot should conform to the [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python).

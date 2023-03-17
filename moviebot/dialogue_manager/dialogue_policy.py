@@ -4,10 +4,13 @@ agent based on the previous conversation and current dialogue."""
 
 import random
 from copy import deepcopy
+from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.dialogue_manager.dialogue_context import DialogueContext
+from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
@@ -15,23 +18,24 @@ from moviebot.ontology.ontology import Ontology
 
 
 class DialoguePolicy:
-    """A rule-based policy developed as an initial step to generate action by
-    the agent based on the previous conversation and current dialogue."""
-
-    def __init__(self, ontology: Ontology, isBot: bool, new_user):
-        """Loads all necessary parameters for the policy to work.
+    def __init__(self, ontology: Ontology, isBot: bool, new_user: bool) -> None:
+        """Loads all necessary parameters for the policy.
 
         Args:
             ontology: Rules for the slots in the database.
             isBot: If the conversation is via bot or not.
+            new_user: Whether the user is new or not.
         """
         self.ontology = ontology
         self.isBot = isBot
         self.new_user = new_user
 
     def next_action(  # noqa: C901
-        self, dialogue_state, dialogue_context=None, restart: bool = False
-    ):
+        self,
+        dialogue_state: DialogueState,
+        dialogue_context: DialogueContext = None,
+        restart: bool = False,
+    ) -> List[DialogueAct]:
         """Decides the next action to be taken by the agent based on the
         current state and context.
 
@@ -41,7 +45,7 @@ class DialoguePolicy:
             restart: Whether or not to restart the dialogue. Defaults to False.
 
         Returns:
-            A list of Dialogue Acts.
+            A list of dialogue acts.
         """
         agent_dacts = []
         slots = deepcopy(dialogue_state.agent_requestable)
@@ -262,19 +266,23 @@ class DialoguePolicy:
                     )
         return agent_dacts
 
-    def _generate_examples(self, database_result, slot):
-        """
+    def _generate_examples(
+        self, database_result: List[Dict[str, Any]], slot: str
+    ) -> str:
+        """Generates a list of examples for specific slot.
 
         Args:
-            database_result:
-            slot:
+            database_result: The database results for a user information needs.
+            slot: Slot to find examples for.
 
+        Returns:
+            A string with a list of examples for a slot.
         """
         examples = []
         for result in database_result:
             temp_result = [x.strip() for x in result[slot].split(",")]
             examples.extend(
-                ["'" + x + "'" for x in temp_result if x not in examples]
+                [f"'{x}'" for x in temp_result if x not in examples]
             )
             if len(set(examples)) > 20:
                 break

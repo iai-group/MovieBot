@@ -1,10 +1,12 @@
-"""Dialogue State Tracker updates the current dialogue state."""
+"""Dialogue state tracker updates the current dialogue state."""
 
 
 from copy import deepcopy
+from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.operator import Operator
@@ -13,9 +15,7 @@ from moviebot.nlu.annotation.values import Values
 
 
 class DialogueStateTracker:
-    """Dialogue State Tracker updates the current dialogue state."""
-
-    def __init__(self, config, isBot: bool):
+    def __init__(self, config: Dict[str, Any], isBot: bool) -> None:
         """Loads the database and ontology and creates an initial dialogue
         state.
 
@@ -32,51 +32,14 @@ class DialogueStateTracker:
         )
         self.dialogue_context = DialogueContext()
 
-    def initialize(self, config):
-        """Loads the database results and initialize the dialogue state and
-        context. This function also initializes the state if dialogue needs to
-        run from scratch.
+    def update_state_user(  # noqa: C901
+        self, user_dacts: List[DialogueAct]
+    ) -> None:
+        """Updates the current dialogue state and context based on user
+        dialogue acts.
 
         Args:
-            config: The database and ontology to load for further use.
-        """
-
-    def _add_year_CIN(self, param):
-        """
-
-        Args:
-            param:
-
-        """
-        if param.value in Values.__dict__.values():
-            return param.value
-        value = f"{str(param.op)} {param.value}"
-        if value not in Values.__dict__.values():
-            value = value.strip()
-        time_value = self.dialogue_state.frame_CIN[param.slot]
-        if time_value and (
-            (time_value.startswith(">") and value.startswith("<"))
-            or (time_value.startswith("<") and value.startswith(">"))
-        ):
-            if time_value.startswith(">"):
-                value = (
-                    f"between {time_value.split()[-1]} and {value.split()[-1]}"
-                )
-            else:
-                value = (
-                    f" between {value.split()[-1]} and {time_value.split()[-1]}"
-                )
-            self.dialogue_state.frame_CIN[param.slot] = value
-        else:
-            if value.startswith("="):
-                value = value.replace("=", "").strip()
-            self.dialogue_state.frame_CIN[param.slot] = value
-
-    def update_state_user(self, user_dacts):  # noqa: C901
-        """Updates the current dialogue state and context based on user DActs.
-
-        Args:
-            user_dacts: Dialogue acts which is the output of NLU.
+            user_dacts: List of dialogue acts which is the output of NLU.
         """
         # re-filtering the dacts
         user_dacts_copy = deepcopy(user_dacts)
@@ -230,19 +193,24 @@ class DialogueStateTracker:
 
             # remove from user requestables when user asks for anything
             if user_dact.intent == UserIntents.INQUIRE:
-                if not self.dialogue_state.item_in_focus[Slots.TITLE.value]:
-                    print(self.dialogue_state)  # debuggig here
-                name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                if name in self.dialogue_context.movies_recommended:
-                    if (
-                        "inquire"
-                        not in self.dialogue_context.movies_recommended[name]
-                    ):
-                        self.dialogue_context.movies_recommended[name].append(
+                # Quick fix for issue #123
+                # See details: https://github.com/iai-group/MovieBot/issues/123
+                if self.dialogue_state.item_in_focus:
+                    name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
+                    if name in self.dialogue_context.movies_recommended:
+                        if (
                             "inquire"
-                        )
-                else:
-                    self.dialogue_context.movies_recommended[name] = ["inquire"]
+                            not in self.dialogue_context.movies_recommended[
+                                name
+                            ]
+                        ):
+                            self.dialogue_context.movies_recommended[
+                                name
+                            ].append("inquire")
+                    else:
+                        self.dialogue_context.movies_recommended[name] = [
+                            "inquire"
+                        ]
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.user_requestable:
                         self.dialogue_state.user_requestable.remove(param.slot)
@@ -254,11 +222,17 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_made_offer = False
                 self.dialogue_state.agent_should_make_offer = True
                 self.dialogue_state.agent_should_offer_similar = True
-                self.dialogue_state.similar_movies = {
-                    self.dialogue_state.item_in_focus[Slots.TITLE.value]: eval(
-                        user_dact.params[0].value
-                    )
-                }
+                # Quick fix for issue #123
+                # See details: https://github.com/iai-group/MovieBot/issues/123
+                self.dialogue_state.similar_movies = (
+                    {
+                        self.dialogue_state.item_in_focus[
+                            Slots.TITLE.value
+                        ]: eval(user_dact.params[0].value)
+                    }
+                    if self.dialogue_state.item_in_focus
+                    else {}
+                )
 
             if user_dact.intent == UserIntents.RESTART:
                 self.dialogue_state.initialize()
@@ -291,11 +265,13 @@ class DialogueStateTracker:
                     self.dialogue_state.agent_can_lookup = True
                     break
 
-    def update_state_agent(self, agent_dacts):
-        """Updates the current dialogue state and context based on agent DActs.
+    def update_state_agent(self, agent_dacts: List[DialogueAct]) -> None:
+        """Updates the current dialogue state and context based on agent
+        dialogue acts.
 
         Args:
-            agent_dacts: Dialogue acts which is the output of dialogue policy.
+            agent_dacts: List of dialogue acts which is the output of dialogue
+              policy.
         """
         # re-filtering the dacts
         agent_dacts_copy = deepcopy(agent_dacts)
@@ -323,13 +299,18 @@ class DialogueStateTracker:
                     self.ontology.user_requestable
                 )
 
-    def update_state_db(self, database_result=None, backup_results=None):
-        """Updates the state based on  the results fetched from the database.
+    def update_state_db(
+        self,
+        database_result: List[Dict[str, Any]] = None,
+        backup_results: List[Dict[str, Any]] = None,
+    ) -> None:
+        """Updates the state based on the results fetched from the database.
 
         Args:
             database_result: The database results based on user information
-                needs. Defaults to None.
-            backup_results: Defaults to None.
+              needs. Defaults to None.
+            backup_results: Previous results stored in the database. Defaults
+              to None.
         """
 
         item_found = False
@@ -406,4 +387,4 @@ class DialogueStateTracker:
         Returns:
             The current user context.
         """
-        # return self.dialogue_context
+        return self.dialogue_context

@@ -1,36 +1,43 @@
 """This file contains the main functions for loading database and tag_words
 files for NLU."""
 
-
 import json
+import logging
 import os
+from typing import Any, Callable, Dict
 
+from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
+from moviebot.ontology.ontology import Ontology
+
+DEFAULT_SLOT_VALUE_PATH = "data/slot_values.json"
+
+logger = logging.getLogger(__name__)
 
 
 class DataLoader:
-    """LoadData class loads the database as slot-value pairs and the tag-words
-    for slots.
+    def __init__(
+        self,
+        config: Dict[str, Any],
+        lemmatize_value: Callable[[str, bool], str],
+    ) -> None:
+        """DataLoader class loads the database as slot-value pairs and the
+        tag-words for slots.
 
-    This data will be used by NLU to check user intents.
-    """
-
-    def __init__(self, config, _lemmatize_value):
-        """Initializes the data loader and load database, tag words etc.
-
-        :type self.database: DataBase
-        :type self.ontology: Ontology
+        This data will be used by NLU to check user intents.
 
         Args:
-            config:
-            _lemmatize_value:
+            config: Dictionary containing configuration.
+            lemmatize_value: Function for lemmatization.
         """
-        self.ontology = config["ontology"]
-        self.database = config["database"]
-        self.slot_values_path = config["slot_values_path"]
-        self.lemmatize_value = _lemmatize_value
+        self.ontology: Ontology = config["ontology"]
+        self.database: DataBase = config["database"]
+        self.slot_values_path = (
+            config["slot_values_path"] or DEFAULT_SLOT_VALUE_PATH
+        )
+        self.lemmatize_value = lemmatize_value
 
-    def load_tag_words(self, file_path: str):
+    def load_tag_words(self, file_path: str) -> Dict[str, Any]:
         """Loads the tag words for the path provided. This can be for the slots
         in the database or the patterns.
 
@@ -45,90 +52,82 @@ class DataLoader:
                 tag_words = json.load(file)
         else:
             raise FileNotFoundError(
-                'File "{}" for tag words not found.'.format(file_path)
+                f"File '{file_path}' for tag words not found."
             )
         return tag_words
 
-    def _convert_values_to_set(self, slot_values):
-        """
+    def load_slot_value_pairs(self) -> Dict[str, Any]:
+        """Loads slot-value pairs from a file.
 
-        Args:
-            slot_values:
-
-        """
-        for slot, values in slot_values.items():
-            if isinstance(values, dict):
-                slot_values[slot] = set(values.keys())
-            else:
-                slot_values[slot] = set(values)
-
-    def load_database(self):  # noqa: C901
-        """Loads the database to fill dialogue slots with a list of possible
-        slot_values. This can be used further to understand what user intends
-        to ask.
+        If the file does not exist, it generates slot-value pairs from
+        database.
 
         Returns:
-            Slot values pairs.
+            Dictionary of slot-value(s) pairs.
         """
-        if self.slot_values_path and os.path.isfile(self.slot_values_path):
+        if os.path.isfile(self.slot_values_path):
             with open(self.slot_values_path) as slot_val_file:
                 slot_values = json.load(slot_val_file)
-            # self._convert_values_to_set(slot_values)
-            return slot_values
-        # else load slot_values from database
+        else:
+            slot_values = self._generate_slot_value_pairs()
+        return slot_values
+
+    def _generate_slot_value_pairs(self) -> Dict[str, Any]:
+        """Loads the database to fill dialogue slots with a list of possible
+        slot_values.
+
+        Returns:
+            Dictionary of slot-value(s) pairs.
+        """
         cursor = self.database.sql_connection.cursor()
         db_table_name = self.database.db_table_name
-        slot_values = {}
+        columns = ",".join(self.ontology.slots_annotation)
         all_data = cursor.execute(
-            "Select * from " + db_table_name + ";"
+            f"Select {columns} from {db_table_name};"
         ).fetchall()
         total_count = round(len(all_data), -2)
         print_count = int(total_count / 4)
-        self.slots = [
-            x[0] for x in cursor.description if x[0] != Slots.ID.value
-        ]
-        count = 0
-        print("Loading the database......")
-        for row in all_data:
-            slot_value_pair = dict(zip(self.slots, row[1:]))
-            count += 1
-            for slot, value in slot_value_pair.items():
-                if slot not in self.ontology.slots_annotation:
-                    continue
-                if slot not in slot_values:
-                    slot_values[slot] = {} if slot != Slots.YEAR.value else []
-                if slot in [
-                    x.value
-                    for x in [
-                        Slots.GENRES,
-                        Slots.KEYWORDS,
-                        Slots.ACTORS,
-                        Slots.DIRECTORS,
-                    ]
-                ]:
-                    if slot not in slot_values:
-                        slot_values[slot] = {}
+        slot_values = {
+            slot: {} if slot != Slots.YEAR.value else []
+            for slot in self.ontology.slots_annotation
+        }
+        multi_slots = {
+            x.value
+            for x in [
+                Slots.GENRES,
+                Slots.KEYWORDS,
+                Slots.ACTORS,
+                Slots.DIRECTORS,
+            ]
+        }
+
+        logger.info("Loading the database......")
+        for count, row in enumerate(all_data):
+            for slot, value in zip(self.ontology.slots_annotation, row):
+                if slot in multi_slots:
                     temp_result = [x.strip() for x in value.split(",")]
                     if slot == Slots.GENRES.value:
                         temp_result = [x.lower() for x in temp_result]
-                    for temp_value in temp_result:
-                        if temp_value not in slot_values[slot]:
-                            slot_values[slot].update(
-                                {temp_value: self.lemmatize_value(temp_value)}
-                            )
-                else:
-                    if value not in slot_values[slot]:
-                        if slot == Slots.YEAR.value:
-                            slot_values[slot].append(value)
-                        else:
-                            slot_values[slot].update(
-                                {value: self.lemmatize_value(value)}
-                            )
-            if count % print_count == 0:
-                print(f"{int(100 * count / total_count)}% data is loaded.")
-        if not self.slot_values_path:
-            self.slot_values_path = "data_and_config/data/slot_values.json"
+                    slot_values[slot].update(
+                        {
+                            temp_value: self.lemmatize_value(temp_value)
+                            for temp_value in temp_result
+                            if temp_value not in slot_values[slot]
+                        }
+                    )
+                elif value not in slot_values[slot]:
+                    if slot == Slots.YEAR.value:
+                        slot_values[slot].append(value)
+                    else:
+                        slot_values[slot].update(
+                            {value: self.lemmatize_value(value)}
+                        )
+            if (count + 1) % print_count == 0:
+                logger.info(
+                    f"{int(100 * (count+1) / total_count)}% data is loaded."
+                )
+
         with open(self.slot_values_path, "w") as slot_val_file:
-            print(f"Writing loaded database to {self.slot_values_path}")
+            logger.info(f"Writing loaded database to {self.slot_values_path}")
             json.dump(slot_values, slot_val_file, indent=4)
         return slot_values

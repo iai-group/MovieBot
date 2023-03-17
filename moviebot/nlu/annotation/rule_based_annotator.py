@@ -4,10 +4,12 @@ user utterance based on rules and keyword matching."""
 import re
 import string
 from copy import deepcopy
+from typing import Any, Callable, Dict, List, Tuple
 
 from nltk import ngrams
 from nltk.corpus import stopwords
 
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.semantic_annotation import (
@@ -17,15 +19,25 @@ from moviebot.nlu.annotation.semantic_annotation import (
 )
 from moviebot.nlu.annotation.slot_annotator import SlotAnnotator
 from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.text_processing import Token
 
 
 class RBAnnotator(SlotAnnotator):
-    """This is a rule based annotator.
+    def __init__(
+        self,
+        process_value: Callable[[str], str],
+        lemmatize_value: Callable[[str], str],
+        slot_values: Dict[str, Any],
+    ) -> None:
+        """A rule based annotator.
 
-    It uses regex and keyword matching for annotation.
-    """
+        It uses regex and keyword matching for annotation.
 
-    def __init__(self, process_value, lemmatize_value, slot_values):
+        Args:
+            process_value: Function for processing text.
+            lemmatize_value: Function for text lemmatization.
+            slot_values: Dictionary with slot-value pairs.
+        """
         self._process_value = process_value
         self._lemmatize_value = lemmatize_value
         self.slot_values = slot_values
@@ -78,38 +90,50 @@ class RBAnnotator(SlotAnnotator):
         for slot in [Slots.ACTORS.value, Slots.DIRECTORS.value]:
             self.person_names.update(deepcopy(self.slot_values[slot]))
 
-    def slot_annotation(self, slot, user_utterance):
-        """
+    def slot_annotation(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """Annotates user utterance for specified slot.
+
+        Returns empty list if there is no annotation or the annotator is not
+        defined for the slot.
 
         Args:
-            slot:
-            utterance:
-            raw_utterance:
+            slot: Slot name.
+            utterance: User utterance.
 
+        Returns:
+            List of item constraints.
         """
-        # utterance = utterance.replace('?','')
         if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
-            params = self._person_name_annotator(user_utterance)
-        else:
-            func = getattr(self, f"_{slot}_annotator")
-            if slot == Slots.YEAR.value:
-                params = func(slot, user_utterance)
-                if params:
-                    for p in params:
-                        if p.op != Operator.EQ:
-                            p.value = f"{str(p.op)} {p.value}"
-                            p.op = Operator.EQ
-            else:
-                params = func(slot, user_utterance)
-        return params
+            return self._person_name_annotator(user_utterance)
 
-    def _genres_annotator(self, slot, user_utterance):
-        """
+        func = getattr(self, f"_{slot}_annotator", None)
+        if not func:
+            return []
+
+        constraints = func(slot, user_utterance)
+
+        # TODO https://github.com/iai-group/MovieBot/issues/142
+        # Remove this hack. Database lookup should be updated accordingly.
+        if slot == Slots.YEAR.value:
+            for c in constraints:
+                if c.op != Operator.EQ:
+                    c.value = f"{c.op} {c.value}"
+                    c.op = Operator.EQ
+        return constraints
+
+    def _genres_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """Annotates user utterance for slot "genre".
 
         Args:
-            slot:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
 
+        Returns:
+            List of item constraints.
         """
         param = None
         values = self.slot_values[slot]
@@ -153,16 +177,21 @@ class RBAnnotator(SlotAnnotator):
                             slot, Operator.EQ, key.lower(), annotation
                         )
 
-        if param:
-            return [param]
+        return [param] if param else []
 
-    def _title_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie title. Sometimes the user
-        can just enter a part of the name.
+    def _title_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """This annotator is used to check the movie title.
+
+        Sometimes the user can just enter a part of the name.
 
         Args:
-            slot:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -199,9 +228,11 @@ class RBAnnotator(SlotAnnotator):
                     and len([int(val) for val in re.findall(r"\b\d+", gram)])
                     == 0
                 ):
-                    # check if
-                    # all words are in the list of stop words and no numbers
+                    # Check if there are no words that are included in the list
+                    # of stop words or that are numbers.
                     if ngram_size == 1:
+                        # TODO: Confirm that this is captured by the above for
+                        # loop and remove when refactoring.
                         gram_occurrence = len(
                             [
                                 value
@@ -229,14 +260,21 @@ class RBAnnotator(SlotAnnotator):
                 for gram in options:
                     param = ItemConstraint(slot, Operator.EQ, gram.strip())
                     return [param]
+        return []
 
-    def _keywords_annotator(self, slot, user_utterance):
-        """This annotator is used to check the movie keywords. If the ngram has
-        only keywords, it will be ignored.
+    def _keywords_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """This annotator is used to check the movie keywords.
+
+        If the ngram has only keywords, it will be ignored.
 
         Args:
-            slot:
-            utterance:
+            slot: Slot name.
+            utterance: User utterance.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         values = self.slot_values[slot]
@@ -282,14 +320,20 @@ class RBAnnotator(SlotAnnotator):
                                 slot, Operator.EQ, gram, annotation
                             )
                             return [param]
+        return []
 
-    def _person_name_annotator(self, user_utterance, slots=None):
+    def _person_name_annotator(
+        self, user_utterance: UserUtterance, slots: List[str] = None
+    ) -> List[ItemConstraint]:
         """This annotator is used to check the movie actor and/or director
         names. Sometimes the user can just enter a part of the name.
 
         Args:
-            utterance:
-            slots:  (Default value = None)
+            utterance: User utterance.
+            slots: List of slot names.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         if not slots:
@@ -325,15 +369,37 @@ class RBAnnotator(SlotAnnotator):
                         break
             if len(params) > 0:
                 return params
+        return []
 
-    def _year_annotator(self, slot, user_utterance):  # noqa: C901
-        """
+    def _get_digit_groups(self, token: Token) -> Tuple[str, str]:
+        """Extracts digits from token.
+
+        This is primarily used to parse instances like "20th century" or
+        "50s".
 
         Args:
-            slot:
-            user_utterance:
-            utterance:
+            token: Token.
 
+        Returns:
+            Tuple of digit and extension.
+        """
+        match = re.match(r"([0-9]+)([a-z]*)", token.text, re.I)
+        return match.groups() if match else ("", "")
+
+    def _year_annotator(
+        self, slot: str, user_utterance: UserUtterance
+    ) -> List[ItemConstraint]:
+        """Annotates user utterance for slot "year".
+
+        Returns when the first match is found, ignoring the rest. It cannot
+        handle cases like "I want a movie from 2010 or 2011".
+
+        Args:
+            slot: Slot name.
+            utterance: User utterance.
+
+        Returns:
+            List of item constraints.
         """
         tokens = user_utterance.get_tokens()
         potential_item_constraint = []
@@ -350,48 +416,34 @@ class RBAnnotator(SlotAnnotator):
                     ItemConstraint(slot, Operator.LT, "2010", annotation)
                 )
 
-            if not token.lemma[:2].isdigit():
-                continue
+            year, extension = self._get_digit_groups(token)
 
-            if token.text[-1] == "s":
-                year = token.text[:-1]
-                if not year.isdigit():
-                    continue
-
-                # check if its for example 90s or 1990s
+            if extension == "s" and len(year) in (2, 4) and year[-1] == "0":
+                # check if its for example 90s or 1990s.
                 if len(year) == 2:
-                    year = "20" + year if int(year) <= 20 else "19" + year
-                elif len(year) != 4:
-                    continue
-
-                if year[-1] == "0":
-                    return [
-                        ItemConstraint(
-                            slot,
-                            Operator.BETWEEN,
-                            f"{year} AND {str(int(year) + 10)}",
-                            annotation,
-                        )
-                    ]
-                else:
-                    return [ItemConstraint(slot, Operator.EQ, year, annotation)]
-
-            if token.text[-2:] == "th":
-                year = token.text[:-2]
-                if year.isdigit() and len(year) == 2:
-                    return [
-                        ItemConstraint(
-                            slot,
-                            Operator.BETWEEN,
-                            f"{str(int(year) - 1)}00 AND {year}00",
-                            annotation,
-                        )
-                    ]
-
-            if token.text.isdigit() and len(token.text) == 4:
+                    year = f"20{year}" if int(year) <= 20 else f"19{year}"
                 return [
-                    ItemConstraint(slot, Operator.EQ, token.text, annotation)
+                    ItemConstraint(
+                        slot,
+                        Operator.BETWEEN,
+                        f"{year} AND {int(year) + 10}",
+                        annotation,
+                    )
                 ]
+
+            elif extension in ["th", "st"] and len(year) == 2:
+                # check if its for example 20th or 21st century.
+                return [
+                    ItemConstraint(
+                        slot,
+                        Operator.BETWEEN,
+                        f"{int(year) - 1}00 AND {year}00",
+                        annotation,
+                    )
+                ]
+
+            if len(year) == 4:
+                return [ItemConstraint(slot, Operator.EQ, year, annotation)]
 
         return potential_item_constraint[:1]
 
