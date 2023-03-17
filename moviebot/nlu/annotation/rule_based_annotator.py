@@ -228,8 +228,8 @@ class RBAnnotator(SlotAnnotator):
                     and len([int(val) for val in re.findall(r"\b\d+", gram)])
                     == 0
                 ):
-                    # check if no words are in the list of stop words and
-                    # there are no numbers; This is used for partial matching.
+                    # Check if there are no words that are included in the list
+                    # of stop words or that are numbers.
                     if ngram_size == 1:
                         # TODO: Confirm that this is captured by the above for
                         # loop and remove when refactoring.

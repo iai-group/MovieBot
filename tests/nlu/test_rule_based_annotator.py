@@ -40,12 +40,12 @@ SLOT_VALUES = {
 
 
 def mock_process_value(text: str) -> str:
-    """Returns a mock process value fixture."""
+    """Returns a mock process value."""
     return text
 
 
 def mock_lematize_value(text: str) -> str:
-    """Returns a mocked lematize value fixture."""
+    """Returns a mocked lematize value."""
     return text
 
 
