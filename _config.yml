@@ -1,6 +1,6 @@
 # Setup
 title: IAI MovieBot
-tagline:
+description: IAI MovieBot is a conversational recommender system for movies.
 
 baseurl: ""
 paginate: 1
@@ -19,4 +19,4 @@ markdown: kramdown
 
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+  - jekyll-remote-theme # add this line to the plugins list if you already have one
