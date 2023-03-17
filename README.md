@@ -43,6 +43,8 @@ The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/200
 
 ## Contributors
 
+IAI MovieBot is developed and maintained by the [IAI group](https://iai.group/) at the University of Stavanger.
+
 (Alphabetically ordered by last name) 
 
   * Javeria Habib (2020) 
