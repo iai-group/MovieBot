@@ -37,6 +37,10 @@ class RecommenderModel(ABC):
         """
         raise NotImplementedError
 
-    def previous_recommend_items(self) -> List[Dict[str, Any]]:
-        """Returns the list of previously recommended movies."""
+    def get_previous_recommend_items(self) -> List[Dict[str, Any]]:
+        """Retrieves the previous recommendations.
+
+        Returns:
+            List of previously recommended movies.
+        """
         return self._db.backup_db_results
