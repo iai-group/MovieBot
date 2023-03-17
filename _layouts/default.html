@@ -17,10 +17,10 @@
       <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
       {% if site.github.is_project_page %}
-        <a href="{{ site.github.repository_url }}" class="btn">View on GitHub</a>
+        <a href="{{ site.github.repository_url }}" class="btn" style="color: rgba(255,255,255,0.7);">View on GitHub</a>
       {% endif %}
       {% if site.doc_url %}
-      <a href="{{ site.doc_url }}" class="btn">Documentation</a>
+      <a href="{{ site.doc_url }}" class="btn" style="color: rgba(255,255,255,0.7);">Documentation</a>
       {% endif %}
     </header>
 
