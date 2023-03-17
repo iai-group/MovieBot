@@ -4,7 +4,7 @@ description: IAI MovieBot is a conversational recommender system for movies.
 
 baseurl: "MovieBot"
 paginate: 1
-documentation: https://iai-moviebot.readthedocs.io/
+doc_url: https://iai-moviebot.readthedocs.io/
 
 # About/contact
 author:
