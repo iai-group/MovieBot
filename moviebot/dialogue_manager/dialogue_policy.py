@@ -30,7 +30,7 @@ class DialoguePolicy:
         self.isBot = isBot
         self.new_user = new_user
 
-    def next_action(  # noqa: C901
+    def next_action(
         self,
         dialogue_state: DialogueState,
         dialogue_context: DialogueContext = None,
@@ -60,20 +60,6 @@ class DialoguePolicy:
                 )
             )
             return agent_dacts
-
-        if not dialogue_state.last_agent_dacts and not restart:
-            if not dialogue_state.last_agent_dacts:
-                agent_dacts.append(
-                    DialogueAct(
-                        AgentIntents.WELCOME,
-                        [
-                            ItemConstraint(
-                                "new_user", Operator.EQ, self.new_user
-                            ),
-                            ItemConstraint("is_bot", Operator.EQ, self.isBot),
-                        ],
-                    )
-                )
 
         if (not dialogue_state.last_user_dacts and restart) or (
             dialogue_state.last_user_dacts
@@ -209,20 +195,6 @@ class DialoguePolicy:
                             )
                         )
                     agent_dacts.append(deepcopy(agent_dact))
-                # elif (
-                #     user_dact.intent == UserIntents.REVEAL
-                #     and Slots.TITLE.value
-                #     in [param.slot for param in user_dact.params]
-                # ):
-                #     agent_dact.intent = AgentIntents.INFORM
-                #     agent_dact.params.append(
-                #         ItemConstraint(
-                #             Slots.MORE_INFO.value,
-                #             Operator.EQ,
-                #             dialogue_state.item_in_focus[Slots.TITLE.value],
-                #         )
-                #     )
-                #     agent_dacts.append(deepcopy(agent_dact))
                 elif user_dact.intent == UserIntents.ACCEPT:
                     agent_dact.intent = AgentIntents.CONTINUE_RECOMMENDATION
                     agent_dact.params.append(
