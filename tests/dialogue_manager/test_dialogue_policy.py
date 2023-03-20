@@ -47,4 +47,4 @@ def test__generate_examples(policy: DialoguePolicy):
     examples = policy._generate_examples(
         [{"genre": "action, adventure"}, {"genre": "kung fu"}], "genre"
     )
-    assert examples == "'adventure' or 'action'"
+    assert examples == "'kung fu' or 'action'"

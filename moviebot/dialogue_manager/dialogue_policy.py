@@ -258,11 +258,11 @@ class DialoguePolicy:
             )
             if len(set(examples)) > 20:
                 break
-        if examples:
-            examples = list(set(examples))
-            random.shuffle(examples)
-            if len(examples) == 1:
-                return examples[0]
+
+        examples = list(set(examples))
+        if len(examples) == 1:
+            return examples[0]
+        elif len(examples) > 1:
             _sub_example = [x for x in examples if len(x.split()) == 2]
             if len(_sub_example) >= 2:
                 return " or ".join(random.sample(_sub_example, 2))
