@@ -24,7 +24,7 @@ class ChatNamespace(Namespace):
             data: Data received from client.
         """
         controller_flask.initialize(request.sid)
-        first_message = controller_flask.first_time_message(request.sid)
+        first_message = controller_flask.start_conversation(request.sid)
         logger.info("Client connected")
         emit("message", first_message)
 
@@ -62,8 +62,8 @@ def run(config: Dict[str, Any]) -> None:
         config: Agent configuration.
     """
     controller_flask.execute_agent(config)
-    socketio.run(app, host="127.0.0.1", port=environ.get("PORT", 5000))
     socketio.on_namespace(ChatNamespace("/"))
+    socketio.run(app, host="127.0.0.1", port=environ.get("PORT", 5000))
 
 
 def action(user_id: str, message: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
