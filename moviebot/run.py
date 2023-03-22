@@ -4,7 +4,7 @@ import sys
 
 import yaml
 
-from moviebot.controller import server_rest, server_socket
+from moviebot.controller import server_rest
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 
