@@ -4,7 +4,7 @@ import sys
 
 import yaml
 
-from moviebot.controller import server
+from moviebot.controller import server_rest, server_socket
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             CONTROLLER = ControllerTelegram()
             CONTROLLER.execute_agent(CONFIGURATION)
     elif FLASK:
-        server.run(CONFIGURATION)
+        server_rest.run(CONFIGURATION)
     else:
         CONTROLLER = ControllerTerminal(CONFIGURATION)
         CONTROLLER.execute_agent()

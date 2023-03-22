@@ -60,6 +60,14 @@ class DialogueAct:
         """
         return self.intent == __o.intent and self.params == __o.params
 
+    def __hash__(self) -> int:
+        """Returns the hash of the dialogue act.
+
+        Returns:
+            Hash of the dialogue act.
+        """
+        return hash((self.intent, tuple(self.params)))
+
     def remove_constraint(self, constraint: ItemConstraint) -> None:
         """Removes constraint from the list of parameters."""
         while constraint in self.params:
