@@ -35,12 +35,3 @@ Javeria Habib, Shuo Zhang, [Krisztian Balog](krisztianbalog.com), [Ivica Kostric
   type="text/javascript"
   src="https://cdn.jsdelivr.net/npm/iaigroup-chatwidget@1/build/bundle.min.js"
 ></script>
-
-<script type="text/javascript">
-  ChatWidget({
-    name: "MovieBot",
-    serverUrl: "https://152.94.1.85",
-    useFeedback: false,
-    useLogin: false,
-  });
-</script>
