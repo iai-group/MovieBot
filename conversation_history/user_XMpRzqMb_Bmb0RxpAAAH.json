@@ -1,0 +1,25 @@
+[
+    {
+        "Timestamp": "2023-03-22 20:45:57.005022",
+        "User_Input": "hi",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['UNK()']",
+        "Current_Information_Needs": "{}",
+        "Agent_Dialogue_Acts": "['elicit(genres)']",
+        "Agent_Offer_State": "[]",
+        "Agent_Output": "Which genres do you prefer?",
+        "Context": {}
+    },
+    {
+        "Timestamp": "2023-03-22 20:46:05.521281",
+        "User_Input": "action adventure crime adult animation",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['reveal(genres = action, genres = adventure, genres = crime, genres = adult, genres = animation)']",
+        "Current_Information_Needs": "{'genres': ['action', 'adventure', 'crime', 'adult', 'animation']}",
+        "Agent_Dialogue_Acts": "['no results()']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_offer_no_results']",
+        "Agent_Output": "Sorry, I couldn't find any action, adventure, crime, adult and animation films. Please select from the list of options to continue.",
+        "Context": {},
+        "Agent_Options": "{'remove_preference(genres = action)': 'Don\\'t want an \"action\" movie.', '/restart': '/restart', 'remove_preference(genres = adult)': 'Don\\'t want an \"adult\" movie.', 'remove_preference(genres = adventure)': 'Won\\'t prefer an \"adventure\" film.', 'remove_preference(genres = crime)': 'Don\\'t want a \"crime\" movie.', 'remove_preference(genres = animation)': 'Won\\'t prefer an \"animation\" film.'}"
+    }
+]

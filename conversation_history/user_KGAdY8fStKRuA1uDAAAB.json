@@ -1,0 +1,13 @@
+[
+    {
+        "Timestamp": "2023-03-22 15:30:23.472032",
+        "User_Input": "hi",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['UNK()']",
+        "Current_Information_Needs": "{}",
+        "Agent_Dialogue_Acts": "['elicit(genres)']",
+        "Agent_Offer_State": "[]",
+        "Agent_Output": "Do you have any specific genres in mind?",
+        "Context": {}
+    }
+]

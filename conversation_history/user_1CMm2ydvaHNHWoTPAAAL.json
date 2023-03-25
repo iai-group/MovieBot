@@ -1,0 +1,92 @@
+[
+    {
+        "Timestamp": "2023-03-22 20:52:16.307855",
+        "User_Input": "action adventure crime adult animation",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['reveal(keywords = action adventure)']",
+        "Current_Information_Needs": "{'keywords': 'action adventure'}",
+        "Agent_Dialogue_Acts": "['recommend(title = Kamui)']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_made_offer']",
+        "Agent_Output": "I would like to recommend you an action adventure film named **\"[Kamui](https://www.imdb.com/title/tt1156479/)\"**. Have you watched it?",
+        "Context": {
+            "Kamui": []
+        },
+        "Agent_Options": "{'reject(reason = watched)': 'I have already watched it.', 'reject(reason = dont_like)': 'Recommend me something else please.', 'accept()': 'I like this recommendation.', 'inquire(more_info)': 'Tell me something about it.', '/restart': '/restart'}"
+    },
+    {
+        "Timestamp": "2023-03-22 20:52:24.404142",
+        "User_Input": "action adventure crime adult animation",
+        "Previous_Information_Need": "{'keywords': 'action adventure'}",
+        "User_Dialogue_Acts": "['reveal(keywords = action adventure)']",
+        "Current_Information_Needs": "{'keywords': 'action adventure'}",
+        "Agent_Dialogue_Acts": "['no results()']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_offer_no_results']",
+        "Agent_Output": "Sorry, I couldn't find any other action adventure films. Please select from the list of options to continue.",
+        "Context": {
+            "Kamui": []
+        },
+        "Agent_Options": "{'remove_preference(keywords = action adventure)': 'Don\\'t need movies based on \"action adventure\".', '/restart': '/restart'}"
+    },
+    {
+        "Timestamp": "2023-03-22 20:52:30.985666",
+        "User_Input": "action adventure crime adult animation",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['reveal(genres = action, genres = adventure, genres = crime, genres = adult, genres = animation)']",
+        "Current_Information_Needs": "{'genres': ['action', 'adventure', 'crime', 'adult', 'animation']}",
+        "Agent_Dialogue_Acts": "['no results()']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_offer_no_results']",
+        "Agent_Output": "Sorry, I couldn't find any action, adventure, crime, adult and animation films. Please select from the list of options to continue.",
+        "Context": {},
+        "Agent_Options": "{'remove_preference(genres = action)': 'Won\\'t prefer an \"action\" film.', '/restart': '/restart', 'remove_preference(genres = adult)': 'Won\\'t prefer an \"adult\" film.', 'remove_preference(genres = adventure)': 'Won\\'t prefer an \"adventure\" film.', 'remove_preference(genres = crime)': 'Don\\'t want a \"crime\" movie.', 'remove_preference(genres = animation)': 'Don\\'t want an \"animation\" movie.'}"
+    },
+    {
+        "Timestamp": "2023-03-22 20:52:32.660123",
+        "User_Input": "Won't prefer an \"action\" film.",
+        "Previous_Information_Need": "{'genres': ['action', 'adventure', 'crime', 'adult', 'animation']}",
+        "User_Dialogue_Acts": "['remove_preference(genres = action)']",
+        "Current_Information_Needs": "{'genres': ['adventure', 'crime', 'adult', 'animation']}",
+        "Agent_Dialogue_Acts": "['no results()']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_offer_no_results']",
+        "Agent_Output": "Sorry, I don't have any adventure, crime, adult and animation films. Please select from the list of options to continue.",
+        "Context": {},
+        "Agent_Options": "{'remove_preference(genres = crime)': 'Won\\'t prefer a \"crime\" film.', '/restart': '/restart', 'remove_preference(genres = animation)': 'Don\\'t want an \"animation\" movie.', 'remove_preference(genres = adventure)': 'Won\\'t prefer an \"adventure\" film.', 'remove_preference(genres = adult)': 'Won\\'t prefer an \"adult\" film.'}"
+    },
+    {
+        "Timestamp": "2023-03-22 20:52:33.358942",
+        "User_Input": "Won't prefer a \"crime\" film.",
+        "Previous_Information_Need": "{'genres': ['adventure', 'crime', 'adult', 'animation']}",
+        "User_Dialogue_Acts": "['remove_preference(genres = crime)']",
+        "Current_Information_Needs": "{'genres': ['adventure', 'adult', 'animation']}",
+        "Agent_Dialogue_Acts": "['no results()']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_offer_no_results']",
+        "Agent_Output": "Sorry, I couldn't find any adventure, adult and animation films. Please select from the list of options to continue.",
+        "Context": {},
+        "Agent_Options": "{'remove_preference(genres = animation)': 'Won\\'t prefer an \"animation\" film.', '/restart': '/restart', 'remove_preference(genres = adventure)': 'Don\\'t want an \"adventure\" movie.', 'remove_preference(genres = adult)': 'Don\\'t want an \"adult\" movie.'}"
+    },
+    {
+        "Timestamp": "2023-03-22 20:52:34.732949",
+        "User_Input": "Won't prefer an \"animation\" film.",
+        "Previous_Information_Need": "{'genres': ['adventure', 'adult', 'animation']}",
+        "User_Dialogue_Acts": "['remove_preference(genres = animation)']",
+        "Current_Information_Needs": "{'genres': ['adventure', 'adult']}",
+        "Agent_Dialogue_Acts": "['no results()']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_offer_no_results']",
+        "Agent_Output": "Sorry, I couldn't find any adventure and adult films. Please select from the list of options to continue.",
+        "Context": {},
+        "Agent_Options": "{'remove_preference(genres = adventure)': 'Won\\'t prefer an \"adventure\" film.', '/restart': '/restart', 'remove_preference(genres = adult)': 'Won\\'t prefer an \"adult\" film.'}"
+    },
+    {
+        "Timestamp": "2023-03-22 20:52:35.669358",
+        "User_Input": "Won't prefer an \"adventure\" film.",
+        "Previous_Information_Need": "{'genres': ['adventure', 'adult']}",
+        "User_Dialogue_Acts": "['remove_preference(genres = adventure)']",
+        "Current_Information_Needs": "{'genres': ['adult']}",
+        "Agent_Dialogue_Acts": "['recommend(title = Exhausted: John C. Holmes, the Real Story)']",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_made_offer']",
+        "Agent_Output": "I would like to recommend you an adult film named **\"[Exhausted: John C. Holmes, the Real Story](https://www.imdb.com/title/tt0130671/)\"**. Have you watched it?",
+        "Context": {
+            "Exhausted: John C. Holmes, the Real Story": []
+        },
+        "Agent_Options": "{'reject(reason = watched)': 'I have already watched it.', 'reject(reason = dont_like)': 'Recommend me something else please.', 'accept()': 'I like this recommendation.', 'inquire(more_info)': 'Tell me more about it.', '/restart': '/restart'}"
+    }
+]

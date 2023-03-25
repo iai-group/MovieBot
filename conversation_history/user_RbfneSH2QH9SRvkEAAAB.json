@@ -1,0 +1,54 @@
+[
+    {
+        "Timestamp": "2023-03-22 15:28:29.897804",
+        "User_Input": "tell me more",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['inquire(more_info)']",
+        "Current_Information_Needs": "{}",
+        "Agent_Dialogue_Acts": "['elicit(genres)']",
+        "Agent_Offer_State": "[]",
+        "Agent_Output": "Which genres do you prefer?",
+        "Context": {}
+    },
+    {
+        "Timestamp": "2023-03-22 15:28:34.652300",
+        "User_Input": "action",
+        "Previous_Information_Need": "{}",
+        "User_Dialogue_Acts": "['reveal(genres = action)']",
+        "Current_Information_Needs": "{'genres': ['action']}",
+        "Agent_Dialogue_Acts": "['count results(count = 4707)', \"elicit(keywords = 'iraqi turks' or 'criminal mastermind')\"]",
+        "Agent_Offer_State": "['agent_can_lookup', 'agent_made_partial_offer']",
+        "Agent_Output": "I have found almost 4700 action films. Can you guide me more to narrow down the search space?\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'iraqi turks' or 'criminal mastermind'.",
+        "Context": {}
+    },
+    {
+        "Timestamp": "2023-03-22 15:28:37.905000",
+        "User_Input": "iraqui turks",
+        "Previous_Information_Need": "{'genres': ['action']}",
+        "User_Dialogue_Acts": "['reveal(keywords = turks)']",
+        "Current_Information_Needs": "{'genres': ['action'], 'keywords': 'turks'}",
+        "Agent_Dialogue_Acts": "['recommend(title = The Mountain II)']",
+        "Agent_Offer_State": "['agent_req_filled', 'agent_can_lookup', 'agent_made_offer']",
+        "Agent_Output": "I would like to recommend you an action, turks film named **\"[The Mountain II](https://www.imdb.com/title/tt5813916/)\"**. Have you watched it?",
+        "Context": {
+            "The Mountain II": []
+        },
+        "Agent_Options": "{'reject(reason = watched)': 'I have already watched it.', 'reject(reason = dont_like)': 'Recommend me something else please.', 'accept()': 'I like this recommendation.', 'inquire(more_info)': 'Tell me more about it.', '/restart': '/restart'}"
+    },
+    {
+        "Timestamp": "2023-03-22 15:28:43.647492",
+        "User_Input": "tell me more",
+        "Previous_Information_Need": "{'genres': ['action']}",
+        "User_Dialogue_Acts": "['inquire(more_info)']",
+        "Current_Information_Needs": "{'genres': ['action'], 'keywords': 'turks'}",
+        "Agent_Dialogue_Acts": "['inform(more_info = The Mountain II)']",
+        "Agent_Offer_State": "['agent_req_filled', 'agent_can_lookup', 'agent_made_offer']",
+        "Agent_Output": "What would you like to know about \"The Mountain II\"?",
+        "Context": {
+            "The Mountain II": [
+                "inquire"
+            ]
+        },
+        "Agent_Options": "{'inquire(genres)': 'genres', 'inquire(imdb_rating)': 'rating', 'inquire(duration)': 'duration', 'inquire(actors)': 'list of actors', 'inquire(directors)': 'director name', 'inquire(plot)': 'movie plot', 'inquire(year)': 'release year', 'reject(reason = dont_like)': \"I don't like this recommendation.\", 'accept()': 'I like this recommendation.', 'continue_recommendation()': 'I would like a similar recommendation.', 'restart()': 'I want to restart for a new movie.'}"
+    }
+]
