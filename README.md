@@ -47,6 +47,7 @@ IAI MovieBot is developed and maintained by the [IAI group](https://iai.group/) 
 
 (Alphabetically ordered by last name) 
 
+
   * Javeria Habib (2020) 
   * Krisztian Balog (2020-present)
   * Nolwenn Bernard (2022-present)
