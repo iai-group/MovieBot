@@ -14,19 +14,16 @@ from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
-from moviebot.ontology.ontology import Ontology
 
 
 class DialoguePolicy:
-    def __init__(self, ontology: Ontology, isBot: bool, new_user: bool) -> None:
+    def __init__(self, isBot: bool, new_user: bool) -> None:
         """Loads all necessary parameters for the policy.
 
         Args:
-            ontology: Rules for the slots in the database.
             isBot: If the conversation is via bot or not.
             new_user: Whether the user is new or not.
         """
-        self.ontology = ontology
         self.isBot = isBot
         self.new_user = new_user
 

@@ -13,6 +13,8 @@ DATA:
 NLU:
   tag_words_slots: config/tag_words_slots.json
 
+RECOMMENDER: "slot_based"
+
 TELEGRAM: False # execute the code on Telegram
 
 POLLING: False # True when using Telegram without server
