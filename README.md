@@ -51,4 +51,15 @@ The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/200
 
 ## Contributors
 
-Javeria Habib, Shuo Zhang, Krisztian Balog, and Ivica Kostric.
+IAI MovieBot is developed and maintained by the [IAI group](https://iai.group/) at the University of Stavanger.
+
+(Alphabetically ordered by last name) 
+
+
+  * Javeria Habib (2020) 
+  * Krisztian Balog (2020-present)
+  * Nolwenn Bernard (2022-present)
+  * Ivica Kostric (2021-present)
+  * Weronika Łajewska (2022-present)
+  * Martin G. Skjæveland (2022)
+  * Shuo Zhang (2020)
