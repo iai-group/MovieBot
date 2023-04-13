@@ -69,6 +69,10 @@ class DialogueAct:
         return hash((self.intent, tuple(self.params)))
 
     def remove_constraint(self, constraint: ItemConstraint) -> None:
-        """Removes constraint from the list of parameters."""
+        """Removes constraint from the list of parameters.
+
+        Args:
+            constraint: Constraint to remove.
+        """
         while constraint in self.params:
             self.params.remove(constraint)

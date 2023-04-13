@@ -7,7 +7,6 @@ from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 
 
-# parametrize
 @pytest.mark.parametrize(
     "intent",
     [
