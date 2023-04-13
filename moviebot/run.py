@@ -28,7 +28,7 @@ logger = logging.getLogger()
 _DEFAULT_CONFIG = "config/moviebot_config.yaml"
 
 
-def parse_args(args=None) -> argparse.Namespace:
+def parse_args(args: str = None) -> argparse.Namespace:
     """Parse command line arguments.
 
     Args:
