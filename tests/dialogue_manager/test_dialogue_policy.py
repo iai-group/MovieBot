@@ -42,8 +42,8 @@ def state(ontology, database_results, slots) -> DialogueState:
 
 
 @pytest.fixture
-def policy(ontology) -> DialoguePolicy:
-    yield DialoguePolicy(ontology, isBot=False, new_user=True)
+def policy() -> DialoguePolicy:
+    yield DialoguePolicy(isBot=False, new_user=True)
 
 
 @pytest.mark.parametrize(

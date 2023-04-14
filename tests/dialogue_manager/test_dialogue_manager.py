@@ -16,10 +16,18 @@ from moviebot.ontology.ontology import Ontology
 
 @pytest.fixture
 def config() -> Dict[str, Any]:
-    with mock.patch("moviebot.database.database.DataBase") as MockDatabase:
+    with mock.patch(
+        "moviebot.database.database.DataBase"
+    ) as MockDatabase, mock.patch(
+        "moviebot.recommender.slot_based_recommender_model."
+        "SlotBasedRecommenderModel"
+    ) as MockRecommender:
         yield {
             "ontology": Ontology(),
             "database": MockDatabase("tests/database/database.json"),
+            "recommender": MockRecommender(
+                MockDatabase("tests/database/database.json"), Ontology()
+            ),
         }
 
 
@@ -97,7 +105,7 @@ def test_generate_output_with_lookup(
 ):
     dialogue_manager.start_dialogue()
     dialogue_manager.generate_output()
-    dialogue_manager.database.database_lookup.assert_called()
+    dialogue_manager.recommender.recommend_items.assert_called()
 
 
 @mock.patch.object(
