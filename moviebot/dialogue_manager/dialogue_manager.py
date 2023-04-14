@@ -10,7 +10,6 @@ on the conversation.
 from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
-from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
@@ -20,7 +19,7 @@ from moviebot.dialogue_manager.dialogue_state_tracker import (
 )
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
-from moviebot.ontology.ontology import Ontology
+from moviebot.recommender.recommender_model import RecommenderModel
 
 
 class DialogueManager:
@@ -32,17 +31,14 @@ class DialogueManager:
 
         Args:
             config: The settings for components to be initialized.
-            isBot: if the conversation is via bot or not.
+            isBot: If the conversation is via bot or not.
             new_user: Whether the user is new or not.
         """
-        self.ontology: Ontology = config["ontology"]
-        self.database: DataBase = config["database"]
         self.isBot = isBot
         self.new_user = new_user
         self.dialogue_state_tracker = DialogueStateTracker(config, self.isBot)
-        self.dialogue_policy = DialoguePolicy(
-            self.ontology, self.isBot, self.new_user
-        )
+        self.dialogue_policy = DialoguePolicy(self.isBot, self.new_user)
+        self.recommender: RecommenderModel = config.get("recommender")
 
     def start_dialogue(self, new_user: bool = False) -> List[DialogueAct]:
         """Starts the dialogue by generating a response from the agent.
@@ -77,7 +73,7 @@ class DialogueManager:
         """Selects the next action based on the dialogue policy and generates
         system response.
 
-        Also accesses the database/ontology if required.
+        Also accesses the recommender system if required.
 
         Args:
             restart: Whether to restart the dialogue or not. Defaults to False.
@@ -94,11 +90,12 @@ class DialogueManager:
             dialogue_state.agent_can_lookup or dialogue_state.agent_req_filled
         ) and not dialogue_state.agent_made_offer:
             # accesses the database to fetch results if required
-            database_result = self.database.database_lookup(
-                dialogue_state, self.ontology
+            recommended_movies = self.recommender.recommend_items(
+                dialogue_state
             )
             self.dialogue_state_tracker.update_state_db(
-                database_result, self.database.backup_db_results
+                recommended_movies,
+                self.recommender.get_previous_recommend_items(),
             )
 
         # next action based on updated state
