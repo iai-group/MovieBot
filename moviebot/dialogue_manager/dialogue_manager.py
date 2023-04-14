@@ -49,8 +49,7 @@ class DialogueManager:
         Returns:
             A list with the first agent response.
         """
-        self.dialogue_state_tracker.dialogue_state.initialize()
-        self.dialogue_state_tracker.dialogue_context.initialize()
+        self.dialogue_state_tracker.initialize()
         agent_dact = DialogueAct(
             AgentIntents.WELCOME,
             [
@@ -85,9 +84,8 @@ class DialogueManager:
         # access the database if required according to the dialogue state
         # and update the state
         if restart:
-            self.dialogue_state_tracker.dialogue_state.initialize()
-            self.dialogue_state_tracker.dialogue_context.initialize()
-        dialogue_state = self.dialogue_state_tracker.dialogue_state
+            self.dialogue_state_tracker.initialize()
+        dialogue_state = self.dialogue_state_tracker.get_state()
         if (
             dialogue_state.agent_can_lookup or dialogue_state.agent_req_filled
         ) and not dialogue_state.agent_made_offer:
@@ -101,26 +99,13 @@ class DialogueManager:
             )
 
         # next action based on updated state
-        dialogue_state = self.dialogue_state_tracker.dialogue_state
+        dialogue_state = self.dialogue_state_tracker.get_state()
         agent_dacts = self.dialogue_policy.next_action(
             dialogue_state, restart=restart
         )
         self.dialogue_state_tracker.update_state_agent(agent_dacts)
 
         return agent_dacts
-
-    def database_lookup(self) -> List[Dict[str, Any]]:
-        """Performs a database query considering the current dialogue state
-        (the current information needs).
-
-        Returns:
-            The list of results matching user information needs.
-        """
-        dialogue_state = self.dialogue_state_tracker.get_state()
-        database_result = self.database.database_lookup(
-            dialogue_state, self.ontology
-        )
-        return database_result
 
     def get_state(self) -> DialogueState:
         """Returns the dialogue state.

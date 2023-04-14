@@ -12,6 +12,7 @@ from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
+from moviebot.ontology.ontology import Ontology
 
 
 class DialogueStateTracker:
@@ -23,14 +24,18 @@ class DialogueStateTracker:
             config: The set of parameters to initialize the state tracker.
             isBot: If the conversation is via bot or not.
         """
-        self.ontology = config["ontology"]
-        self.database = config["database"]
-        self.slots = config["slots"]
+        self.ontology: Ontology = config.get("ontology")
+        self.slots: List[str] = config.get("slots", [])
         self.isBot = isBot
         self.dialogue_state = DialogueState(
             self.ontology, self.slots, self.isBot
         )
         self.dialogue_context = DialogueContext()
+
+    def initialize(self) -> None:
+        """Initializes the dialogue state tracker."""
+        self.dialogue_state.initialize()
+        self.dialogue_context.initialize()
 
     def update_state_user(  # noqa: C901
         self, user_dacts: List[DialogueAct]
@@ -235,8 +240,7 @@ class DialogueStateTracker:
                 )
 
             if user_dact.intent == UserIntents.RESTART:
-                self.dialogue_state.initialize()
-                self.dialogue_context.initialize()
+                self.initialize()
 
             if user_dact.intent == UserIntents.BYE:
                 self.dialogue_state.at_terminal_state = True
