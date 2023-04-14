@@ -25,7 +25,7 @@ class MockDataLoader:
     def load_slot_value_pairs(self):
         return slot_values
 
-    def load_tag_words(self, a=None):
+    def load_tag_words(self, file_path=None):
         return tag_words
 
     def test_method(self):
