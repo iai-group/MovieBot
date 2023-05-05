@@ -6,7 +6,7 @@ IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/I
 
 ## Contributions
 
-Contributions are welcome. Changes to IAI MovieBot should conform to the IAI Python Style Guide.
+Contributions are welcome. Changes to IAI MovieBot should conform to the [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python#readme).
 
 ## Publication
 
