@@ -7,11 +7,12 @@ import logging
 import os
 import time
 from copy import deepcopy
-from typing import Dict
+from typing import Any, Dict, List, Union
 
 import yaml
-from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
+    CallbackContext,
     CommandHandler,
     ConversationHandler,
     Filters,
@@ -33,11 +34,9 @@ CONTINUE = range(1)
 
 
 class ControllerTelegram(Controller):
-    """This is the Controller class which controls the flow of the conversation
-    while the user interacts with the agent using telegram."""
-
-    def __init__(self):
-        """Initializes some basic structs for the Controller."""
+    def __init__(self) -> None:
+        """Controller class which controls the flow of the conversation while
+        the user interacts with the agent using telegram."""
         self.agent: Dict[str, Agent] = {}
         self.configuration = None
         self.user_options = {}
@@ -46,11 +45,16 @@ class ControllerTelegram(Controller):
         self.record_data = {}
         self.token = ""
 
-    def load_bot_token(self, bot_token_path):
+    def load_bot_token(self, bot_token_path: str) -> str:
         """Loads the Token for the Telegram bot.
 
         Args:
             bot_token_path: Path to the file with Telegram token.
+
+        Raises:
+            FileNotFoundError: If the file with the token is not found.
+            ValueError: If the type of the file name is not string or the token
+                is not found in the file.
 
         Returns:
             The token of the Telegram Bot.
@@ -71,14 +75,19 @@ class ControllerTelegram(Controller):
         else:
             raise ValueError("Unacceptable type of Token file name")
 
-    def start(self, update, context):
-        """Starts the conversation. This indicates initializing the components
-        and start the conversation from scratch and identifying if the users
-        are new or have used this system before.
+    def start(self, update: Update, context: CallbackContext) -> int:
+        """Starts the conversation.
+
+        This indicates initializing the components and start the conversation
+        from scratch and identifying if the users are new or have used this
+        system before.
 
         Args:
-            update:
-            context:
+            update: The update object from Telegram.
+            context: The context object from Telegram.
+
+        Returns:
+            CONTINUE: The continue state of the conversation.
         """
         # create a new agent
         user_id = str(update.effective_user["id"])
@@ -122,26 +131,32 @@ class ControllerTelegram(Controller):
             )
         return CONTINUE
 
-    def help(self, update, context):
+    def help(self, update: Update, context: CallbackContext) -> int:
         """Sends the users the instructions if they ask for help.
 
         Args:
-            update:
-            context:
+            update: The update object from Telegram.
+            context: The context object from Telegram.
+
+        Returns:
+            CONTINUE: The continue state of the conversation.
         """
         update.message.reply_text(
             self._instruction(help=True), parse_mode=ParseMode.MARKDOWN
         )
         return CONTINUE
 
-    def restart(self, update, context):
+    def restart(self, update: Update, context: CallbackContext) -> int:
         """Restarts the conversation. This is similar to start function.
         However, it starts the conversation with a welcome message and elicits
         the uses to begin with.
 
         Args:
-            update:
-            context:
+            update: The update object from Telegram.
+            context: The context object from Telegram.
+
+        Returns:
+            CONTINUE: The continue state of the conversation.
         """
         # create a new agent
         user_id = str(update.effective_user["id"])
@@ -183,12 +198,16 @@ class ControllerTelegram(Controller):
             )
         return CONTINUE
 
-    def continue_conv(self, update, context):
+    def continue_conv(self, update: Update, context: CallbackContext) -> int:
         """Continues the conversation until the users want to restart of exit.
 
         Args:
-            update:
-            context:
+            update: The update object from Telegram.
+            context: The context object from Telegram.
+
+        Returns:
+            The continue status of the conversation or the end of conversation
+            status.
         """
         user_id = str(update.effective_user["id"])
         if user_id not in self.configuration["new_user"] or self.configuration[
@@ -270,12 +289,15 @@ class ControllerTelegram(Controller):
         else:
             return CONTINUE
 
-    def exit(self, update, context):
+    def exit(self, update: Update, context: CallbackContext) -> int:
         """Exit the conversation.
 
         Args:
-            update:
-            context:
+            update: Object representing an incoming update.
+            context: Context object.
+
+        Returns:
+            ConversationHandler.END
         """
         user_id = str(update.effective_user["id"])
         self.response[
@@ -312,18 +334,18 @@ class ControllerTelegram(Controller):
             update.message.reply_text(feedback, parse_mode=ParseMode.MARKDOWN)
         return ConversationHandler.END
 
-    def error(self, update, context):
+    def error(self, update: Update, context: CallbackContext) -> None:
         """Log Errors caused by updates.
 
         Args:
-            update:
-            context:
+            update: Object representing an incoming update.
+            context: Context object.
         """
         logger.warning(
             f"Error {context.error} is caused by update {str(update)}."
         )
 
-    def execute_agent(self, configuration):
+    def execute_agent(self, configuration: Dict[str, Any]) -> None:
         """Runs the conversational agent and executes the dialogue by calling
         the basic components of IAI MovieBot.
 
@@ -372,7 +394,7 @@ class ControllerTelegram(Controller):
         )
         print("The users can access IAI MovieBot using Telegram.")
 
-    def new_user(self, user_id):
+    def new_user(self, user_id: str) -> bool:
         """Checks if the users are new or they have already conversed with the
         system before.
 
@@ -399,11 +421,16 @@ class ControllerTelegram(Controller):
                         json.dump(user_list, _user_file, indent=4)
                     return True
 
-    def _recheck_user_options(self, options):
+    def _recheck_user_options(
+        self, options: List[Union[str, List[str]]]
+    ) -> List[List[str]]:
         """Filters the keyboard options for a more elegant view.
 
         Args:
-            options:
+            options: The options to be filtered.
+
+        Returns:
+            The filtered options.
         """
         final_options = []
         row = []
@@ -436,11 +463,14 @@ class ControllerTelegram(Controller):
         final_options.append(deepcopy(list_row))
         return final_options
 
-    def _instruction(self, help: bool = False):
+    def _instruction(self, help: bool = False) -> str:
         """Instructions for new user.
 
         Args:
             help: Whether to provide instructions or not. Defaults to False.
+
+        Returns:
+            Instructions for the user.
         """
         response = ""
         if not help:
