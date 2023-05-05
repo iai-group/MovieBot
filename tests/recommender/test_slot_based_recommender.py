@@ -3,12 +3,11 @@ from unittest import mock
 
 import pytest
 
+from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.nlu.annotation.slots import Slots
 from moviebot.recommender.slot_based_recommender_model import (
     SlotBasedRecommenderModel,
 )
-from tests.mocks.mock_database import MockDataBase
 from tests.mocks.mock_ontology import MockOntology
 
 
@@ -27,37 +26,35 @@ def mock_dialogue_state() -> DialogueState:
 
 
 @pytest.fixture
-@mock.patch("moviebot.database.database.DataBase", new=MockDataBase)
+@mock.patch.object(DataBase, "_initialize_sql")
 @mock.patch("moviebot.ontology.ontology.Ontology", new=MockOntology)
-def slot_base_recommender() -> SlotBasedRecommenderModel:
-    return SlotBasedRecommenderModel(MockDataBase(), MockOntology())
+def slot_base_recommender(
+    mock___initialize_sql: mock.MagicMock,
+) -> SlotBasedRecommenderModel:
+    return SlotBasedRecommenderModel(DataBase(None), MockOntology())
 
 
+@mock.patch.object(
+    DataBase, "database_lookup", return_value=[{"movie-001": "description"}]
+)
 def test_recommend_items(
+    mock_database_lookup: mock.MagicMock,
     mock_dialogue_state: DialogueState,
     slot_base_recommender: SlotBasedRecommenderModel,
 ) -> None:
     recommended_items = slot_base_recommender.recommend_items(
         mock_dialogue_state
     )
-    assert len(recommended_items) == 3
-    assert recommended_items == sorted(
-        recommended_items,
-        key=lambda item: item[Slots.RATING.value],
-        reverse=True,
-    )
+    mock_database_lookup.assert_called_once()
+    assert recommended_items == [{"movie-001": "description"}]
 
 
 def test_get_previous_recommend_items(
-    mock_dialogue_state: DialogueState,
     slot_base_recommender: SlotBasedRecommenderModel,
 ) -> None:
-    mock_dialogue_state.initialize()
     assert slot_base_recommender.get_previous_recommend_items() is None
-    recommended_items = slot_base_recommender.recommend_items(
-        mock_dialogue_state
-    )
-    assert (
-        slot_base_recommender.get_previous_recommend_items()
-        == recommended_items
-    )
+
+    slot_base_recommender._db.backup_db_results = [{"movie-001": "description"}]
+    assert slot_base_recommender.get_previous_recommend_items() == [
+        {"movie-001": "description"}
+    ]
