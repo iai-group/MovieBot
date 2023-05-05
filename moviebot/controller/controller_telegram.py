@@ -488,6 +488,4 @@ class ControllerTelegram(Controller):
             ' issue "/restart".\n\nTo end the conversation, issue "/exit" or'
             " say Bye/Goodbye.\n\nTo see these instructions again, issue:"
             ' "/help".'
-        )  # \n\n" \
-        # "You can find more details online [here](" \
-        # "https://javeriahabib09.github.io/jarvis_v1.github.io/)"
+        )
