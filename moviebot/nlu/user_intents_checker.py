@@ -100,7 +100,7 @@ class UserIntentsChecker:
         # Load the preprocessing elements and the Database as slot-values
         self._punctuation_remover()
         self.lemmatizer = WordNetLemmatizer()
-        self.data_loader = DataLoader(config, self._lemmatize_value)
+        self.data_loader = DataLoader(config)
         self.slot_values = self.data_loader.load_slot_value_pairs()
         # load the tag-words from the DB
         tag_words_slots = self.data_loader.load_tag_words(
