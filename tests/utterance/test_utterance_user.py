@@ -1,13 +1,10 @@
-import datetime
 from typing import List
 
 import pytest
+from dialoguekit.core import Utterance
+from dialoguekit.participant import DialogueParticipant
 
-from moviebot.core.utterance.utterance import (
-    AgentUtterance,
-    UserUtterance,
-    Utterance,
-)
+from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.nlu.text_processing import Token
 
 
@@ -40,7 +37,7 @@ from moviebot.nlu.text_processing import Token
     ],
 )
 def test_get_tokens(utterance: str, expected: List[Token]) -> None:
-    uu = UserUtterance({"text": utterance})
+    uu = UserUtterance(utterance)
     result = uu.get_tokens()
 
     assert result == expected
@@ -49,20 +46,9 @@ def test_get_tokens(utterance: str, expected: List[Token]) -> None:
 @pytest.mark.parametrize(
     "utterance, source",
     [
-        (UserUtterance({"text": "hello"}), "UserUtterance"),
-        (AgentUtterance({"text": "welcome"}), "AgentUtterance"),
+        (UserUtterance("hello"), "UserUtterance"),
+        (Utterance("welcome", DialogueParticipant.AGENT), "Utterance"),
     ],
 )
 def test_get_source(utterance: Utterance, source: str) -> None:
-    assert utterance.get_source() == source
-
-
-def test_str() -> None:
-    text = "hello"
-    timesptamp = 1677493973.131199
-    utterance = UserUtterance({"text": text, "date": timesptamp})
-    utterance_str = (
-        f"{datetime.datetime.fromtimestamp(timesptamp)} - "
-        f"UserUtterance:\n\t{text}"
-    )
-    assert utterance.__str__() == utterance_str
+    assert utterance.__class__.__name__ == source

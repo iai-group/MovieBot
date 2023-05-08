@@ -44,7 +44,7 @@ class ControllerTerminal(Controller):
                     choices=options,
                 ).ask()
 
-            user_utterance = UserUtterance({"text": answer})
+            user_utterance = UserUtterance(answer)
 
             if self.restart(user_utterance):
                 agent = self.initialize_agent()

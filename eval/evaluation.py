@@ -178,7 +178,7 @@ def annotate_slot_utterance(annotator, slot, utterance):
     Returns:
         List[Dict]: List of semantic annotations for utterance.
     """
-    user_utterance = UserUtterance({"text": utterance})
+    user_utterance = UserUtterance(utterance)
     constraints = annotator.slot_annotation(slot, user_utterance) or []
     semantic_annotations = [
         annotation
