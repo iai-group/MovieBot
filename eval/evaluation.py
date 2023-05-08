@@ -316,7 +316,7 @@ def get_annotations(slots, entity_types, force=False):
             False.
 
     Returns:
-        Dict: Dictionary with annotatins and durations for each slot.
+        Dict: Dictionary with annotations and durations for each slot.
     """
     filename = "annotations.json"
     if not force:
