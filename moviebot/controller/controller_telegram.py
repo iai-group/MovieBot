@@ -35,8 +35,7 @@ CONTINUE = range(1)
 
 class ControllerTelegram(Controller):
     def __init__(self) -> None:
-        """Controller class which controls the flow of the conversation while
-        the user interacts with the agent using telegram."""
+        """Controls the flow of the conversation on Telegram."""
         self.agent: Dict[str, Agent] = {}
         self.configuration = None
         self.user_options = {}
@@ -78,8 +77,8 @@ class ControllerTelegram(Controller):
     def start(self, update: Update, context: CallbackContext) -> int:
         """Starts the conversation.
 
-        This indicates initializing the components and start the conversation
-        from scratch and identifying if the users are new or have used this
+        This indicates initializing the components, starting the conversation
+        from scratch, and identifying if the users are new or have used this
         system before.
 
         Args:
@@ -87,7 +86,7 @@ class ControllerTelegram(Controller):
             context: The context object from Telegram.
 
         Returns:
-            CONTINUE: The continue state of the conversation.
+            CONTINUE: The "continue" state of the conversation.
         """
         # create a new agent
         user_id = str(update.effective_user["id"])
@@ -139,7 +138,7 @@ class ControllerTelegram(Controller):
             context: The context object from Telegram.
 
         Returns:
-            CONTINUE: The continue state of the conversation.
+            CONTINUE: The "continue" state of the conversation.
         """
         update.message.reply_text(
             self._instruction(help=True), parse_mode=ParseMode.MARKDOWN
@@ -156,7 +155,7 @@ class ControllerTelegram(Controller):
             context: The context object from Telegram.
 
         Returns:
-            CONTINUE: The continue state of the conversation.
+            CONTINUE: The "continue" state of the conversation.
         """
         # create a new agent
         user_id = str(update.effective_user["id"])
@@ -206,8 +205,8 @@ class ControllerTelegram(Controller):
             context: The context object from Telegram.
 
         Returns:
-            The continue status of the conversation or the end of conversation
-            status.
+            The "continue" status of the conversation or the "end of
+            conversation" status.
         """
         user_id = str(update.effective_user["id"])
         if user_id not in self.configuration["new_user"] or self.configuration[
@@ -297,7 +296,7 @@ class ControllerTelegram(Controller):
             context: Context object.
 
         Returns:
-            ConversationHandler.END
+            The "end of the conversation" status.
         """
         user_id = str(update.effective_user["id"])
         self.response[
