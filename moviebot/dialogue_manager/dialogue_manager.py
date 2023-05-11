@@ -19,6 +19,7 @@ from moviebot.dialogue_manager.dialogue_state_tracker import (
 )
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
+from moviebot.recommender.recommender_model import RecommenderModel
 
 
 class DialogueManager:
@@ -30,17 +31,14 @@ class DialogueManager:
 
         Args:
             config: The settings for components to be initialized.
-            isBot: if the conversation is via bot or not.
+            isBot: If the conversation is via bot or not.
             new_user: Whether the user is new or not.
         """
-        self.ontology = config["ontology"]
-        self.database = config["database"]
         self.isBot = isBot
         self.new_user = new_user
         self.dialogue_state_tracker = DialogueStateTracker(config, self.isBot)
-        self.dialogue_policy = DialoguePolicy(
-            self.ontology, self.isBot, self.new_user
-        )
+        self.dialogue_policy = DialoguePolicy(self.isBot, self.new_user)
+        self.recommender: RecommenderModel = config.get("recommender")
 
     def start_dialogue(self, new_user: bool = False) -> List[DialogueAct]:
         """Starts the dialogue by generating a response from the agent.
@@ -51,8 +49,7 @@ class DialogueManager:
         Returns:
             A list with the first agent response.
         """
-        self.dialogue_state_tracker.dialogue_state.initialize()
-        self.dialogue_state_tracker.dialogue_context.initialize()
+        self.dialogue_state_tracker.initialize()
         agent_dact = DialogueAct(
             AgentIntents.WELCOME,
             [
@@ -76,7 +73,7 @@ class DialogueManager:
         """Selects the next action based on the dialogue policy and generates
         system response.
 
-        Also accesses the database/ontology if required.
+        Also accesses the recommender system if required.
 
         Args:
             restart: Whether to restart the dialogue or not. Defaults to False.
@@ -87,39 +84,28 @@ class DialogueManager:
         # access the database if required according to the dialogue state
         # and update the state
         if restart:
-            self.dialogue_state_tracker.dialogue_state.initialize()
-            self.dialogue_state_tracker.dialogue_context.initialize()
-        dialogue_state = self.dialogue_state_tracker.dialogue_state
+            self.dialogue_state_tracker.initialize()
+        dialogue_state = self.dialogue_state_tracker.get_state()
         if (
             dialogue_state.agent_can_lookup or dialogue_state.agent_req_filled
         ) and not dialogue_state.agent_made_offer:
             # accesses the database to fetch results if required
-            database_result = self.database_lookup()
+            recommended_movies = self.recommender.recommend_items(
+                dialogue_state
+            )
             self.dialogue_state_tracker.update_state_db(
-                database_result, self.database.backup_db_results
+                recommended_movies,
+                self.recommender.get_previous_recommend_items(),
             )
 
         # next action based on updated state
-        dialogue_state = self.dialogue_state_tracker.dialogue_state
+        dialogue_state = self.dialogue_state_tracker.get_state()
         agent_dacts = self.dialogue_policy.next_action(
             dialogue_state, restart=restart
         )
         self.dialogue_state_tracker.update_state_agent(agent_dacts)
 
         return agent_dacts
-
-    def database_lookup(self) -> List[Dict[str, Any]]:
-        """Performs a database query considering the current dialogue state
-        (the current information needs).
-
-        Returns:
-            The list of results matching user information needs.
-        """
-        dialogue_state = self.dialogue_state_tracker.get_state()
-        database_result = self.database.database_lookup(
-            dialogue_state, self.ontology
-        )
-        return database_result
 
     def get_state(self) -> DialogueState:
         """Returns the dialogue state.

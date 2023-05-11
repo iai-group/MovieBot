@@ -6,3 +6,6 @@ data/slot_values.json
 
 # evaluation data
 eval/data/extras/*
+
+# pytest coverage
+.coverage

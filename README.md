@@ -17,6 +17,14 @@ IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/I
 
 The installation instructions and documentation can be found on [Read the Docs](https://iai-moviebot.readthedocs.io/).
 
+## Run with Flask
+
+Run the following command to start the IAI MovieBot with Flask:
+
+```shell
+python -m moviebot.run -c config/moviebot_config_no_integration.yaml
+```
+
 ## Contributions
 
 Contributions are welcome. Changes to IAI MovieBot should conform to the [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python).
@@ -43,4 +51,15 @@ The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/200
 
 ## Contributors
 
-Javeria Habib, Shuo Zhang, Krisztian Balog, and Ivica Kostric.
+IAI MovieBot is developed and maintained by the [IAI group](https://iai.group/) at the University of Stavanger.
+
+(Alphabetically ordered by last name) 
+
+
+  * Javeria Habib (2020) 
+  * Krisztian Balog (2020-present)
+  * Nolwenn Bernard (2022-present)
+  * Ivica Kostric (2021-present)
+  * Weronika Łajewska (2022-present)
+  * Martin G. Skjæveland (2022)
+  * Shuo Zhang (2020)

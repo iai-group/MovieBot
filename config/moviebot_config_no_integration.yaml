@@ -1,8 +1,9 @@
 ---
+
 CONVERSATION_LOGS: # implementation: save conversational logs for debugging
-  save: False
-  nlp: True
-  path: reports/conversations/
+    save: False
+    nlp: True
+    path: reports/conversations/
 
 DATA:
   ontology_path: data/movies_ontology.json
@@ -18,12 +19,12 @@ TELEGRAM: False # execute the code on Telegram
 
 POLLING: False # True when using Telegram without server
 
-FLASK: False
+FLASK: True # run with Flask
 
 BOT_TOKEN_PATH: config/bot_token.yaml
 
 BOT_HISTORY: # save the conversational logs for Telegram users
-  save: True
-  path: conversation_history/
+    save: True
+    path: conversation_history
 
 DEBUG: False

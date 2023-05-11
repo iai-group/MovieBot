@@ -10,6 +10,7 @@ be updated using the dialogue state tracker.
 from copy import deepcopy
 from typing import Any, Dict, List
 
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.ontology.ontology import Ontology
 
 
@@ -37,11 +38,11 @@ class DialogueState:
         self.frame_PIN = (
             {}
         )  # previous information needs of the user in case user want to go back
-        self.prev_agent_dacts = []  # list of agent dacts
-        self.last_agent_dacts = (
+        self.prev_agent_dacts: List[DialogueAct] = []  # list of agent dacts
+        self.last_agent_dacts: DialogueAct = (
             None  # the current agent dact (singular, must be updated carefully)
         )
-        self.last_user_dacts = None  # the current user act
+        self.last_user_dacts: List[DialogueAct] = None  # the current user act
 
     def _agent_offer_state(self) -> str:
         """Returns string representation of the agent's offer state."""

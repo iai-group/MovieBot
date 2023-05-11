@@ -4,6 +4,7 @@ for Dialogue Acts of the agent."""
 
 import random
 from copy import deepcopy
+from typing import Dict, List, Union
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
@@ -14,13 +15,16 @@ from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
 
+ButtonOptions = Dict[DialogueAct, List[str]]
+CINType = Dict[str, Union[str, List[str]]]
+
 
 class NLG:
-    """NLG is a Natural Language Generator used to produce a human-like
-    response for Dialogue Acts of the agent."""
+    def __init__(self, args=None) -> None:
+        """Natural Language Generator.
 
-    def __init__(self, args=None):
-        """Initializes any necessary components.
+        It is used to produce a human-like response for Dialogue Acts of the
+        agent.
 
         Args:
             args: Basic settings of NLG.
@@ -53,81 +57,70 @@ class NLG:
             ],
         }
 
-        self.inform_key = {
-            Slots.TITLE.value: f"_{Slots.TITLE.value}_",
-            Slots.GENRES.value: f"_{Slots.GENRES.value}_",
-            Slots.PLOT.value: f"_{Slots.PLOT.value}_",
-            Slots.KEYWORDS.value: f"_{Slots.KEYWORDS.value}_",
-            Slots.DIRECTORS.value: f"_{Slots.DIRECTORS.value}_",
-            Slots.DURATION.value: f"_{Slots.DURATION.value}_",
-            Slots.ACTORS.value: f"_{Slots.ACTORS.value}_",
-            Slots.YEAR.value: f"_{Slots.YEAR.value}_",
-            Slots.MOVIE_LINK.value: f"_{Slots.MOVIE_LINK.value}_",
-            Slots.RATING.value: f"_{Slots.RATING.value}_",
-        }
+        self.inform_key = lambda value: f"_{value}_"
 
         self.agent_inform_nlg = {
             Slots.TITLE.value: [
                 "The title of the movie is"
-                f' "{self.inform_key[Slots.TITLE.value]}".',
-                f'Its name is "{self.inform_key[Slots.TITLE.value]}".',
+                f' "{self.inform_key(Slots.TITLE.value)}".',
+                f'Its name is "{self.inform_key(Slots.TITLE.value)}".',
             ],
             Slots.GENRES.value: [
                 "The genres it belongs to are"
-                f" {self.inform_key[Slots.GENRES.value]}.",
-                f"Its genres are {self.inform_key[Slots.GENRES.value]}.",
+                f" {self.inform_key(Slots.GENRES.value)}.",
+                f"Its genres are {self.inform_key(Slots.GENRES.value)}.",
             ],
-            Slots.PLOT.value: [f"{self.inform_key[Slots.PLOT.value]}"],
+            Slots.PLOT.value: [f"{self.inform_key(Slots.PLOT.value)}"],
             Slots.KEYWORDS.value: [
                 "The plot of the movie revolves around "
-                f"{self.inform_key[Slots.KEYWORDS.value]}.",
+                f"{self.inform_key(Slots.KEYWORDS.value)}.",
                 "The movie plot is about "
-                f"{self.inform_key[Slots.KEYWORDS.value]}.",
+                f"{self.inform_key(Slots.KEYWORDS.value)}.",
             ],
             Slots.DIRECTORS.value: [
                 "The director of this movie is "
-                f"{self.inform_key[Slots.DIRECTORS.value]}.",
-                f"Its directed by {self.inform_key[Slots.DIRECTORS.value]}.",
+                f"{self.inform_key(Slots.DIRECTORS.value)}.",
+                f"Its directed by {self.inform_key(Slots.DIRECTORS.value)}.",
             ],
             Slots.DURATION.value: [
-                f"Its duration is {self.inform_key[Slots.DURATION.value]}.",
-                f"This movie is {self.inform_key[Slots.DURATION.value]} long.",
+                f"Its duration is {self.inform_key(Slots.DURATION.value)}.",
+                f"This movie is {self.inform_key(Slots.DURATION.value)} long.",
             ],
             Slots.ACTORS.value: [
                 (
                     "Some of the famous actors in this movie are "
-                    f"{self.inform_key[Slots.ACTORS.value]}."
+                    f"{self.inform_key(Slots.ACTORS.value)}."
                 ),
                 (
-                    f"Actors {self.inform_key[Slots.ACTORS.value]} have played"
+                    f"Actors {self.inform_key(Slots.ACTORS.value)} have played"
                     " prominent roles in this movie."
                 ),
             ],
             Slots.YEAR.value: [
                 (
                     "The movie was released in"
-                    f" {self.inform_key[Slots.YEAR.value]}."
+                    f" {self.inform_key(Slots.YEAR.value)}."
                 ),
                 (
                     "It was released in the year"
-                    f" {self.inform_key[Slots.YEAR.value]}."
+                    f" {self.inform_key(Slots.YEAR.value)}."
                 ),
             ],
             Slots.MOVIE_LINK.value: [
                 (
                     "The link of the movie on IMDb is"
-                    f" {self.inform_key[Slots.MOVIE_LINK.value]}"
+                    f" {self.inform_key(Slots.MOVIE_LINK.value)}"
                 ),
                 (
                     "You can find more about the movie at this link: "
-                    f"{self.inform_key[Slots.MOVIE_LINK.value]}"
+                    f"{self.inform_key(Slots.MOVIE_LINK.value)}"
                 ),
             ],
             Slots.RATING.value: [
-                f"Its rating on IMDb is {self.inform_key[Slots.RATING.value]}.",
+                f"Its rating on IMDb is {self.inform_key(Slots.RATING.value)}.",
                 (
                     "The rating of this movie on IMDb is"
-                    f" {self.inform_key[Slots.RATING.value]}."
+                    f" {self.inform_key(Slots.RATING.value)}."
                 ),
             ],
         }
@@ -157,7 +150,10 @@ class NLG:
         }
 
     def generate_output(  # noqa: C901
-        self, agent_dacts, dialogue_state: DialogueState = None, user_fname=None
+        self,
+        agent_dacts: List[DialogueAct],
+        dialogue_state: DialogueState = None,
+        user_fname: str = None,
     ) -> str:
         """Selects an appropriate response based on the dialogue acts.
 
@@ -332,21 +328,13 @@ class NLG:
                                 )
                             )
             elif agent_dact.intent == AgentIntents.NO_RESULTS:
-                intent_response = random.choice(
-                    [
-                        (
-                            "Sorry, I don't have any "
-                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa: E501
-                            f"{self._clarify_CIN(CIN, agent_dact)}."
-                        ),
-                        (
-                            "Sorry, I couldn't find any "
-                            f'{"other " if dialogue_state.items_in_context else ""}'  # noqa: E501
-                            f"{self._clarify_CIN(CIN, agent_dact)}."
-                        ),
-                    ]
+                phrasing = random.choice(
+                    ["I don't have any", "I couldn't find any"]
                 )
-                intent_response += (
+                intent_response = (
+                    f"Sorry, {phrasing} "
+                    f'{"other " if dialogue_state.items_in_context else ""}'
+                    f"{self._clarify_CIN(CIN, agent_dact)}."
                     " Please select from the list of options to continue."
                 )
                 utterance.append(intent_response)
@@ -362,17 +350,13 @@ class NLG:
                     )
             elif agent_dact.intent == AgentIntents.INFORM:
                 for param in deepcopy(agent_dact.params):
-                    if param.slot == Slots.MORE_INFO.value:
+                    if (
+                        param.slot == Slots.MORE_INFO.value
+                        or param.slot == "deny"
+                    ):
                         intent_response = random.choice(
                             [
                                 "What would you like to know about "
-                                f'"{param.value}"?'
-                            ]
-                        )
-                    elif param.slot == "deny":
-                        intent_response = random.choice(
-                            [
-                                "Would you want to know more about "
                                 f'"{param.value}"?'
                             ]
                         )
@@ -386,13 +370,13 @@ class NLG:
                                     param.value
                                 )
                             intent_response = intent_response.replace(
-                                self.inform_key[param.slot], str(param.value)
+                                self.inform_key(param.slot), str(param.value)
                             )
                             # if param.slot == Slots.PLOT.value:
                             #     intent_response += 'You can see more '
                         else:
                             intent_response = intent_response.replace(
-                                self.inform_key[param.slot], "unknown"
+                                self.inform_key(param.slot), "unknown"
                             )
                     user_options.update(
                         self._user_options_inquire(dialogue_state)
@@ -417,33 +401,31 @@ class NLG:
             return " ".join([str(dact) for dact in agent_dacts]), user_options
         return "\n\n".join(utterance), user_options
 
-    def _summarize_duration(self, value):
-        """
+    def _summarize_duration(self, value: str) -> str:
+        """Summarizes duration in minutes to hours and minutes.
 
         Args:
-            value:
-
+            value: Duration in minutes.
         """
         value = int(value)
-        hours = int(value / 60)
-        minutes = value - int(value / 60) * 60
-        if minutes > 60:
+        hours = value // 60
+        minutes = value - hours * 60
+        if value > 60:
             return random.choice(
                 [
                     f"{value} minutes",
                     f'{hours} {"hours" if hours > 1 else "hour"} and '
-                    f'{minutes} {"minutes" if minutes > 1 else "minute"}',
+                    f'{minutes} {"minute" if minutes == 1 else "minutes"}',
                 ]
             )
         else:
             return f"{value} minutes"
 
-    def _summarize_title_year(self, value):
-        """
+    def _summarize_year(self, value: str) -> str:
+        """Summarizes year to decade or century.
 
         Args:
-            value:
-
+            value: Year preference.
         """
         negate = False
         if value.startswith(".NOT."):
@@ -459,7 +441,9 @@ class NLG:
         else:
             return f'year {"not " if negate else " "}' + value
 
-    def _clarify_CIN(self, CIN, agent_dact) -> str:  # noqa: C901
+    def _clarify_CIN(  # noqa: C901
+        self, CIN: CINType, agent_dact: DialogueAct
+    ) -> str:
         """Clarifies the user CIN in the utterance.
 
         Args:
@@ -553,7 +537,7 @@ class NLG:
             response = (
                 response
                 + " from the "
-                + self._summarize_title_year(CIN[Slots.YEAR.value])
+                + self._summarize_year(CIN[Slots.YEAR.value])
             )
         if (
             CIN[Slots.ACTORS.value]
@@ -571,11 +555,14 @@ class NLG:
                 )
         return response.strip()
 
-    def _user_options_continue(self, agent_dact):
+    def _user_options_continue(self, agent_dact: DialogueAct) -> ButtonOptions:
         """Gives user options to continue when needed.
 
         Args:
-            agent_dact:
+            agent_dact: Agent dialogue act.
+
+        Returns:
+            A dictionary of button options.
         """
         if agent_dact.intent == AgentIntents.CONTINUE_RECOMMENDATION:
             options = {
@@ -589,7 +576,7 @@ class NLG:
             }
             return options
 
-    def _user_options_recommend(self):
+    def _user_options_recommend(self) -> ButtonOptions:
         """Gives use button options when making a recommendation.
 
         Returns:
@@ -623,7 +610,9 @@ class NLG:
         options.update({"/restart": ["/restart"]})
         return options
 
-    def _user_options_remove_preference(self, dual_params):  # noqa: C901
+    def _user_options_remove_preference(  # noqa: C901
+        self, dual_params: Dict[str, str]
+    ) -> ButtonOptions:
         """Generates options for user to select in case of two parameters have
         same value.
 
@@ -635,13 +624,13 @@ class NLG:
         """
         options = {}
         for value, params in dual_params.items():
+            # Quick fix for issue #124
+            # See details: https://github.com/iai-group/MovieBot/issues/124
+            value = str(value)
             for param in params:
                 negative = False
-                # TODO (Ivica Kostric): Look into this. Looks like a bug.
-                # value is not a string in some (all?) cases. It can be
-                # of class Values.
                 if value.startswith(".NOT."):
-                    negative = True  # TODO. Add changes here
+                    negative = True
                     value = value.replace(".NOT.", "")
                 _a_an = "an" if value[0] in ["a", "e", "i", "o", "u"] else "a"
                 param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])
@@ -732,9 +721,9 @@ class NLG:
                             random.choice(
                                 [
                                     'Release year should be the "'
-                                    f'{self._summarize_title_year(value)}".',
+                                    f'{self._summarize_year(value)}".',
                                     'Need a movie from the "'
-                                    f'{self._summarize_title_year(value)}".',
+                                    f'{self._summarize_year(value)}".',
                                 ]
                             )
                         ]
@@ -743,23 +732,25 @@ class NLG:
                             random.choice(
                                 [
                                     "Release year shouldn't be the \""
-                                    f'{self._summarize_title_year(value)}".',
+                                    f'{self._summarize_year(value)}".',
                                     "Don't need a movie from the \""
-                                    f'{self._summarize_title_year(value)}".',
+                                    f'{self._summarize_year(value)}".',
                                 ]
                             )
                         ]
                 options.update({"/restart": ["/restart"]})
         return options
 
-    def _user_options_inquire(self, dialogue_state):
-        """
+    def _user_options_inquire(
+        self, dialogue_state: DialogueState
+    ) -> ButtonOptions:
+        """Generates options for user to select when user intent is inquire.
 
         Args:
-            dialogue_state:
+            dialogue_state: The current dialogue state.
 
         Returns:
-            List of user requestables as buttons.
+            List of user button options.
         """
         options = {}
         requestables = {
@@ -795,7 +786,9 @@ class NLG:
         )
         return options
 
-    def _user_options_remove_preference_CIN(self, CIN):  # noqa: C901
+    def _user_options_remove_preference_CIN(  # noqa: C901
+        self, CIN: CINType
+    ) -> ButtonOptions:
         """Generates options for user to select a parameter to remove.
 
         Args:
@@ -911,9 +904,9 @@ class NLG:
                         random.choice(
                             [
                                 'Release year should be the "'
-                                f'{self._summarize_title_year(value)}".',
+                                f'{self._summarize_year(value)}".',
                                 'Need a movie from the "'
-                                f'{self._summarize_title_year(value)}".',
+                                f'{self._summarize_year(value)}".',
                             ]
                         )
                     ]
@@ -922,9 +915,9 @@ class NLG:
                         random.choice(
                             [
                                 "Release year shouldn't be the \""
-                                f'{self._summarize_title_year(value)}".',
+                                f'{self._summarize_year(value)}".',
                                 "Don't need a movie from the \""
-                                f'{self._summarize_title_year(value)}".',
+                                f'{self._summarize_year(value)}".',
                             ]
                         )
                     ]

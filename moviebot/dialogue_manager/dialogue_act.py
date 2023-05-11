@@ -33,6 +33,9 @@ class DialogueAct:
             raise ValueError("Unacceptable dialogue act type: %s " % intent)
 
         self.params = params or []
+        assert all(
+            isinstance(param, ItemConstraint) for param in self.params
+        ), ("All params should be of ItemConstraint type: %s" % params)
 
     def __str__(self) -> str:
         """Prints a dialogue act to debug the agent.
@@ -46,9 +49,30 @@ class DialogueAct:
         else:
             return "None (DialogueAct)"
 
+    def __eq__(self, __o: "DialogueAct") -> bool:
+        """Checks if two dialogue acts are equal.
+
+        Args:
+            __o: The other dialogue act to compare.
+
+        Returns:
+            True if the two dialogue acts are equal.
+        """
+        return self.intent == __o.intent and self.params == __o.params
+
+    def __hash__(self) -> int:
+        """Returns the hash of the dialogue act.
+
+        Returns:
+            Hash of the dialogue act.
+        """
+        return hash((self.intent, tuple(self.params)))
+
     def remove_constraint(self, constraint: ItemConstraint) -> None:
-        """Removes constraint from the list of parameters."""
-        for p in self.params:
-            if p.slot == constraint.slot and p.value == constraint.value:
-                self.params.remove(p)
-                return
+        """Removes constraint from the list of parameters.
+
+        Args:
+            constraint: Constraint to remove.
+        """
+        while constraint in self.params:
+            self.params.remove(constraint)

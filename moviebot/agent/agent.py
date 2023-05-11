@@ -1,6 +1,4 @@
 """Types of conversational agents are available here."""
-
-
 import logging
 import os
 from typing import Any, Dict, List, Tuple, Union
@@ -12,6 +10,10 @@ from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG
 from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
+from moviebot.recommender.recommender_model import RecommenderModel
+from moviebot.recommender.slot_based_recommender_model import (
+    SlotBasedRecommenderModel,
+)
 from moviebot.recorder.dialogue_recorder import DialogueRecorder
 from moviebot.recorder.recorder_bot import RecorderBot
 
@@ -89,9 +91,14 @@ class Agent:
                 " utterance"
             )
 
+        _recommender = self._get_recommender(
+            self.config.get("RECOMMENDER", "slot_based")
+        )
+
         data_config = dict(
             ontology=self.ontology,
             database=self.database,
+            recommender=_recommender,
             slot_values_path=self.slot_values_path,
             tag_words_slots_path=nlu_tag_words_slots_path,
         )
@@ -99,7 +106,9 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        self.isBot = self.config.get("TELEGRAM", False)
+        self.isBot = self.config.get("TELEGRAM", False) or self.config.get(
+            "FLASK", False
+        )
 
         self.dialogue_manager = DialogueManager(
             data_config, self.isBot, self.new_user
@@ -111,6 +120,25 @@ class Agent:
                 self.bot_recorder = RecorderBot(path)
             else:
                 raise ValueError("Path to save conversation is not provided.")
+
+    def _get_recommender(self, recommender_type: str) -> RecommenderModel:
+        """Creates a recommender model of given type.
+
+        Recommender types supported: slot_based.
+
+        Args:
+            recommender_type: Recommender type.
+
+        Returns:
+            A recommender model.
+
+        Raises:
+            ValueError: If the recommender type is not supported.
+        """
+        if recommender_type == "slot_based":
+            return SlotBasedRecommenderModel(self.database, self.ontology)
+
+        raise ValueError(f"{recommender_type} is not supported.")
 
     def start_dialogue(
         self, user_fname: str = None, restart: bool = False

@@ -64,6 +64,9 @@ class ItemConstraint:
             other.value,
         )
 
+    def __hash__(self) -> int:
+        return hash((self.slot, self.op, self.value))
+
     def __str__(self) -> str:
         """Prints the DAct Item to debug the agent.
 
@@ -75,6 +78,6 @@ class ItemConstraint:
         result = self.slot
 
         if self.value:
-            result += " " + opr + " " + str(self.value)
+            result += f" {opr} {self.value}"
 
         return result
