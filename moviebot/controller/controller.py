@@ -30,6 +30,9 @@ class Controller(ABC):
     def execute_agent(self):
         """Runs the conversational agent and executes the dialogue by calling
         the basic components of IAI MovieBot.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
         """
         raise NotImplementedError
 
