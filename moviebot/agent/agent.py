@@ -53,8 +53,8 @@ def _get_db(db_path: str) -> DataBase:
 
 class Agent:
     def __init__(self, config: Dict[str, Any] = None) -> None:
-        """The class Agent controls all the components of the basic architecture
-        of IAI MovieBot.
+        """The class Agent controls all the components of the basic
+        architecture of IAI MovieBot.
 
         Initially the Conversational Agent is able to interact with human
         users via text.
@@ -106,8 +106,10 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        self.isBot = self.config.get("TELEGRAM", False) or self.config.get(
-            "FLASK", False
+        self.isBot = (
+            self.config.get("TELEGRAM", False)
+            or self.config.get("FLASK_REST", False)
+            or self.config.get("FLASK_SOCKET", False)
         )
 
         self.dialogue_manager = DialogueManager(
@@ -143,8 +145,8 @@ class Agent:
     def start_dialogue(
         self, user_fname: str = None, restart: bool = False
     ) -> Union[
-        Tuple[str, DialogueOptions],
-        Tuple[str, DialogueOptions, Dict[str, Any]],
+        Tuple[str, str, DialogueOptions],
+        Tuple[str, str, DialogueOptions, Dict[str, Any]],
     ]:
         """Starts the conversation.
 
@@ -154,32 +156,39 @@ class Agent:
               False.
 
         Returns:
-            Agent response, dialogue options for quick reply, and data to be
-              recorded if self.isBot is true.
+            Agent response, agent intents, dialogue options for quick reply,
+            and data to be recorded if self.isBot is true.
         """
         if not restart:
             agent_dacts = self.dialogue_manager.start_dialogue(self.new_user)
         else:
             agent_dacts = self.dialogue_manager.generate_output(restart)
+        agent_intents = ",".join([dact.intent.name for dact in agent_dacts])
         agent_response, options = self.nlg.generate_output(
             agent_dacts, user_fname=user_fname
         )
         self.dialogue_manager.get_context().add_utterance(
             AgentUtterance({"text": agent_response})
         )
+
+        if self.record:
+            self.recorder.record(
+                user_fname, agent_response, agent_dacts, participant="AGENT"
+            )
+
         if not self.isBot:
             logger.debug(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
             logger.debug(str(self.dialogue_manager.get_context()))
-            return agent_response, options
+            return agent_response, agent_intents, options
         else:
             record_data = self.dialogue_manager.get_state().to_dict()
             context = self.dialogue_manager.get_context().movies_recommended
             record_data.update(
                 {"Agent_Output": agent_response, "Context": context}
             )
-            return agent_response, options, record_data
+            return agent_response, agent_intents, options, record_data
 
     def continue_dialogue(
         self,
@@ -187,8 +196,8 @@ class Agent:
         user_options: DialogueOptions,
         user_fname: str = None,
     ) -> Union[
-        Tuple[str, DialogueOptions],
-        Tuple[str, DialogueOptions, Dict[str, Any]],
+        Tuple[str, str, DialogueOptions],
+        Tuple[str, str, DialogueOptions, Dict[str, Any]],
     ]:
         """Performs the next dialogue according to user response and current
         state of dialogue.
@@ -200,8 +209,8 @@ class Agent:
             user_fname: User's first name. Defaults to None.
 
         Returns:
-            Agent response, dialogue options for quick reply, and data to be
-              recorded if self.isBot is true.
+            Agent response, agent intents, dialogue options for quick reply,
+              and data to be recorded if self.isBot is true.
         """
         self.dialogue_manager.get_state().user_utterance = user_utterance
         self.dialogue_manager.get_context().add_utterance(user_utterance)
@@ -216,18 +225,35 @@ class Agent:
         dialogue_state = (
             self.dialogue_manager.dialogue_state_tracker.dialogue_state
         )
+
+        agent_intents = ",".join([dact.intent.name for dact in agent_dacts])
         agent_response, options = self.nlg.generate_output(
             agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname
         )
         self.dialogue_manager.get_context().add_utterance(
             AgentUtterance({"text": agent_response})
         )
+
+        if self.record:
+            self.recorder.record(
+                user_fname,
+                user_utterance.get_text(),
+                user_dacts,
+                participant="USER",
+            )
+            self.recorder.record(
+                user_fname,
+                agent_response,
+                agent_dacts,
+                participant="AGENT",
+            )
+
         if not self.isBot:
             logger.debug(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
             logger.debug(str(self.dialogue_manager.get_context()))
-            return agent_response, options
+            return agent_response, agent_intents, options
         else:
             record_data = self.dialogue_manager.get_state().to_dict()
             context = self.dialogue_manager.get_context().movies_recommended
@@ -245,12 +271,12 @@ class Agent:
                     for key, val in options.items()
                 }
                 record_data.update({"Agent_Options": str(_options)})
-            return agent_response, options, record_data
+            return agent_response, agent_intents, options, record_data
 
     def end_dialogue(self) -> None:
         """Ends the dialogue and save the experience if required."""
-        # TODO: Save the experience
-        pass
+        if self.record:
+            self.recorder.save()
 
     def terminated_dialogue(self) -> bool:
         """Checks if the dialogue is terminated by either user or the number of

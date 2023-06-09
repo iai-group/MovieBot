@@ -1,6 +1,6 @@
 ---
 CONVERSATION_LOGS: # implementation: save conversational logs for debugging
-  save: False
+  save: True
   nlp: True
   path: reports/conversations/
 
@@ -18,7 +18,8 @@ TELEGRAM: False # execute the code on Telegram
 
 POLLING: False # True when using Telegram without server
 
-FLASK: False
+FLASK_SOCKET: False
+FLASK_REST: False
 
 BOT_TOKEN_PATH: config/bot_token.yaml
 

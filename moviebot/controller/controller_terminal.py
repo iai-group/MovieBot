@@ -1,6 +1,5 @@
 """This file contains the Controller class which controls the flow of the
-conversation while the user interacts with the agent using python console.
-"""
+conversation while the user interacts with the agent using python console."""
 
 import questionary
 from questionary.constants import INDICATOR_SELECTED
@@ -10,15 +9,18 @@ from moviebot.core.utterance.utterance import UserUtterance
 
 
 class ControllerTerminal(Controller):
-    """This is the main class that controls the other components of the
-    IAI MovieBot. The controller executes the conversational agent."""
+    """This is the main class that controls the other components of the IAI
+    MovieBot.
+
+    The controller executes the conversational agent.
+    """
 
     def execute_agent(self) -> None:
         """Runs the conversational agent and executes the dialogue."""
         agent = self.initialize_agent()
-        agent_response, user_options = agent.start_dialogue()
+        agent_response, agent_intent, user_options = agent.start_dialogue()
         while True:
-            agent_prompt = f"AGENT: {agent_response}\n"
+            agent_prompt = f"AGENT: {agent_response}\n({agent_intent})"
             if agent.terminated_dialogue():
                 questionary.print(f" {agent_prompt}", style="bold")
                 break
@@ -48,10 +50,16 @@ class ControllerTerminal(Controller):
 
             if self.restart(user_utterance):
                 agent = self.initialize_agent()
-                agent_response, user_options = agent.start_dialogue()
+                (
+                    agent_response,
+                    agent_intent,
+                    user_options,
+                ) = agent.start_dialogue()
             else:
-                agent_response, user_options = agent.continue_dialogue(
-                    user_utterance, user_options
-                )
+                (
+                    agent_response,
+                    agent_intent,
+                    user_options,
+                ) = agent.continue_dialogue(user_utterance, user_options)
 
         agent.end_dialogue()
