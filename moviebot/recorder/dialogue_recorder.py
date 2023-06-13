@@ -47,7 +47,7 @@ class DialogueRecorder:
         for dact in dialogue_acts:
             intents.append(dact.intent.name)
             for constraint in dact.params:
-                slot_values.append([constraint.slot, constraint.value])
+                slot_values.append([constraint.slot, str(constraint.value)])
 
         utterance = {
             "utterance": text,
