@@ -1,7 +1,7 @@
 """This file contains methods to format data for HTTP requests."""
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from moviebot.agent.agent import DialogueOptions
 
@@ -52,7 +52,7 @@ class Button:
     button_type: str = field(default="postback")
 
 
-def create_buttons(user_options: DialogueOptions) -> List[Dict[str, Any]]:
+def get_buttons_attachment(user_options: DialogueOptions) -> Attachment:
     """Creates a list of buttons for each agent's option.
 
     Args:
@@ -72,34 +72,31 @@ def create_buttons(user_options: DialogueOptions) -> List[Dict[str, Any]]:
                 button_type="postback",
             )
             options.append(asdict(button))
-    return options
+    return Attachment(type="buttons", payload={"buttons": options})
 
 
-def text_message(
-    user_id: str, message: str, intent: str = "UNK"
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message with a text response.
+def get_movie_message_data(info: Dict[str, Any]) -> Tuple[str, Attachment]:
+    """Creates formatted message with movie information and movie image
+    attachment.
 
     Args:
-        user_id: Id of the recipient.
-        message: Message to send.
-        intent: Intent of the message. Defaults to 'UNK'.
+        info: Movie information.
 
     Returns:
-        Object to send to Flask server.
+        Formatted message with movie information and movie image attachment.
     """
-    message = Message(text=message, intent=intent)
-    text = {
-        "recipient": {"id": user_id},
-        "message": asdict(message),
-    }
-    return text
+    text = f"{info['title']} {info['rating']} {info['duration']} min"
+    attachment = Attachment(
+        type="images", payload={"images": [info["image_url"]]}
+    )
+
+    return text, attachment
 
 
-def attachment_message(
+def message(
     user_id: str,
     message: str,
-    attachments: List[Attachment],
+    attachments: List[Attachment] = None,
     intent: str = "UNK",
 ) -> HTTP_OBJECT_MESSAGE:
     """Creates a message containing an attachment.
@@ -107,8 +104,8 @@ def attachment_message(
     Args:
         user_id: Id of the recipient.
         message: Message to send.
-        attachments: Attachments to send.
-        intent: Intent of the message.
+        attachments: Attachments to send. Defaults to None.
+        intent: Intent of the message. Defaults to "UNK".
 
     Returns:
         Object with message containing an attachment to send to Flask server.
@@ -119,46 +116,3 @@ def attachment_message(
         "message": asdict(message),
     }
     return template
-
-
-def buttons_message(
-    user_id: str, buttons: List[Dict[str, Any]], text: str, intent="UNK"
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message along with a list of buttons.
-
-    Args:
-        user_id: Id of the recipient.
-        buttons: List of buttons.
-        text: Message to send.
-        intent: Intent of the message.
-
-    Returns:
-        Object with message and buttons to send to Flask server.
-    """
-    attachment = Attachment(type="buttons", payload={"buttons": buttons})
-    return attachment_message(
-        user_id=user_id, message=text, attachments=[attachment], intent=intent
-    )
-
-
-def movie_message(
-    user_id: str, info: Dict[str, Any], intent: str
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message with movie information.
-
-    Args:
-        user_id: Id of the recipient.
-        info: Movie information.
-        intent: Intent of the message.
-
-    Returns:
-        Object with movie message to send to the server.
-    """
-    text = f"{info['title']} {info['rating']} {info['duration']} min"
-    attachment = Attachment(
-        type="images", payload={"images": [info["image_url"]]}
-    )
-
-    return attachment_message(
-        user_id=user_id, message=text, attachments=[attachment], intent=intent
-    )

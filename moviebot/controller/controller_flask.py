@@ -80,7 +80,7 @@ class ControllerFlask(Controller):
                 ]
             )
 
-        return http_formatter.text_message(
+        return http_formatter.message(
             user_id=user_id,
             message=msg,
             intent=self.agent_intent,
@@ -202,13 +202,13 @@ class ControllerFlask(Controller):
         deleted = self.delete_history(self.path, user_id)
         if deleted:
             self.users[user_id] = False
-            return http_formatter.text_message(
+            return http_formatter.message(
                 user_id=user_id,
                 message="Conversation history deleted.",
                 intent=self.agent_intent,
             )
 
-        return http_formatter.text_message(
+        return http_formatter.message(
             user_id=user_id,
             message="No conversation history.",
             intent=self.agent_intent,
@@ -227,29 +227,26 @@ class ControllerFlask(Controller):
             Object with message to send to the server.
         """
         self.continue_dialogue(user_id, payload)
+        message = self.agent_response[user_id]
+        attachments = []
+        if "**" in self.agent_response[user_id]:
+            message, attachment = http_formatter.get_movie_message_data(
+                self.info[user_id]
+            )
+            if attachment:
+                attachments.append(attachment)
         if self.user_options[user_id]:
-            if "**" in self.agent_response[user_id]:
-                return http_formatter.movie_message(
-                    user_id=user_id,
-                    info=self.info[user_id],
-                    intent=self.agent_intent,
-                )
-            else:
-                buttons = http_formatter.create_buttons(
+            attachments.append(
+                http_formatter.get_buttons_attachment(
                     self.user_options[user_id]
                 )
-                return http_formatter.buttons_message(
-                    user_id=user_id,
-                    buttons=buttons,
-                    text=self.agent_response[user_id],
-                    intent=self.agent_intent,
-                )
-        else:
-            return http_formatter.text_message(
-                user_id=user_id,
-                message=self.agent_response[user_id],
-                intent=self.agent_intent,
             )
+        return http_formatter.message(
+            user_id=user_id,
+            message=message,
+            attachments=attachments,
+            intent=self.agent_intent,
+        )
 
     def run_method(self, user_id: str, payload: str) -> Union[bool, Callable]:
         """Runs methods for specific user inputs.
@@ -278,7 +275,7 @@ class ControllerFlask(Controller):
         ] = "You are exiting. I hope you found a movie. Bye."
         self.agent[user_id].end_dialogue()
         del self.agent[user_id]
-        return http_formatter.text_message(
+        return http_formatter.message(
             user_id=user_id,
             message=self.agent_response[user_id],
             intent=self.agent_intent,
@@ -304,7 +301,7 @@ class ControllerFlask(Controller):
             'To see these instructions again, issue: "/help".'
         )
 
-        return http_formatter.text_message(
+        return http_formatter.message(
             user_id=user_id, message=response, intent="REVEAL.DISCLOSE"
         )
 
@@ -329,7 +326,7 @@ class ControllerFlask(Controller):
                 "Your conversation history will not be saved.\n\n"
                 'Type "/start" to continue.'
             )
-        return http_formatter.text_message(
+        return http_formatter.message(
             user_id=user_id, message=policy, intent="REVEAL.DISCLOSE"
         )
 
@@ -352,7 +349,7 @@ class ControllerFlask(Controller):
             'To accept the privacy policy write "/store"\n'
             'To continue without accepting write "/reject"'
         )
-        return http_formatter.text_message(
+        return http_formatter.message(
             user_id=user_id, message=policy, intent=self.agent_intent
         )
 
