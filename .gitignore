@@ -9,3 +9,6 @@ eval/data/extras/*
 
 # pytest coverage
 .coverage
+
+# conversations
+reports/conversations/*
