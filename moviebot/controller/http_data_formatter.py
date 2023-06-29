@@ -154,7 +154,9 @@ def movie_message(
     Returns:
         Object with movie message to send to the server.
     """
-    text = f"{info['title']} {info['rating']} {info['duration']} min"
+    text = (
+        f"Have you seen {info['title']} {info['rating']} {info['duration']} min"
+    )
     attachment = Attachment(
         type="images", payload={"images": [info["image_url"]]}
     )
