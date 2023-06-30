@@ -2,7 +2,21 @@ IAI MovieBot is a conversational recommender system for movies. It follows a sta
 
 ## Demo
 
-IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/IAI_MovieBot), or by clicking on the chat widget below.
+<div id=chatWidgetContainer></div>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/iaigroup-chatwidget@1.3.1/build/bundle.min.js"
+></script>
+
+<script type="text/javascript">
+  ChatWidget({
+    name: "MovieBot",
+    serverUrl: "https://gustav1.ux.uis.no",
+    socketioPath: "/moviebot",
+    useFeedback: false,
+    useLogin: false,
+  });
+</script>
 
 ## Contributions
 
@@ -30,18 +44,3 @@ The system is described in a CIKM'20 demo paper [PDF].
 ## Contributors
 
 Javeria Habib, Shuo Zhang, [Krisztian Balog](krisztianbalog.com), [Ivica Kostric](https://ikostric.github.io/), Nolwenn Bernard, and Weronika Lajewska
-
-<script
-  type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/iaigroup-chatwidget@1.1.2/build/bundle.min.js"
-></script>
-
-<script type="text/javascript">
-  ChatWidget({
-    name: "MovieBot",
-    serverUrl: "https://gustav1.ux.uis.no",
-    socketioPath: "/moviebot",
-    useFeedback: false,
-    useLogin: false,
-  });
-</script>
