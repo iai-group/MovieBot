@@ -85,7 +85,9 @@ def get_movie_message_data(info: Dict[str, Any]) -> Tuple[str, Attachment]:
     Returns:
         Formatted message with movie information and movie image attachment.
     """
-    text = f"{info['title']} {info['rating']} {info['duration']} min"
+    text = (
+        f"Have you seen {info['title']} {info['rating']} {info['duration']} min"
+    )
     attachment = Attachment(
         type="images", payload={"images": [info["image_url"]]}
     )
