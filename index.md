@@ -5,7 +5,7 @@ IAI MovieBot is a conversational recommender system for movies. It follows a sta
 <div id=chatWidgetContainer></div>
 <script
   type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/iaigroup-chatwidget@1.2.1/build/bundle.min.js"
+  src="https://cdn.jsdelivr.net/npm/iaigroup-chatwidget@latest/build/bundle.min.js"
 ></script>
 
 <script type="text/javascript">
