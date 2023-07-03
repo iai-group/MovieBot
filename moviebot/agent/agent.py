@@ -106,8 +106,10 @@ class Agent:
         self.nlg = NLG(dict(ontology=self.ontology))
         data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
 
-        self.isBot = self.config.get("TELEGRAM", False) or self.config.get(
-            "FLASK", False
+        self.isBot = (
+            self.config.get("TELEGRAM", False)
+            or self.config.get("FLASK_REST", False)
+            or self.config.get("FLASK_SOCKET", False)
         )
 
         self.dialogue_manager = DialogueManager(
