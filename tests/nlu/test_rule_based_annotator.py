@@ -1,6 +1,5 @@
 """Test rule based annotator (RBAnnotator)."""
 
-from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -73,12 +72,12 @@ def uic() -> UserIntentsChecker:
 @pytest.mark.parametrize(
     "slot, message",
     [
-        ("year", {"text": "a good movie"}),
-        ("plot", {"text": "Some movie with a plot"}),
+        ("year", "a good movie"),
+        ("plot", "Some movie with a plot"),
     ],
 )
 def test_slot_annotation_empty(
-    annotator: RBAnnotator, slot: str, message: Dict[str, str]
+    annotator: RBAnnotator, slot: str, message: str
 ) -> None:
     result = annotator.slot_annotation(slot, UserUtterance(message))
 
@@ -88,16 +87,16 @@ def test_slot_annotation_empty(
 @pytest.mark.parametrize(
     "slot, message, operator, value",
     [
-        ("year", {"text": "a new movie"}, "=", "> 2010"),
+        ("year", "a new movie", "=", "> 2010"),
         (
             "actors",
-            {"text": "a movie starring tom handley"},
+            "a movie starring tom handley",
             "=",
             "tom handley",
         ),
         (
             "genres",
-            {"text": "a movie with action."},
+            "a movie with action.",
             "=",
             "action",
         ),
@@ -106,7 +105,7 @@ def test_slot_annotation_empty(
 def test_slot_annotation(
     annotator: RBAnnotator,
     slot: str,
-    message: Dict[str, str],
+    message: str,
     operator: str,
     value: str,
 ) -> None:
@@ -118,9 +117,7 @@ def test_slot_annotation(
 
 
 def test__genres_annotator_empty(annotator: RBAnnotator) -> None:
-    result = annotator._genres_annotator(
-        "genres", UserUtterance({"text": "a movie"})
-    )
+    result = annotator._genres_annotator("genres", UserUtterance("a movie"))
 
     assert len(result) == 0
 
@@ -128,18 +125,18 @@ def test__genres_annotator_empty(annotator: RBAnnotator) -> None:
 @pytest.mark.parametrize(
     "message, operator, value",
     [
-        ({"text": "a crime movie"}, "=", "crime"),
+        ("a crime movie", "=", "crime"),
         (
-            {"text": "a movie with action and adventure"},
+            "a movie with action and adventure",
             "=",
             "action adventure",
         ),
-        ({"text": "a dramatical movie"}, "=", "dramatical"),
-        ({"text": "a crime movie, but animated"}, "=", "crime animated"),
+        ("a dramatical movie", "=", "dramatical"),
+        ("a crime movie, but animated", "=", "crime animated"),
     ],
 )
 def test__genres_annotator(
-    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+    annotator: RBAnnotator, message: str, operator: str, value: str
 ) -> None:
     result = annotator._genres_annotator("genres", UserUtterance(message))
 
@@ -150,7 +147,7 @@ def test__genres_annotator(
 
 def test__title_annotator_empty(annotator: RBAnnotator) -> None:
     result = annotator._title_annotator(
-        "title", UserUtterance({"text": "a weekend trip movie"})
+        "title", UserUtterance("a weekend trip movie")
     )
 
     assert len(result) == 0
@@ -159,13 +156,13 @@ def test__title_annotator_empty(annotator: RBAnnotator) -> None:
 @pytest.mark.parametrize(
     "message, operator, value",
     [
-        ({"text": "One of the godfather movies"}, "=", "the godfather"),
-        ({"text": "How about Othello"}, "=", "othello"),
-        ({"text": "Movie about a lion king"}, "=", "lion king"),
+        ("One of the godfather movies", "=", "the godfather"),
+        ("How about Othello", "=", "othello"),
+        ("Movie about a lion king", "=", "lion king"),
     ],
 )
 def test__title_annotator(
-    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+    annotator: RBAnnotator, message: str, operator: str, value: str
 ) -> None:
     result = annotator._title_annotator("title", UserUtterance(message))
 
@@ -176,7 +173,7 @@ def test__title_annotator(
 
 def test__keywords_annotator_empty(annotator: RBAnnotator) -> None:
     result = annotator._keywords_annotator(
-        "keywords", UserUtterance({"text": "a weekend trip movie"})
+        "keywords", UserUtterance("a weekend trip movie")
     )
 
     assert len(result) == 0
@@ -185,16 +182,16 @@ def test__keywords_annotator_empty(annotator: RBAnnotator) -> None:
 @pytest.mark.parametrize(
     "message, operator, value",
     [
-        ({"text": "Something with action figures"}, "=", "action figure"),
+        ("Something with action figures", "=", "action figure"),
         (
-            {"text": "I like movies with birthday party"},
+            "I like movies with birthday party",
             "=",
             "birthday party",
         ),
     ],
 )
 def test__keywords_annotator(
-    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+    annotator: RBAnnotator, message: str, operator: str, value: str
 ) -> None:
     result = annotator._keywords_annotator("keywords", UserUtterance(message))
 
@@ -206,7 +203,7 @@ def test__keywords_annotator(
 @pytest.mark.parametrize(
     "utterance, expected",
     [
-        (UserUtterance({"text": f"some other {name} text"}), name)
+        (UserUtterance(f"some other {name} text"), name)
         for name in SLOT_VALUES["actors"].values()
     ],
 )
@@ -223,9 +220,7 @@ def test__person_name_annotator_actors(
 def test__person_name_annotator_actor_and_director(
     annotator: RBAnnotator,
 ) -> None:
-    utterance = UserUtterance(
-        {"text": "some other text tom hank and after tom handley"}
-    )
+    utterance = UserUtterance("some other text tom hank and after tom handley")
     result = annotator._person_name_annotator(utterance)
 
     assert len(result) == 2
@@ -238,10 +233,10 @@ def test__person_name_annotator_actor_and_director(
 @pytest.mark.parametrize(
     "utterance",
     [
-        (UserUtterance({"text": ""})),
-        (UserUtterance({"text": "i would like to watch an action movie"})),
-        (UserUtterance({"text": "im interested in something like othello"})),
-        (UserUtterance({"text": "im interested in something like hi cousin"})),
+        (UserUtterance("")),
+        (UserUtterance("i would like to watch an action movie")),
+        (UserUtterance("im interested in something like othello")),
+        (UserUtterance("im interested in something like hi cousin")),
     ],
 )
 def test__person_name_annotator_empty(
@@ -254,18 +249,18 @@ def test__person_name_annotator_empty(
 @pytest.mark.parametrize(
     "message, operator, value",
     [
-        ({"text": "i would like to watch a movie from 1999"}, "=", "1999"),
-        ({"text": "i would like to watch a movie from 1999s"}, "=", "1999"),
-        ({"text": "i would like to watch a new movie"}, ">", "2010"),
-        ({"text": "i would like to watch a old movie"}, "<", "2010"),
-        ({"text": "Give me a movie from 1970s"}, "BETWEEN", "1970 AND 1980"),
-        ({"text": "Anything from the 50s?"}, "BETWEEN", "1950 AND 1960"),
-        ({"text": "A movie from 20th century"}, "BETWEEN", "1900 AND 2000"),
-        ({"text": "A movie from 21st century"}, "BETWEEN", "2000 AND 2100"),
+        ("i would like to watch a movie from 1999", "=", "1999"),
+        ("i would like to watch a movie from 1999s", "=", "1999"),
+        ("i would like to watch a new movie", ">", "2010"),
+        ("i would like to watch a old movie", "<", "2010"),
+        ("Give me a movie from 1970s", "BETWEEN", "1970 AND 1980"),
+        ("Anything from the 50s?", "BETWEEN", "1950 AND 1960"),
+        ("A movie from 20th century", "BETWEEN", "1900 AND 2000"),
+        ("A movie from 21st century", "BETWEEN", "2000 AND 2100"),
     ],
 )
 def test__year_annotator(
-    annotator: RBAnnotator, message: Dict[str, str], operator: str, value: str
+    annotator: RBAnnotator, message: str, operator: str, value: str
 ) -> None:
     utterance = UserUtterance(message)
     result = annotator._year_annotator("year", utterance)

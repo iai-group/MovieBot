@@ -186,7 +186,7 @@ class NLG:
                                 utterance.append(
                                     not_found_response.replace(
                                         "__replace__",
-                                        dialogue_state.user_utterance.get_text(),  # noqa: E501
+                                        dialogue_state.user_utterance.text,
                                     )
                                 )
                             else:

@@ -262,7 +262,7 @@ class UserIntentsChecker:
                 # return user_dacts
         if dact.intent != UserIntents.UNK:
             # print(f'All Dacts\n{dact}')
-            self._filter_dact(dact, user_utterance.get_text())
+            self._filter_dact(dact, user_utterance.text)
             # print(f'Filtered Dacts\n{dact}')
             if len(dact.params) > 0:
                 user_dacts.append(dact)
@@ -300,7 +300,7 @@ class UserIntentsChecker:
                 )
             if dact.intent != UserIntents.UNK:
                 # print(f'All Dacts\n{dact}')
-                self._filter_dact(dact, user_utterance.get_text())
+                self._filter_dact(dact, user_utterance.text)
                 # print(f'Filtered Dacts\n{dact}')
                 if len(dact.params) > 0:
                     user_dacts.append(dact)
