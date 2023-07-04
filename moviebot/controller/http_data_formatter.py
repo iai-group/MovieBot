@@ -81,6 +81,12 @@ class Button:
     button_type: str = field(default="postback")
 
 
+@dataclass
+class Response:
+    recipient: str
+    message: Message
+
+
 def get_buttons_attachment(user_options: DialogueOptions) -> Attachment:
     """Creates a list of buttons for each agent's option.
 

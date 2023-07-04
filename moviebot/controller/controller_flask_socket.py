@@ -5,14 +5,11 @@ from dataclasses import asdict
 from typing import Any, Dict, Type
 
 from dialoguekit.core import Utterance
-from dialoguekit.platforms.flask_socket_platform import (
-    FlaskSocketPlatform,
-    Response,
-)
+from dialoguekit.platforms.flask_socket_platform import FlaskSocketPlatform
 
-import moviebot.controller.http_data_formatter as http_formatter
 from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
+from moviebot.controller.http_data_formatter import Message, Response
 
 
 class ControllerFlaskSocket(Controller, FlaskSocketPlatform):
@@ -40,7 +37,7 @@ class ControllerFlaskSocket(Controller, FlaskSocketPlatform):
             user_id: User ID.
             utterance: An instance of Utterance.
         """
-        message = http_formatter.Message.from_utterance(utterance)
+        message = Message.from_utterance(utterance)
         self.socketio.send(
             asdict(Response(user_id, message)),
             room=user_id,
