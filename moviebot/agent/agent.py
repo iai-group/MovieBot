@@ -138,6 +138,7 @@ class MovieBotAgent(Agent):
         agent_response: str,
         agent_intent: Intent,
         options: DialogueOptions,
+        recommend_item: Dict[str, Any] = None,
     ):
         """Generates an utterance object based on response and options.
 
@@ -149,27 +150,33 @@ class MovieBotAgent(Agent):
         Returns:
             An annotated utterance.
         """
+        metadata = {"options": options}
+        if recommend_item:
+            metadata.update({"recommended_item": recommend_item})
+
         if not self.isBot:
             logger.debug(
                 str(
                     self._dialogue_connector.dialogue_state_tracker.dialogue_state  # noqa
                 )
             )
+
             utterance = AnnotatedUtterance(
                 intent=agent_intent,
                 text=agent_response,
                 participant=DialogueParticipant.AGENT,
                 annotations=[],
-                metadata={"options": options},
+                metadata=metadata,
             )
         else:
-            record_data = self.dialogue_manager.get_state().to_dict()
+            record_data = self._dialogue_connector.get_state().to_dict()
+            metadata.update({"record_data": record_data})
             utterance = AnnotatedUtterance(
                 intent=agent_intent,
                 text=agent_response,
                 participant=DialogueParticipant.AGENT,
                 annotations=[],
-                metadata={"options": options, "record_data": record_data},
+                metadata=metadata,
             )
 
         return utterance
@@ -248,9 +255,17 @@ class MovieBotAgent(Agent):
         agent_intents = Intent(
             ";".join([da.intent.value.label for da in agent_dacts])
         )
-        utterance = self._generate_utterance(
-            agent_response, agent_intents, options
-        )
+        if AgentIntents.RECOMMEND in [da.intent for da in agent_dacts]:
+            utterance = self._generate_utterance(
+                agent_response,
+                agent_intents,
+                options,
+                self._dialogue_connector.get_state().item_in_focus,
+            )
+        else:
+            utterance = self._generate_utterance(
+                agent_response, agent_intents, options
+            )
         self._dialogue_connector.register_agent_utterance(utterance)
 
     def end_dialogue(self) -> None:

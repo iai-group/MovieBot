@@ -1,7 +1,10 @@
 """This file contains methods to format data for HTTP requests."""
+from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Tuple
+
+from dialoguekit.core import AnnotatedUtterance, Utterance
 
 from moviebot.agent.agent import DialogueOptions
 
@@ -41,8 +44,34 @@ class Attachment:
 @dataclass
 class Message:
     text: str
-    intent: str
+    intent: str = None
     attachments: List[Attachment] = field(default_factory=list)
+
+    @classmethod
+    def from_utterance(self, utterance: Utterance) -> Message:
+        """Converts an utterance to a message.
+
+        Args:
+            utterance: An instance of Utterance.
+
+        Returns:
+            An instance of Message.
+        """
+        message = Message(utterance.text)
+        if isinstance(utterance, AnnotatedUtterance):
+            message.intent = str(utterance.intent)
+            if utterance.metadata.get("options"):
+                message.attachments.append(
+                    get_buttons_attachment(utterance.metadata.get("options"))
+                )
+            if "**" in message.text and utterance.metadata.get(
+                "recommended_item"
+            ):
+                message.text, movie_attachments = get_movie_message_data(
+                    utterance.metadata.get("recommended_item")
+                )
+                message.attachments.append(movie_attachments)
+        return message
 
 
 @dataclass
@@ -85,36 +114,9 @@ def get_movie_message_data(info: Dict[str, Any]) -> Tuple[str, Attachment]:
     Returns:
         Formatted message with movie information and movie image attachment.
     """
-    text = (
-        f"Have you seen {info['title']} {info['rating']} {info['duration']} min"
-    )
+    text = f"""Have you seen {info['title']} {info['imdb_rating']}
+     {info['duration']} min"""
     attachment = Attachment(
-        type="images", payload={"images": [info["image_url"]]}
+        type="images", payload={"images": [info["cover_image"]]}
     )
-
     return text, attachment
-
-
-def message(
-    user_id: str,
-    message: str,
-    attachments: List[Attachment] = None,
-    intent: str = "UNK",
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message containing an attachment.
-
-    Args:
-        user_id: Id of the recipient.
-        message: Message to send.
-        attachments: Attachments to send. Defaults to None.
-        intent: Intent of the message. Defaults to "UNK".
-
-    Returns:
-        Object with message containing an attachment to send to Flask server.
-    """
-    message = Message(text=message, intent=intent, attachments=attachments)
-    template = {
-        "recipient": {"id": user_id},
-        "message": asdict(message),
-    }
-    return template
