@@ -52,7 +52,11 @@ def _get_db(db_path: str) -> DataBase:
 
 
 class Agent:
-    def __init__(self, config: Dict[str, Any] = None) -> None:
+    def __init__(
+        self,
+        config: Dict[str, Any] = None,
+        shared_resources: Dict[str, Any] = None,
+    ) -> None:
         """The class Agent controls all the components of the basic architecture
         of IAI MovieBot.
 
@@ -61,6 +65,8 @@ class Agent:
 
         Args:
             config: Configuration. Defaults to None.
+            shared_resources: Resources shared resources across all agents.
+              Defaults to None.
         """
         self.config = config
         self.new_user = False

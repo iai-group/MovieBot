@@ -4,10 +4,13 @@ files for NLU."""
 import json
 import logging
 import os
-from typing import Any, Callable, Dict
+from typing import Any, Dict
+
+from tqdm import tqdm
 
 from moviebot.database.database import DataBase
 from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.text_processing import Tokenizer
 from moviebot.ontology.ontology import Ontology
 
 DEFAULT_SLOT_VALUE_PATH = "data/slot_values.json"
@@ -19,7 +22,6 @@ class DataLoader:
     def __init__(
         self,
         config: Dict[str, Any],
-        lemmatize_value: Callable[[str, bool], str],
     ) -> None:
         """DataLoader class loads the database as slot-value pairs and the
         tag-words for slots.
@@ -28,14 +30,12 @@ class DataLoader:
 
         Args:
             config: Dictionary containing configuration.
-            lemmatize_value: Function for lemmatization.
         """
         self.ontology: Ontology = config["ontology"]
         self.database: DataBase = config["database"]
         self.slot_values_path = (
             config["slot_values_path"] or DEFAULT_SLOT_VALUE_PATH
         )
-        self.lemmatize_value = lemmatize_value
 
     def load_tag_words(self, file_path: str) -> Dict[str, Any]:
         """Loads the tag words for the path provided. This can be for the slots
@@ -43,6 +43,9 @@ class DataLoader:
 
         Args:
             file_path: The path to the input json file.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
 
         Returns:
             The output dictionary extracted from the file.
@@ -72,6 +75,29 @@ class DataLoader:
             slot_values = self._generate_slot_value_pairs()
         return slot_values
 
+    def save_slot_value_pairs(self, slot_values: Dict[str, Any]) -> None:
+        """Saves slot-value pairs to a file.
+
+        Args:
+            slot_values: Dictionary of slot-value(s) pairs.
+        """
+        with open(self.slot_values_path, "w") as slot_val_file:
+            logger.info(f"Writing slot-value pairs to {self.slot_values_path}")
+            json.dump(slot_values, slot_val_file, indent=4)
+
+    def _get_all_data_from_database(self) -> Dict[str, Any]:
+        """Gets all the data from the database.
+
+        Returns:
+            Dictionary of data from the database.
+        """
+        cursor = self.database.sql_connection.cursor()
+        columns = ",".join(self.ontology.slots_annotation)
+        all_data = cursor.execute(
+            f"Select {columns} from {self.database.db_table_name};"
+        ).fetchall()
+        return all_data
+
     def _generate_slot_value_pairs(self) -> Dict[str, Any]:
         """Loads the database to fill dialogue slots with a list of possible
         slot_values.
@@ -79,14 +105,7 @@ class DataLoader:
         Returns:
             Dictionary of slot-value(s) pairs.
         """
-        cursor = self.database.sql_connection.cursor()
-        db_table_name = self.database.db_table_name
-        columns = ",".join(self.ontology.slots_annotation)
-        all_data = cursor.execute(
-            f"Select {columns} from {db_table_name};"
-        ).fetchall()
-        total_count = round(len(all_data), -2)
-        print_count = int(total_count / 4)
+        tokenizer = Tokenizer()
         slot_values = {
             slot: {} if slot != Slots.YEAR.value else []
             for slot in self.ontology.slots_annotation
@@ -100,9 +119,9 @@ class DataLoader:
                 Slots.DIRECTORS,
             ]
         }
-
+        all_data = self._get_all_data_from_database()
         logger.info("Loading the database......")
-        for count, row in enumerate(all_data):
+        for row in tqdm(all_data):
             for slot, value in zip(self.ontology.slots_annotation, row):
                 if slot in multi_slots:
                     temp_result = [x.strip() for x in value.split(",")]
@@ -110,7 +129,7 @@ class DataLoader:
                         temp_result = [x.lower() for x in temp_result]
                     slot_values[slot].update(
                         {
-                            temp_value: self.lemmatize_value(temp_value)
+                            temp_value: tokenizer.lemmatize_text(temp_value)
                             for temp_value in temp_result
                             if temp_value not in slot_values[slot]
                         }
@@ -120,14 +139,8 @@ class DataLoader:
                         slot_values[slot].append(value)
                     else:
                         slot_values[slot].update(
-                            {value: self.lemmatize_value(value)}
+                            {value: tokenizer.lemmatize_text(value)}
                         )
-            if (count + 1) % print_count == 0:
-                logger.info(
-                    f"{int(100 * (count+1) / total_count)}% data is loaded."
-                )
 
-        with open(self.slot_values_path, "w") as slot_val_file:
-            logger.info(f"Writing loaded database to {self.slot_values_path}")
-            json.dump(slot_values, slot_val_file, indent=4)
+        self.save_slot_value_pairs(slot_values)
         return slot_values
