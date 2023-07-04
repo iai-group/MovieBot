@@ -1,24 +1,24 @@
 """Types of conversational agents are available here."""
 import logging
 import os
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union
 
-from dialoguekit.core import Utterance
-from dialoguekit.participant import DialogueParticipant
+from dialoguekit.core import AnnotatedUtterance, Intent
+from dialoguekit.participant import Agent, DialogueParticipant
 
+from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recommender.recommender_model import RecommenderModel
 from moviebot.recommender.slot_based_recommender_model import (
     SlotBasedRecommenderModel,
 )
-from moviebot.recorder.dialogue_recorder import DialogueRecorder
-from moviebot.recorder.recorder_bot import RecorderBot
 
 logger = logging.getLogger(__name__)
 DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
@@ -54,9 +54,9 @@ def _get_db(db_path: str) -> DataBase:
         raise FileNotFoundError(f"Database file {db_path} not found.")
 
 
-class Agent:
+class MovieBotAgent(Agent):
     def __init__(self, config: Dict[str, Any] = None) -> None:
-        """The class Agent controls all the components of the basic architecture
+        """MovieBotAgent controls all the components of the basic architecture
         of IAI MovieBot.
 
         Initially the Conversational Agent is able to interact with human
@@ -65,18 +65,15 @@ class Agent:
         Args:
             config: Configuration. Defaults to None.
         """
+        super().__init__(
+            id="IAIMovieBot",
+            agent_type=DialogueParticipant.AGENT,
+            stop_intent=AgentIntents.BYE.value,
+        )
+
         self.config = config
         self.new_user = False
 
-        self.record = self.config.get("CONVERSATION_LOGS", {}).get("save")
-        self.recorder = (
-            DialogueRecorder(
-                self.config["CONVERSATION_LOGS"]["path"],
-                self.config["CONVERSATION_LOGS"]["nlp"],
-            )
-            if self.record
-            else None
-        )
         ontology_path = self.config.get("DATA", {}).get("ontology_path")
         self.ontology = _get_ontology(ontology_path) if ontology_path else None
         db_path = self.config.get("DATA", {}).get("db_path")
@@ -98,33 +95,24 @@ class Agent:
             self.config.get("RECOMMENDER", "slot_based")
         )
 
-        data_config = dict(
+        self.data_config = dict(
             ontology=self.ontology,
             database=self.database,
             recommender=_recommender,
             slot_values_path=self.slot_values_path,
             tag_words_slots_path=nlu_tag_words_slots_path,
         )
-        self.nlu = NLU(data_config)
+        self.nlu = NLU(self.data_config)
         self.nlg = NLG(dict(ontology=self.ontology))
-        data_config["slots"] = list(self.nlu.intents_checker.slot_values.keys())
+        self.data_config["slots"] = list(
+            self.nlu.intents_checker.slot_values.keys()
+        )
 
         self.isBot = (
             self.config.get("TELEGRAM", False)
             or self.config.get("FLASK_REST", False)
             or self.config.get("FLASK_SOCKET", False)
         )
-
-        self.dialogue_manager = DialogueManager(
-            data_config, self.isBot, self.new_user
-        )
-
-        if self.isBot and self.config.get("BOT_HISTORY", {}).get("save"):
-            path = self.config.get("BOT_HISTORY", {}).get("path")
-            if path:
-                self.bot_recorder = RecorderBot(path)
-            else:
-                raise ValueError("Path to save conversation is not provided.")
 
     def _get_recommender(self, recommender_type: str) -> RecommenderModel:
         """Creates a recommender model of given type.
@@ -145,112 +133,125 @@ class Agent:
 
         raise ValueError(f"{recommender_type} is not supported.")
 
-    def start_dialogue(
-        self, user_fname: str = None, restart: bool = False
-    ) -> Union[
-        Tuple[str, DialogueOptions],
-        Tuple[str, DialogueOptions, Dict[str, Any]],
-    ]:
-        """Starts the conversation.
+    def _generate_utterance(
+        self,
+        agent_response: str,
+        agent_intent: Intent,
+        options: DialogueOptions,
+    ):
+        """Generates an utterance object based on response and options.
+
+        Args:
+            agent_response: Agent response.
+            agent_intent: Intent of the agent.
+            options: Options for the user.
+
+        Returns:
+            An annotated utterance.
+        """
+        if not self.isBot:
+            logger.debug(
+                str(
+                    self._dialogue_connector.dialogue_state_tracker.dialogue_state  # noqa
+                )
+            )
+            utterance = AnnotatedUtterance(
+                intent=agent_intent,
+                text=agent_response,
+                participant=DialogueParticipant.AGENT,
+                annotations=[],
+                metadata={"options": options},
+            )
+        else:
+            record_data = self.dialogue_manager.get_state().to_dict()
+            utterance = AnnotatedUtterance(
+                intent=agent_intent,
+                text=agent_response,
+                participant=DialogueParticipant.AGENT,
+                annotations=[],
+                metadata={"options": options, "record_data": record_data},
+            )
+
+        return utterance
+
+    def welcome(self, user_fname: str = None) -> None:
+        """Sends a welcome message to the user.
 
         Args:
             user_fname: User's first name. Defaults to None.
-            restart: Whether to restart the conversation or not. Defaults to
-              False.
-
-        Returns:
-            Agent response, dialogue options for quick reply, and data to be
-              recorded if self.isBot is true.
         """
-        if not restart:
-            agent_dacts = self.dialogue_manager.start_dialogue(self.new_user)
-        else:
-            agent_dacts = self.dialogue_manager.generate_output(restart)
+        agent_dacts = [
+            DialogueAct(
+                AgentIntents.WELCOME,
+                [
+                    ItemConstraint("new_user", Operator.EQ, self.new_user),
+                    ItemConstraint("is_bot", Operator.EQ, self.isBot),
+                ],
+            )
+        ]
+        self._dialogue_connector.dialogue_state_tracker.update_state_agent(
+            agent_dacts
+        )
         agent_response, options = self.nlg.generate_output(
             agent_dacts, user_fname=user_fname
         )
-        self.dialogue_manager.get_context().add_utterance(
-            Utterance(agent_response, DialogueParticipant.AGENT)
-        )
-        if not self.isBot:
-            logger.debug(
-                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
-            )
-            logger.debug(str(self.dialogue_manager.get_context()))
-            return agent_response, options
-        else:
-            record_data = self.dialogue_manager.get_state().to_dict()
-            context = self.dialogue_manager.get_context().movies_recommended
-            record_data.update(
-                {"Agent_Output": agent_response, "Context": context}
-            )
-            return agent_response, options, record_data
 
-    def continue_dialogue(
+        utterance = self._generate_utterance(
+            agent_response, AgentIntents.WELCOME.value, options
+        )
+
+        self._dialogue_connector.register_agent_utterance(utterance)
+
+    def goodbye(self) -> None:
+        """Sends a goodbye message to the user."""
+        agent_dacts = [DialogueAct(AgentIntents.BYE, [])]
+        self._dialogue_connector.dialogue_state_tracker.update_state_agent(
+            agent_dacts
+        )
+        agent_response, options = self.nlg.generate_output(agent_dacts)
+        utterance = self._generate_utterance(
+            agent_response, AgentIntents.BYE.value, options
+        )
+        self._dialogue_connector.register_agent_utterance(utterance)
+
+    def receive_utterance(
         self,
         user_utterance: UserUtterance,
-        user_options: DialogueOptions,
-        user_fname: str = None,
-    ) -> Union[
-        Tuple[str, DialogueOptions],
-        Tuple[str, DialogueOptions, Dict[str, Any]],
-    ]:
-        """Performs the next dialogue according to user response and current
-        state of dialogue.
+        user_options: DialogueOptions = {},
+    ) -> None:
+        """Receives an utterance from the user and sends a response.
 
         Args:
-            user_utterance: The input received from the user.
-            user_options: Dialogue options that were provided to the user in
+            utterance: User utterance.
+            Dialogue options that were provided to the user in
               previous turn.
-            user_fname: User's first name. Defaults to None.
-
-        Returns:
-            Agent response, dialogue options for quick reply, and data to be
-              recorded if self.isBot is true.
         """
-        self.dialogue_manager.get_state().user_utterance = user_utterance
-        self.dialogue_manager.get_context().add_utterance(user_utterance)
+        self._dialogue_connector.get_state().user_utterance = user_utterance
+
         user_dacts = self.nlu.generate_dact(
             user_utterance,
             user_options,
-            self.dialogue_manager.get_state(),
-            self.dialogue_manager.get_context(),
+            self._dialogue_connector.get_state(),
         )
-        self.dialogue_manager.receive_input(user_dacts)
-        agent_dacts = self.dialogue_manager.generate_output()
+        self._dialogue_connector.receive_input(user_dacts)
+
+        agent_dacts = self._dialogue_connector.generate_output()
         dialogue_state = (
-            self.dialogue_manager.dialogue_state_tracker.dialogue_state
+            self._dialogue_connector.dialogue_state_tracker.dialogue_state
         )
         agent_response, options = self.nlg.generate_output(
-            agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname
+            agent_dacts,
+            dialogue_state=dialogue_state,
+            user_fname=self._dialogue_connector._user.id,
         )
-        self.dialogue_manager.get_context().add_utterance(
-            Utterance(agent_response, DialogueParticipant.AGENT)
-        )
-        if not self.isBot:
-            logger.debug(
-                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
-            )
-            logger.debug(str(self.dialogue_manager.get_context()))
-            return agent_response, options
-        else:
-            record_data = self.dialogue_manager.get_state().to_dict()
-            context = self.dialogue_manager.get_context().movies_recommended
-            record_data.update(
-                {
-                    "Agent_Output": agent_response,
-                    "User_Input": user_utterance.text,
-                    "Context": context,
-                }
-            )
 
-            if options:
-                _options = {
-                    str(key): val[0] if isinstance(val, list) else val
-                    for key, val in options.items()
-                }
-                record_data.update({"Agent_Options": str(_options)})
-            return agent_response, options, record_data
+        agent_intents = Intent(
+            ";".join([da.intent.value.label for da in agent_dacts])
+        )
+        utterance = self._generate_utterance(
+            agent_response, agent_intents, options
+        )
+        self._dialogue_connector.register_agent_utterance(utterance)
 
     def end_dialogue(self) -> None:
         """Ends the dialogue and save the experience if required."""
@@ -264,4 +265,4 @@ class Agent:
         Returns:
             True if conversation is finished.
         """
-        return self.dialogue_manager.get_state().at_terminal_state
+        return self._dialogue_connector.get_state().at_terminal_state

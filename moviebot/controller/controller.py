@@ -5,44 +5,67 @@ import json
 import logging
 import os
 import sqlite3
-from abc import ABC, abstractmethod
-from typing import Any, Dict
+from abc import ABC
+from collections import defaultdict
+from typing import TYPE_CHECKING, Any, DefaultDict, Dict, Type
 
-from moviebot.agent.agent import Agent
+from dialoguekit.participant import User
+from dialoguekit.platforms import Platform as DialogueKitPlatform
+
 from moviebot.core.utterance.utterance import UserUtterance
+from moviebot.dialogue_manager.dialogue_manager import DialogueManager
+
+if TYPE_CHECKING:
+    from moviebot.agent.agent import MovieBotAgent
+
 
 RESTART = "/restart"
 
 logger = logging.getLogger(__name__)
 
 
-class Controller(ABC):
-    def __init__(self, configuration: Dict[str, Any]):
-        """This is the main class that controls the other components of the
-        IAI MovieBot. The controller executes the conversational agent.
+class Controller(DialogueKitPlatform, ABC):
+    def __init__(
+        self,
+        agent_class: Type["MovieBotAgent"],
+        config: Dict[str, Any] = {},
+    ) -> None:
+        """Represents a platform.
 
         Args:
-            configuration: the settings for the agent
+            agent_class: The class of the agent.
+            config: Configuration to use. Defaults to empty dict.
         """
-        self.configuration = configuration
+        super().__init__(agent_class)
 
-    @abstractmethod
-    def execute_agent(self):
-        """Runs the conversational agent and executes the dialogue by calling
-        the basic components of IAI MovieBot.
+        self._config = config
+        self._active_users: DefaultDict[str, User] = defaultdict(User)
 
-        Raises:
-            NotImplementedError: If the method is not implemented.
+    def get_new_agent(self) -> "MovieBotAgent":
+        """Returns a new instance of the agent.
+
+        Returns:
+            Agent.
         """
-        raise NotImplementedError
+        return self._agent_class(**self._config)
 
-    def initialize_agent(self) -> Agent:
-        """Initializes and returns an agent based on configuration."""
-        agent = Agent(self.configuration)
-        logger.debug(
-            "The components for the conversation are initialized successfully."
+    def connect(self, user_id: str) -> None:
+        """Connects a user to an agent.
+
+        Args:
+            user_id: User ID.
+        """
+        self._active_users[user_id] = User(user_id)
+        agent = self.get_new_agent()
+        dialogue_connector = DialogueManager(
+            config=agent.data_config,
+            isBot=agent.isBot,
+            new_user=agent.new_user,
+            agent=agent,
+            user=self._active_users[user_id],
+            platform=self,
         )
-        return agent
+        dialogue_connector.start()
 
     def restart(self, utterance: UserUtterance) -> bool:
         """Returns true if user intent is to restart conversation.
@@ -54,7 +77,8 @@ class Controller(ABC):
 
     def get_cursor(self) -> sqlite3.Cursor:
         """Returns SQL cursor."""
-        conn = sqlite3.connect(self.configuration["DATA"]["db_path"])
+        db_path = self._config["config"]["DATA"]["db_path"]
+        conn = sqlite3.connect(db_path)
         c = conn.cursor()
         return c
 

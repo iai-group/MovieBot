@@ -20,7 +20,7 @@ from telegram.ext import (
     Updater,
 )
 
-from moviebot.agent.agent import Agent
+from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
 from moviebot.core.utterance.utterance import UserUtterance
 
@@ -36,7 +36,7 @@ CONTINUE = range(1)
 class ControllerTelegram(Controller):
     def __init__(self) -> None:
         """Controls the flow of the conversation on Telegram."""
-        self.agent: Dict[str, Agent] = {}
+        self.agent: Dict[str, MovieBotAgent] = {}
         self.configuration = None
         self.user_options = {}
         self.response = {}
@@ -96,7 +96,7 @@ class ControllerTelegram(Controller):
             self.configuration["new_user"].update(
                 {user_id: self.new_user(user_id)}
             )
-        self.agent[user_id] = Agent(self.configuration)
+        self.agent[user_id] = MovieBotAgent(self.configuration)
         self.user_options[user_id] = {}
         print(
             f"Conversation is starting for user id = {user_id} and user name ="
@@ -165,7 +165,7 @@ class ControllerTelegram(Controller):
             self.configuration["new_user"].update(
                 {user_id: self.new_user(user_id)}
             )
-        self.agent[user_id] = Agent(self.configuration)
+        self.agent[user_id] = MovieBotAgent(self.configuration)
         self.user_options[user_id] = {}
         print(
             f"Conversation is starting for user id = {user_id} and user name ="
@@ -216,7 +216,7 @@ class ControllerTelegram(Controller):
                 {user_id: self.new_user(user_id)}
             )
         if user_id not in self.agent:
-            self.agent[user_id] = Agent(self.configuration)
+            self.agent[user_id] = MovieBotAgent(self.configuration)
             self.user_options[user_id] = {}
             self.agent[user_id].dialogue_manager.get_state().initialize()
             self.agent[user_id].dialogue_manager.get_context().initialize()

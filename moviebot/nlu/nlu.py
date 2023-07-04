@@ -12,7 +12,6 @@ from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
@@ -45,7 +44,6 @@ class NLU:
         user_utterance: UserUtterance,
         options: DialogueOptions,
         dialogue_state: DialogueState = None,
-        dialogue_context: DialogueContext = None,
     ):
         """Processes the utterance according to dialogue state and context and
         generate a user dialogue act for Agent to understand.
@@ -55,8 +53,6 @@ class NLU:
             options: A list of options provided to the user to choose from.
             dialogue_state: The current dialogue state, if available. Defaults
               to None.
-            dialogue_context: The current dialogue context, if available.
-              Defaults to None.
 
         Returns:
             A list of dialogue acts.

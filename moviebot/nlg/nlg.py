@@ -607,7 +607,7 @@ class NLG:
                 )
             ],
         }
-        options.update({"/restart": ["/restart"]})
+        options.update({DialogueAct(UserIntents.RESTART, []): ["/restart"]})
         return options
 
     def _user_options_remove_preference(  # noqa: C901

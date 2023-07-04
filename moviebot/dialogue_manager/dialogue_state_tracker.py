@@ -7,7 +7,6 @@ from typing import Any, Dict, List
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
@@ -30,12 +29,10 @@ class DialogueStateTracker:
         self.dialogue_state = DialogueState(
             self.ontology, self.slots, self.isBot
         )
-        self.dialogue_context = DialogueContext()
 
     def initialize(self) -> None:
         """Initializes the dialogue state tracker."""
         self.dialogue_state.initialize()
-        self.dialogue_context.initialize()
 
     def update_state_user(  # noqa: C901
         self, user_dacts: List[DialogueAct]
@@ -73,8 +70,8 @@ class DialogueStateTracker:
             # user liked the movie
             if user_dact.intent == UserIntents.ACCEPT:
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                if name in self.dialogue_context.movies_recommended:
-                    self.dialogue_context.movies_recommended[name].append(
+                if name in self.dialogue_state.movies_recommended:
+                    self.dialogue_state.movies_recommended[name].append(
                         "accept"
                     )
 
@@ -83,12 +80,12 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_made_offer = False
                 self.dialogue_state.agent_should_make_offer = True
                 name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                if name in self.dialogue_context.movies_recommended:
-                    self.dialogue_context.movies_recommended[name].append(
+                if name in self.dialogue_state.movies_recommended:
+                    self.dialogue_state.movies_recommended[name].append(
                         user_dact.params[0].value
                     )
                 else:
-                    self.dialogue_context.movies_recommended[name] = [
+                    self.dialogue_state.movies_recommended[name] = [
                         user_dact.params[0].value
                     ]
                 if self.dialogue_state.agent_should_offer_similar:
@@ -202,18 +199,16 @@ class DialogueStateTracker:
                 # See details: https://github.com/iai-group/MovieBot/issues/123
                 if self.dialogue_state.item_in_focus:
                     name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                    if name in self.dialogue_context.movies_recommended:
+                    if name in self.dialogue_state.movies_recommended:
                         if (
                             "inquire"
-                            not in self.dialogue_context.movies_recommended[
-                                name
-                            ]
+                            not in self.dialogue_state.movies_recommended[name]
                         ):
-                            self.dialogue_context.movies_recommended[
-                                name
-                            ].append("inquire")
+                            self.dialogue_state.movies_recommended[name].append(
+                                "inquire"
+                            )
                     else:
-                        self.dialogue_context.movies_recommended[name] = [
+                        self.dialogue_state.movies_recommended[name] = [
                             "inquire"
                         ]
                 for param in user_dact.params:
@@ -293,7 +288,7 @@ class DialogueStateTracker:
             self.dialogue_state.prev_agent_dacts.append(agent_dacts)
         for agent_dact in agent_dacts:
             if agent_dact.intent == AgentIntents.RECOMMEND:
-                self.dialogue_context.movies_recommended[
+                self.dialogue_state.movies_recommended[
                     agent_dact.params[0].value
                 ] = []
                 self.dialogue_state.agent_made_partial_offer = False
@@ -341,7 +336,7 @@ class DialogueStateTracker:
             for result in database_result:
                 if (
                     result[Slots.TITLE.value]
-                    not in self.dialogue_context.movies_recommended.keys()
+                    not in self.dialogue_state.movies_recommended.keys()
                 ):
                     item_found = True
                     self.dialogue_state.item_in_focus = deepcopy(result)
@@ -358,7 +353,7 @@ class DialogueStateTracker:
             for result in backup_results:
                 if (
                     result[Slots.TITLE.value]
-                    not in self.dialogue_context.movies_recommended.keys()
+                    not in self.dialogue_state.movies_recommended.keys()
                 ):
                     item_found = True
                     self.dialogue_state.item_in_focus = deepcopy(result)
@@ -384,11 +379,3 @@ class DialogueStateTracker:
             The current dialogue state.
         """
         return self.dialogue_state
-
-    def get_context(self) -> DialogueContext:
-        """Returns the history for a specific user.
-
-        Returns:
-            The current user context.
-        """
-        return self.dialogue_context
