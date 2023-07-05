@@ -34,6 +34,7 @@ class ControllerFlaskRest(Controller):
             self.receive_message,
             methods=["GET", "POST"],
         )
+        self._last_agent_responses = dict()
 
     def start(self, host: str = "127.0.0.1", port: str = "5001") -> None:
         """Starts the platform.
@@ -58,25 +59,22 @@ class ControllerFlaskRest(Controller):
                 self.connect(sender_id)
             self.message(sender_id, output.get("message", {}).get("text", ""))
 
-            # Retrieve agent response in dialogue history
-            agent_response = self._active_users[
-                sender_id
-            ]._dialogue_connector.dialogue_history.utterances[-1]
-            agent_response = Message.from_utterance(agent_response)
-            return asdict(Response(sender_id, agent_response))
+            agent_response = self._last_agent_responses[sender_id]
+            del self._last_agent_responses[sender_id]
+            return agent_response
 
     def display_agent_utterance(
         self, user_id: str, utterance: Utterance
     ) -> None:
-        """Overrides the method in Platform to avoid raising an error.
-
-        This method is not used in ControllerFlaskRest
+        """Stores the agent's reply to the given user.
 
         Args:
             user_id: User ID.
             utterance: An instance of Utterance.
         """
-        pass
+        self._last_agent_responses[user_id] = asdict(
+            Response(user_id, Message.from_utterance(utterance))
+        )
 
     def display_user_utterance(
         self, user_id: str, utterance: Utterance
