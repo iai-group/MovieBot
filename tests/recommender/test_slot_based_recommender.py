@@ -20,7 +20,7 @@ def mock_dialogue_state() -> DialogueState:
             return str(["agent_should_make_offer"])
 
     dialogue_state = MockDialogueState(
-        MovieDomain("tests/domain/test_domain.py"), [], isBot=False
+        MovieDomain("tests/data/test_domain.yaml"), [], isBot=False
     )
     dialogue_state.initialize()
     return dialogue_state
@@ -32,7 +32,7 @@ def slot_base_recommender(
     mock___initialize_sql: mock.MagicMock,
 ) -> SlotBasedRecommenderModel:
     return SlotBasedRecommenderModel(
-        DataBase(None), MovieDomain("tests/domain/test_domain.py")
+        DataBase(None), MovieDomain("tests/data/test_domain.yaml")
     )
 
 

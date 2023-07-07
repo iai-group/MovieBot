@@ -24,10 +24,11 @@ def config() -> Dict[str, Any]:
         "SlotBasedRecommenderModel"
     ) as MockRecommender:
         yield {
-            "domain": MovieDomain("tests/domain/test_domain.py"),
+            "domain": MovieDomain("tests/data/test_domain.yaml"),
             "database": MockDatabase("tests/database/database.json"),
             "recommender": MockRecommender(
-                MockDatabase("tests/database/database.json"), MovieDomain()
+                MockDatabase("tests/database/database.json"),
+                MovieDomain("tests/data/test_domain.yaml"),
             ),
         }
 
