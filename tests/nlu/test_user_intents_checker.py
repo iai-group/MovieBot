@@ -6,6 +6,7 @@ import pytest
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.semantic_annotation import (
@@ -16,7 +17,6 @@ from moviebot.nlu.annotation.semantic_annotation import (
 from moviebot.nlu.text_processing import Span
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
 from tests.mocks.mock_data_loader import MockDataLoader
-from tests.mocks.mock_ontology import MockOntology
 
 
 @pytest.fixture()
@@ -24,7 +24,7 @@ from tests.mocks.mock_ontology import MockOntology
 def uic1() -> UserIntentsChecker:
     """Returns a user intent checker fixture."""
     config = {
-        "ontology": "",
+        "domain": "",
         "database": "",
         "slot_values_path": "",
         "tag_words_slots_path": "",
@@ -34,12 +34,11 @@ def uic1() -> UserIntentsChecker:
 
 
 @pytest.fixture()
-@patch("moviebot.ontology.ontology.Ontology", new=MockOntology)
 @patch("moviebot.nlu.user_intents_checker.DataLoader", new=MockDataLoader)
 def uic2() -> UserIntentsChecker:
-    """Returns a user intent checker fixture with an ontology."""
+    """Returns a user intent checker fixture with a domain."""
     config = {
-        "ontology": MockOntology(),
+        "domain": MovieDomain("tests/data/test_domain.yaml"),
         "database": "",
         "slot_values_path": "",
         "tag_words_slots_path": "",

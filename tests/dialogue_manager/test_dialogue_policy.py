@@ -8,9 +8,9 @@ from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
 from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
-from moviebot.ontology.ontology import Ontology
 
 
 @pytest.fixture
@@ -28,13 +28,13 @@ def database_results():
 
 
 @pytest.fixture
-def ontology() -> Ontology:
-    yield Ontology(path="tests/ontology/ontology.json")
+def domain() -> MovieDomain:
+    yield MovieDomain("tests/data/test_domain.yaml")
 
 
 @pytest.fixture
-def state(ontology, database_results, slots) -> DialogueState:
-    dialogue_state = DialogueState(ontology, slots=slots, isBot=False)
+def state(domain, database_results, slots) -> DialogueState:
+    dialogue_state = DialogueState(domain, slots=slots, isBot=False)
     dialogue_state.initialize()
     dialogue_state.agent_requestable = slots
     dialogue_state.database_result = database_results

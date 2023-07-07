@@ -10,11 +10,11 @@ from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlg.nlg import NLG
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.nlu import NLU
-from moviebot.ontology.ontology import Ontology
 from moviebot.recommender.recommender_model import RecommenderModel
 from moviebot.recommender.slot_based_recommender_model import (
     SlotBasedRecommenderModel,
@@ -22,21 +22,6 @@ from moviebot.recommender.slot_based_recommender_model import (
 
 logger = logging.getLogger(__name__)
 DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
-
-
-def _get_ontology(ontology_path: str) -> Ontology:
-    """Checks if the ontology exists and get the file.
-
-    Args:
-        ontology_path: The path to the file.
-
-    Returns:
-        The ontology class instance.
-    """
-    if os.path.isfile(ontology_path):
-        return Ontology(ontology_path)
-    else:
-        raise FileNotFoundError(f"Ontology file {ontology_path} not found.")
 
 
 def _get_db(db_path: str) -> DataBase:
@@ -74,8 +59,8 @@ class MovieBotAgent(Agent):
         self.config = config
         self.new_user = False
 
-        ontology_path = self.config.get("DATA", {}).get("ontology_path")
-        self.ontology = _get_ontology(ontology_path) if ontology_path else None
+        domain_path = self.config.get("DATA", {}).get("domain_path")
+        self.domain = MovieDomain(domain_path) if domain_path else None
         db_path = self.config.get("DATA", {}).get("db_path")
         self.database = _get_db(db_path) if db_path else None
         self.slot_values_path = self.config.get("DATA", {}).get(
@@ -96,14 +81,14 @@ class MovieBotAgent(Agent):
         )
 
         self.data_config = dict(
-            ontology=self.ontology,
+            domain=self.domain,
             database=self.database,
             recommender=_recommender,
             slot_values_path=self.slot_values_path,
             tag_words_slots_path=nlu_tag_words_slots_path,
         )
         self.nlu = NLU(self.data_config)
-        self.nlg = NLG(dict(ontology=self.ontology))
+        self.nlg = NLG(dict(domain=self.domain))
         self.data_config["slots"] = list(
             self.nlu.intents_checker.slot_values.keys()
         )
@@ -129,7 +114,7 @@ class MovieBotAgent(Agent):
             ValueError: If the recommender type is not supported.
         """
         if recommender_type == "slot_based":
-            return SlotBasedRecommenderModel(self.database, self.ontology)
+            return SlotBasedRecommenderModel(self.database, self.domain)
 
         raise ValueError(f"{recommender_type} is not supported.")
 

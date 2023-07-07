@@ -13,9 +13,9 @@ from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
-from moviebot.ontology.ontology import Ontology
 
 DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
 
@@ -28,14 +28,14 @@ class NLU:
         Implementation of this NLU is designed to work for Slot-Filling
         applications. The purpose of this class is to provide a quick way of
         running Conversational Agents, sanity checks, and to aid debugging.
-        Loads the ontology and database, and preprocess the database so that
-        we avoid some computations at runtime. Also create patterns to
+        Loads the domain knowledge and database, and preprocess the database so
+        that we avoid some computations at runtime. Also create patterns to
         understand natural language.
 
         Args:
-            config: Paths to ontology, database and tag words for slots in NLU.
+            config: Paths to domain, database and tag words for slots in NLU.
         """
-        self.ontology: Ontology = config["ontology"]
+        self.domain: MovieDomain = config["domain"]
         self.database: DataBase = config["database"]
         self.intents_checker = UserIntentsChecker(config)
 

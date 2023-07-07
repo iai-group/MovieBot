@@ -1,0 +1,15 @@
+name: Movies
+
+slot_names:
+    genres: ["system_requestable", "user_requestable", "slots_annotation", "multiple_values"]
+    keywords: ["system_requestable", "slots_annotation"]
+    imdb_rating: ["user_requestable", "slots_not_required_NLU"]
+    duration: ["user_requestable", "slots_not_required_NLU"]
+    actors: ["user_requestable", "slots_annotation"]
+    directors: ["user_requestable", "slots_annotation"]
+    plot: ["user_requestable", "slots_not_required_NLU"]
+    year: ["user_requestable", "slots_annotation"]
+    imdb_votes: ["slots_not_required_NLU"]
+    cover: ["slots_not_required_NLU"]
+    imdb_link: ["slots_not_required_NLU"]
+    title: ["user_requestable", "slots_annotation"]
