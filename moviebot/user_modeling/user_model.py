@@ -92,7 +92,8 @@ class UserModel:
         """
         sql_cursor = database.sql_connection.cursor()
         tag_set = sql_cursor.execute(
-            f"SELECT ID FROM {database._get_table_name()} WHERE {slot} LIKE '%{tag}%'"
+            f"SELECT ID FROM {database._get_table_name()} WHERE {slot} LIKE "
+            f"'%{tag}%'"
         ).fetchall()
 
         preference = 0.0
