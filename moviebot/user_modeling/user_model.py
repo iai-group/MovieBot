@@ -1,6 +1,8 @@
 """Class for user modeling."""
 
 
+import json
+import os
 from collections import defaultdict
 from typing import Dict, List
 
@@ -8,17 +10,26 @@ from moviebot.database.database import DataBase
 
 
 class UserModel:
-    def __init__(self, user_id: str, movie_choices: Dict[str, str] = None):
+    def __init__(self, user_id: str, historical_movie_choices_path: str = None):
         """Initializes the user model.
+
+        The JSON file with historical movie choices is a dictionary with the
+        movie id as key and the list of choices as value.
 
         Args:
             user_id: User id.
-            movie_choices: Dictionary with movie choices (i.e., accept, reject).
-              Defaults to None.
+            historical_movie_choices_path: Path to the JSON file with historical
+              movie choices. Defaults to None.
         """
         self.user_id = user_id
         self._movies_choices = defaultdict(str)
-        self._movies_choices.update(movie_choices or {})
+
+        if historical_movie_choices_path and os.path.exists(
+            historical_movie_choices_path
+        ):
+            # Load historical movie choices
+            movie_choices = json.load(historical_movie_choices_path)
+            self._movies_choices.update(movie_choices)
 
     @property
     def movie_choices(self) -> Dict[str, str]:
