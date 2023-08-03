@@ -3,10 +3,7 @@ import logging
 import os
 from typing import Any, Dict, List, Tuple, Union
 
-from dialoguekit.core import Utterance
-from dialoguekit.participant import DialogueParticipant
-
-from moviebot.core.utterance.utterance import UserUtterance
+from moviebot.core.utterance.utterance import AgentUtterance, UserUtterance
 from moviebot.database.database import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
@@ -170,7 +167,7 @@ class Agent:
             agent_dacts, user_fname=user_fname
         )
         self.dialogue_manager.get_context().add_utterance(
-            Utterance(agent_response, DialogueParticipant.AGENT)
+            AgentUtterance(agent_response)
         )
         if not self.isBot:
             logger.debug(
@@ -225,7 +222,7 @@ class Agent:
             agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname
         )
         self.dialogue_manager.get_context().add_utterance(
-            Utterance(agent_response, DialogueParticipant.AGENT)
+            AgentUtterance(agent_response)
         )
         if not self.isBot:
             logger.debug(
