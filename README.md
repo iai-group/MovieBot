@@ -12,7 +12,6 @@ IAI MovieBot is a conversational recommender system for movies.  It follows a st
 
 IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/IAI_MovieBot).
 
-
 ## Installation and documentation
 
 The installation instructions and documentation can be found on [Read the Docs](https://iai-moviebot.readthedocs.io/).
@@ -29,10 +28,9 @@ python -m moviebot.run -c config/moviebot_config_no_integration.yaml
 
 Contributions are welcome. Changes to IAI MovieBot should conform to the [IAI Python Style Guide](https://github.com/iai-group/guidelines/tree/main/python).
 
-
 ## Publication
 
-The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/2009.03668.pdf)]. 
+The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/2009.03668.pdf)].
 
 ```
 @inproceedings{Habib:2020:IMC,
@@ -53,10 +51,9 @@ The system is described in a CIKM'20 demo paper [[PDF](https://arxiv.org/pdf/200
 
 IAI MovieBot is developed and maintained by the [IAI group](https://iai.group/) at the University of Stavanger.
 
-(Alphabetically ordered by last name) 
+(Alphabetically ordered by last name)
 
-
-  * Javeria Habib (2020) 
+  * Javeria Habib (2020)
   * Krisztian Balog (2020-present)
   * Nolwenn Bernard (2022-present)
   * Ivica Kostric (2021-present)
