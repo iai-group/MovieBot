@@ -51,20 +51,20 @@ def uic2() -> UserIntentsChecker:
 @pytest.mark.parametrize(
     "utterance, intent",
     [
-        (UserUtterance({"text": "hello"}), UserIntents.HI),
+        (UserUtterance("hello"), UserIntents.HI),
         (
-            UserUtterance({"text": "hi do you know of any interesting movies"}),
+            UserUtterance("hi do you know of any interesting movies"),
             UserIntents.HI,
         ),
-        (UserUtterance({"text": "hey hey"}), UserIntents.HI),
-        (UserUtterance({"text": "exit"}), UserIntents.BYE),
+        (UserUtterance("hey hey"), UserIntents.HI),
+        (UserUtterance("exit"), UserIntents.BYE),
         (
-            UserUtterance({"text": "im happy with my result bye"}),
+            UserUtterance("im happy with my result bye"),
             UserIntents.BYE,
         ),
-        (UserUtterance({"text": "yes"}), UserIntents.ACKNOWLEDGE),
+        (UserUtterance("yes"), UserIntents.ACKNOWLEDGE),
         (
-            UserUtterance({"text": "That's fine thank you"}),
+            UserUtterance("That's fine thank you"),
             UserIntents.ACKNOWLEDGE,
         ),
     ],
@@ -82,15 +82,15 @@ def test_check_basic_intent(
     "utterance, intent",
     [
         (
-            UserUtterance({"text": "i would like to watch an action movie"}),
+            UserUtterance("i would like to watch an action movie"),
             UserIntents.HI,
         ),
         (
-            UserUtterance({"text": "hi do you know of any interesting movies"}),
+            UserUtterance("hi do you know of any interesting movies"),
             UserIntents.BYE,
         ),
         (
-            UserUtterance({"text": "No I do not like it"}),
+            UserUtterance("No I do not like it"),
             UserIntents.ACKNOWLEDGE,
         ),
     ],
@@ -121,7 +121,7 @@ def test__is_question(
     "utterance, dact",
     [
         (
-            UserUtterance({"text": "Recommend me a movie with tom hank"}),
+            UserUtterance("Recommend me a movie with tom hank"),
             DialogueAct(
                 UserIntents.REVEAL,
                 [
@@ -139,9 +139,7 @@ def test__is_question(
             ),
         ),
         (
-            UserUtterance(
-                {"text": "Recommend me a movie directed by howard deutch"}
-            ),
+            UserUtterance("Recommend me a movie directed by howard deutch"),
             DialogueAct(
                 UserIntents.REVEAL,
                 [
@@ -172,8 +170,8 @@ def test_check_reveal_voluntary_intent(
 @pytest.mark.parametrize(
     "utterance",
     [
-        (UserUtterance({"text": "i would like to watch an action movie"})),
-        (UserUtterance({"text": "bye"})),
+        (UserUtterance("i would like to watch an action movie")),
+        (UserUtterance("bye")),
     ],
 )
 def test_check_reveal_voluntary_intent_empty(
@@ -187,7 +185,7 @@ def test_check_reveal_voluntary_intent_empty(
     "utterance, dact",
     [
         (
-            UserUtterance({"text": "i would like another movie"}),
+            UserUtterance("i would like another movie"),
             DialogueAct(
                 UserIntents.REJECT,
                 [
@@ -200,7 +198,7 @@ def test_check_reveal_voluntary_intent_empty(
             ),
         ),
         (
-            UserUtterance({"text": "I have already seen this movie"}),
+            UserUtterance("I have already seen this movie"),
             DialogueAct(
                 UserIntents.REJECT,
                 [

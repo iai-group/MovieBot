@@ -12,3 +12,4 @@ flask
 flask-socketio
 questionary
 dataclasses_json
+dialoguekit==0.0.9

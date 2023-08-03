@@ -178,7 +178,7 @@ def annotate_slot_utterance(annotator, slot, utterance):
     Returns:
         List[Dict]: List of semantic annotations for utterance.
     """
-    user_utterance = UserUtterance({"text": utterance})
+    user_utterance = UserUtterance(utterance)
     constraints = annotator.slot_annotation(slot, user_utterance) or []
     semantic_annotations = [
         annotation
@@ -316,7 +316,7 @@ def get_annotations(slots, entity_types, force=False):
             False.
 
     Returns:
-        Dict: Dictionary with annotatins and durations for each slot.
+        Dict: Dictionary with annotations and durations for each slot.
     """
     filename = "annotations.json"
     if not force:
