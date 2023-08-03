@@ -15,7 +15,7 @@ import logging
 
 import confuse
 
-from moviebot.controller import server_socket
+from moviebot.controller import server_rest, server_socket
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
 
@@ -67,8 +67,10 @@ if __name__ == "__main__":
     if config["TELEGRAM"].get(False):
         CONTROLLER = ControllerTelegram()
         CONTROLLER.execute_agent(config.get())
-    elif config["FLASK"].get(False):
+    elif config["FLASK_SOCKET"].get(False):
         server_socket.run(config.get())
+    elif config["FLASK_REST"].get(False):
+        server_rest.run(config.get())
     else:
         CONTROLLER = ControllerTerminal(config.get())
         CONTROLLER.execute_agent()
