@@ -74,6 +74,7 @@ The following example shows how to start a conversation with the MovieBot using 
 .. code-block:: python
 
    import requests
+   from pprint import pprint
 
    uri = "http://127.0.0.1:5001"
 
@@ -85,8 +86,31 @@ The following example shows how to start a conversation with the MovieBot using 
                      "sender": {"id": "test_user"}, 
             },
         )
-   print(r.json())
-   >>> {'message': {'attachments': [], 'intent': '', 'text': 'Hi there. I am IAI MovieBot, your movie recommending buddy. I can recommend you movies based on your preferences.\nI will ask you a few questions and based on your answers, I will try to find a movie for you.\n\n\n\nINSTRUCTIONS\n\nTo start the conversation say Hi or Hello, or simply enter you preferences ("I want a horror movie from the 90s").\n\nTo restart the recommendation process, issue "/restart".\n\nTo end the conversation, issue "/exit" or say Bye/Goodbye.\n\nTo see these instructions again, issue: "/help".'}, 'recipient': {'id': 'test_user'}}
+   pprint(r.json())
+   >>> {'message': {'attachments': None,
+             'intent': '',
+             'text': 'Hi there. I am IAI MovieBot, your movie recommending '
+                     'buddy. I can recommend you movies based on your '
+                     'preferences.\n'
+                     'I will ask you a few questions and based on your '
+                     'answers, I will try to find a movie for you.\n'
+                     '\n'
+                     '\n'
+                     '\n'
+                     'INSTRUCTIONS\n'
+                     '\n'
+                     'To start the conversation say Hi or Hello, or simply '
+                     'enter you preferences ("I want a horror movie from the '
+                     '90s").\n'
+                     '\n'
+                     'To restart the recommendation process, issue '
+                     '"/restart".\n'
+                     '\n'
+                     'To end the conversation, issue "/exit" or say '
+                     'Bye/Goodbye.\n'
+                     '\n'
+                     'To see these instructions again, issue: "/help".'},
+        'recipient': {'id': 'test_user'}}
 
 Please note that in this configuration, the first message must be a `/start` message.
 
@@ -113,7 +137,7 @@ We provide a simple `web widget <https://www.npmjs.com/package/iaigroup-chatwidg
         });
     </script>
 
-A button to discuss with MovieBot should be placed at the bottom right of your web page.
+A button to interact with MovieBot should be placed at the bottom right of your web page.
 
 Quickstart IAI MovieBot with Telegram
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
