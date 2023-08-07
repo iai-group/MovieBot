@@ -23,7 +23,7 @@ def client(flask_app: Flask) -> SocketIOTestClient:
 @pytest.mark.parametrize(
     "event, expected_event",
     [
-        ("register", "registration_response"),
+        ("register", "register_response"),
         ("login", "login_response"),
     ],
 )
@@ -46,7 +46,7 @@ def test_handle_authentication_empty_fields(
 @pytest.mark.parametrize(
     "event, expected_event",
     [
-        ("register", "registration_response"),
+        ("register", "register_response"),
         ("login", "login_response"),
     ],
 )
