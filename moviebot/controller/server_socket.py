@@ -4,55 +4,144 @@ import logging
 from os import environ
 from typing import Any, Dict
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_socketio import Namespace, SocketIO, emit, send
 
 from moviebot.controller.controller_flask import ControllerFlask
+from moviebot.database.db_users import UserDB
 
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+
 socketio = SocketIO(app, cors_allowed_origins="*")
 controller_flask: ControllerFlask = ControllerFlask()
 
 
 class ChatNamespace(Namespace):
+    active_users = {}
+
+    def _handle_authentication(
+        self, is_registering: bool, data: Dict[str, Any]
+    ) -> None:
+        """Handles user authentication.
+
+        Args:
+            is_registering: Whether user is registering or logging in.
+            data: Data received from client.
+        """
+        event_name = (
+            "registration_response" if is_registering else "login_response"
+        )
+
+        username = data.get("username", "").strip()
+        password = data.get("password", "").strip()
+
+        # Check for empty fields
+        if not username or not password:
+            emit(
+                event_name,
+                {
+                    "success": False,
+                    "error": "Username and password cannot be empty",
+                },
+            )
+            return
+
+        user_db = UserDB()
+        if is_registering:
+            success = user_db.register_user(username, password)
+        else:
+            success = user_db.verify_user(username, password)
+
+        if success:
+            self.active_users[request.sid] = user_db.get_user_id(username)
+            emit(
+                event_name,
+                {"success": True},
+            )
+        else:
+            emit(
+                event_name,
+                {
+                    "success": False,
+                    "error": "Username already taken"
+                    if is_registering
+                    else "Bad login credentials",
+                },
+            )
+
     def on_connect(self, data: Dict[str, Any]) -> None:
         """Connects client to server.
 
         Args:
             data: Data received from client.
         """
-        controller_flask.initialize(request.sid)
-        first_message = controller_flask.start_conversation(request.sid)
         logger.info("Client connected")
-        emit("message", first_message)
 
     def on_disconnect(self) -> None:
         """Disconnects client from server."""
-        controller_flask.exit(request.sid)
+        user_id = self.active_users.get(request.sid, request.sid)
+        if session["conversation_started"]:
+            controller_flask.exit(user_id)
+        del self.active_users[request.sid]
         logger.info("Client disconnected")
 
-    def on_message(self, data: dict) -> None:
+    def on_start_conversation(self, data: Dict[str, Any]) -> None:
+        """Starts conversation with client.
+
+        Args:
+            data: Data received from client.
+        """
+        logger.info(f"Conversation started: {data}")
+        user_id = self.active_users.get(request.sid, request.sid)
+        controller_flask.initialize(user_id)
+        session["conversation_started"] = True
+
+        response = controller_flask.start_conversation(user_id)
+        emit("message", response)
+
+    def on_message(self, data: Dict[str, Any]) -> None:
         """Receives message from client and sends response.
 
         Args:
             data: Data received from client.
         """
         logger.info(f"Message received: {data}")
-        response = action(request.sid, data["message"])
+        user_id = self.active_users.get(request.sid, request.sid)
+        response = action(user_id, data["message"])
         if response:
             return send(response)
         send({"info": "Message Processed"})
 
-    def on_feedback(self, data: dict) -> None:
+    def on_feedback(self, data: Dict[str, Any]) -> None:
         """Receives feedback from client.
 
         Args:
             data: Data received from client.
         """
         logger.info(f"Feedback received: {data}")
+        # user_id = self.active_users.get(request.sid, request.sid)
+        # TODO: Implement feedback logic
         send({"info": "Feedback received"})
+
+    def on_register(self, data: Dict[str, Any]) -> None:
+        """Registers client.
+
+        Args:
+            data: Data received from client.
+        """
+        logger.info(f"Registration details received: {data}")
+        self._handle_authentication(True, data)
+
+    def on_login(self, data: Dict[str, Any]) -> None:
+        """Logs in client.
+
+        Args:
+            data: Data received from client.
+        """
+        logger.info(f"Login received: {data}")
+        self._handle_authentication(False, data)
 
 
 def run(config: Dict[str, Any]) -> None:
