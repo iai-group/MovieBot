@@ -9,15 +9,23 @@ from moviebot.controller.server_socket import ChatNamespace, app, socketio
 
 
 @pytest.fixture
+def mocked_user_db() -> MagicMock:
+    return MagicMock()
+
+
+@pytest.fixture
 def flask_app() -> Flask:
     app.testing = True
     return app
 
 
 @pytest.fixture
-def client(flask_app: Flask) -> SocketIOTestClient:
-    socketio.on_namespace(ChatNamespace("/"))
-    return socketio.test_client(flask_app)
+def client(flask_app: Flask, mocked_user_db: MagicMock) -> SocketIOTestClient:
+    with patch(
+        "moviebot.controller.server_socket.UserDB", return_value=mocked_user_db
+    ):
+        socketio.on_namespace(ChatNamespace("/"))
+        yield socketio.test_client(flask_app)
 
 
 @pytest.mark.parametrize(
@@ -50,17 +58,15 @@ def test_handle_authentication_empty_fields(
         ("login", "login_response"),
     ],
 )
-def test_handle_authentication_success(client, event, expected_event) -> None:
+def test_handle_authentication_success(
+    client, mocked_user_db, event, expected_event
+) -> None:
     """Test successful login and registration."""
 
-    mock_user_db = MagicMock()
-    mock_user_db.verify_user.return_value = True
+    mocked_user_db.verify_user.return_value = True
 
-    with patch(
-        "moviebot.controller.server_socket.UserDB", return_value=mock_user_db
-    ):
-        client.emit(event, {"username": "testuser", "password": "testpassword"})
-        received = client.get_received()
+    client.emit(event, {"username": "testuser", "password": "testpassword"})
+    received = client.get_received()
 
-        assert received[0]["name"] == expected_event
-        assert received[0]["args"][0]["success"] is True
+    assert received[0]["name"] == expected_event
+    assert received[0]["args"][0]["success"] is True
