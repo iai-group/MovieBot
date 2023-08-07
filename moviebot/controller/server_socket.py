@@ -19,7 +19,15 @@ controller_flask: ControllerFlask = ControllerFlask()
 
 
 class ChatNamespace(Namespace):
-    active_users = {}
+    def __init__(self, namespace: str) -> None:
+        """Namespace for chat.
+
+        Args:
+            namespace: Namespace of chat.
+        """
+        super().__init__(namespace)
+        self.user_db = UserDB()
+        self.active_users = {}
 
     def _handle_authentication(
         self, is_registering: bool, data: Dict[str, Any]
@@ -30,9 +38,7 @@ class ChatNamespace(Namespace):
             is_registering: Whether user is registering or logging in.
             data: Data received from client.
         """
-        event_name = (
-            "registration_response" if is_registering else "login_response"
-        )
+        event_name = "register_response" if is_registering else "login_response"
 
         username = data.get("username", "").strip()
         password = data.get("password", "").strip()
@@ -48,14 +54,13 @@ class ChatNamespace(Namespace):
             )
             return
 
-        user_db = UserDB()
         if is_registering:
-            success = user_db.register_user(username, password)
+            success = self.user_db.register_user(username, password)
         else:
-            success = user_db.verify_user(username, password)
+            success = self.user_db.verify_user(username, password)
 
         if success:
-            self.active_users[request.sid] = user_db.get_user_id(username)
+            self.active_users[request.sid] = self.user_db.get_user_id(username)
             emit(
                 event_name,
                 {"success": True},
@@ -77,12 +82,13 @@ class ChatNamespace(Namespace):
         Args:
             data: Data received from client.
         """
+        self.active_users[request.sid] = request.sid
         logger.info("Client connected")
 
     def on_disconnect(self) -> None:
         """Disconnects client from server."""
-        user_id = self.active_users.get(request.sid, request.sid)
-        if session["conversation_started"]:
+        user_id = self.active_users.get(request.sid)
+        if session.get("conversation_started"):
             controller_flask.exit(user_id)
         del self.active_users[request.sid]
         logger.info("Client disconnected")
@@ -94,7 +100,7 @@ class ChatNamespace(Namespace):
             data: Data received from client.
         """
         logger.info(f"Conversation started: {data}")
-        user_id = self.active_users.get(request.sid, request.sid)
+        user_id = self.active_users.get(request.sid)
         controller_flask.initialize(user_id)
         session["conversation_started"] = True
 
@@ -108,7 +114,7 @@ class ChatNamespace(Namespace):
             data: Data received from client.
         """
         logger.info(f"Message received: {data}")
-        user_id = self.active_users.get(request.sid, request.sid)
+        user_id = self.active_users.get(request.sid)
         response = action(user_id, data["message"])
         if response:
             return send(response)
@@ -121,8 +127,9 @@ class ChatNamespace(Namespace):
             data: Data received from client.
         """
         logger.info(f"Feedback received: {data}")
-        # user_id = self.active_users.get(request.sid, request.sid)
+        # user_id = self.active_users.get(request.sid)
         # TODO: Implement feedback logic
+        # Issue: https://github.com/iai-group/MovieBot/issues/129
         send({"info": "Feedback received"})
 
     def on_register(self, data: Dict[str, Any]) -> None:

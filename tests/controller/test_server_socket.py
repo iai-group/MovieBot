@@ -1,7 +1,9 @@
+"""Tests for server socket functionality."""
 from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
+from flask_socketio import SocketIOTestClient
 
 from moviebot.controller.server_socket import ChatNamespace, app, socketio
 
@@ -13,7 +15,7 @@ def flask_app() -> Flask:
 
 
 @pytest.fixture
-def client(flask_app):
+def client(flask_app: Flask) -> SocketIOTestClient:
     socketio.on_namespace(ChatNamespace("/"))
     return socketio.test_client(flask_app)
 
@@ -25,8 +27,10 @@ def client(flask_app):
         ("login", "login_response"),
     ],
 )
-def test_handle_authentication_empty_fields(client, event, expected_event):
-    """Test _handle_authentication method for registration with empty fields."""
+def test_handle_authentication_empty_fields(
+    client, event, expected_event
+) -> None:
+    """Test methods for login and registration with empty fields."""
 
     data = {"username": "", "password": ""}
     client.emit(event, data)
@@ -46,8 +50,8 @@ def test_handle_authentication_empty_fields(client, event, expected_event):
         ("login", "login_response"),
     ],
 )
-def test_handle_authentication_success(client, event, expected_event):
-    """Test _handle_authentication method for successful login."""
+def test_handle_authentication_success(client, event, expected_event) -> None:
+    """Test successful login and registration."""
 
     mock_user_db = MagicMock()
     mock_user_db.verify_user.return_value = True

@@ -1,6 +1,7 @@
 """Class for managing the users database."""
 
 import sqlite3
+from typing import Optional
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -16,7 +17,7 @@ class UserDB:
         """
         self.manager = DatabaseManager(users_db_path)
 
-    def get_user_id(self, username: str) -> int:
+    def get_user_id(self, username: str) -> Optional[int]:
         """Gets user ID from username.
 
         Args:
@@ -41,7 +42,7 @@ class UserDB:
         Returns:
             Whether user was registered successfully.
         """
-        hashed_password = generate_password_hash(password, method="sha256")
+        hashed_password = generate_password_hash(password, method="scrypt")
 
         with self.manager as cursor:
             try:
