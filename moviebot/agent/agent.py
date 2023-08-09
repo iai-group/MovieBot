@@ -4,7 +4,7 @@ import os
 from typing import Any, Dict, List, Tuple, Union
 
 from moviebot.core.utterance.utterance import AgentUtterance, UserUtterance
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG
