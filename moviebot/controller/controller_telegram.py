@@ -225,7 +225,11 @@ class ControllerTelegram(Controller):
                 f" name = '{update.effective_user['first_name']}'"
             )
         start = time.time()
-        user_utterance = UserUtterance(update.message.to_dict())
+        message_dict = update.message.to_dict()
+        user_utterance = UserUtterance(
+            message_dict.get("text", ""),
+            timestamp=message_dict.get("date", None),
+        )
         (
             self.response[user_id],
             self.user_options[user_id],
@@ -263,7 +267,7 @@ class ControllerTelegram(Controller):
         )
         # record the conversation
         if self.agent[user_id].bot_recorder:
-            record_data = {"Timestamp": user_utterance.get_timestamp()}
+            record_data = {"Timestamp": user_utterance.timestamp}
             record_data.update(self.record_data_agent[user_id])
             record_data.update({"Execution_Time": str(round(end - start, 3))})
             self.agent[user_id].bot_recorder.record_user_data(

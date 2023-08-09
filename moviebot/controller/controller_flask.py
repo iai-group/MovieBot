@@ -142,7 +142,7 @@ class ControllerFlask(Controller):
             user_id: User id.
             payload: User payload.
         """
-        user_utterance = UserUtterance({"text": payload})
+        user_utterance = UserUtterance(payload)
         (
             self.agent_response[user_id],
             self.user_options[user_id],

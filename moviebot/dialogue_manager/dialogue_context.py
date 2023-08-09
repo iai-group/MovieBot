@@ -6,14 +6,16 @@ utterances from both the user and the agent.
 """
 
 
-from moviebot.core.utterance.utterance import Utterance
+from typing import List
+
+from dialoguekit.core import Utterance
 
 
 class DialogueContext:
     def __init__(self) -> None:
         """Initializes the basic parameters of the context."""
         self.movies_recommended = {}
-        self.previous_utterances = []
+        self.previous_utterances: List[Utterance] = []
 
     def initialize(self) -> None:
         """Initializes the dialogue context."""

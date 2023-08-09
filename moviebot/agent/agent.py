@@ -167,7 +167,7 @@ class Agent:
             agent_dacts, user_fname=user_fname
         )
         self.dialogue_manager.get_context().add_utterance(
-            AgentUtterance({"text": agent_response})
+            AgentUtterance(agent_response)
         )
         if not self.isBot:
             logger.debug(
@@ -222,7 +222,7 @@ class Agent:
             agent_dacts, dialogue_state=dialogue_state, user_fname=user_fname
         )
         self.dialogue_manager.get_context().add_utterance(
-            AgentUtterance({"text": agent_response})
+            AgentUtterance(agent_response)
         )
         if not self.isBot:
             logger.debug(
@@ -236,7 +236,7 @@ class Agent:
             record_data.update(
                 {
                     "Agent_Output": agent_response,
-                    "User_Input": user_utterance.get_text(),
+                    "User_Input": user_utterance.text,
                     "Context": context,
                 }
             )

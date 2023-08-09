@@ -183,7 +183,7 @@ class NLU:
         Returns:
             A list with at most one item (i.e., the selected option).
         """
-        raw_utterance = user_utterance.get_text()
+        raw_utterance = user_utterance.text
         dacts = []
         for dact, value in options.items():
             if (

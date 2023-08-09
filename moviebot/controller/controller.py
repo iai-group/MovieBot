@@ -50,7 +50,7 @@ class Controller(ABC):
         Args:
             utterance: User utterance.
         """
-        return utterance.get_text() == RESTART
+        return utterance.text == RESTART
 
     def get_cursor(self) -> sqlite3.Cursor:
         """Returns SQL cursor."""
