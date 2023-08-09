@@ -10,13 +10,10 @@ from typing import Any, Dict, List, Union
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.user_intents_checker import UserIntentsChecker
-from moviebot.ontology.ontology import Ontology
 
 DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
 
@@ -36,17 +33,14 @@ class NLU:
         Args:
             config: Paths to ontology, database and tag words for slots in NLU.
         """
-        self.ontology: Ontology = config["ontology"]
-        self.database: DataBase = config["database"]
         self.intents_checker = UserIntentsChecker(config)
 
-    def generate_dact(  # noqa: C901
+    def generate_dacts(  # noqa: C901
         self,
         user_utterance: UserUtterance,
         options: DialogueOptions,
-        dialogue_state: DialogueState = None,
-        dialogue_context: DialogueContext = None,
-    ):
+        dialogue_state: DialogueState,
+    ) -> List[DialogueAct]:
         """Processes the utterance according to dialogue state and context and
         generate a user dialogue act for Agent to understand.
 
@@ -55,8 +49,6 @@ class NLU:
             options: A list of options provided to the user to choose from.
             dialogue_state: The current dialogue state, if available. Defaults
               to None.
-            dialogue_context: The current dialogue context, if available.
-              Defaults to None.
 
         Returns:
             A list of dialogue acts.
@@ -98,10 +90,9 @@ class NLU:
                         user_utterance, UserIntents.HI
                     )
                 )
-            if len(user_dacts) > 0:
-                return user_dacts
-            else:
-                return None
+            if len(user_dacts) == 0:
+                user_dacts.append(DialogueAct(UserIntents.UNK, []))
+            return user_dacts
 
         for last_agent_dact in self.dialogue_state.last_agent_dacts:
             if last_agent_dact.intent == AgentIntents.WELCOME:
