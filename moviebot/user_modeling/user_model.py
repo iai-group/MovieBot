@@ -31,6 +31,8 @@ class UserModel:
             movie_choices = json.load(historical_movie_choices_path)
             self._movies_choices.update(movie_choices)
 
+        self.tag_preferences = defaultdict(defaultdict(float))
+
     @property
     def movie_choices(self) -> Dict[str, str]:
         """Returns user 's movie choices."""
@@ -88,10 +90,10 @@ class UserModel:
 
         return 0.0
 
-    def get_tag_preference(
+    def compute_tag_preference(
         self, slot: str, tag: str, database: DataBase
     ) -> str:
-        """Returns the preference for a given tag (e.g., comedies).
+        """Computes the preference for a given tag (e.g., comedies).
 
         Args:
             slot: Slot name.
@@ -118,3 +120,33 @@ class UserModel:
                     count_rated += 1
 
         return preference / count_rated if count_rated > 0 else 0.0
+
+    def get_tag_preference(self, slot: str, tag: str) -> float:
+        """Returns the preference for a given tag (e.g., comedies).
+
+        If the preference is not explicitly set, then it is computed based on
+        movies choices.
+
+        Args:
+            slot: Slot name.
+            tag: Tag.
+
+        Returns:
+            Preference.
+        """
+        preference = self.tag_preferences[slot].get(tag, None)
+        if preference is None:
+            return self.compute_tag_preference(slot, tag)
+        return preference
+
+    def set_tag_preference(
+        self, slot: str, tag: str, preference: float
+    ) -> None:
+        """Sets the preference for a given tag (e.g., comedies).
+
+        Args:
+            slot: Slot name.
+            tag: Tag.
+            preference: Preference.
+        """
+        self.tag_preferences[slot][tag] = preference
