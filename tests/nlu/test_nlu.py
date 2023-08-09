@@ -74,12 +74,11 @@ def dialogue_state():
 
 
 @pytest.mark.parametrize(
-    "last_dact",
-    [[], [DialogueAct(AgentIntents.ACKNOWLEDGE, [])]],
+    "last_dacts", [[], [DialogueAct(AgentIntents.ACKNOWLEDGE, [])]]
 )
-def test_no_intent(nlu, dialogue_state, last_dact):
+def test_no_intent(nlu, dialogue_state, last_dacts):
     utterance = UserUtterance("random text that doesn't match any intent")
-    dialogue_state.last_agent_dacts = last_dact
+    dialogue_state.last_agent_dacts = last_dacts
     options = {}
 
     dacts = nlu.generate_dacts(utterance, options, dialogue_state)
@@ -98,56 +97,57 @@ def test_basic_bye_intent(nlu, dialogue_state):
     assert dacts[0].intent == UserIntents.BYE
 
 
-def test_selected_option(nlu, dialogue_state):
+@pytest.mark.parametrize(
+    "user_intent",
+    [UserIntents.ACKNOWLEDGE, UserIntents.CONTINUE_RECOMMENDATION],
+)
+def test_selected_option(nlu, dialogue_state, user_intent):
     utterance = UserUtterance("selected option")
-    options = {DialogueAct(UserIntents.ACKNOWLEDGE, []): "selected option"}
+    options = {DialogueAct(user_intent): "selected option"}
 
     dacts = nlu.generate_dacts(utterance, options, dialogue_state)
 
     assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.ACKNOWLEDGE
+    assert dacts[0].intent == user_intent
 
 
-def test_selected_option_continue_recommendation(nlu, dialogue_state):
-    utterance = UserUtterance("selected option")
-    options = {
-        DialogueAct(UserIntents.CONTINUE_RECOMMENDATION, []): "selected option"
-    }
-
-    dacts = nlu.generate_dacts(utterance, options, dialogue_state)
-
-    assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.CONTINUE_RECOMMENDATION
-
-
-def test_reject_intent(nlu, dialogue_state):
-    utterance = UserUtterance("reject text")
+@pytest.mark.parametrize(
+    "last_dacts, utterance, expected_intent",
+    [
+        (
+            [DialogueAct(AgentIntents.WELCOME, [])],
+            "reject text",
+            UserIntents.REJECT,
+        ),
+        ([DialogueAct(AgentIntents.RECOMMEND, [])], "no", UserIntents.INQUIRE),
+    ],
+)
+def test_deny_intent(
+    nlu, dialogue_state, last_dacts, utterance, expected_intent
+):
+    utterance = UserUtterance(utterance)
     options = {}
 
-    dialogue_state.last_agent_dacts = [DialogueAct(AgentIntents.RECOMMEND, [])]
+    dialogue_state.last_agent_dacts = last_dacts
     dialogue_state.agent_made_offer = True
 
     dacts = nlu.generate_dacts(utterance, options, dialogue_state)
 
     assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.REJECT
+    assert dacts[0].intent == expected_intent
 
 
-def test_deny_intent(nlu, dialogue_state):
-    utterance = UserUtterance("no")
-    options = {}
-
-    dialogue_state.last_agent_dacts = [DialogueAct(AgentIntents.WELCOME, [])]
-    dialogue_state.agent_made_offer = True
-
-    dacts = nlu.generate_dacts(utterance, options, dialogue_state)
-
-    assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.INQUIRE
-
-
-def test_reveal_voluntary_intent(nlu, dialogue_state):
-    utterance = UserUtterance("voluntary reveal text")
+@pytest.mark.parametrize(
+    "utterance, expected_intent",
+    [
+        ("voluntary reveal text", UserIntents.REVEAL),
+        ("not reveal text", UserIntents.UNK),
+    ],
+)
+def test_reveal_voluntary_intent(
+    nlu, dialogue_state, utterance, expected_intent
+):
+    utterance = UserUtterance(utterance)
     options = {}
 
     dialogue_state.last_agent_dacts = [DialogueAct(AgentIntents.WELCOME, [])]
@@ -155,35 +155,12 @@ def test_reveal_voluntary_intent(nlu, dialogue_state):
     dacts = nlu.generate_dacts(utterance, options, dialogue_state)
 
     assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.REVEAL
+    assert dacts[0].intent == expected_intent
 
 
-def test_not_reveal_voluntary_intent(nlu, dialogue_state):
-    utterance = UserUtterance("not reveal text")
-    options = {}
-
-    dialogue_state.last_agent_dacts = [DialogueAct(AgentIntents.WELCOME, [])]
-
-    dacts = nlu.generate_dacts(utterance, options, dialogue_state)
-
-    assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.UNK
-
-
-def test_elicit_intent(nlu, dialogue_state):
-    utterance = UserUtterance("reveal intent text")
-    options = {}
-
-    dialogue_state.last_agent_dacts = [DialogueAct(AgentIntents.ELICIT, [])]
-
-    dacts = nlu.generate_dacts(utterance, options, dialogue_state)
-
-    assert len(dacts) == 1
-    assert dacts[0].intent == UserIntents.REVEAL
-
-
-def test_elicit_voluntary_intent(nlu, dialogue_state):
-    utterance = UserUtterance("dont care text")
+@pytest.mark.parametrize("utterance", ["reveal intent text", "dont care text"])
+def test_elicit_intent(nlu, dialogue_state, utterance):
+    utterance = UserUtterance(utterance)
     options = {}
 
     dialogue_state.last_agent_dacts = [DialogueAct(AgentIntents.ELICIT, [])]
