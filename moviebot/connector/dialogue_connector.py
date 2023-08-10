@@ -1,11 +1,14 @@
 """Broker connecting MovieBot agent to the user."""
 from collections import defaultdict
+from dataclasses import asdict
 from typing import TYPE_CHECKING
 
 from dialoguekit.connector import DialogueConnector
+from dialoguekit.core.annotated_utterance import AnnotatedUtterance
 from dialoguekit.participant import User
 
 from moviebot.agent.agent import MovieBotAgent
+from moviebot.core.utterance.utterance import UserUtterance
 
 if TYPE_CHECKING:
     from moviebot.controller.controller import Controller
@@ -33,6 +36,26 @@ class MovieBotDialogueConnector(DialogueConnector):
         super().__init__(
             agent, user, platform, conversation_id, save_dialogue_history
         )
+
+    def register_user_utterance(
+        self, annotated_utterance: AnnotatedUtterance
+    ) -> None:
+        """Registers a user utterance.
+
+        Args:
+            annotated_utterance: Annotated utterance.
+        """
+        user_options = self._dialogue_history.utterances[-1].metadata.get(
+            "options", {}
+        )
+        self._dialogue_history.add_utterance(annotated_utterance)
+        self._platform.display_user_utterance(
+            self._user.id, annotated_utterance
+        )
+        user_utterance = UserUtterance(
+            **asdict(annotated_utterance.get_utterance())
+        )
+        self._agent.receive_utterance(user_utterance, user_options)
 
     def close(self) -> None:
         """Closes the conversation."""

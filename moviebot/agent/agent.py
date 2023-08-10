@@ -7,7 +7,6 @@ from dialoguekit.core import AnnotatedUtterance, Intent, Utterance
 from dialoguekit.participant import Agent, DialogueParticipant
 
 from moviebot.core.intents.agent_intents import AgentIntents
-from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
@@ -221,8 +220,6 @@ class MovieBotAgent(Agent):
             Dialogue options that were provided to the user in
               previous turn.
         """
-        user_utterance = UserUtterance.from_utterance(user_utterance)
-
         self.dialogue_manager.get_state().user_utterance = user_utterance
 
         user_dacts = self.nlu.generate_dact(
