@@ -11,7 +11,7 @@ from nltk.tokenize import word_tokenize
 
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator

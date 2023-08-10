@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Union
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.values import Values

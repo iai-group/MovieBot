@@ -19,6 +19,7 @@ from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller import server_rest, server_socket
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
+from moviebot.database.db_users import UserDB
 
 logging.basicConfig(
     format="[%(asctime)s] %(levelname)-12s %(message)s",
@@ -59,12 +60,18 @@ def get_config(path: str) -> confuse.Configuration:
     return config
 
 
+def init_db():
+    """Initializes the user database."""
+    UserDB().setup_db()
+
+
 if __name__ == "__main__":
     args = parse_args()
     config = get_config(args.config)
     if config["DEBUG"].get(False):
         logger.setLevel(logging.DEBUG)
 
+    init_db()
     if config["TELEGRAM"].get(False):
         CONTROLLER = ControllerTelegram()
         CONTROLLER.execute_agent(config.get())

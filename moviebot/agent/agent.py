@@ -7,8 +7,8 @@ from dialoguekit.core import AnnotatedUtterance, Intent
 from dialoguekit.participant import Agent, DialogueParticipant
 
 from moviebot.core.intents.agent_intents import AgentIntents
-from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.database.database import DataBase
+from moviebot.core.utterance.utterance import AgentUtterance, UserUtterance
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlg.nlg import NLG
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
@@ -16,9 +16,7 @@ from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.nlu import NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recommender.recommender_model import RecommenderModel
-from moviebot.recommender.slot_based_recommender_model import (
-    SlotBasedRecommenderModel,
-)
+from moviebot.recommender.slot_based_recommender_model import SlotBasedRecommenderModel
 
 logger = logging.getLogger(__name__)
 DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
