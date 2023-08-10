@@ -31,6 +31,22 @@ class UserUtterance(Utterance):
 
         return self._tokens
 
+    @classmethod
+    def from_utterance(cls, utterance: Utterance) -> "UserUtterance":
+        """Creates a UserUtterance from an Utterance.
+
+        Args:
+            utterance: Utterance to convert.
+
+        Returns:
+            UserUtterance: Converted utterance.
+        """
+        return cls(
+            text=utterance.text,
+            utterance_id=utterance.utterance_id,
+            timestamp=utterance.timestamp,
+        )
+
 
 @dataclass(eq=True, unsafe_hash=True)
 class AgentUtterance(Utterance):

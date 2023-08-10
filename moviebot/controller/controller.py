@@ -12,8 +12,8 @@ from typing import TYPE_CHECKING, Any, DefaultDict, Dict, Type
 from dialoguekit.participant import User
 from dialoguekit.platforms import Platform as DialogueKitPlatform
 
+from moviebot.connector.dialogue_connector import MovieBotDialogueConnector
 from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 
 if TYPE_CHECKING:
     from moviebot.agent.agent import MovieBotAgent
@@ -56,12 +56,8 @@ class Controller(DialogueKitPlatform, ABC):
             user_id: User ID.
         """
         self._active_users[user_id] = User(user_id)
-        agent = self.get_new_agent()
-        dialogue_connector = DialogueManager(
-            config=agent.data_config,
-            isBot=agent.isBot,
-            new_user=agent.new_user,
-            agent=agent,
+        dialogue_connector = MovieBotDialogueConnector(
+            agent=self.get_new_agent(),
             user=self._active_users[user_id],
             platform=self,
         )
