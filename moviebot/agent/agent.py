@@ -199,7 +199,7 @@ class MovieBotAgent(Agent):
             agent_response, AgentIntents.WELCOME.value, options
         )
 
-        self.dialogue_manager.register_agent_utterance(utterance)
+        self._dialogue_connector.register_agent_utterance(utterance)
 
     def goodbye(self) -> None:
         """Sends a goodbye message to the user.
@@ -254,7 +254,7 @@ class MovieBotAgent(Agent):
                 agent_response, agent_intents, options
             )
 
-        self.dialogue_manager.register_agent_utterance(utterance)
+        self._dialogue_connector.register_agent_utterance(utterance)
 
     def end_dialogue(self) -> None:
         """Ends the dialogue and save the experience if required."""
