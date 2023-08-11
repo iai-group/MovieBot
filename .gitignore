@@ -9,3 +9,5 @@ eval/data/extras/*
 
 # pytest coverage
 .coverage
+
+dialogue_export/
