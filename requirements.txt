@@ -8,7 +8,7 @@ confuse>=2.0.0
 python-telegram-bot==13.15
 wikipedia
 nltk
-flask
+flask>=2.3.2
 flask-socketio
 questionary
 dataclasses_json
