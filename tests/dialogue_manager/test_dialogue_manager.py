@@ -18,7 +18,7 @@ from moviebot.ontology.ontology import Ontology
 @pytest.fixture
 def config() -> Dict[str, Any]:
     with mock.patch(
-        "moviebot.database.database.DataBase"
+        "moviebot.database.db_movies.DataBase"
     ) as MockDatabase, mock.patch(
         "moviebot.recommender.slot_based_recommender_model."
         "SlotBasedRecommenderModel"
