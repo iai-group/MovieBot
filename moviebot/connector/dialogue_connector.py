@@ -64,7 +64,7 @@ class MovieBotDialogueConnector(DialogueConnector):
             self._dump_dialogue_history()
 
     def _stringify_dialogue_acts(self) -> None:
-        """Stringifies the dialogue acts before dump."""
+        """Stringifies the dialogue acts."""
         for utterance in self._dialogue_history.utterances:
             options = utterance.metadata.get("options", {})
             options_str = defaultdict(list)
