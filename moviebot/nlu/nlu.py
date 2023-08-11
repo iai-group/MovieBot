@@ -35,7 +35,139 @@ class NLU:
         """
         self.intents_checker = UserIntentsChecker(config)
 
-    def generate_dacts(  # noqa: C901
+    def _process_first_turn(
+        self, user_utterance: UserUtterance
+    ) -> List[DialogueAct]:
+        """Generates dialogue acts for the first turn of the conversation.
+
+        Args:
+            user_utterance: User utterance.
+
+        Returns:
+            A list of dialogue acts.
+        """
+        return (
+            self.intents_checker.check_reveal_voluntary_intent(user_utterance)
+            or self.intents_checker.check_basic_intent(
+                user_utterance, UserIntents.HI
+            )
+            or [DialogueAct(UserIntents.UNK, [])]
+        )
+
+    def _process_last_agent_dacts(
+        self, user_utterance: UserUtterance, last_agent_dacts: List[DialogueAct]
+    ) -> List[DialogueAct]:
+        """Processes response to agent dialogue acts from previous turn.
+
+        Args:
+            user_utterance: User utterance.
+            last_agent_dacts: Last agent dialogue acts.
+
+        Returns:
+            A list of dialogue acts.
+        """
+        for last_agent_dact in last_agent_dacts:
+            if last_agent_dact.intent == AgentIntents.WELCOME:
+                user_dacts = self._follow_up_welcome(user_utterance)
+                if user_dacts:
+                    return user_dacts
+            elif last_agent_dact.intent == AgentIntents.ELICIT:
+                user_dacts = self._follow_up_elicit(
+                    user_utterance, last_agent_dact
+                )
+                if user_dacts:
+                    return user_dacts
+        return []
+
+    def _process_feedback(
+        self, user_utterance: UserUtterance
+    ) -> List[DialogueAct]:
+        """Processes feedback from the user.
+
+        Args:
+            user_utterance: User utterance.
+
+        Returns:
+            A list of dialogue acts.
+        """
+        feedback_intents = [
+            self.intents_checker.check_reject_intent,
+            self.intents_checker.check_inquire_intent,
+            self.intents_checker.check_reveal_voluntary_intent,
+            self._convert_deny_to_inquire,
+        ]
+
+        for check_intent in feedback_intents:
+            user_dacts = check_intent(user_utterance)
+            if user_dacts:
+                return user_dacts
+        return []
+
+    def _follow_up_welcome(
+        self, user_utterance: UserUtterance
+    ) -> List[DialogueAct]:
+        """Follow up on welcome intent.
+
+        Args:
+            user_utterance: User utterance.
+
+        Returns:
+            A list of dialogue acts.
+        """
+        return self.intents_checker.check_reveal_voluntary_intent(
+            user_utterance
+        ) or self.intents_checker.check_basic_intent(
+            user_utterance, UserIntents.ACKNOWLEDGE
+        )
+
+    def _follow_up_elicit(
+        self, user_utterance: UserUtterance, last_agent_dact: DialogueAct
+    ) -> List[DialogueAct]:
+        """Follow up on elicit intent.
+
+        Args:
+            user_utterance: User utterance.
+            last_agent_dact: Last agent dialogue act.
+
+        Returns:
+            A list of dialogue acts.
+        """
+        user_dacts = self.intents_checker.check_reveal_intent(
+            user_utterance, last_agent_dact
+        )
+        if not user_dacts or any(
+            [
+                param.value in Values.__dict__.values()
+                for dact in user_dacts
+                for param in dact.params
+            ]
+        ):
+            user_dacts.extend(
+                self.intents_checker.check_reveal_voluntary_intent(
+                    user_utterance
+                )
+            )
+        return user_dacts
+
+    def _convert_deny_to_inquire(
+        self, user_utterance: UserUtterance
+    ) -> List[DialogueAct]:
+        """Converts deny intent to inquire intent.
+
+        Args:
+            user_utterance: User utterance.
+
+        Returns:
+            A list of dialogue acts.
+        """
+        deny_dact = self.intents_checker.check_basic_intent(
+            user_utterance, UserIntents.DENY
+        )
+        if deny_dact:
+            deny_dact[0].intent = UserIntents.INQUIRE
+        return deny_dact
+
+    def generate_dacts(
         self,
         user_utterance: UserUtterance,
         options: DialogueOptions,
@@ -54,109 +186,38 @@ class NLU:
             A list of dialogue acts.
         """
         # this is the top priority. The agent must check if user selected
-        # any option
+        # any option.
         selected_option = self.get_selected_option(
             user_utterance, options, dialogue_state.item_in_focus
         )
         if selected_option:
             return selected_option
 
-        # Define a list of dialogue acts for this specific utterance
-        user_dacts = []
-
-        # process the utterance for necessary
-        # utterance = self.intents_checker._lemmatize_value(raw_utterance)
-        self.dialogue_state = dialogue_state
-
-        # check if user is ending the conversation
-        user_dacts.extend(
-            self.intents_checker.check_basic_intent(
-                user_utterance, UserIntents.BYE
-            )
+        # check if user is ending the conversation.
+        bye_dacts = self.intents_checker.check_basic_intent(
+            user_utterance, UserIntents.BYE
         )
-        if len(user_dacts) > 0:
-            return user_dacts
+        if bye_dacts:
+            return bye_dacts
 
         # check if it's the start of a conversation
-        if not self.dialogue_state.last_agent_dacts:
-            user_dacts.extend(
-                self.intents_checker.check_reveal_voluntary_intent(
-                    user_utterance
-                )
-            )
-            if len(user_dacts) == 0:
-                user_dacts.extend(
-                    self.intents_checker.check_basic_intent(
-                        user_utterance, UserIntents.HI
-                    )
-                )
-            if len(user_dacts) == 0:
-                user_dacts.append(DialogueAct(UserIntents.UNK, []))
+        if not dialogue_state.last_agent_dacts:
+            return self._process_first_turn(user_utterance)
+
+        # Start eliciting or follow up on elicitation
+        user_dacts = self._process_last_agent_dacts(
+            user_utterance, dialogue_state.last_agent_dacts
+        )
+        if user_dacts:
             return user_dacts
 
-        for last_agent_dact in self.dialogue_state.last_agent_dacts:
-            if last_agent_dact.intent == AgentIntents.WELCOME:
-                user_dacts.extend(
-                    self.intents_checker.check_reveal_voluntary_intent(
-                        user_utterance
-                    )
-                )
-                if len(user_dacts) == 0:
-                    user_dacts.extend(
-                        self.intents_checker.check_basic_intent(
-                            user_utterance, UserIntents.ACKNOWLEDGE
-                        )
-                    )
-                if len(user_dacts) > 0:
-                    return user_dacts
-            elif last_agent_dact.intent == AgentIntents.ELICIT:
-                user_dacts.extend(
-                    self.intents_checker.check_reveal_intent(
-                        user_utterance, last_agent_dact
-                    )
-                )
-                if len(user_dacts) == 0 or any(
-                    [
-                        param.value in Values.__dict__.values()
-                        for dact in user_dacts
-                        for param in dact.params
-                    ]
-                ):
-                    user_dacts.extend(
-                        self.intents_checker.check_reveal_voluntary_intent(
-                            user_utterance
-                        )
-                    )
-                if len(user_dacts) > 0:
-                    return user_dacts
-
+        # Handle feedback after recommendation
         if dialogue_state.agent_made_offer:
-            user_dacts.extend(
-                self.intents_checker.check_reject_intent(user_utterance)
-            )
-        if len(user_dacts) == 0:
-            user_dacts.extend(
-                self.intents_checker.check_inquire_intent(user_utterance)
-            )
-        if len(user_dacts) == 0:
-            user_dacts.extend(
-                self.intents_checker.check_reveal_voluntary_intent(
-                    user_utterance
-                )
-            )
-        if len(user_dacts) == 0:
-            deny_dact = self.intents_checker.check_basic_intent(
-                user_utterance, UserIntents.DENY
-            )
-            if len(deny_dact) > 0:
-                deny_dact[0].intent = UserIntents.INQUIRE
-                user_dacts.extend(deny_dact)
-        if len(user_dacts) > 0:
-            return user_dacts
+            user_dacts = self._process_feedback(user_utterance)
+            if user_dacts:
+                return user_dacts
 
-        if len(user_dacts) == 0:
-            user_dacts.append(DialogueAct(UserIntents.UNK, []))
-        return user_dacts
+        return [DialogueAct(UserIntents.UNK, [])]
 
     def get_selected_option(
         self,
