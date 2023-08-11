@@ -20,10 +20,6 @@ if TYPE_CHECKING:
     from moviebot.agent.agent import MovieBotAgent
 
 
-if TYPE_CHECKING:
-    from moviebot.agent.agent import MovieBotAgent
-
-
 RESTART = "/restart"
 
 logger = logging.getLogger(__name__)

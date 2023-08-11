@@ -7,7 +7,6 @@ on the conversation.
 """
 
 
-from collections import defaultdict
 from dataclasses import asdict
 from typing import TYPE_CHECKING, Any, Dict, List
 
