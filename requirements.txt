@@ -13,4 +13,4 @@ Flask-SocketIO
 Flask-SQLAlchemy
 questionary
 dataclasses_json
-dialoguekit==0.0.9
+dialoguekit==0.0.9.dev0
