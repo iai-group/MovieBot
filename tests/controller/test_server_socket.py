@@ -12,11 +12,6 @@ from moviebot.controller.controller_flask_socket import ChatNamespace
 
 
 @pytest.fixture
-def mocked_user_db() -> MagicMock:
-    return MagicMock()
-
-
-@pytest.fixture
 def mocked_agent_class():
     class MockedAgent(MovieBotAgent):
         def __init__(self):
@@ -33,11 +28,9 @@ def flask_platform(mocked_agent_class) -> FlaskSocketPlatform:
 
 
 @pytest.fixture
-def client(
-    flask_platform: FlaskSocketPlatform, mocked_user_db: MagicMock
-) -> SocketIOTestClient:
+def client(flask_platform: FlaskSocketPlatform) -> SocketIOTestClient:
     with patch(
-        "moviebot.database.db_users.UserDB", return_value=mocked_user_db
+        "moviebot.database.db_users.UserDB", return_value=MagicMock()
     ) and patch(
         "moviebot.controller.controller_flask_socket.FlaskSocketPlatform.get_new_agent",  # noqa: E501
         return_value=MagicMock(spec=MovieBotAgent),
@@ -78,16 +71,17 @@ def test_handle_authentication_empty_fields(
 )
 def test_handle_authentication_success(
     client: SocketIOTestClient,
-    mocked_user_db: MagicMock,
     event: str,
     expected_event: str,
 ) -> None:
     """Test successful login and registration."""
+    with patch(
+        "moviebot.database.db_users.UserDB.verify_user", return_value=True
+    ) and patch(
+        "moviebot.database.db_users.UserDB.register_user", return_value=True
+    ):
+        client.emit(event, {"username": "testuser", "password": "testpassword"})
+        received = client.get_received()
 
-    mocked_user_db.verify_user.return_value = True
-
-    client.emit(event, {"username": "testuser", "password": "testpassword"})
-    received = client.get_received()
-
-    assert received[0]["name"] == expected_event
-    assert received[0]["args"][0]["success"] is True
+        assert received[0]["name"] == expected_event
+        assert received[0]["args"][0]["success"] is True
