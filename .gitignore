@@ -9,3 +9,7 @@ eval/data/extras/*
 
 # pytest coverage
 .coverage
+
+# pytorch
+lightning_logs/
+moviebot/nlu/annotation/joint_bert/model

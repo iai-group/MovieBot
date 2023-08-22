@@ -1,0 +1,176 @@
+REVEAL:
+  keyword:
+    - "[I absolutely adore](modifier) movies focusing on [martial arts](keyword)."
+    - "Films about [space exploration](keyword) [fascinate me](modifier)."
+    - "[I can't stand](modifier) movies that emphasize on [corporate politics](keyword)."
+    - "[Space adventures](keyword) [always intrigue me](modifier)."
+    - "[I get bored with](modifier) movies centered around [political campaigns](keyword)."
+    - "[I love](modifier) stories related to [underwater mysteries](keyword)."
+    - "Films that touch on [culinary arts](keyword) [are delightful](modifier) for me."
+    - "[I often avoid](modifier) movies about [bank heists](keyword)."
+    - "[I'm passionate about](modifier) films that portray [wildlife conservation](keyword)."
+    - "[I never miss](modifier) a movie that explores [desert adventures](keyword)."
+  genre:
+    - "[I am into](modifier) [action](genre) movies lately."
+    - "[I always avoid](modifier) [musical](genre) films."
+    - "[I have a soft spot for](modifier) [thriller](genre) movies."
+    - "[Romantic](genre) films [don't really appeal to me](modifier)."
+    - "[Documentaries](genre) [always educate and entertain me](modifier)."
+    - "[I can't bear](modifier) [horror](genre) films."
+    - "[Fantasy](genre) movies [take me to another world](modifier)."
+    - "[Mystery](genre) films [always keep me on the edge](modifier)."
+    - "[Historical](genre) movies [resonate with me deeply](modifier)."
+    - "[I never really got into](modifier) [sci-fi](genre) movies."
+  actor:
+    - "[I appreciate](modifier) films starring [Brad Pitt](actor)."
+    - "Movies with [Natalie Portman](actor) [are always a treat](modifier) for me."
+    - "[I usually skip](modifier) movies if they feature [Jim Carrey](actor)."
+    - "[Johnny Depp](actor) films [never disappoint me](modifier)."
+    - "[I'm not keen on](modifier) films starring [Scarlett Johansson](actor)."
+    - "[Morgan Freeman](actor) has [always been my favorite](modifier)."
+    - "Films with [Kate Winslet](actor) in them [often resonate with me](modifier)."
+    - "[I can't really connect with](modifier) movies starring [Will Smith](actor)."
+    - "[I enjoy](modifier) watching [Keanu Reeves](actor) on the big screen."
+    - "[Robert Downey Jr.](actor) movies [are always a hit for me](modifier)."
+  director:
+    - "[I respect](modifier) the work of director [Quentin Tarantino](director)."
+    - "Films by [Christopher Nolan](director) [always make me think](modifier)."
+    - "[I usually avoid](modifier) movies directed by [M. Night Shyamalan](director)."
+    - "[James Cameron](director)'s vision in his movies [is unparalleled](modifier)."
+    - "[I'm not fond of](modifier) films directed by [Woody Allen](director)."
+    - "[Steven Spielberg](director) movies [always have a special place](modifier) in my heart."
+    - "Films by [Sofia Coppola](director) [always have a unique touch](modifier)."
+    - "[I rarely watch](modifier) films directed by [Michael Bay](director)."
+    - "[Guillermo del Toro](director) movies [always transport me](modifier) to a different world."
+    - "[Tim Burton](director)'s films [never fail to entertain me](modifier)."
+  year:
+    - "[I cherish](modifier) movies from the [1970s](year)."
+    - "Films from [after](modifier) [2015](year) [really resonate with me](modifier)."
+    - "[I have a special liking for](modifier) movies made in the [1980s](year)."
+    - "[I don't really enjoy](modifier) films from [before](modifier) [1990](year)."
+    - "[I've been exploring](modifier) films from the [early 2010s](year) recently."
+    - "Movies from [before](modifier) [2000](year) [have a distinct charm](modifier)."
+    - "[I often indulge in](modifier) films from the [late 1990s](year)."
+    - "Films made [after](modifier) [2020](year) [are so innovative](modifier)."
+    - "[I rarely watch](modifier) movies from the [1960s](year)."
+    - "[I have a penchant for](modifier) films from the [mid 2000s](year)."
+
+INQUIRE:
+  - What's the storyline of this film?
+  - Can you provide more details about this director?
+  - Who are the main actors in this movie?
+  - What genre does this movie fall under?
+  - Are there any notable awards this film has won?
+  - What's the runtime of this movie?
+  - Are there any interesting trivia about this film?
+  - How did the critics rate this movie?
+  - Is this movie based on a true story?
+  - What's the background score like in this film?
+
+REMOVE_PREFERENCE:
+  - "[I'm over](modifier) [action](genre) movies now."
+  - "[I no longer want to see](modifier) movies with [Tom Cruise](actor)."
+  - "[I've grown tired of](modifier) films directed by [Guy Ritchie](director)."
+  - "[I'd prefer not to get](modifier) recommendations about [political thrillers](keyword) anymore."
+  - "[I've lost interest in](modifier) movies from the [1990s](year)."
+  - "[Please exclude](modifier) [romantic comedies](genre) from my list."
+  - "[I'd rather not see](modifier) films starring [Angelina Jolie](actor) anymore."
+  - "[Can you remove](modifier) movies directed by [Zack Snyder](director) from my suggestions?"
+  - "[I'm not into](modifier) [vampire romance](keyword) films anymore."
+  - "[I've seen enough](modifier) films from the [early 2000s](year)."
+
+REJECT:
+  - That doesn't sound appealing to me.
+  - I'm not in the mood for that recommendation.
+  - I've seen this one already, suggest something else.
+  - That doesn't seem to be my type of film.
+  - I think I'll pass on that one.
+  - That movie isn't really on my watchlist.
+  - I've heard mixed reviews about that film.
+  - I think I'd like to skip this suggestion.
+  - That doesn't sound intriguing enough.
+  - I'm looking for something different.
+
+ACCEPT:
+  - That sounds fantastic, I'll watch it!
+  - I've been wanting to see this one.
+  - Perfect pick, I'm in!
+  - This seems right up my alley.
+  - I've heard good things about this, let's go for it.
+  - That's a great recommendation, thanks!
+  - Sounds interesting, I'll give it a try.
+  - I'm excited to watch this one.
+  - That's exactly what I was in the mood for.
+  - Brilliant choice, let's dive in.
+
+ACKNOWLEDGE:
+  - I understand, thank you.
+  - Makes sense, noted.
+  - Alright, I got it.
+  - Thanks for the clarification.
+  - Okay, that's clear now.
+  - I see, thanks for informing me.
+  - Great, I'll keep that in mind.
+  - Got it, moving on.
+  - Appreciate the info.
+  - Alright, point taken.
+
+DENY:
+  - I don't think that's accurate.
+  - That's not what I'm looking for.
+  - No, that's not the right information.
+  - I believe there's been a misunderstanding.
+  - That's not the one I was referring to.
+  - I haven't mentioned that preference.
+  - I think you've got the wrong idea.
+  - No, that's not the film I'm talking about.
+  - I don't recall asking for that.
+  - That's not the direction I was hoping for.
+
+GREET:
+  - Hello, how are you doing?
+  - Hey there, hope you're well.
+  - Hi, good to see you.
+  - Greetings, let's find a good movie.
+  - Hey! Ready for some movie suggestions?
+
+GOODBYE:
+  - Thanks for the help, see you soon.
+  - Goodbye, I'll be back later.
+  - Catch you later, thanks!
+  - Until next time, bye!
+  - Farewell, and thanks for the recommendations.
+
+RESTART:
+  - Can we start over?
+  - I'd like to begin again.
+  - Let's restart this conversation.
+  - Reset our chat, please.
+  - I think I messed up, let's start from the beginning.
+  - I'd like to go back to the beginning.
+  - Can we refresh our discussion?
+  - I'm a bit lost; can we restart?
+  - Start over, please.
+  - I want to reset our conversation.
+
+UNK:
+  - I'm not sure what I'm looking for.
+  - Can you help? I'm a bit confused.
+  - I don't know how to phrase this.
+  - Sorry, I'm not clear about that.
+  - I'm not certain what to ask.
+  - I'm feeling a bit lost right now.
+  - Can you guide me? I'm unsure.
+  - I don't really know what I want.
+  - I'm a bit overwhelmed; can you help?
+  - How do I put this? I'm unsure.
+  - Do you know any good recipes for pasta?
+  - How's the weather looking tomorrow?
+  - Can you help me with math homework?
+  - Do you have any book recommendations?
+  - I'm trying to find a good place for hiking. Any suggestions?
+  - Can you tell me a joke?
+  - I'm looking for tips on gardening, can you help?
+  - Do you know any good workout routines?
+  - I was wondering about the latest tech gadgets. Any ideas?
+  - I'm thinking of traveling to Europe. Any recommendations?

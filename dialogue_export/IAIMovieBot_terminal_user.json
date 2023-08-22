@@ -1,0 +1,236 @@
+[
+    {
+        "conversation ID": "IAIMovieBot-terminal_user-1691731894",
+        "conversation": [
+            {
+                "participant": "AGENT",
+                "utterance": "How may I help you?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_IAIMovieBot_0",
+                "intent": "welcome",
+                "options": {}
+            },
+            {
+                "participant": "USER",
+                "utterance": "hi",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_terminal_user_1",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "Do you have any specific genres in mind?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_IAIMovieBot_2",
+                "intent": "elicit",
+                "options": {}
+            },
+            {
+                "participant": "USER",
+                "utterance": "action",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_terminal_user_3",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "There are almost 4700 action films. Can you guide me more to narrow down the search space?\n\nCan you give me a few keywords? For example, 'dc comics' or 'criminal mastermind'.",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_IAIMovieBot_4",
+                "intent": "count results;elicit",
+                "options": {}
+            },
+            {
+                "participant": "USER",
+                "utterance": "dc comics",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_terminal_user_5",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "I would like to recommend you an action, dc comics film named **\"[The Dark Knight](https://www.imdb.com/title/tt0468569/)\"**. Have you watched it?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_IAIMovieBot_6",
+                "intent": "recommend",
+                "options": {
+                    "UserIntents.REJECT(reason = watched)": [
+                        "I have already watched it."
+                    ],
+                    "UserIntents.REJECT(reason = dont_like)": [
+                        "Recommend me something else please."
+                    ],
+                    "UserIntents.ACCEPT()": [
+                        "I like this recommendation."
+                    ],
+                    "UserIntents.INQUIRE(more_info)": [
+                        "Tell me something about it."
+                    ],
+                    "UserIntents.RESTART()": [
+                        "/restart"
+                    ]
+                }
+            },
+            {
+                "participant": "USER",
+                "utterance": "exit",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_terminal_user_7",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "I hope you had a good experience. Bye.",
+                "utterance ID": "IAIMovieBot-terminal_user-1691731894_IAIMovieBot_8",
+                "intent": "bye",
+                "options": {}
+            }
+        ],
+        "agent": {
+            "id": "IAIMovieBot",
+            "type": "AGENT"
+        },
+        "user": {
+            "id": "terminal_user",
+            "type": "USER"
+        }
+    },
+    {
+        "conversation ID": "IAIMovieBot-terminal_user-1691733183",
+        "conversation": [
+            {
+                "participant": "AGENT",
+                "utterance": "Shall we start?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_0",
+                "intent": "welcome",
+                "options": {}
+            },
+            {
+                "participant": "USER",
+                "utterance": "Start",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_terminal_user_1",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "Which genres do you prefer?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_2",
+                "intent": "elicit",
+                "options": {}
+            },
+            {
+                "participant": "USER",
+                "utterance": "some awesome genres",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_terminal_user_3",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "I could not find the genres some awesome genres.\n\nPlease answer a few questions to help me find a good movie.\n\nCan you give me a few keywords? For example, 'wrongful imprisonment' or 'tv special'.",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_4",
+                "intent": "count results;elicit",
+                "options": {}
+            },
+            {
+                "participant": "USER",
+                "utterance": "tv special",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_terminal_user_5",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "I would like to recommend you a tv special film named **\"[Steven Banks: Home Entertainment Center](https://www.imdb.com/title/tt0443654/)\"**. Have you watched it?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_6",
+                "intent": "recommend",
+                "options": {
+                    "UserIntents.REJECT(reason = watched)": [
+                        "I have already watched it."
+                    ],
+                    "UserIntents.REJECT(reason = dont_like)": [
+                        "Recommend me something else please."
+                    ],
+                    "UserIntents.ACCEPT()": [
+                        "I like this recommendation."
+                    ],
+                    "UserIntents.INQUIRE(more_info)": [
+                        "Tell me something about it."
+                    ],
+                    "UserIntents.RESTART()": [
+                        "/restart"
+                    ]
+                }
+            },
+            {
+                "participant": "USER",
+                "utterance": "I have already watched it.",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_terminal_user_7",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "There is a tv special film named **\"[Louis C.K.: Shameless](https://www.imdb.com/title/tt0927619/)\"**. Have you seen this one?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_8",
+                "intent": "recommend",
+                "options": {
+                    "UserIntents.REJECT(reason = watched)": [
+                        "I have already watched it."
+                    ],
+                    "UserIntents.REJECT(reason = dont_like)": [
+                        "Recommend me something else please."
+                    ],
+                    "UserIntents.ACCEPT()": [
+                        "I like this recommendation."
+                    ],
+                    "UserIntents.INQUIRE(more_info)": [
+                        "Tell me more about it."
+                    ],
+                    "UserIntents.RESTART()": [
+                        "/restart"
+                    ]
+                }
+            },
+            {
+                "participant": "USER",
+                "utterance": "Recommend me something else please.",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_terminal_user_9",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "There is a tv special film named **\"[Liza with a Z](https://www.imdb.com/title/tt0256153/)\"**. Have you seen this one?",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_10",
+                "intent": "recommend",
+                "options": {
+                    "UserIntents.REJECT(reason = watched)": [
+                        "I have already watched it."
+                    ],
+                    "UserIntents.REJECT(reason = dont_like)": [
+                        "Recommend me something else please."
+                    ],
+                    "UserIntents.ACCEPT()": [
+                        "I like this recommendation."
+                    ],
+                    "UserIntents.INQUIRE(more_info)": [
+                        "Tell me more about it."
+                    ],
+                    "UserIntents.RESTART()": [
+                        "/restart"
+                    ]
+                }
+            },
+            {
+                "participant": "USER",
+                "utterance": "exit",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_terminal_user_11",
+                "options": {}
+            },
+            {
+                "participant": "AGENT",
+                "utterance": "I hope you had a good experience. Bye.",
+                "utterance ID": "IAIMovieBot-terminal_user-1691733183_IAIMovieBot_12",
+                "intent": "bye",
+                "options": {}
+            }
+        ],
+        "agent": {
+            "id": "IAIMovieBot",
+            "type": "AGENT"
+        },
+        "user": {
+            "id": "terminal_user",
+            "type": "USER"
+        }
+    }
+]
