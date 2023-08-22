@@ -5,14 +5,14 @@ import logging
 from dataclasses import asdict
 from typing import Any, Dict, Type
 
+from flask import request, session
+from flask_socketio import emit
+
 from dialoguekit.core import Utterance
 from dialoguekit.platforms.flask_socket_platform import (
     ChatNamespace as DKChatNamespace,
 )
 from dialoguekit.platforms.flask_socket_platform import FlaskSocketPlatform
-from flask import request, session
-from flask_socketio import emit
-
 from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
 from moviebot.controller.http_data_formatter import Message, Response
@@ -27,7 +27,7 @@ class ControllerFlaskSocket(Controller, FlaskSocketPlatform):
         agent_class: Type[MovieBotAgent],
         agent_args: Dict[str, Any] = {},
     ) -> None:
-        """Initializes structs for Controller and sends the get started button
+        """Initializes structs for Controller and sends the get_started button
         to the client.
 
         Args:
@@ -41,8 +41,8 @@ class ControllerFlaskSocket(Controller, FlaskSocketPlatform):
         """Starts the platform.
 
         Args:
-            host: Hostname.
-            port: Port.
+            host: Hostname. Defaults to 127.0.0.1.
+            port: Port. Defaults to 5000.
         """
         self.socketio.on_namespace(ChatNamespace("/", self))
         self.socketio.run(self.app, host=host, port=port)
@@ -50,7 +50,7 @@ class ControllerFlaskSocket(Controller, FlaskSocketPlatform):
     def display_agent_utterance(
         self, user_id: str, utterance: Utterance
     ) -> None:
-        """Emits agent utterance to the client.
+        """Displays agent utterance to the client.
 
         Args:
             user_id: User ID.
@@ -100,11 +100,15 @@ class ChatNamespace(DKChatNamespace):
             return
 
         if is_registering:
-            success = self.user_db.register_user(username, password)
+            authentication_success = self.user_db.register_user(
+                username, password
+            )
         else:
-            success = self.user_db.verify_user(username, password)
+            authentication_success = self.user_db.verify_user(
+                username, password
+            )
 
-        if success:
+        if authentication_success:
             self._platform._active_users[
                 request.sid
             ] = self.user_db.get_user_id(username)
@@ -119,7 +123,7 @@ class ChatNamespace(DKChatNamespace):
                     "success": False,
                     "error": "Username already taken"
                     if is_registering
-                    else "Bad login credentials",
+                    else "Incorrect login credentials",
                 },
             )
 

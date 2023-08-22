@@ -1,12 +1,13 @@
 """This file contains the Controller class which controls the flow of the
 conversation while the user interacts with the agent using Flask REST."""
 
+import logging
 from dataclasses import asdict
 from typing import Any, Dict, Type
 
-from dialoguekit.core import Utterance
 from flask import Flask, request
 
+from dialoguekit.core import Utterance
 from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
 from moviebot.controller.http_data_formatter import Message, Response
@@ -18,7 +19,7 @@ class ControllerFlaskRest(Controller):
         agent_class: Type[MovieBotAgent],
         agent_args: Dict[str, Any] = {},
     ) -> None:
-        """Initializes structs for Controller and sends the get started button
+        """Initializes structs for Controller and sends the get_started button
         to the client.
 
         Args:
@@ -40,8 +41,8 @@ class ControllerFlaskRest(Controller):
         """Starts the platform.
 
         Args:
-            host: Hostname.
-            port: Port.
+            host: Hostname. Defaults to 127.0.0.1.
+            port: Port. Defaults to 5001.
         """
         self._host = host
         self._port = port
@@ -53,7 +54,7 @@ class ControllerFlaskRest(Controller):
             return "MovieBot is alive", 200
         else:
             output = request.get_json()
-            print(output)
+            logging.info(output)
             sender_id = output.get("sender", {}).get("id", "ClientREST")
             if sender_id not in self._active_users.keys():
                 self.connect(sender_id)

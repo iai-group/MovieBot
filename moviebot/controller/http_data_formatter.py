@@ -5,7 +5,6 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Tuple
 
 from dialoguekit.core import AnnotatedUtterance, Utterance
-
 from moviebot.agent.agent import DialogueOptions
 
 HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
@@ -67,6 +66,7 @@ class Message:
             if "**" in message.text and utterance.metadata.get(
                 "recommended_item"
             ):
+                # NLG adds ** in utterance text when a recommendation is made.
                 message.text, movie_attachments = get_movie_message_data(
                     utterance.metadata.get("recommended_item")
                 )
