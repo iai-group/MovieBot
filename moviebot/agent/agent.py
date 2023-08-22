@@ -214,7 +214,6 @@ class MovieBotAgent(Agent):
               previous turn.
         """
         self.dialogue_manager.get_state().user_utterance = user_utterance
-        self.dialogue_manager.get_context().add_utterance(user_utterance)
         user_dacts = self.nlu.generate_dacts(
             user_utterance, user_options, self.dialogue_manager.get_state()
         )
