@@ -9,3 +9,7 @@ eval/data/extras/*
 
 # pytest coverage
 .coverage
+
+# Exportes and logs
+dialogue_export/
+data/users.db
