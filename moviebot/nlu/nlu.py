@@ -40,6 +40,9 @@ class NLU:
     ) -> List[DialogueAct]:
         """Generates dialogue acts for the first turn of the conversation.
 
+        The system chceks if the user provided any voluntary preferences or
+        if the user is just saying hi.
+
         Args:
             user_utterance: User utterance.
 
@@ -59,12 +62,14 @@ class NLU:
     ) -> List[DialogueAct]:
         """Processes response to agent dialogue acts from previous turn.
 
+
         Args:
             user_utterance: User utterance.
             last_agent_dacts: Last agent dialogue acts.
 
         Returns:
-            A list of dialogue acts.
+            A list of dialogue acts. Returns an empty list if user haven't
+            provided any voluntary preferences or preferences after elicitation.
         """
         for last_agent_dact in last_agent_dacts:
             if last_agent_dact.intent == AgentIntents.WELCOME:
@@ -79,10 +84,12 @@ class NLU:
                     return user_dacts
         return []
 
-    def _process_feedback(
+    def _process_recommendation_feedback(
         self, user_utterance: UserUtterance
     ) -> List[DialogueAct]:
-        """Processes feedback from the user.
+        """Processes recommendation feedback from the user. The function checks
+        if the user is rejecting the recommendation, inquiring about the
+        recommendation, or providing voluntary preferences.
 
         Args:
             user_utterance: User utterance.
@@ -135,13 +142,14 @@ class NLU:
         user_dacts = self.intents_checker.check_reveal_intent(
             user_utterance, last_agent_dact
         )
-        if not user_dacts or any(
+        elicitation_is_irrelevant = any(
             [
                 param.value in Values.__dict__.values()
                 for dact in user_dacts
                 for param in dact.params
             ]
-        ):
+        )
+        if not user_dacts or elicitation_is_irrelevant:
             user_dacts.extend(
                 self.intents_checker.check_reveal_voluntary_intent(
                     user_utterance
@@ -160,6 +168,9 @@ class NLU:
         Returns:
             A list of dialogue acts.
         """
+        # TODO: It is unclear the purpose of this function. It should be
+        # removed or refactored.
+        # https://github.com/iai-group/MovieBot/issues/199
         deny_dact = self.intents_checker.check_basic_intent(
             user_utterance, UserIntents.DENY
         )
@@ -173,8 +184,8 @@ class NLU:
         options: DialogueOptions,
         dialogue_state: DialogueState,
     ) -> List[DialogueAct]:
-        """Processes the utterance according to dialogue state and context and
-        generate a user dialogue act for Agent to understand.
+        """Processes the utterance according to dialogue state and
+        generates a user dialogue act for Agent to understand.
 
         Args:
             user_utterance: UserUtterance class containing user input.
@@ -185,7 +196,7 @@ class NLU:
         Returns:
             A list of dialogue acts.
         """
-        # this is the top priority. The agent must check if user selected
+        # This is the top priority. The agent must check if user selected
         # any option.
         selected_option = self.get_selected_option(
             user_utterance, options, dialogue_state.item_in_focus
@@ -193,27 +204,27 @@ class NLU:
         if selected_option:
             return selected_option
 
-        # check if user is ending the conversation.
+        # Check if user is ending the conversation.
         bye_dacts = self.intents_checker.check_basic_intent(
             user_utterance, UserIntents.BYE
         )
         if bye_dacts:
             return bye_dacts
 
-        # check if it's the start of a conversation
+        # Check if it's the start of a conversation.
         if not dialogue_state.last_agent_dacts:
             return self._process_first_turn(user_utterance)
 
-        # Start eliciting or follow up on elicitation
+        # Start eliciting or follow up on elicitation.
         user_dacts = self._process_last_agent_dacts(
             user_utterance, dialogue_state.last_agent_dacts
         )
         if user_dacts:
             return user_dacts
 
-        # Handle feedback after recommendation
+        # Handle feedback after recommendation.
         if dialogue_state.agent_made_offer:
-            user_dacts = self._process_feedback(user_utterance)
+            user_dacts = self._process_recommendation_feedback(user_utterance)
             if user_dacts:
                 return user_dacts
 

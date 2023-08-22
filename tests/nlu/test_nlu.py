@@ -13,7 +13,7 @@ from moviebot.nlu.nlu import NLU
 from tests.mocks.mock_data_loader import MockDataLoader
 
 
-class MockChecker(MagicMock):
+class MockIntentChecker(MagicMock):
     def check_basic_intent(self, user_utterance, intent):
         if intent == UserIntents.BYE and user_utterance.text == "bye":
             return [DialogueAct(UserIntents.BYE, [])]
@@ -61,7 +61,7 @@ def nlu():
         "tag_words_slots_path": "",
     }
     nlu = NLU(config)
-    nlu.intents_checker = MockChecker()
+    nlu.intents_checker = MockIntentChecker()
     return nlu
 
 
