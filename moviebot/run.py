@@ -15,6 +15,7 @@ import logging
 
 import confuse
 
+from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller import server_rest, server_socket
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
@@ -79,5 +80,5 @@ if __name__ == "__main__":
     elif config["FLASK_REST"].get(False):
         server_rest.run(config.get())
     else:
-        CONTROLLER = ControllerTerminal(config.get())
-        CONTROLLER.execute_agent()
+        CONTROLLER = ControllerTerminal(MovieBotAgent, {"config": config.get()})
+        CONTROLLER.start()

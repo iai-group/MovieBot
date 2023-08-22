@@ -9,7 +9,6 @@ from typing import Any, Dict, List
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
@@ -329,7 +328,6 @@ class DialoguePolicy:
     def next_action(
         self,
         dialogue_state: DialogueState,
-        dialogue_context: DialogueContext = None,
         restart: bool = False,
     ) -> List[DialogueAct]:
         """Decides the next action to be taken by the agent based on the
@@ -337,7 +335,6 @@ class DialoguePolicy:
 
         Args:
             dialogue_state: Current dialogue state.
-            dialogue_context: Context of the dialogue. Defaults to None.
             restart: Whether or not to restart the dialogue. Defaults to False.
 
         Returns:

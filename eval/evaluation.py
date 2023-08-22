@@ -12,7 +12,7 @@ from copy import deepcopy
 
 from run_bot import arg_parse
 
-from moviebot.agent.agent import Agent
+from moviebot.agent.agent import MovieBotAgent
 from moviebot.core.utterance.utterance import UserUtterance
 
 
@@ -163,7 +163,7 @@ def get_slot_annotator(config):
     Returns:
         SlotAnnotator: Returns a SlotAnnotator instance.
     """
-    agent = Agent(config)
+    agent = MovieBotAgent(config)
     return agent.nlu.intents_checker.slot_annotator
 
 

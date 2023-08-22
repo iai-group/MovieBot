@@ -11,5 +11,5 @@ eval/data/extras/*
 .coverage
 
 # Exportes and logs
-dialogue_export
+dialogue_export/
 data/users.db

@@ -44,6 +44,9 @@ class DialogueState:
         )
         self.last_user_dacts: List[DialogueAct] = None  # the current user act
 
+        # Keep track of the recommended movies
+        self.movies_recommended = {}
+
     def _agent_offer_state(self) -> str:
         """Returns string representation of the agent's offer state."""
         offer_state = {
@@ -82,6 +85,7 @@ class DialogueState:
             else None
         )
         dstate["Agent_Offer_State"] = self._agent_offer_state()
+        dstate["Agent_Recommendations"] = str(self.movies_recommended)
         return dstate
 
     def __str__(self) -> str:
@@ -99,6 +103,8 @@ class DialogueState:
         # the recommended movie and all it's attributes from the database
         self.item_in_focus = None
         self.items_in_context = False
+        self.movies_recommended = {}
+
         self.agent_requestable = deepcopy(self.ontology.agent_requestable)
         self.user_requestable = deepcopy(self.ontology.user_requestable)
         self.agent_req_filled = (
