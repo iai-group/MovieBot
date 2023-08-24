@@ -16,8 +16,9 @@ from moviebot.nlu.annotation.joint_bert.slot_mapping import (
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.nlu import NLU
+from moviebot.nlu.user_intents_checker import PATTERN_DONT_WANT
 
-_DEFAULT_MODEL_PATH = "moviebot/nlu/annotation/joint_bert/model"
+_DEFAULT_MODEL_PATH = "models/joint_bert"
 
 
 class NeuralNLU(NLU):
@@ -62,13 +63,13 @@ class NeuralNLU(NLU):
 
         constraints = []
         operator = None
-        for slot in slots.items():
+        for slot in slots:
             if slot["slot"] == "MODIFIER":
-                operator = self.get_operator(slot["value"])
+                operator = self.get_constraint_operator(slot["value"])
                 continue
             constraints.append(
                 ItemConstraint(
-                    Slots(slot=slot["slot"]),
+                    Slots[slot["slot"]].value,
                     op=operator or Operator.EQ,
                     value=slot["value"],
                 )
@@ -101,7 +102,7 @@ class NeuralNLU(NLU):
 
         # [1:-1] to remove [CLS] and [SEP] tokens
         offset_mapping = encoding["offset_mapping"][0, 1:-1][mask].tolist()
-        slot_idxs = slot_idxs[1:-1][mask]
+        slot_idxs = slot_idxs[1:-1][mask].tolist()
 
         # Identify starting points for slots (i.e., 'B_' labels)
         start_indices = [
@@ -134,8 +135,8 @@ class NeuralNLU(NLU):
 
         return JointBERTIntent.from_index(intent_idx).name, slots_info
 
-    def get_operator(self, text: str) -> Operator:
-        """Gets the operator based on the text.
+    def get_constraint_operator(self, text: str) -> Operator:
+        """Gets the operator based on the text. Only supports negation for now.
 
         Args:
             text: The text to analyze.
@@ -143,18 +144,20 @@ class NeuralNLU(NLU):
         Returns:
             The operator.
         """
-        return Operator.EQ
+        negation = any(phrase in text for phrase in PATTERN_DONT_WANT)
+        return Operator.NE if negation else Operator.EQ
 
 
 if __name__ == "__main__":
-    nlu = NeuralNLU()
+    nlu = NeuralNLU({})
+
+    class DS:
+        item_in_focus = None
 
     while True:
         text = input("Enter text: ")
-        predicted_intent, predicted_slots = nlu.generate_dacts(
-            UserUtterance(text)
+        da = nlu.generate_dacts(
+            UserUtterance(text), options={}, dialogue_state=DS()
         )
 
-        print(text)
-        print(predicted_intent)
-        print(predicted_slots)
+        print([str(da) for da in da])
