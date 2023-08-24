@@ -5,7 +5,6 @@ import string
 from copy import deepcopy
 from typing import Any, Dict, List
 
-import wikipedia
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 

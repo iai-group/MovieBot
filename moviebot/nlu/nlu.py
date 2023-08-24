@@ -1,6 +1,6 @@
 """This file contains the code for the abstract NLU class of the MovieBot.
 Other NLU classes should inherit from this class and implement the
-`generate_dact` method.
+`generate_dacts` method.
 """
 
 from abc import ABC, abstractmethod
@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import wikipedia
 
+from moviebot.core.core_types import DialogueOptions
 from moviebot.core.intents import UserIntents
 from moviebot.core.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
@@ -17,14 +18,18 @@ from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 
-DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
-
 
 class NLU(ABC):
-    """The abstract NLU class."""
+    def __init__(self, config):
+        """The abstract NLU class.
+
+        Args:
+            config: Paths to ontology, database and tag words for slots in NLU.
+        """
+        self.config = config
 
     @abstractmethod
-    def generate_dact(
+    def generate_dacts(
         self,
         user_utterance: UserUtterance,
         options: DialogueOptions,
@@ -92,7 +97,10 @@ class NLU(ABC):
             )
             results = [r.split("(")[0].strip() for r in results]
             for result in deepcopy(results):
-                if result not in self.slot_values[Slots.TITLE.value]:
+                if (
+                    result
+                    not in self.intents_checker.slot_values[Slots.TITLE.value]
+                ):
                     results.remove(result)
             if len(results) > 0:
                 return [

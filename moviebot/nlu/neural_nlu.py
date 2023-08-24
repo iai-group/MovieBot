@@ -1,8 +1,8 @@
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from transformers import BertTokenizerFast
 
-from moviebot.agent.agent import DialogueOptions
+from moviebot.core.core_types import DialogueOptions
 from moviebot.core.intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
@@ -21,11 +21,20 @@ _DEFAULT_MODEL_PATH = "moviebot/nlu/annotation/joint_bert/model"
 
 
 class NeuralNLU(NLU):
-    def __init__(self, path: Optional[str] = _DEFAULT_MODEL_PATH) -> None:
+    def __init__(
+        self, config: Dict[str, Any], path: Optional[str] = _DEFAULT_MODEL_PATH
+    ) -> None:
+        """The NeuralNLU class.
+
+        Args:
+            config: Paths to ontology, database and tag words for slots in NLU.
+            path: Path to the model. Defaults to _DEFAULT_MODEL_PATH.
+        """
+        super().__init__(config)
         self._model = JointBERT.from_pretrained(path)
         self._tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 
-    def generate_dact(
+    def generate_dacts(
         self,
         user_utterance: UserUtterance,
         options: DialogueOptions = None,
@@ -138,11 +147,11 @@ class NeuralNLU(NLU):
 
 
 if __name__ == "__main__":
-    nlu = NLU()
+    nlu = NeuralNLU()
 
     while True:
         text = input("Enter text: ")
-        predicted_intent, predicted_slots = nlu.generate_dact(
+        predicted_intent, predicted_slots = nlu.generate_dacts(
             UserUtterance(text)
         )
 
