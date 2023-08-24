@@ -29,6 +29,8 @@ class JointBERT(nn.Module):
 
     def forward(self, input_ids, attention_mask):
         outputs = self.bert(input_ids, attention_mask=attention_mask)
+        sequence_output = outputs[0]
+        pooled_output = outputs[1]  # [CLS]
         intent_logits = self.intent_classifier(outputs.pooler_output)
         slot_logits = self.slot_classifier(outputs.last_hidden_state)
         return intent_logits, slot_logits

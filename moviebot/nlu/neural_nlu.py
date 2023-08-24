@@ -66,7 +66,9 @@ class NLU:
                 }
             )
 
-        print(intent_idx)
+        print(
+            intent_idx, slot_idxs, self._tokenizer.tokenize(user_utterance.text)
+        )
         return JointBERTIntent.from_index(intent_idx).name, slots_info
 
 
