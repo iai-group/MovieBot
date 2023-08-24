@@ -1,3 +1,4 @@
+"""Joint BERT model for intent classification and slot annotation."""
 import os
 from typing import List, Optional, Tuple
 
@@ -11,9 +12,15 @@ _BERT_BASE_MODEL = "bert-base-uncased"
 class JointBERT(nn.Module):
     def __init__(
         self,
-        intent_label_count,
-        slot_label_count,
-    ):
+        intent_label_count: int,
+        slot_label_count: int,
+    ) -> None:
+        """Initializes the JointBERT model.
+
+        Args:
+            intent_label_count: The number of intent labels.
+            slot_label_count: The number of slot labels.
+        """
         super(JointBERT, self).__init__()
 
         self.slot_label_count = slot_label_count
@@ -27,10 +34,19 @@ class JointBERT(nn.Module):
             self.bert.config.hidden_size, slot_label_count
         )
 
-    def forward(self, input_ids, attention_mask):
+    def forward(
+        self, input_ids: torch.Tensor, attention_mask: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Forward pass of the model.
+
+        Args:
+            input_ids: The input token IDs.
+            attention_mask: The attention mask.
+
+        Returns:
+            The intent and slot logits.
+        """
         outputs = self.bert(input_ids, attention_mask=attention_mask)
-        sequence_output = outputs[0]
-        pooled_output = outputs[1]  # [CLS]
         intent_logits = self.intent_classifier(outputs.pooler_output)
         slot_logits = self.slot_classifier(outputs.last_hidden_state)
         return intent_logits, slot_logits
@@ -40,19 +56,32 @@ class JointBERT(nn.Module):
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
     ) -> Tuple[int, List[int]]:
+        """Predicts the intent and slot annotations for the given input.
+
+        Args:
+            input_ids: The input token IDs.
+            attention_mask (optional): The attention mask. Defaults to None.
+
+        Returns:
+            A tuple of the predicted intent and slot annotations.
+        """
         if attention_mask is None:
             attention_mask = torch.ones(input_ids.shape)
 
         intent_logits, slot_logits = self(input_ids, attention_mask)
 
         predicted_intent = intent_logits.argmax(dim=1).item()
-        predicted_slots = slot_logits.argmax(dim=2).squeeze().tolist()
+        predicted_slots = slot_logits.argmax(dim=2).squeeze()
 
         return predicted_intent, predicted_slots
 
     @classmethod
     def from_pretrained(cls, path: str) -> None:
-        """Loads the model and tokenizer from the specified directory."""
+        """Loads the model and tokenizer from the specified directory.
+
+        Args:
+            path: The path to the directory containing the model and tokenizer.
+        """
 
         # Load the state dictionary
         model_path = os.path.join(path, "joint_bert_model.pth")

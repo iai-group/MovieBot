@@ -13,3 +13,8 @@ flask-socketio
 questionary
 dataclasses_json
 dialoguekit==0.0.9.dev0
+torch
+torchvision
+transformers
+pytorch-lightning==2.0.7
+wandb

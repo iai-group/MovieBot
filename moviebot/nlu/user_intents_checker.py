@@ -380,42 +380,6 @@ class UserIntentsChecker:
             user_dacts.append(dact)
         return user_dacts
 
-    def generate_params_continue_recommendation(
-        self, item_in_focus: Dict[str, Any]
-    ) -> ItemConstraint:
-        """Finds similar movies based on the title of item in focus.
-
-        Args:
-            item_in_focus: Item in conversation focus.
-
-        Returns:
-            Item constraint with titles of similar movies to the item in focus.
-        """
-        movie_title = item_in_focus[Slots.TITLE.value]
-        results = wikipedia.search(
-            f"I need a film similar to {movie_title}", 20
-        )
-        results = [r.split("(")[0].strip() for r in results]
-        for result in deepcopy(results):
-            if result not in self.slot_values[Slots.TITLE.value]:
-                results.remove(result)
-        if len(results) > 0:
-            return [
-                ItemConstraint(Slots.TITLE.value, Operator.EQ, str(results))
-            ]
-        else:
-            results = wikipedia.search(
-                f"I need a movie similar to {movie_title}", 20
-            )
-            results = [r.split("(")[0].strip() for r in results]
-            for result in deepcopy(results):
-                if result not in self.slot_values[Slots.TITLE.value]:
-                    results.remove(result)
-            if len(results) > 0:
-                return [
-                    ItemConstraint(Slots.TITLE.value, Operator.EQ, str(results))
-                ]
-
     def _filter_dact(  # noqa: C901
         self, dact: DialogueAct, raw_utterance: str
     ) -> None:

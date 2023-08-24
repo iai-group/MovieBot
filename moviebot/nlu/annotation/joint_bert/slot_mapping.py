@@ -44,9 +44,11 @@ class JointBERTSlot(EnumWithMapping):
     I_YEAR = auto()
 
     def is_start(self) -> bool:
+        """Returns True if the slot is a starting point for a slot value."""
         return "B_" in self.name
 
     def is_inside(self) -> bool:
+        """Returns True if the slot is inside a slot value."""
         return "I_" in self.name
 
 

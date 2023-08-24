@@ -1,41 +1,57 @@
+"""Training script for the JointBERT model."""
+
+import argparse
 import json
 import os
+from typing import Tuple
 
 import pytorch_lightning as pl
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
-from transformers import AdamW, BertTokenizer, get_linear_schedule_with_warmup
+from transformers import get_linear_schedule_with_warmup
 
-from moviebot.nlu.annotation.joint_bert.snips import JointBERTDataset
+from moviebot.nlu.annotation.joint_bert import JointBERT
+from moviebot.nlu.annotation.joint_bert.dataset import JointBERTDataset
+from moviebot.nlu.annotation.joint_bert.slot_mapping import (
+    JointBERTIntent,
+    JointBERTSlot,
+)
 
-from .joint_bert import JointBERT
+Batch = Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]
 
-# from moviebot.nlu.annotation.joint_bert.slot_mapping import (
-#     JointBERTIntent,
-#     JointBERTSlot,
-# )
-
-
-_MODEL_OUTPUT_PATH = "moviebot/nlu/annotation/joint_bert/snips_model"
-# _DATA_PATH = "data/training/utterances_chatGPT_clean.yaml"
+_MODEL_OUTPUT_PATH = "models/joint_bert"
+_DATA_PATH = "data/training/nlu/utterances.yaml"
 
 _IGNORE_INDEX = -100
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 
 class JointBERTTrain(JointBERT, pl.LightningModule):
-    def __init__(self, intent_label_count, slot_label_count, **kwargs):
+    def __init__(
+        self, intent_label_count: int, slot_label_count: int, **kwargs
+    ) -> None:
+        """Initializes the JointBERT training model.
+
+        Args:
+            intent_label_count: Number of intent labels to classify.
+            slot_label_count: Number of slot labels to classify.
+        """
         super(JointBERTTrain, self).__init__(
             intent_label_count, slot_label_count
         )
         self.save_hyperparameters()
 
-        print(self.hparams)
+    def training_step(self, batch: Batch, batch_idx: int) -> torch.Tensor:
+        """Training step for the JointBERT model.
 
-    def training_step(self, batch, batch_idx):
+        Args:
+            batch: A batch of data.
+            batch_idx: Index of the batch.
+
+        Returns:
+            The loss for the batch.
+        """
         input_ids, attention_mask, intent_labels, slot_labels = batch
         relevant_labels = slot_labels.view(-1) != _IGNORE_INDEX
 
@@ -44,40 +60,11 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
             intent_logits.view(-1, self.intent_label_count),
             intent_labels.view(-1),
         )
-        # loss_slot = F.cross_entropy(
-        #     slot_logits.view(-1, self.slot_label_count),
-        #     slot_labels.view(-1),
-        #     ignore_index=_IGNORE_INDEX,
-        # )
+
         loss_slot = F.cross_entropy(
             slot_logits.view(-1, self.slot_label_count)[relevant_labels],
             slot_labels.view(-1)[relevant_labels],
         )
-        loss = loss_intent + loss_slot
-        # Debugging: Print shapes and values of important variables
-        # if batch_idx % 20 == 0:  # Print every 10 batches
-        #     print("Batch:", batch_idx)
-        #     print("loss_slot_1", loss_slot)
-        #     print(
-        #         "loss_slot_2",
-        #         F.cross_entropy(
-        #             slot_logits.view(-1, self.slot_label_count),
-        #             slot_labels.view(-1),
-        #             ignore_index=-99,
-        #         ),
-        #     )
-        #     loss_3 = F.cross_entropy(
-        #         slot_logits.view(-1, self.slot_label_count)[relevant_labels],
-        #         slot_labels.view(-1)[relevant_labels],
-        #     )
-        #     print("loss_slot_3", loss_3)
-        #     print(
-        #         "loss_4",
-        #         self.slot_loss_fct(
-        #             slot_logits.view(-1, self.slot_label_count),
-        #             slot_labels.view(-1),
-        #         ),
-        #     )
 
         self.log(
             "train_loss_intent",
@@ -95,13 +82,21 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
             prog_bar=True,
             logger=True,
         )
-        return loss
+        return loss_intent + loss_slot
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch: Batch, batch_idx: int) -> torch.Tensor:
+        """Validation step for the JointBERT model.
+
+        Args:
+            batch: A batch of data.
+            batch_idx: Index of the batch.
+
+        Returns:
+            The loss for the batch.
+        """
         input_ids, attention_mask, intent_labels, slot_labels = batch
         intent_logits, slot_logits = self(input_ids, attention_mask)
 
-        # Compute the loss for intent and slot predictions
         loss_intent = F.cross_entropy(
             intent_logits.view(-1, self.intent_label_count),
             intent_labels.view(-1),
@@ -113,7 +108,6 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         )
         val_loss = loss_intent + loss_slot
 
-        # Optionally, compute additional metrics
         intent_acc = (
             (intent_logits.argmax(dim=1) == intent_labels).float().mean()
         )
@@ -155,6 +149,7 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         return val_loss
 
     def configure_optimizers(self):
+        """Configures the optimizer and scheduler for training."""
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
             {
@@ -163,7 +158,7 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
                     for n, p in self.named_parameters()
                     if not any(nd in n for nd in no_decay)
                 ],
-                "weight_decay": 0.0,  # self.args.weight_decay,
+                "weight_decay": self.hparams.weight_decay,
             },
             {
                 "params": [
@@ -174,14 +169,14 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
                 "weight_decay": 0.0,
             },
         ]
-        optimizer = AdamW(
-            optimizer_grouped_parameters, lr=self.hparams["learning_rate"]
+        optimizer = torch.optim.AdamW(
+            optimizer_grouped_parameters, lr=self.hparams.learning_rate
         )
 
         scheduler = get_linear_schedule_with_warmup(
             optimizer,
             num_warmup_steps=0,
-            num_training_steps=self.hparams["max_steps"],
+            num_training_steps=self.hparams.max_steps,
         )
         return [optimizer], [scheduler]
 
@@ -195,35 +190,43 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         torch.save(self.state_dict(), model_path)
 
         # Save metadata
-        # metadata = {
-        #     "intents": [intent.name for intent in JointBERTIntent],
-        #     "slots": [slot.name for slot in JointBERTSlot],
-        # }
+        metadata = {
+            "intents": [intent.name for intent in JointBERTIntent],
+            "slots": [slot.name for slot in JointBERTSlot],
+        }
         metadata_path = os.path.join(path, "metadata.json")
-        # with open(metadata_path, "w") as f:
-        #     json.dump(metadata, f)
+        with open(metadata_path, "w") as f:
+            json.dump(metadata, f)
+
+
+def parse_arguments():
+    """Parses the command line arguments."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--max_epochs", type=int, default=5)
+    parser.add_argument("--learning_rate", type=float, default=5e-5)
+    parser.add_argument("--weight_decay", type=float, default=0.0)
+    args = parser.parse_args()
+    return args
 
 
 if __name__ == "__main__":
-    max_epochs = 3
+    args = parse_arguments()
+    wandb_logger = WandbLogger(project="JointBERT")
 
-    dataset = JointBERTDataset("train")
-    validation = JointBERTDataset("valid")
-    dataloader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=4)
-    val_dataloader = DataLoader(validation, batch_size=64, num_workers=4)
+    dataset = JointBERTDataset(_DATA_PATH)
+    dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=4)
 
     model = JointBERTTrain(
         intent_label_count=dataset.intent_label_count,
         slot_label_count=dataset.slot_label_count,
-        learning_rate=5e-5,
-        max_steps=len(dataloader) * max_epochs,
+        learning_rate=args.learning_rate,
+        max_steps=len(dataloader) * args.max_epochs,
+        weight_decay=args.weight_decay,
     )
 
-    wandb_logger = WandbLogger(project="JointBERT")
+    trainer = pl.Trainer(max_epochs=args.max_epochs, logger=wandb_logger)
+    trainer.fit(model, dataloader)
 
-    trainer = pl.Trainer(max_epochs=max_epochs, logger=wandb_logger)
-    trainer.fit(model, dataloader, val_dataloader)
-
-    # Save model
     model.save_pretrained(_MODEL_OUTPUT_PATH)
+    dataset.tokenizer.save_pretrained(_MODEL_OUTPUT_PATH)
     print(f"Model saved to {_MODEL_OUTPUT_PATH}")
