@@ -11,7 +11,6 @@ from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_context import DialogueContext
 from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.dialogue_manager.dialogue_state_tracker import (
@@ -116,11 +115,3 @@ class DialogueManager:
             The current state of dialogue.
         """
         return self.dialogue_state_tracker.dialogue_state
-
-    def get_context(self) -> DialogueContext:
-        """Returns current context of the dialogue.
-
-        Returns:
-            The current context of the dialogue with a specific user.
-        """
-        return self.dialogue_state_tracker.dialogue_context

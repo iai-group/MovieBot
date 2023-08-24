@@ -38,8 +38,7 @@ class ChatNamespace(Namespace):
             is_registering: Whether user is registering or logging in.
             data: Data received from client.
         """
-        event_name = "register_response" if is_registering else "login_response"
-
+        event_name = "authentication"
         username = data.get("username", "").strip()
         password = data.get("password", "").strip()
 

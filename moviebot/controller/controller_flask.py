@@ -4,8 +4,10 @@ conversation while the user interacts with the agent using Flask."""
 from datetime import datetime
 from typing import Any, Callable, Dict, Union
 
+from dialoguekit.core import Utterance
+
 import moviebot.controller.http_data_formatter as http_formatter
-from moviebot.agent.agent import Agent, DialogueOptions
+from moviebot.agent.agent import DialogueOptions, MovieBotAgent
 from moviebot.controller.controller import Controller
 from moviebot.core.utterance.utterance import UserUtterance
 
@@ -15,7 +17,7 @@ class ControllerFlask(Controller):
         """Initializes structs for Controller and sends the get started button
         to the client."""
         self.token = ""
-        self.agent: Dict[str, Agent] = {}
+        self.agent: Dict[str, MovieBotAgent] = {}
         self.record_data: Dict[str, Dict[str, Any]] = {}
         self.record_data_agent: Dict[str, Dict[str, Any]] = {}
         self.user_options: Dict[str, DialogueOptions] = {}
@@ -361,3 +363,35 @@ class ControllerFlask(Controller):
             " you a few questions and based on your answers, I will try to"
             " find a movie for you.\n\n"
         )
+
+    def display_agent_utterance(
+        self, user_id: str, utterance: Utterance
+    ) -> None:
+        """Displays an agent utterance.
+
+        Args:
+            user_id: User ID.
+            utterance: An instance of Utterance.
+        """
+        # TODO: Implement this method.
+        # See: https://github.com/iai-group/MovieBot/issues/158
+        pass
+
+    def display_user_utterance(
+        self, user_id: str, utterance: Utterance
+    ) -> None:
+        """Displays a user utterance.
+
+        Args:
+            user_id: User ID.
+            utterance: An instance of Utterance.
+        """
+        # TODO: Implement this method.
+        # See: https://github.com/iai-group/MovieBot/issues/158
+        pass
+
+    def start(self) -> None:
+        """Starts the platform."""
+        # TODO: Implement this method.
+        # See: https://github.com/iai-group/MovieBot/issues/158
+        pass

@@ -12,8 +12,12 @@ eval/data/extras/*
 
 # pytorch
 lightning_logs/
-moviebot/nlu/annotation/joint_bert/model
 **/wandb/*
 
 # models
+models/
 **/checkpoints/*
+
+# Exportes and logs
+dialogue_export/
+data/users.db
