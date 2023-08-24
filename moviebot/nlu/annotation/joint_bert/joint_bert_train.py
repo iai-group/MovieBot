@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from pytorch_lightning.loggers import WandbLogger
-from torch.optim import SGD
 from torch.utils.data import DataLoader
 from transformers import AdamW, BertTokenizer, get_linear_schedule_with_warmup
 
@@ -28,33 +27,13 @@ tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 
 class JointBERTTrain(JointBERT, pl.LightningModule):
-    def __init__(
-        self, intent_label_count, slot_label_count, learning_rate=5e-5
-    ):
+    def __init__(self, intent_label_count, slot_label_count, **kwargs):
         super(JointBERTTrain, self).__init__(
             intent_label_count, slot_label_count
         )
-        self.learning_rate = learning_rate
-        self.slot_loss_fct = nn.CrossEntropyLoss(ignore_index=_IGNORE_INDEX)
+        self.save_hyperparameters()
 
-    def on_train_batch_start(self, batch, batch_idx):
-        if batch_idx == 10:
-            self.initial_weights = self.intent_classifier.weight.clone()
-            print(self.initial_weights)
-
-    def on_train_batch_end(self, outputs, batch, batch_idx):
-        if batch_idx == 10:
-            for name, param in self.named_parameters():
-                if (
-                    "intent_classifier" in name or "slot_classifier" in name
-                ) and param.requires_grad:
-                    print(name, param.grad)
-            weight_diff = self.intent_classifier.weight - self.initial_weights
-            print(
-                f"Weight updates for the intent classifier layer in batch {batch_idx}:"
-            )
-            print(self.intent_classifier.weight)
-            print(weight_diff)
+        print(self.hparams)
 
     def training_step(self, batch, batch_idx):
         input_ids, attention_mask, intent_labels, slot_labels = batch
@@ -195,14 +174,16 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
                 "weight_decay": 0.0,
             },
         ]
-        # optimizer = AdamW(optimizer_grouped_parameters, lr=self.learning_rate)
-        optimizer = SGD(self.parameters(), lr=self.learning_rate)
+        optimizer = AdamW(
+            optimizer_grouped_parameters, lr=self.hparams["learning_rate"]
+        )
+
         scheduler = get_linear_schedule_with_warmup(
             optimizer,
             num_warmup_steps=0,
-            num_training_steps=self.trainer.max_steps,
+            num_training_steps=self.hparams["max_steps"],
         )
-        return optimizer
+        return [optimizer], [scheduler]
 
     def save_pretrained(self, path: str) -> None:
         """Saves the model to the specified directory."""
@@ -223,45 +204,25 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         #     json.dump(metadata, f)
 
 
-def print_weights(model):
-    for name, param in model.named_parameters():
-        if (
-            "intent_classifier" in name or "slot_classifier" in name
-        ) and param.requires_grad:
-            print(
-                name,
-                param.data.mean(),
-                param.data.std(),
-                param.data.min(),
-                param.data.max(),
-            )
-
-
-def check_grad_requirements(model):
-    for name, param in model.named_parameters():
-        print(name, "requires_grad:", param.requires_grad)
-
-
 if __name__ == "__main__":
+    max_epochs = 3
+
     dataset = JointBERTDataset("train")
     validation = JointBERTDataset("valid")
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=4)
     val_dataloader = DataLoader(validation, batch_size=64, num_workers=4)
+
     model = JointBERTTrain(
         intent_label_count=dataset.intent_label_count,
         slot_label_count=dataset.slot_label_count,
+        learning_rate=5e-5,
+        max_steps=len(dataloader) * max_epochs,
     )
 
-    # wandb_logger = WandbLogger(project="JointBERT")
+    wandb_logger = WandbLogger(project="JointBERT")
 
-    # check_grad_requirements(model)
-    print_weights(model)
-
-    trainer = pl.Trainer(max_epochs=1)  # , logger=wandb_logger)
-    # trainer = pl.Trainer(max_epochs=10, logger=wandb_logger)
+    trainer = pl.Trainer(max_epochs=max_epochs, logger=wandb_logger)
     trainer.fit(model, dataloader, val_dataloader)
-
-    print_weights(model)
 
     # Save model
     model.save_pretrained(_MODEL_OUTPUT_PATH)
