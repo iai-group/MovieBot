@@ -20,8 +20,8 @@ from moviebot.nlu.user_intents_checker import UserIntentsChecker
 
 class RuleBasedNLU(NLU):
     def __init__(self, config):
-        """RuleBasedNLU is a basic natural language understander to generate dialogue
-        acts for the Conversational Agent.
+        """RuleBasedNLU is a basic natural language understander to generate
+        dialogue acts for the Conversational Agent.
 
         Implementation of this NLU is designed to work for Slot-Filling
         applications. The purpose of this class is to provide a quick way of
