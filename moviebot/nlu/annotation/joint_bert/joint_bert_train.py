@@ -3,7 +3,7 @@
 import argparse
 import json
 import os
-from typing import Tuple
+from typing import List, Tuple
 
 import pytorch_lightning as pl
 import torch
@@ -42,6 +42,32 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         )
         self.save_hyperparameters()
 
+    def _calculate_losses(
+        self, batch: Batch
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Calculates losses for a batch.
+
+        Args:
+            batch: A batch of data.
+
+        Returns:
+            Tuple of intent and slot losses.
+        """
+        input_ids, attention_mask, intent_labels, slot_labels = batch
+        relevant_labels = slot_labels.view(-1) != _IGNORE_INDEX
+
+        intent_logits, slot_logits = self(input_ids, attention_mask)
+
+        loss_intent = F.cross_entropy(
+            intent_logits.view(-1, self.intent_label_count),
+            intent_labels.view(-1),
+        )
+        loss_slot = F.cross_entropy(
+            slot_logits.view(-1, self.slot_label_count)[relevant_labels],
+            slot_labels.view(-1)[relevant_labels],
+        )
+        return loss_intent, loss_slot
+
     def training_step(self, batch: Batch, batch_idx: int) -> torch.Tensor:
         """Training step for the JointBERT model.
 
@@ -52,19 +78,7 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         Returns:
             The loss for the batch.
         """
-        input_ids, attention_mask, intent_labels, slot_labels = batch
-        relevant_labels = slot_labels.view(-1) != _IGNORE_INDEX
-
-        intent_logits, slot_logits = self(input_ids, attention_mask)
-        loss_intent = F.cross_entropy(
-            intent_logits.view(-1, self.intent_label_count),
-            intent_labels.view(-1),
-        )
-
-        loss_slot = F.cross_entropy(
-            slot_logits.view(-1, self.slot_label_count)[relevant_labels],
-            slot_labels.view(-1)[relevant_labels],
-        )
+        loss_intent, loss_slot = self._calculate_losses(batch)
 
         self.log(
             "train_loss_intent",
@@ -94,31 +108,8 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
         Returns:
             The loss for the batch.
         """
-        input_ids, attention_mask, intent_labels, slot_labels = batch
-        intent_logits, slot_logits = self(input_ids, attention_mask)
-
-        loss_intent = F.cross_entropy(
-            intent_logits.view(-1, self.intent_label_count),
-            intent_labels.view(-1),
-        )
-        loss_slot = F.cross_entropy(
-            slot_logits.view(-1, self.slot_label_count),
-            slot_labels.view(-1),
-            ignore_index=_IGNORE_INDEX,
-        )
+        loss_intent, loss_slot = self._calculate_losses(batch)
         val_loss = loss_intent + loss_slot
-
-        intent_acc = (
-            (intent_logits.argmax(dim=1) == intent_labels).float().mean()
-        )
-        slot_acc = (
-            (
-                (slot_logits.argmax(dim=2) == slot_labels)
-                & (slot_labels != _IGNORE_INDEX)
-            )
-            .float()
-            .mean()
-        )
 
         # Log the metrics
         self.log(
@@ -129,26 +120,10 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
             prog_bar=True,
             logger=True,
         )
-        self.log(
-            "intent_acc",
-            intent_acc,
-            on_step=False,
-            on_epoch=True,
-            prog_bar=True,
-            logger=True,
-        )
-        self.log(
-            "slot_acc",
-            slot_acc,
-            on_step=False,
-            on_epoch=True,
-            prog_bar=True,
-            logger=True,
-        )
 
         return val_loss
 
-    def configure_optimizers(self):
+    def configure_optimizers(self) -> Tuple[List, List]:
         """Configures the optimizer and scheduler for training."""
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -205,6 +180,9 @@ def parse_arguments():
     parser.add_argument("--max_epochs", type=int, default=5)
     parser.add_argument("--learning_rate", type=float, default=5e-5)
     parser.add_argument("--weight_decay", type=float, default=0.0)
+    parser.add_argument(
+        "--model_output_path", type=str, default=_MODEL_OUTPUT_PATH
+    )
     args = parser.parse_args()
     return args
 
@@ -227,6 +205,6 @@ if __name__ == "__main__":
     trainer = pl.Trainer(max_epochs=args.max_epochs, logger=wandb_logger)
     trainer.fit(model, dataloader)
 
-    model.save_pretrained(_MODEL_OUTPUT_PATH)
-    dataset.tokenizer.save_pretrained(_MODEL_OUTPUT_PATH)
-    print(f"Model saved to {_MODEL_OUTPUT_PATH}")
+    model.save_pretrained(args.model_output_path)
+    dataset.tokenizer.save_pretrained(args.model_output_path)
+    print(f"Model saved to {args.model_output_path}")

@@ -15,11 +15,10 @@ from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.nlu import NLU
-from moviebot.nlu.user_intents_checker import UserIntentsChecker
 
 
 class RuleBasedNLU(NLU):
-    def __init__(self, config):
+    def __init__(self, config: Dict[str, Any]) -> None:
         """RuleBasedNLU is a basic natural language understander to generate
         dialogue acts for the Conversational Agent.
 
@@ -34,14 +33,13 @@ class RuleBasedNLU(NLU):
             config: Paths to ontology, database and tag words for slots in NLU.
         """
         super().__init__(config)
-        self.intents_checker = UserIntentsChecker(config)
 
     def _process_first_turn(
         self, user_utterance: UserUtterance
     ) -> List[DialogueAct]:
         """Generates dialogue acts for the first turn of the conversation.
 
-        The system chceks if the user provided any voluntary preferences or
+        The system checks if the user provided any voluntary preferences or
         if the user is just saying hi.
 
         Args:
@@ -88,9 +86,10 @@ class RuleBasedNLU(NLU):
     def _process_recommendation_feedback(
         self, user_utterance: UserUtterance
     ) -> List[DialogueAct]:
-        """Processes recommendation feedback from the user. The function checks
-        if the user is rejecting the recommendation, inquiring about the
-        recommendation, or providing voluntary preferences.
+        """Processes recommendation feedback from the user.
+
+        The function checks if the user is rejecting the recommendation,
+        inquiring about the recommendation, or providing voluntary preferences.
 
         Args:
             user_utterance: User utterance.

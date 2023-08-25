@@ -1,3 +1,5 @@
+"""Dataset loading for training and evaluating the JointBERT model. """
+import os
 import re
 from typing import Dict, Generator, List, Tuple
 
@@ -26,6 +28,9 @@ def load_yaml(path: str) -> Dict[str, List[str]]:
     Returns:
         The data in the YAML file.
     """
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"File not found: {path}")
+
     with open(path) as f:
         return yaml.safe_load(f)
 
@@ -53,7 +58,13 @@ def parse_data(data: Dict[str, List[str]]) -> Generator[Tuple, None, None]:
 
 
 class JointBERTDataset(Dataset):
-    def __init__(self, path: str, max_length: int = 32):
+    def __init__(self, path: str, max_length: int = 32) -> None:
+        """Initializes the dataset.
+
+        Args:
+            path: The path to the YAML file containing the data.
+            max_length: The maximum length of the input sequence.
+        """
         self.data = load_yaml(path)
         self.max_length = max_length
 
@@ -104,6 +115,21 @@ class JointBERTDataset(Dataset):
         self, intent: str, text: str, slot_annotations: Tuple(str, str)
     ) -> Tuple[int, List[str], List[int]]:
         """Tokenizes the text and assigns labels based on slot annotations.
+
+        The main purpose of this method is to convert the slot annotations into
+        labels that can be used to train the model. The labels need to have the
+        same length as the tokenized utterance.
+
+        For example:
+
+        Input: "I like scifi."
+        Tokens: ["I", "like", "sci", "##fi", "."]
+        Labels: ["OUT", "OUT", "B_GENRE", -100, "OUT"]
+        Indexes: [0, 0, 3, -100, 0]
+
+        Note that we put -100 to ignore evaluation of the loss function for
+        tokens that are not beginning of a slot. This makes it easier to
+        decode the labels later.
 
         Args:
             intent: The intent of the text.

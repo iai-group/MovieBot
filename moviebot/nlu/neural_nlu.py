@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from transformers import BertTokenizerFast
 
@@ -40,12 +40,12 @@ class NeuralNLU(NLU):
         user_utterance: UserUtterance,
         options: DialogueOptions = None,
         dialogue_state: DialogueState = None,
-    ):
+    ) -> List[DialogueAct]:
         """Processes the utterance according to dialogue state and generate a
         user dialogue act for Agent to understand.
 
         Args:
-            user_utterance: UserUtterance class containing user input.
+            user_utterance: User utterance class containing user input.
             options: A list of options provided to the user to choose from.
             dialogue_state: The current dialogue state, if available. Defaults
                 to None.
@@ -83,7 +83,7 @@ class NeuralNLU(NLU):
         """Annotates the utterance with intent and slot information.
 
         Args:
-            user_utterance: UserUtterance class containing user input.
+            user_utterance: User utterance class containing user input.
 
         Returns:
             A tuple of the intent and slot information.

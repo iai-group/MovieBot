@@ -1,4 +1,6 @@
 """Joint BERT model for intent classification and slot annotation."""
+from __future__ import annotations
+
 import os
 from typing import List, Optional, Tuple
 
@@ -44,7 +46,7 @@ class JointBERT(nn.Module):
             attention_mask: The attention mask.
 
         Returns:
-            The intent and slot logits.
+            Tuple of intent and slot logits.
         """
         outputs = self.bert(input_ids, attention_mask=attention_mask)
         intent_logits = self.intent_classifier(outputs.pooler_output)
@@ -76,11 +78,14 @@ class JointBERT(nn.Module):
         return predicted_intent, predicted_slots
 
     @classmethod
-    def from_pretrained(cls, path: str) -> None:
+    def from_pretrained(cls, path: str) -> JointBERT:
         """Loads the model and tokenizer from the specified directory.
 
         Args:
             path: The path to the directory containing the model and tokenizer.
+
+        Returns:
+            The loaded model.
         """
 
         # Load the state dictionary

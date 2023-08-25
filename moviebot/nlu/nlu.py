@@ -17,16 +17,18 @@ from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
+from moviebot.nlu.user_intents_checker import UserIntentsChecker
 
 
 class NLU(ABC):
-    def __init__(self, config):
+    def __init__(self, config: Dict[str, Any]) -> None:
         """The abstract NLU class.
 
         Args:
             config: Paths to ontology, database and tag words for slots in NLU.
         """
         self.config = config
+        self.intents_checker = UserIntentsChecker(config)
 
     @abstractmethod
     def generate_dacts(
@@ -34,7 +36,7 @@ class NLU(ABC):
         user_utterance: UserUtterance,
         options: DialogueOptions,
         dialogue_state: DialogueState = None,
-    ):
+    ) -> List[DialogueAct]:
         """Processes the utterance according to dialogue state and
         generate user dialogue acts for Agent to understand.
 
@@ -44,6 +46,8 @@ class NLU(ABC):
             dialogue_state: The current dialogue state, if available. Defaults
               to None.
 
+        Raises:
+            NotImplementedError: If the method is not implemented.
         Returns:
             A list of dialogue acts.
         """

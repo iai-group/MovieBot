@@ -1,3 +1,4 @@
+"""Mapping of slot and intent labels to indices for JointBERT model."""
 from __future__ import annotations
 
 from enum import Enum, auto
