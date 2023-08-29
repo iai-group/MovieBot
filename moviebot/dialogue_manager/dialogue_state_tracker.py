@@ -1,6 +1,8 @@
 """Dialogue state tracker updates the current dialogue state."""
 
 
+import re
+from collections import defaultdict
 from copy import deepcopy
 from typing import Any, Dict, List
 
@@ -8,6 +10,7 @@ from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
@@ -34,235 +37,196 @@ class DialogueStateTracker:
         """Initializes the dialogue state tracker."""
         self.dialogue_state.initialize()
 
-    def update_state_user(  # noqa: C901
-        self, user_dacts: List[DialogueAct]
+    def _update_information_need(self, user_dact: DialogueAct) -> None:
+        """Updates the current information need.
+
+        Args:
+            user_dact: The user dialogue act.
+        """
+        # Back up of the information need before update it based on user dact.
+        self.dialogue_state.frame_PIN = deepcopy(self.dialogue_state.frame_CIN)
+        self.dialogue_state.agent_should_offer_similar = False
+        self.dialogue_state.agent_made_offer = False
+
+        # Update the information need based on user dact.
+        if user_dact.intent == UserIntents.REVEAL:
+            self._update_information_need_reveal(user_dact.params)
+        elif user_dact.intent == UserIntents.REMOVE_PREFERENCE:
+            # Remove mentioned slot value pairs from the information need.
+            for param in user_dact.params:
+                if param.slot in self.ontology.multiple_values_CIN:
+                    self.dialogue_state.frame_CIN[param.slot].remove(
+                        param.value
+                    )
+                else:
+                    self.dialogue_state.frame_CIN[param.slot] = None
+
+    def _update_information_need_reveal(
+        self, params: List[ItemConstraint]
     ) -> None:
+        """Updates the current information need based on reveal intent
+        constraints.
+
+        Args:
+            params: The list of item constraints.
+        """
+        # Add mentioned slot value pairs to the information need.
+        for param in params:
+            if param.slot in self.dialogue_state.frame_CIN:
+                if param.op == Operator.NE:
+                    value = re.sub(
+                        "(\.NOT\.|^)", ".NOT.", param.value, 1
+                    ).strip()
+                if param.slot in self.ontology.multiple_values_CIN:
+                    self.dialogue_state.frame_CIN[param.slot].append(value)
+                else:
+                    self.dialogue_state.frame_CIN[param.slot] = value
+
+        # Check if some slots are filled with the same value.
+        self.dialogue_state.agent_must_clarify = False
+        self.dialogue_state.dual_params = {}
+        slot_values = defaultdict(list)
+
+        for slot, value in self.dialogue_state.frame_CIN.items():
+            if value:
+                value_list = value if isinstance(value, list) else [value]
+                for v in value_list:
+                    slot_values[v].append(slot)
+
+        dual_slot_values = {s: v for s, v in slot_values.items() if len(v) > 1}
+        if dual_slot_values:
+            self.dialogue_state.dual_params = dual_slot_values
+            self.dialogue_state.agent_must_clarify = True
+
+    def _update_state_recommended_movie(self, user_dact: DialogueAct) -> None:
+        """Updates the decisions about the recommended movie.
+
+        Args:
+            user_dact: The user dialogue act.
+
+        Raises:
+            ValueError: If there is no item in focus.
+        """
+        if self.dialogue_state.item_in_focus is None:
+            raise ValueError("No item in focus.")
+
+        name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
+
+        # The recommended movie is accepted.
+        if user_dact.intent == UserIntents.ACCEPT:
+            self.dialogue_state.agent_made_offer = True
+            self.dialogue_state.agent_should_make_offer = False
+            self.dialogue_state.movies_recommended[name].append("accept")
+        # The recommended movie is rejected.
+        if user_dact.intent == UserIntents.REJECT:
+            self.dialogue_state.agent_made_offer = False
+            self.dialogue_state.agent_should_make_offer = True
+            self.dialogue_state.agent_should_offer_similar = False
+            self.dialogue_state.movies_recommended[name].append(
+                user_dact.params[0].value
+            )
+        # The recommended movie is inquired.
+        if user_dact.intent == UserIntents.INQUIRE:
+            if "inquire" not in self.dialogue_state.movies_recommended[name]:
+                self.dialogue_state.movies_recommended[name].append("inquire")
+            try:
+                [
+                    self.dialogue_state.user_requestable.remove(s)
+                    for s, v in user_dact.params
+                ]
+            except ValueError:
+                pass
+
+    def _update_state_pursuing_conversation(
+        self, user_dact: DialogueAct
+    ) -> None:
+        """Updates the decisions about pursuing the conversation.
+
+        Args:
+            user_dact: The user dialogue act.
+        """
+        # The user wants to continue the recommendation.
+        if user_dact.intent == UserIntents.CONTINUE_RECOMMENDATION:
+            self.dialogue_state.agent_made_offer = False
+            self.dialogue_state.agent_should_make_offer = True
+            self.dialogue_state.agent_should_offer_similar = True
+
+            self.dialogue_state.similar_movies = (
+                {
+                    self.dialogue_state.item_in_focus[Slots.TITLE.value]: eval(
+                        user_dact.params[0].value
+                    )
+                }
+                if self.dialogue_state.item_in_focus
+                else {}
+            )
+
+        # The user wants to restart the conversation.
+        if user_dact.intent == UserIntents.RESTART:
+            self.initialize()
+
+        # The user wants to end the conversation.
+        if user_dact.intent == UserIntents.BYE:
+            self.dialogue_state.at_terminal_state = True
+
+    def _merge_constraints_per_intent(
+        self, dacts: List[DialogueAct]
+    ) -> List[DialogueAct]:
+        """Merges the item constraints per intent.
+
+        Args:
+            dacts: The list of dialogue acts.
+
+        Returns:
+            The list of dialogue acts.
+        """
+        merged_dacts: List[DialogueAct] = []
+        for dact in dacts:
+            if dact.intent not in [d.intent for d in merged_dacts]:
+                merged_dacts.append(dact)
+            else:
+                for merged_dact in merged_dacts:
+                    if merged_dact.intent == dact.intent:
+                        merged_dact.params.extend(dact.params)
+        return merged_dacts
+
+    def update_state_user(self, user_dacts: List[DialogueAct]) -> None:
         """Updates the current dialogue state and context based on user
         dialogue acts.
 
         Args:
             user_dacts: List of dialogue acts which is the output of NLU.
         """
-        # re-filtering the dacts
-        user_dacts_copy = deepcopy(user_dacts)
-        user_dacts = []
-        for copy_dact in user_dacts_copy:
-            if copy_dact.intent not in [d.intent for d in user_dacts]:
-                user_dacts.append(copy_dact)
-            else:
-                for user_dact in user_dacts:
-                    if user_dact.intent == copy_dact.intent:
-                        user_dact.params.extend(copy_dact.params)
-
+        user_dacts = self._merge_constraints_per_intent(user_dacts)
         self.dialogue_state.last_user_dacts = user_dacts
+
         for user_dact in user_dacts:
-            # makes a back-up of current info needs if user wants to refine
-            # those
             if user_dact.intent in [
                 UserIntents.REMOVE_PREFERENCE,
                 UserIntents.REVEAL,
             ]:
-                self.dialogue_state.frame_PIN = deepcopy(
-                    self.dialogue_state.frame_CIN
-                )
-                self.dialogue_state.agent_should_offer_similar = False
+                self._update_information_need(user_dact)
 
-            # user liked the movie
-            if user_dact.intent == UserIntents.ACCEPT:
-                name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                if name in self.dialogue_state.movies_recommended:
-                    self.dialogue_state.movies_recommended[name].append(
-                        "accept"
-                    )
+            self._update_state_recommended_movie(user_dact)
+            self._update_state_pursuing_conversation(user_dact)
 
-            # change agent state to should make offer
-            if user_dact.intent == UserIntents.REJECT:
-                self.dialogue_state.agent_made_offer = False
-                self.dialogue_state.agent_should_make_offer = True
-                name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                if name in self.dialogue_state.movies_recommended:
-                    self.dialogue_state.movies_recommended[name].append(
-                        user_dact.params[0].value
-                    )
-                else:
-                    self.dialogue_state.movies_recommended[name] = [
-                        user_dact.params[0].value
-                    ]
-                if self.dialogue_state.agent_should_offer_similar:
-                    # Todo
-                    pass
+        # Check if all agent requestable slots are filled.
+        self.dialogue_state.agent_req_filled = all(
+            [
+                slot in self.dialogue_state.frame_CIN
+                for slot in self.dialogue_state.agent_requestable
+            ]
+        )
 
-            # removed the information needs if mentioned by the user
-            if user_dact.intent == UserIntents.REMOVE_PREFERENCE:
-                for param in user_dact.params:
-                    if param.slot in self.ontology.multiple_values_CIN:
-                        self.dialogue_state.frame_CIN[param.slot].remove(
-                            param.value
-                        )
-                    else:
-                        self.dialogue_state.frame_CIN[param.slot] = None
-
-            if user_dact.intent == UserIntents.REVEAL:
-                # fills in the current information needs
-                for param in user_dact.params:
-                    if param.slot in self.dialogue_state.frame_CIN:
-                        if param.slot in self.ontology.multiple_values_CIN:
-                            if param.op == Operator.NE:
-                                if (
-                                    param.value
-                                    in self.dialogue_state.frame_CIN[param.slot]
-                                ):
-                                    self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ].remove(param.value)
-                                else:
-                                    param.value = f".NOT.{param.value}"
-                                    if (
-                                        param.value
-                                        not in self.dialogue_state.frame_CIN[
-                                            param.slot
-                                        ]
-                                    ):
-                                        self.dialogue_state.frame_CIN[
-                                            param.slot
-                                        ].append(param.value)
-                            else:
-                                if (
-                                    f".NOT.{param.value}"
-                                    in self.dialogue_state.frame_CIN[param.slot]
-                                ):
-                                    self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ].remove(f".NOT.{param.value}")
-                                if (
-                                    param.value
-                                    not in self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ]
-                                ):
-                                    self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ].append(param.value)
-                        # elif param.slot == Slots.YEAR.value:
-                        #     self._add_year_CIN(param)
-                        else:
-                            if param.op == Operator.NE:
-                                if (
-                                    self.dialogue_state.frame_CIN[param.slot]
-                                    == param.value
-                                ):
-                                    self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ] = None
-                                else:
-                                    param.value = f".NOT.{param.value}"
-                                    self.dialogue_state.frame_CIN[
-                                        param.slot
-                                    ] = param.value
-                            else:
-                                self.dialogue_state.frame_CIN[
-                                    param.slot
-                                ] = param.value
-
-                # checks if two parameters have the same value:
-                self.dialogue_state.agent_must_clarify = False
-                self.dialogue_state.dual_params = {}
-                param_values = {}
-                for param, value in self.dialogue_state.frame_CIN.items():
-                    if value and isinstance(value, list):
-                        for v in value:
-                            if v in param_values:
-                                param_values[v].append(param)
-                            else:
-                                param_values[v] = [param]
-                    elif value:
-                        if value in param_values:
-                            param_values[value].append(param)
-                        else:
-                            param_values[value] = [param]
-                if any([len(v) > 1 for v in param_values.values()]):
-                    self.dialogue_state.dual_params = {
-                        x: y for x, y in param_values.items() if len(y) > 1
-                    }
-                    self.dialogue_state.agent_must_clarify = True
-
-            if (
-                user_dact.intent
-                in [UserIntents.REVEAL, UserIntents.REMOVE_PREFERENCE]
-                and self.dialogue_state.agent_made_offer
-            ):
-                self.dialogue_state.agent_made_offer = False
-
-            # remove from user requestables when user asks for anything
-            if user_dact.intent == UserIntents.INQUIRE:
-                # Quick fix for issue #123
-                # See details: https://github.com/iai-group/MovieBot/issues/123
-                if self.dialogue_state.item_in_focus:
-                    name = self.dialogue_state.item_in_focus[Slots.TITLE.value]
-                    if name in self.dialogue_state.movies_recommended:
-                        if (
-                            "inquire"
-                            not in self.dialogue_state.movies_recommended[name]
-                        ):
-                            self.dialogue_state.movies_recommended[name].append(
-                                "inquire"
-                            )
-                    else:
-                        self.dialogue_state.movies_recommended[name] = [
-                            "inquire"
-                        ]
-                for param in user_dact.params:
-                    if param.slot in self.dialogue_state.user_requestable:
-                        self.dialogue_state.user_requestable.remove(param.slot)
-
-            # when user acknowledges the previous intent
-            # TODO: if any approval required, add here
-
-            if user_dact.intent == UserIntents.CONTINUE_RECOMMENDATION:
-                self.dialogue_state.agent_made_offer = False
-                self.dialogue_state.agent_should_make_offer = True
-                self.dialogue_state.agent_should_offer_similar = True
-                # Quick fix for issue #123
-                # See details: https://github.com/iai-group/MovieBot/issues/123
-                self.dialogue_state.similar_movies = (
-                    {
-                        self.dialogue_state.item_in_focus[
-                            Slots.TITLE.value
-                        ]: eval(user_dact.params[0].value)
-                    }
-                    if self.dialogue_state.item_in_focus
-                    else {}
-                )
-
-            if user_dact.intent == UserIntents.RESTART:
-                self.initialize()
-
-            if user_dact.intent == UserIntents.BYE:
-                self.dialogue_state.at_terminal_state = True
-
-        # checks if all CIN slots are filled, database is accessed to get a
-        # recommendation
-        if not self.dialogue_state.agent_req_filled:
-            self.dialogue_state.agent_req_filled = True
-            for slot in self.dialogue_state.agent_requestable:
-                if not self.dialogue_state.frame_CIN[slot]:
-                    self.dialogue_state.agent_req_filled = False
-                    break
-
-        # check if the agent can make any offer without asking any further
-        # question
-        if not self.dialogue_state.agent_can_lookup:
+        # Check is a recommendation can be made
+        if self.dialogue_state.agent_req_filled:
+            self.dialogue_state.agent_can_lookup = True
             for value in self.dialogue_state.frame_CIN.values():
-                if isinstance(value, list):
-                    for val in value:
-                        if val not in Values.__dict__.values():
-                            self.dialogue_state.agent_can_lookup = True
-                            break
-                if self.dialogue_state.agent_can_lookup:
-                    break
-                elif value and value not in Values.__dict__.values():
-                    self.dialogue_state.agent_can_lookup = True
-                    break
+                value = value if isinstance(value, list) else [value]
+                for v in value:
+                    if v in Values.__dict__.values():
+                        self.dialogue_state.agent_can_lookup = False
+                        break
 
     def update_state_agent(self, agent_dacts: List[DialogueAct]) -> None:
         """Updates the current dialogue state and context based on agent
