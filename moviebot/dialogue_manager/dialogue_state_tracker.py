@@ -73,6 +73,7 @@ class DialogueStateTracker:
         # Add mentioned slot value pairs to the information need.
         for param in params:
             if param.slot in self.dialogue_state.frame_CIN:
+                value = param.value
                 if param.op == Operator.NE:
                     value = re.sub(
                         "(\.NOT\.|^)", ".NOT.", param.value, 1
@@ -131,8 +132,8 @@ class DialogueStateTracker:
                 self.dialogue_state.movies_recommended[name].append("inquire")
             try:
                 [
-                    self.dialogue_state.user_requestable.remove(s)
-                    for s, v in user_dact.params
+                    self.dialogue_state.user_requestable.remove(param.slot)
+                    for param in user_dact.params
                 ]
             except ValueError:
                 pass
@@ -206,8 +207,8 @@ class DialogueStateTracker:
                 UserIntents.REVEAL,
             ]:
                 self._update_information_need(user_dact)
-
-            self._update_state_recommended_movie(user_dact)
+            if self.dialogue_state.agent_made_offer:
+                self._update_state_recommended_movie(user_dact)
             self._update_state_pursuing_conversation(user_dact)
 
         # Check if all agent requestable slots are filled.
