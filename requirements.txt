@@ -8,8 +8,13 @@ confuse>=2.0.0
 python-telegram-bot==13.15
 wikipedia
 nltk
-Flask>=2.3.2
-Flask-SocketIO
+flask>=2.3.2
+flask-socketio>=5.3.3
 questionary
 dataclasses_json
 dialoguekit==0.0.9.dev0
+torch>=2.0.1
+torchvision>=0.15.2
+transformers>=4.31.0
+pytorch-lightning>=2.0.7
+wandb>=0.15.8

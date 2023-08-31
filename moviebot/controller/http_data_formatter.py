@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Tuple
 
 from dialoguekit.core import AnnotatedUtterance, Utterance
-from moviebot.agent.agent import DialogueOptions
+from moviebot.core.core_types import DialogueOptions
 
 HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
 

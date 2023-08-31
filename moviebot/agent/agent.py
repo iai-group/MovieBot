@@ -1,16 +1,16 @@
 """Types of conversational agents are available here."""
 import logging
 import os
-from typing import Any, Dict, List, Union
+from typing import Any, Dict
 
 from dialoguekit.core import AnnotatedUtterance, Intent, Utterance
 from dialoguekit.participant import Agent, DialogueParticipant
+from moviebot.core.core_types import DialogueOptions
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.database.db_movies import DataBase
-from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.nlg.nlg import NLG
-from moviebot.nlu.nlu import NLU
+from moviebot.nlu.rule_based_nlu import RuleBasedNLU as NLU
 from moviebot.ontology.ontology import Ontology
 from moviebot.recommender.recommender_model import RecommenderModel
 from moviebot.recommender.slot_based_recommender_model import (
@@ -18,7 +18,6 @@ from moviebot.recommender.slot_based_recommender_model import (
 )
 
 logger = logging.getLogger(__name__)
-DialogueOptions = Dict[DialogueAct, Union[str, List[str]]]
 
 
 def _get_ontology(ontology_path: str) -> Ontology:
@@ -221,11 +220,8 @@ class MovieBotAgent(Agent):
               previous turn.
         """
         self.dialogue_manager.get_state().user_utterance = user_utterance
-
-        user_dacts = self.nlu.generate_dact(
-            user_utterance,
-            user_options,
-            self.dialogue_manager.get_state(),
+        user_dacts = self.nlu.generate_dacts(
+            user_utterance, user_options, self.dialogue_manager.get_state()
         )
         self.dialogue_manager.receive_input(user_dacts)
 
