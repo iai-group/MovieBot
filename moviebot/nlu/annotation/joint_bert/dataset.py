@@ -25,6 +25,9 @@ def load_yaml(path: str) -> Dict[str, List[str]]:
     Args:
         path: The path to the YAML file.
 
+    Raises:
+        FileNotFoundError: If the file does not exist.
+
     Returns:
         The data in the YAML file.
     """
@@ -35,7 +38,9 @@ def load_yaml(path: str) -> Dict[str, List[str]]:
         return yaml.safe_load(f)
 
 
-def parse_data(data: Dict[str, List[str]]) -> Generator[Tuple, None, None]:
+def parse_data(
+    data: Dict[str, List[str]]
+) -> Generator[Tuple[str, str, List[str]], None, None]:
     """Parses the input data to extract intent, text, and slot annotations.
 
     Args:
@@ -63,7 +68,8 @@ class JointBERTDataset(Dataset):
 
         Args:
             path: The path to the YAML file containing the data.
-            max_length: The maximum length of the input sequence.
+            max_length: The maximum length of the input sequence. Defaults to
+                32.
         """
         self.data = load_yaml(path)
         self.max_length = max_length

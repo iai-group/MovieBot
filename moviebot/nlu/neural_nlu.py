@@ -47,6 +47,7 @@ class NeuralNLU(NLU):
         Args:
             user_utterance: User utterance class containing user input.
             options: A list of options provided to the user to choose from.
+                Defaults to None.
             dialogue_state: The current dialogue state, if available. Defaults
                 to None.
 
