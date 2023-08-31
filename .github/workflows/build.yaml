@@ -29,7 +29,7 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt --use-deprecated=legacy-resolver
 
       - name: Run black
         shell: bash
