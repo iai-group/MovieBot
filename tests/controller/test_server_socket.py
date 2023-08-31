@@ -31,8 +31,8 @@ def client(flask_app: Flask, mocked_user_db: MagicMock) -> SocketIOTestClient:
 @pytest.mark.parametrize(
     "event, expected_event",
     [
-        ("register", "register_response"),
-        ("login", "login_response"),
+        ("register", "authentication"),
+        ("login", "authentication"),
     ],
 )
 def test_handle_authentication_empty_fields(
@@ -54,8 +54,8 @@ def test_handle_authentication_empty_fields(
 @pytest.mark.parametrize(
     "event, expected_event",
     [
-        ("register", "register_response"),
-        ("login", "login_response"),
+        ("register", "authentication"),
+        ("login", "authentication"),
     ],
 )
 def test_handle_authentication_success(

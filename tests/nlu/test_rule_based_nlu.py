@@ -9,7 +9,7 @@ from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.values import Values
-from moviebot.nlu.nlu import NLU
+from moviebot.nlu.rule_based_nlu import RuleBasedNLU
 from tests.mocks.mock_data_loader import MockDataLoader
 
 
@@ -60,7 +60,7 @@ def nlu():
         "slot_values_path": "",
         "tag_words_slots_path": "",
     }
-    nlu = NLU(config)
+    nlu = RuleBasedNLU(config)
     nlu.intents_checker = MockIntentChecker()
     return nlu
 

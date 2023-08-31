@@ -7,8 +7,9 @@ from typing import Any, Callable, Dict, Union
 from dialoguekit.core import Utterance
 
 import moviebot.controller.http_data_formatter as http_formatter
-from moviebot.agent.agent import DialogueOptions, MovieBotAgent
+from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
+from moviebot.core.core_types import DialogueOptions
 from moviebot.core.utterance.utterance import UserUtterance
 
 
