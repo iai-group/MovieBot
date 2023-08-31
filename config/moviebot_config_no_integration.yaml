@@ -19,8 +19,8 @@ TELEGRAM: False # execute the code on Telegram
 
 POLLING: False # True when using Telegram without server
 
-FLASK_SOCKET: False
-FLASK_REST: True
+FLASK_SOCKET: True
+FLASK_REST: False
 
 BOT_TOKEN_PATH: config/bot_token.yaml
 

@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.domain.movie_domain import MovieDomain
 from moviebot.recommender.slot_based_recommender_model import (

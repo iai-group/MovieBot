@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 
 

@@ -14,7 +14,6 @@ from typing import TYPE_CHECKING, Any, Dict, List
 from dialoguekit.connector import DialogueConnector
 from dialoguekit.core import AnnotatedUtterance
 from dialoguekit.participant import User
-
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
@@ -189,12 +188,3 @@ class DialogueManager(DialogueConnector):
             The current state of dialogue.
         """
         return self.dialogue_state_tracker.dialogue_state
-
-    def _stringify_dialogue_acts(self) -> None:
-        """Stringifies the dialogue acts before dump."""
-        for utterance in self._dialogue_history.utterances:
-            options = utterance.metadata.get("options", {})
-            options_str = defaultdict(list)
-            for da, opts in options.items():
-                options_str[str(da)] = opts
-            utterance.metadata["options"] = options_str

@@ -1,5 +1,6 @@
 """This file contains the Controller which controls the conversation between
 the agent and the user."""
+from __future__ import annotations
 
 import json
 import logging
@@ -11,9 +12,13 @@ from typing import TYPE_CHECKING, Any, DefaultDict, Dict, Type
 
 from dialoguekit.participant import User
 from dialoguekit.platforms import Platform as DialogueKitPlatform
-
+from moviebot.connector.dialogue_connector import MovieBotDialogueConnector
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
+
+if TYPE_CHECKING:
+    from moviebot.agent.agent import MovieBotAgent
+
 
 if TYPE_CHECKING:
     from moviebot.agent.agent import MovieBotAgent
@@ -27,7 +32,7 @@ logger = logging.getLogger(__name__)
 class Controller(DialogueKitPlatform, ABC):
     def __init__(
         self,
-        agent_class: Type["MovieBotAgent"],
+        agent_class: Type[MovieBotAgent],
         config: Dict[str, Any] = {},
     ) -> None:
         """Represents a platform.
@@ -41,7 +46,7 @@ class Controller(DialogueKitPlatform, ABC):
         self._config = config
         self._active_users: DefaultDict[str, User] = defaultdict(User)
 
-    def get_new_agent(self) -> "MovieBotAgent":
+    def get_new_agent(self) -> MovieBotAgent:
         """Returns a new instance of the agent.
 
         Returns:
@@ -56,12 +61,8 @@ class Controller(DialogueKitPlatform, ABC):
             user_id: User ID.
         """
         self._active_users[user_id] = User(user_id)
-        agent = self.get_new_agent()
-        dialogue_connector = DialogueManager(
-            config=agent.data_config,
-            isBot=agent.isBot,
-            new_user=agent.new_user,
-            agent=agent,
+        dialogue_connector = MovieBotDialogueConnector(
+            agent=self.get_new_agent(),
             user=self._active_users[user_id],
             platform=self,
         )

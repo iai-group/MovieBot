@@ -5,13 +5,14 @@ conversation while the user interacts with the agent using python console.
 from typing import Any, Dict, Type
 
 import questionary
+from questionary.constants import INDICATOR_SELECTED
+
 from dialoguekit.core import Utterance
 from dialoguekit.participant import User
 from dialoguekit.platforms import TerminalPlatform
-from questionary.constants import INDICATOR_SELECTED
-
-from moviebot.agent.agent import DialogueOptions, MovieBotAgent
+from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
+from moviebot.core.core_types import DialogueOptions
 
 
 class ControllerTerminal(Controller, TerminalPlatform):

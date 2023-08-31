@@ -225,7 +225,11 @@ class ControllerTelegram(Controller):
                 f" name = '{update.effective_user['first_name']}'"
             )
         start = time.time()
-        user_utterance = UserUtterance(update.message.to_dict().get("text", ""))
+        message_dict = update.message.to_dict()
+        user_utterance = UserUtterance(
+            message_dict.get("text", ""),
+            timestamp=message_dict.get("date", None),
+        )
         (
             self.response[user_id],
             self.user_options[user_id],

@@ -8,7 +8,6 @@ from typing import List
 
 from dialoguekit.core import Utterance
 from dialoguekit.participant import DialogueParticipant
-
 from moviebot.nlu.text_processing import Token, Tokenizer
 
 
@@ -30,3 +29,10 @@ class UserUtterance(Utterance):
             self._tokens = Tokenizer().process_text(self.text)
 
         return self._tokens
+
+
+@dataclass(eq=True, unsafe_hash=True)
+class AgentUtterance(Utterance):
+    """Expands the base class to automatically set the participant as agent."""
+
+    participant: DialogueParticipant = DialogueParticipant.AGENT

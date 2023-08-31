@@ -1,10 +1,9 @@
 from typing import List
 
 import pytest
-from dialoguekit.core import Utterance
-from dialoguekit.participant import DialogueParticipant
 
-from moviebot.core.utterance.utterance import UserUtterance
+from dialoguekit.core import Utterance
+from moviebot.core.utterance.utterance import AgentUtterance, UserUtterance
 from moviebot.nlu.text_processing import Token
 
 
@@ -47,7 +46,7 @@ def test_get_tokens(utterance: str, expected: List[Token]) -> None:
     "utterance, source",
     [
         (UserUtterance("hello"), "UserUtterance"),
-        (Utterance("welcome", DialogueParticipant.AGENT), "Utterance"),
+        (AgentUtterance("welcome"), "AgentUtterance"),
     ],
 )
 def test_get_source(utterance: Utterance, source: str) -> None:

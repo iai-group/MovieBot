@@ -6,7 +6,7 @@ import logging
 import os
 from typing import Any, Callable, Dict
 
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.slots import Slots
 

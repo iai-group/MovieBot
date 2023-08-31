@@ -633,7 +633,10 @@ class NLG:
                     negative = True
                     value = value.replace(".NOT.", "")
                 _a_an = "an" if value[0] in ["a", "e", "i", "o", "u"] else "a"
-                param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])
+                param_key = DialogueAct(
+                    UserIntents.REMOVE_PREFERENCE,
+                    [ItemConstraint(param, Operator.EQ, value)],
+                )
                 if param == Slots.GENRES.value:
                     if negative:
                         options[param_key] = [
