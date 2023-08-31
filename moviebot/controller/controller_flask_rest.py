@@ -60,8 +60,7 @@ class ControllerFlaskRest(Controller):
                 self.connect(sender_id)
             self.message(sender_id, output.get("message", {}).get("text", ""))
 
-            agent_response = self._last_agent_responses[sender_id]
-            del self._last_agent_responses[sender_id]
+            agent_response = self._last_agent_responses.pop(sender_id)
             return agent_response
 
     def display_agent_utterance(
