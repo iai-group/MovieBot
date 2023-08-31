@@ -212,7 +212,7 @@ class MovieBotAgent(Agent):
 
         agent_dacts = self.dialogue_manager.generate_output()
         dialogue_state = (
-            self._dialogue_connector.dialogue_state_tracker.dialogue_state
+            self.dialogue_manager.dialogue_state_tracker.dialogue_state
         )
         agent_response, options = self.nlg.generate_output(
             agent_dacts,
@@ -249,4 +249,4 @@ class MovieBotAgent(Agent):
         Returns:
             True if conversation is finished.
         """
-        return self._dialogue_connector.get_state().at_terminal_state
+        return self.dialogue_manager.get_state().at_terminal_state

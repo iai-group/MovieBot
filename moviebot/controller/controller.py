@@ -14,11 +14,6 @@ from dialoguekit.participant import User
 from dialoguekit.platforms import Platform as DialogueKitPlatform
 from moviebot.connector.dialogue_connector import MovieBotDialogueConnector
 from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.dialogue_manager.dialogue_manager import DialogueManager
-
-if TYPE_CHECKING:
-    from moviebot.agent.agent import MovieBotAgent
-
 
 if TYPE_CHECKING:
     from moviebot.agent.agent import MovieBotAgent
