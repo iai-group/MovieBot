@@ -22,16 +22,16 @@ class UserModel:
               movie choices. Defaults to None.
         """
         self.user_id = user_id
-        self._movies_choices = defaultdict(str)
+        self._movies_choices = defaultdict(list)
 
         if historical_movie_choices_path and os.path.exists(
             historical_movie_choices_path
         ):
             # Load historical movie choices
-            movie_choices = json.load(historical_movie_choices_path)
+            movie_choices = json.load(open(historical_movie_choices_path, "r"))
             self._movies_choices.update(movie_choices)
 
-        self.tag_preferences = defaultdict(defaultdict(float))
+        self.tag_preferences = defaultdict(lambda: defaultdict(float))
 
     @property
     def movie_choices(self) -> Dict[str, str]:
@@ -45,9 +45,7 @@ class UserModel:
             movie_id: Id of the movie.
             choice: User choice (i.e., accept, reject).
         """
-        self._movies_choices[movie_id] = self._movies_choices[movie_id] + [
-            choice
-        ]
+        self._movies_choices[movie_id].append(choice)
 
     def update_movies_choices(self, movies_choices: Dict[str, str]) -> None:
         """Updates the movie choices for a given user.
