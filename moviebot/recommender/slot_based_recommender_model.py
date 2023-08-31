@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List
 
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.domain.movie_domain import MovieDomain
 from moviebot.recommender.recommender_model import RecommenderModel
