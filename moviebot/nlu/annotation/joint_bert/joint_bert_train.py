@@ -22,7 +22,7 @@ from moviebot.nlu.annotation.joint_bert.slot_mapping import (
 Batch = Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]
 
 _MODEL_OUTPUT_PATH = "models/joint_bert"
-_DATA_PATH = "data/training/nlu/utterances.yaml"
+_DATA_PATH = "data/training/utterances.yaml"
 
 _IGNORE_INDEX = -100
 

@@ -61,22 +61,32 @@ class NeuralNLU(NLU):
             return selected_option
 
         intent, slots = self.annotate_utterance(user_utterance)
+        intent = UserIntents[intent]
 
         constraints = []
         operator = None
         for slot in slots:
-            if slot["slot"] == "MODIFIER":
+            if "MODIFIER" in slot["slot"]:
                 operator = self.get_constraint_operator(slot["value"])
                 continue
+
+            if intent == UserIntents.INQUIRE and "INQUIRE" not in slot["slot"]:
+                continue
+            if (
+                intent in (UserIntents.REMOVE_PREFERENCE, UserIntents.INQUIRE)
+                and "PREFERENCE" not in slot["slot"]
+            ):
+                continue
+            slot_name = Slots[slot["slot"].split("_")[1]].value
             constraints.append(
                 ItemConstraint(
-                    Slots[slot["slot"]].value,
+                    slot_name,
                     op=operator or Operator.EQ,
                     value=slot["value"],
                 )
             )
 
-        return [DialogueAct(UserIntents[intent], constraints)]
+        return [DialogueAct(intent, constraints)]
 
     def annotate_utterance(
         self, user_utterance: UserUtterance
@@ -100,6 +110,7 @@ class NeuralNLU(NLU):
             return_tensors="pt",
         )
         intent_idx, slot_idxs = self._model.predict(encoding["input_ids"])
+        intent = JointBERTIntent.from_index(intent_idx).name
 
         # [1:-1] to remove [CLS] and [SEP] tokens
         offset_mapping = encoding["offset_mapping"][0, 1:-1][mask].tolist()
@@ -134,7 +145,7 @@ class NeuralNLU(NLU):
                 }
             )
 
-        return JointBERTIntent.from_index(intent_idx).name, slots_info
+        return intent, slots_info
 
     def get_constraint_operator(self, text: str) -> Operator:
         """Gets the operator based on the text. Only supports negation for now.
@@ -150,7 +161,7 @@ class NeuralNLU(NLU):
 
 
 if __name__ == "__main__":
-    nlu = NeuralNLU({})
+    nlu = NeuralNLU(None)
 
     class DS:
         item_in_focus = None
