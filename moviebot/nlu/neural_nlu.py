@@ -77,7 +77,7 @@ class NeuralNLU(NLU):
                 and "PREFERENCE" not in slot["slot"]
             ):
                 continue
-            slot_name = Slots[slot["slot"].split("_")[1]].value
+            slot_name = Slots[slot["slot"].split("_")[-1]].value
             constraints.append(
                 ItemConstraint(
                     slot_name,

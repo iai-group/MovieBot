@@ -13,7 +13,10 @@ from torch.utils.data import DataLoader
 from transformers import get_linear_schedule_with_warmup
 
 from moviebot.nlu.annotation.joint_bert import JointBERT
-from moviebot.nlu.annotation.joint_bert.dataset import JointBERTDataset
+from moviebot.nlu.annotation.joint_bert.dataset import (
+    _IGNORE_INDEX,
+    JointBERTDataset,
+)
 from moviebot.nlu.annotation.joint_bert.slot_mapping import (
     JointBERTIntent,
     JointBERTSlot,
@@ -23,8 +26,6 @@ Batch = Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]
 
 _MODEL_OUTPUT_PATH = "models/joint_bert"
 _DATA_PATH = "data/training/utterances.yaml"
-
-_IGNORE_INDEX = -100
 
 
 class JointBERTTrain(JointBERT, pl.LightningModule):
