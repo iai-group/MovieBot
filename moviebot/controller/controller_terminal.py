@@ -21,7 +21,7 @@ class ControllerTerminal(Controller, TerminalPlatform):
 
     def __init__(
         self,
-        agent_class: Type["MovieBotAgent"],
+        agent_class: Type[MovieBotAgent],
         agent_args: Dict[str, Any] = {},
         user_id: str = "terminal_user",
     ) -> None:

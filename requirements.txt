@@ -12,6 +12,7 @@ flask>=2.3.2
 flask-socketio>=5.3.3
 questionary
 dataclasses_json
+rasa==3.6.5
 dialoguekit==0.0.9.dev0
 torch>=2.0.1
 torchvision>=0.15.2

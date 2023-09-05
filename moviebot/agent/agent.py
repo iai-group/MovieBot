@@ -5,7 +5,6 @@ from typing import Any, Dict
 
 from dialoguekit.core import AnnotatedUtterance, Intent, Utterance
 from dialoguekit.participant import Agent, DialogueParticipant
-
 from moviebot.core.core_types import DialogueOptions
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.database.db_movies import DataBase
@@ -139,6 +138,7 @@ class MovieBotAgent(Agent):
         agent_response: str,
         agent_intent: Intent,
         options: DialogueOptions,
+        recommend_item: Dict[str, Any] = None,
     ):
         """Generates an utterance object based on response and options.
 
@@ -146,29 +146,36 @@ class MovieBotAgent(Agent):
             agent_response: Agent response.
             agent_intent: Intent of the agent.
             options: Options for the user.
+            recommend_item: Recommended item. Defaults to None.
 
         Returns:
             An annotated utterance.
         """
+        metadata = {"options": options}
+        if recommend_item:
+            metadata.update({"recommended_item": recommend_item})
+
         if not self.isBot:
             logger.debug(
                 str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
+
             utterance = AnnotatedUtterance(
                 intent=agent_intent,
                 text=agent_response,
                 participant=DialogueParticipant.AGENT,
                 annotations=[],
-                metadata={"options": options},
+                metadata=metadata,
             )
         else:
             record_data = self.dialogue_manager.get_state().to_dict()
+            metadata.update({"record_data": record_data})
             utterance = AnnotatedUtterance(
                 intent=agent_intent,
                 text=agent_response,
                 participant=DialogueParticipant.AGENT,
                 annotations=[],
-                metadata={"options": options, "record_data": record_data},
+                metadata=metadata,
             )
 
         return utterance
@@ -231,9 +238,18 @@ class MovieBotAgent(Agent):
         agent_intents = Intent(
             ";".join([da.intent.value.label for da in agent_dacts])
         )
+        recommend_flag = AgentIntents.RECOMMEND in [
+            da.intent for da in agent_dacts
+        ]
         utterance = self._generate_utterance(
-            agent_response, agent_intents, options
+            agent_response,
+            agent_intents,
+            options,
+            self.dialogue_manager.get_state().item_in_focus
+            if recommend_flag
+            else None,
         )
+
         self._dialogue_connector.register_agent_utterance(utterance)
 
     def end_dialogue(self) -> None:

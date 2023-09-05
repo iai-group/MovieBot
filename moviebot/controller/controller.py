@@ -86,7 +86,7 @@ class Controller(DialogueKitPlatform, ABC):
             path: Path to conversation histories.
             user_id: User id.
         """
-        return os.path.join(path, f"user_{user_id}.json")
+        return os.path.join(path, f"IAIMovieBot_{user_id}.json")
 
     def load_user_data(self, path: str, user_id: str) -> Dict[str, Any]:
         """Loads movie choices (accept/reject) for a user from conversation
