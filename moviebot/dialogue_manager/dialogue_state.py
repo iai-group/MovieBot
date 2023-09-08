@@ -7,6 +7,7 @@ be updated using the dialogue state tracker.
 """
 
 
+from collections import defaultdict
 from copy import deepcopy
 from typing import Any, Dict, List
 
@@ -33,7 +34,7 @@ class DialogueState:
         # self.requestable_slots_filled = {}
         self.agent_requestable = deepcopy(self.ontology.agent_requestable)
         self.user_requestable = deepcopy(self.ontology.user_requestable)
-        self.frame_CIN = dict.fromkeys(slots)  # user requirements before
+        self.frame_CIN = defaultdict.fromkeys(slots)  # user requirements before
         # making a recommendation. CIN stands for current information needs
         self.frame_PIN = (
             {}
@@ -45,7 +46,7 @@ class DialogueState:
         self.last_user_dacts: List[DialogueAct] = None  # the current user act
 
         # Keep track of the recommended movies
-        self.movies_recommended = {}
+        self.movies_recommended = defaultdict(list)
 
     def _agent_offer_state(self) -> str:
         """Returns string representation of the agent's offer state."""
@@ -103,7 +104,7 @@ class DialogueState:
         # the recommended movie and all it's attributes from the database
         self.item_in_focus = None
         self.items_in_context = False
-        self.movies_recommended = {}
+        self.movies_recommended = defaultdict(list)
 
         self.agent_requestable = deepcopy(self.ontology.agent_requestable)
         self.user_requestable = deepcopy(self.ontology.user_requestable)
