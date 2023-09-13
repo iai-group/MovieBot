@@ -24,7 +24,6 @@ class MovieDomain(Domain):
         self.multiple_values_CIN = []
 
         for slot, properties in self._config.get("slot_names").items():
-            print(slot, properties)
             if "system_requestable" in properties:
                 self.agent_requestable.append(slot)
             if "user_requestable" in properties:
