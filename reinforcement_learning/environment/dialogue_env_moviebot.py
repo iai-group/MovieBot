@@ -20,10 +20,10 @@ from dialoguekit.connector.dialogue_connector import (
 from dialoguekit.core.annotated_utterance import AnnotatedUtterance
 from dialoguekit.core.dialogue import Dialogue
 from dialoguekit.participant.participant import DialogueParticipant
+from reinforcement_learning.agent.rl_agent import MovieBotAgentRL
 from rl.utils import build_agenda_based_simulator
 from usersimcrs.simulator.user_simulator import UserSimulator
 
-from moviebot.agent.rl_agent import MovieBotAgentRL
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.neural_dialogue_policy import (
