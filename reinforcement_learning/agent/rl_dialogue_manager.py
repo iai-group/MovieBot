@@ -114,8 +114,7 @@ class DialogueManagerRL(DialogueManager):
 
         recommendation = (
             self.recommend()
-            if AgentIntents.RECOMMEND
-            in [dact.intent for dact in dialogue_acts]
+            if AgentIntents.RECOMMEND in [dact.intent for dact in dialogue_acts]
             else self.get_state().item_in_focus
         )
 
