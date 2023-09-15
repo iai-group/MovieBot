@@ -11,7 +11,9 @@ from typing import Any, Dict, List
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
+from moviebot.dialogue_manager.dialogue_policy.rb_dialogue_policy import (
+    RuleBasedDialoguePolicy,
+)
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.dialogue_manager.dialogue_state_tracker import (
     DialogueStateTracker,
@@ -36,7 +38,9 @@ class DialogueManager:
         self.isBot = isBot
         self.new_user = new_user
         self.dialogue_state_tracker = DialogueStateTracker(config, self.isBot)
-        self.dialogue_policy = DialoguePolicy(self.isBot, self.new_user)
+        self.dialogue_policy = RuleBasedDialoguePolicy(
+            self.isBot, self.new_user
+        )
         self.recommender: RecommenderModel = config.get("recommender")
 
     def start_dialogue(self, new_user: bool = False) -> List[DialogueAct]:
