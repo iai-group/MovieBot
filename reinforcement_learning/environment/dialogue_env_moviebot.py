@@ -1,7 +1,7 @@
 """Gymnasium environment to train a dialogue manager for MovieBot using
 reinforcement learning.
 
-The environment comprise a user simulator, moviebot agent for which we want to
+The environment comprise a user simulator, MovieBot agent for which we want to
 train a dialogue policy."""
 
 import json
@@ -169,7 +169,7 @@ class DialogueEnvMovieBot(gym.Env):
 
             # 2. Perform the action in the environment (i.e., update state
             # tracker)
-            self.agent.dialogue_manager.dialogue_state_tracker.update_state_agent(
+            self.agent.dialogue_manager.dialogue_state_tracker.update_state_agent(  # noqa: E501
                 agent_dacts
             )
 
@@ -228,7 +228,7 @@ class DialogueEnvMovieBot(gym.Env):
                     user_intents = [da.intent for da in user_dacts]
 
                 # 4. Update the dialogue state tracker
-                self.agent.dialogue_manager.dialogue_state_tracker.update_state_user(
+                self.agent.dialogue_manager.dialogue_state_tracker.update_state_user(  # noqa: E501
                     user_dacts
                 )
             except Exception as e:
@@ -332,7 +332,10 @@ class DialogueEnvMovieBot(gym.Env):
         if len(self.dialogue_history.utterances) == 0:
             return
 
-        file_name = f"{_DIALOGUE_EXPORT_PATH}/{self.agent.id}_{self.user_simulator.id}.json"
+        file_name = (
+            f"{_DIALOGUE_EXPORT_PATH}/"
+            f"{self.agent.id}_{self.user_simulator.id}.json"
+        )
         json_file = []
 
         # Check directory and read if exists.
