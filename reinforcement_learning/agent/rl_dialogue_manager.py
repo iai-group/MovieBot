@@ -104,6 +104,9 @@ class DialogueManagerRL(DialogueManager):
         Args:
             dialogue_acts: Dialogue acts.
 
+        Raises:
+            Exception: If the dialogue act cannot be filled.
+
         Returns:
             Dialogue acts with filled placeholders.
         """
