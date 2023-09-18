@@ -30,9 +30,7 @@ class A2CDialoguePolicy(NeuralDialoguePolicy):
             num_timesteps: The number of timesteps. Defaults to None.
             n_envs: The number of environments. Defaults to 1.
         """
-        super().__init__(
-            input_size, hidden_size, output_size, possible_actions
-        )
+        super().__init__(input_size, hidden_size, output_size, possible_actions)
 
         self.n_envs = n_envs
 
@@ -65,9 +63,7 @@ class A2CDialoguePolicy(NeuralDialoguePolicy):
                 self.critic_optimizer, total_iters=num_timesteps
             )
 
-    def forward(
-        self, state: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, state: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """Forward pass.
 
         Args:
