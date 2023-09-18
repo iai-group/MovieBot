@@ -110,7 +110,9 @@ class DialogueStateTracker:
                             if param.op == Operator.NE:
                                 if (
                                     param.value
-                                    in self.dialogue_state.frame_CIN[param.slot]
+                                    in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -129,7 +131,9 @@ class DialogueStateTracker:
                             else:
                                 if (
                                     f".NOT.{param.value}"
-                                    in self.dialogue_state.frame_CIN[param.slot]
+                                    in self.dialogue_state.frame_CIN[
+                                        param.slot
+                                    ]
                                 ):
                                     self.dialogue_state.frame_CIN[
                                         param.slot
@@ -204,9 +208,9 @@ class DialogueStateTracker:
                             "inquire"
                             not in self.dialogue_state.movies_recommended[name]
                         ):
-                            self.dialogue_state.movies_recommended[name].append(
-                                "inquire"
-                            )
+                            self.dialogue_state.movies_recommended[
+                                name
+                            ].append("inquire")
                     else:
                         self.dialogue_state.movies_recommended[name] = [
                             "inquire"
@@ -272,6 +276,7 @@ class DialogueStateTracker:
             agent_dacts: List of dialogue acts which is the output of dialogue
               policy.
         """
+        self.dialogue_state.is_beginning = False
         # re-filtering the dacts
         agent_dacts_copy = deepcopy(agent_dacts)
         agent_dacts = []
