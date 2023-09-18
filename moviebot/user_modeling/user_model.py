@@ -1,71 +1,81 @@
-"""Class for user modeling."""
+"""Class for user modeling.
 
+The user model stores the user's preferences, in terms of slots and items in a
+structured (dictionary) and unstructured manner (utterances). These preferences
+serves to main purposes:
+1. Input for the recommender system.
+2. Input for the explainability component to generate an explainable user model.
+"""
+
+from __future__ import annotations
 
 import json
+import logging
 import os
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 
-from moviebot.database.database import DataBase
+from dialoguekit.core import AnnotatedUtterance
+from dialoguekit.utils.dialogue_reader import json_to_annotated_utterance
 
 
 class UserModel:
-    def __init__(self, user_id: str, historical_movie_choices_path: str = None):
-        """Initializes the user model.
+    def __init__(self) -> None:
+        """Initializes the user model."""
+        # Structured and unstructured slot preferences
+        self.slot_preferences: Dict[Dict[str, float]] = defaultdict(
+            lambda: defaultdict(float)
+        )
+        self.slot_preferences_nl: Dict[
+            Dict[str, AnnotatedUtterance]
+        ] = defaultdict(lambda: defaultdict(list))
 
-        The JSON file with historical movie choices is a dictionary with the
-        movie id as key and the list of choices as value.
+        # Structured and unstructured item preferences
+        self.item_preferences: Dict[Dict[str, float]] = defaultdict(
+            lambda: defaultdict(float)
+        )
+        self.item_preferences_nl: Dict[
+            Dict[str, AnnotatedUtterance]
+        ] = defaultdict(lambda: defaultdict(list))
 
-        Args:
-            user_id: User id.
-            historical_movie_choices_path: Path to the JSON file with historical
-              movie choices. Defaults to None.
-        """
-        self.user_id = user_id
-        self._movies_choices = defaultdict(list)
-
-        if historical_movie_choices_path and os.path.exists(
-            historical_movie_choices_path
-        ):
-            # Load historical movie choices
-            movie_choices = json.load(open(historical_movie_choices_path, "r"))
-            self._movies_choices.update(movie_choices)
-
-        self.tag_preferences = defaultdict(lambda: defaultdict(float))
-
-    @property
-    def movie_choices(self) -> Dict[str, str]:
-        """Returns user 's movie choices."""
-        return self._movies_choices
-
-    def update_movie_choice(self, movie_id: str, choice: str) -> None:
-        """Updates the choices for a given user.
+    @classmethod
+    def from_json(cls, json_path: str) -> UserModel:
+        """Loads a user model from a JSON file.
 
         Args:
-            movie_id: Id of the movie.
-            choice: User choice (i.e., accept, reject).
-        """
-        self._movies_choices[movie_id].append(choice)
+            json_path: Path to the JSON file.
 
-    def update_movies_choices(self, movies_choices: Dict[str, str]) -> None:
-        """Updates the movie choices for a given user.
-
-        Args:
-            movies_choices: Dictionary with movie choices (i.e., accept,
-              reject).
-        """
-        self._movies_choices.update(movies_choices)
-
-    def get_movie_choices(self, movie_id: str) -> List[str]:
-        """Returns the choices for a given movie.
-
-        Args:
-            movie_id: Id of the movie.
+        Raises:
+            FileNotFoundError: If the JSON file is not found.
 
         Returns:
-            List of previous choices for a movie.
+            User model.
         """
-        return self._movies_choices[movie_id]
+        user_model = cls()
+        if os.path.exists(json_path):
+            user_model_json = json.load(open(json_path, "r"))
+            user_model.slot_preferences.update(
+                user_model_json["slot_preferences"]
+            )
+            for slot, utterance in user_model_json[
+                "slot_preferences_nl"
+            ].items():
+                user_model.slot_preferences_nl[slot].append(
+                    json_to_annotated_utterance(utterance)
+                )
+
+            user_model.item_preferences.update(
+                user_model_json["item_preferences"]
+            )
+            for item, utterance in user_model_json[
+                "item_preferences_nl"
+            ].items():
+                user_model.item_preferences_nl[item].append(
+                    json_to_annotated_utterance(utterance)
+                )
+        else:
+            raise FileNotFoundError(f"JSON file {json_path} not found.")
+        return user_model
 
     def _convert_choice_to_preference(self, choice: str) -> float:
         """Converts a choice to a preference within the range [-1,1].
@@ -88,63 +98,107 @@ class UserModel:
 
         return 0.0
 
-    def compute_tag_preference(
-        self, slot: str, tag: str, database: DataBase
-    ) -> str:
-        """Computes the preference for a given tag (e.g., comedies).
+    def update_item_preference(self, item: str, choice: str) -> None:
+        """Updates the preference for a given item.
 
         Args:
-            slot: Slot name.
-            tag: Tag.
-            database: Database with all the movies.
+            item: Item.
+            choice: Choice (i.e., accept, reject, don't like).
+        """
+        self.item_preferences[item][
+            choice
+        ] = self._convert_choice_to_preference(choice)
+
+    def get_utterances_with_item_preferences(
+        self, item: Optional[str] = None
+    ) -> List[AnnotatedUtterance]:
+        """Returns the utterances with item preference.
+
+        If no item is provided, then all the utterances with item preference
+        are returned. Else, only the utterances with item preference for the
+        given item are returned.
+
+        Args:
+            item: Item. Defaults to None.
 
         Returns:
-            Tag preference.
+            Utterances with item preference.
         """
-        sql_cursor = database.sql_connection.cursor()
-        tag_set = sql_cursor.execute(
-            f"SELECT ID FROM {database._get_table_name()} WHERE {slot} LIKE "
-            f"'%{tag}%'"
-        ).fetchall()
+        if item is None:
+            return [
+                utterance
+                for utterances in self.item_preferences_nl.values()
+                for utterance in utterances
+            ]
 
-        preference = 0.0
-        count_rated = 0
-        for movie_id, choices in self._movies_choices.items():
-            if movie_id in tag_set:
-                # TODO: decide how to handle contradictory choices (e.g., the
-                # same movie was accepted and rejected)
-                for choice in choices:
-                    preference += self._convert_choice_to_preference(choice)
-                    count_rated += 1
+        if item not in self.item_preferences_nl:
+            logging.warning(f"Item {item} not found in user model.")
+        return self.item_preferences_nl.get(item, [])
 
-        return preference / count_rated if count_rated > 0 else 0.0
+    def get_item_preferences(
+        self, item: Optional[str] = None
+    ) -> Union[Dict[str, float], float]:
+        """Returns the item preferences.
 
-    def get_tag_preference(self, slot: str, tag: str) -> float:
-        """Returns the preference for a given tag (e.g., comedies).
-
-        If the preference is not explicitly set, then it is computed based on
-        movies choices.
+        If no item is provided, then all the item preferences are returned.
+        Else, only the item preferences for the given item are returned.
 
         Args:
-            slot: Slot name.
-            tag: Tag.
+            item: Item. Defaults to None.
 
         Returns:
-            Preference.
+            Item preferences.
         """
-        preference = self.tag_preferences[slot].get(tag, None)
-        if preference is None:
-            return self.compute_tag_preference(slot, tag)
-        return preference
+        if item is None:
+            return self.item_preferences
 
-    def set_tag_preference(
-        self, slot: str, tag: str, preference: float
-    ) -> None:
-        """Sets the preference for a given tag (e.g., comedies).
+        if item not in self.item_preferences:
+            logging.warning(f"Item {item} not found in user model.")
+        return self.item_preferences.get(item, None)
+
+    def get_utterances_with_slot_preferences(
+        self, slot: Optional[str] = None
+    ) -> List[AnnotatedUtterance]:
+        """Returns the utterances with slot preference.
+
+        If no slot is provided, then all the utterances with slot preference
+        are returned. Else, only the utterances with slot preference for the
+        given slot are returned.
 
         Args:
-            slot: Slot name.
-            tag: Tag.
-            preference: Preference.
+            slot: Slot. Defaults to None.
+
+        Returns:
+            Utterances with slot preference.
         """
-        self.tag_preferences[slot][tag] = preference
+        if slot is None:
+            return [
+                utterance
+                for utterances in self.slot_preferences_nl.values()
+                for utterance in utterances
+            ]
+
+        if slot not in self.slot_preferences_nl:
+            logging.warning(f"Slot {slot} not found in user model.")
+        return self.slot_preferences_nl.get(slot, [])
+
+    def get_slot_preferences(
+        self, slot: Optional[str] = None
+    ) -> Union[Dict[str, float], float]:
+        """Returns the slot preferences.
+
+        If no slot is provided, then all the slot preferences are returned.
+        Else, only the slot preferences for the given slot are returned.
+
+        Args:
+            slot: Slot. Defaults to None.
+
+        Returns:
+            Slot preferences.
+        """
+        if slot is None:
+            return self.slot_preferences
+
+        if slot not in self.slot_preferences:
+            logging.warning(f"Slot {slot} not found in user model.")
+        return self.slot_preferences.get(slot, None)
