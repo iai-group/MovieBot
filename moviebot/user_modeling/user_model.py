@@ -82,7 +82,7 @@ class UserModel:
     ) -> Dict[str, str]:
         """Converts an utterance to a dictionary.
 
-        TODO: Move this method to DialgueKit AnnotatedUtterance class.
+        TODO: Move this method to DialogueKit AnnotatedUtterance class.
 
         Args:
             utterance: Utterance.
