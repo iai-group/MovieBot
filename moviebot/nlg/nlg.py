@@ -186,7 +186,7 @@ class NLG:
                                 utterance.append(
                                     not_found_response.replace(
                                         "__replace__",
-                                        dialogue_state.user_utterance.get_text(),  # noqa: E501
+                                        dialogue_state.user_utterance.text,
                                     )
                                 )
                             else:
@@ -607,7 +607,7 @@ class NLG:
                 )
             ],
         }
-        options.update({"/restart": ["/restart"]})
+        options.update({DialogueAct(UserIntents.RESTART, []): ["/restart"]})
         return options
 
     def _user_options_remove_preference(  # noqa: C901
@@ -633,7 +633,10 @@ class NLG:
                     negative = True
                     value = value.replace(".NOT.", "")
                 _a_an = "an" if value[0] in ["a", "e", "i", "o", "u"] else "a"
-                param_key = DialogueAct(UserIntents.REMOVE_PREFERENCE, [param])
+                param_key = DialogueAct(
+                    UserIntents.REMOVE_PREFERENCE,
+                    [ItemConstraint(param, Operator.EQ, value)],
+                )
                 if param == Slots.GENRES.value:
                     if negative:
                         options[param_key] = [

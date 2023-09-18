@@ -1,9 +1,11 @@
 """This file contains methods to format data for HTTP requests."""
+from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
-from moviebot.agent.agent import DialogueOptions
+from dialoguekit.core import AnnotatedUtterance, Utterance
+from moviebot.core.core_types import DialogueOptions
 
 HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
 
@@ -41,8 +43,35 @@ class Attachment:
 @dataclass
 class Message:
     text: str
-    intent: str
+    intent: str = None
     attachments: List[Attachment] = field(default_factory=list)
+
+    @classmethod
+    def from_utterance(self, utterance: Utterance) -> Message:
+        """Converts an utterance to a message.
+
+        Args:
+            utterance: An instance of Utterance.
+
+        Returns:
+            An instance of Message.
+        """
+        message = Message(utterance.text)
+        if isinstance(utterance, AnnotatedUtterance):
+            message.intent = str(utterance.intent)
+            if utterance.metadata.get("options"):
+                message.attachments.append(
+                    get_buttons_attachment(utterance.metadata.get("options"))
+                )
+            if "**" in message.text and utterance.metadata.get(
+                "recommended_item"
+            ):
+                # NLG adds ** in utterance text when a recommendation is made.
+                message.text, movie_attachments = get_movie_message_data(
+                    utterance.metadata.get("recommended_item")
+                )
+                message.attachments.append(movie_attachments)
+        return message
 
 
 @dataclass
@@ -52,7 +81,13 @@ class Button:
     button_type: str = field(default="postback")
 
 
-def create_buttons(user_options: DialogueOptions) -> List[Dict[str, Any]]:
+@dataclass
+class Response:
+    recipient: str
+    message: Message
+
+
+def get_buttons_attachment(user_options: DialogueOptions) -> Attachment:
     """Creates a list of buttons for each agent's option.
 
     Args:
@@ -72,95 +107,22 @@ def create_buttons(user_options: DialogueOptions) -> List[Dict[str, Any]]:
                 button_type="postback",
             )
             options.append(asdict(button))
-    return options
+    return Attachment(type="buttons", payload={"buttons": options})
 
 
-def text_message(
-    user_id: str, message: str, intent: str = "UNK"
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message with a text response.
-
-    Args:
-        user_id: Id of the recipient.
-        message: Message to send.
-        intent: Intent of the message. Defaults to 'UNK'.
-
-    Returns:
-        Object to send to Flask server.
-    """
-    message = Message(text=message, intent=intent)
-    text = {
-        "recipient": {"id": user_id},
-        "message": asdict(message),
-    }
-    return text
-
-
-def attachment_message(
-    user_id: str,
-    message: str,
-    attachments: List[Attachment],
-    intent: str = "UNK",
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message containing an attachment.
+def get_movie_message_data(info: Dict[str, Any]) -> Tuple[str, Attachment]:
+    """Creates formatted message with movie information and movie image
+    attachment.
 
     Args:
-        user_id: Id of the recipient.
-        message: Message to send.
-        attachments: Attachments to send.
-        intent: Intent of the message.
-
-    Returns:
-        Object with message containing an attachment to send to Flask server.
-    """
-    message = Message(text=message, intent=intent, attachments=attachments)
-    template = {
-        "recipient": {"id": user_id},
-        "message": asdict(message),
-    }
-    return template
-
-
-def buttons_message(
-    user_id: str, buttons: List[Dict[str, Any]], text: str, intent="UNK"
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message along with a list of buttons.
-
-    Args:
-        user_id: Id of the recipient.
-        buttons: List of buttons.
-        text: Message to send.
-        intent: Intent of the message.
-
-    Returns:
-        Object with message and buttons to send to Flask server.
-    """
-    attachment = Attachment(type="buttons", payload={"buttons": buttons})
-    return attachment_message(
-        user_id=user_id, message=text, attachments=[attachment], intent=intent
-    )
-
-
-def movie_message(
-    user_id: str, info: Dict[str, Any], intent: str
-) -> HTTP_OBJECT_MESSAGE:
-    """Creates a message with movie information.
-
-    Args:
-        user_id: Id of the recipient.
         info: Movie information.
-        intent: Intent of the message.
 
     Returns:
-        Object with movie message to send to the server.
+        Formatted message with movie information and movie image attachment.
     """
-    text = (
-        f"Have you seen {info['title']} {info['rating']} {info['duration']} min"
-    )
+    text = f"""Have you seen {info['title']} {info['imdb_rating']}
+     {info['duration']} min"""
     attachment = Attachment(
-        type="images", payload={"images": [info["image_url"]]}
+        type="images", payload={"images": [info["cover_image"]]}
     )
-
-    return attachment_message(
-        user_id=user_id, message=text, attachments=[attachment], intent=intent
-    )
+    return text, attachment

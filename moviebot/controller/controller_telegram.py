@@ -20,7 +20,7 @@ from telegram.ext import (
     Updater,
 )
 
-from moviebot.agent.agent import Agent
+from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
 from moviebot.core.utterance.utterance import UserUtterance
 
@@ -36,7 +36,7 @@ CONTINUE = range(1)
 class ControllerTelegram(Controller):
     def __init__(self) -> None:
         """Controls the flow of the conversation on Telegram."""
-        self.agent: Dict[str, Agent] = {}
+        self.agent: Dict[str, MovieBotAgent] = {}
         self.configuration = None
         self.user_options = {}
         self.response = {}
@@ -96,7 +96,7 @@ class ControllerTelegram(Controller):
             self.configuration["new_user"].update(
                 {user_id: self.new_user(user_id)}
             )
-        self.agent[user_id] = Agent(self.configuration)
+        self.agent[user_id] = MovieBotAgent(self.configuration)
         self.user_options[user_id] = {}
         print(
             f"Conversation is starting for user id = {user_id} and user name ="
@@ -165,7 +165,7 @@ class ControllerTelegram(Controller):
             self.configuration["new_user"].update(
                 {user_id: self.new_user(user_id)}
             )
-        self.agent[user_id] = Agent(self.configuration)
+        self.agent[user_id] = MovieBotAgent(self.configuration)
         self.user_options[user_id] = {}
         print(
             f"Conversation is starting for user id = {user_id} and user name ="
@@ -216,7 +216,7 @@ class ControllerTelegram(Controller):
                 {user_id: self.new_user(user_id)}
             )
         if user_id not in self.agent:
-            self.agent[user_id] = Agent(self.configuration)
+            self.agent[user_id] = MovieBotAgent(self.configuration)
             self.user_options[user_id] = {}
             self.agent[user_id].dialogue_manager.get_state().initialize()
             self.agent[user_id].dialogue_manager.get_context().initialize()
@@ -225,7 +225,11 @@ class ControllerTelegram(Controller):
                 f" name = '{update.effective_user['first_name']}'"
             )
         start = time.time()
-        user_utterance = UserUtterance(update.message.to_dict())
+        message_dict = update.message.to_dict()
+        user_utterance = UserUtterance(
+            message_dict.get("text", ""),
+            timestamp=message_dict.get("date", None),
+        )
         (
             self.response[user_id],
             self.user_options[user_id],
@@ -263,7 +267,7 @@ class ControllerTelegram(Controller):
         )
         # record the conversation
         if self.agent[user_id].bot_recorder:
-            record_data = {"Timestamp": user_utterance.get_timestamp()}
+            record_data = {"Timestamp": user_utterance.timestamp}
             record_data.update(self.record_data_agent[user_id])
             record_data.update({"Execution_Time": str(round(end - start, 3))})
             self.agent[user_id].bot_recorder.record_user_data(

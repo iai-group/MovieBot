@@ -9,3 +9,18 @@ eval/data/extras/*
 
 # pytest coverage
 .coverage
+
+# pytorch
+lightning_logs/
+**/wandb/*
+
+# models
+models/
+**/checkpoints/*
+
+# Exportes and logs
+dialogue_export/
+data/users.db
+
+# local experimentation
+local/

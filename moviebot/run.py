@@ -15,9 +15,12 @@ import logging
 
 import confuse
 
-from moviebot.controller import server_socket
+from moviebot.agent.agent import MovieBotAgent
+from moviebot.controller.controller_flask_rest import ControllerFlaskRest
+from moviebot.controller.controller_flask_socket import ControllerFlaskSocket
 from moviebot.controller.controller_telegram import ControllerTelegram
 from moviebot.controller.controller_terminal import ControllerTerminal
+from moviebot.database.db_users import UserDB
 
 logging.basicConfig(
     format="[%(asctime)s] %(levelname)-12s %(message)s",
@@ -58,17 +61,31 @@ def get_config(path: str) -> confuse.Configuration:
     return config
 
 
+def init_db():
+    """Initializes the user database."""
+    UserDB().setup_db()
+
+
 if __name__ == "__main__":
     args = parse_args()
     config = get_config(args.config)
     if config["DEBUG"].get(False):
         logger.setLevel(logging.DEBUG)
 
+    init_db()
     if config["TELEGRAM"].get(False):
         CONTROLLER = ControllerTelegram()
         CONTROLLER.execute_agent(config.get())
-    elif config["FLASK"].get(False):
-        server_socket.run(config.get())
+    elif config["FLASK_SOCKET"].get(False):
+        CONTROLLER = ControllerFlaskSocket(
+            MovieBotAgent, {"config": config.get()}
+        )
+        CONTROLLER.start()
+    elif config["FLASK_REST"].get(False):
+        CONTROLLER = ControllerFlaskRest(
+            MovieBotAgent, {"config": config.get()}
+        )
+        CONTROLLER.start()
     else:
-        CONTROLLER = ControllerTerminal(config.get())
-        CONTROLLER.execute_agent()
+        CONTROLLER = ControllerTerminal(MovieBotAgent, {"config": config.get()})
+        CONTROLLER.start()

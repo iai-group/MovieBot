@@ -5,13 +5,12 @@ import string
 from copy import deepcopy
 from typing import Any, Dict, List
 
-import wikipedia
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
-from moviebot.database.database import DataBase
+from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
@@ -262,7 +261,7 @@ class UserIntentsChecker:
                 # return user_dacts
         if dact.intent != UserIntents.UNK:
             # print(f'All Dacts\n{dact}')
-            self._filter_dact(dact, user_utterance.get_text())
+            self._filter_dact(dact, user_utterance.text)
             # print(f'Filtered Dacts\n{dact}')
             if len(dact.params) > 0:
                 user_dacts.append(dact)
@@ -300,7 +299,7 @@ class UserIntentsChecker:
                 )
             if dact.intent != UserIntents.UNK:
                 # print(f'All Dacts\n{dact}')
-                self._filter_dact(dact, user_utterance.get_text())
+                self._filter_dact(dact, user_utterance.text)
                 # print(f'Filtered Dacts\n{dact}')
                 if len(dact.params) > 0:
                     user_dacts.append(dact)
@@ -379,42 +378,6 @@ class UserIntentsChecker:
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts
-
-    def generate_params_continue_recommendation(
-        self, item_in_focus: Dict[str, Any]
-    ) -> ItemConstraint:
-        """Finds similar movies based on the title of item in focus.
-
-        Args:
-            item_in_focus: Item in conversation focus.
-
-        Returns:
-            Item constraint with titles of similar movies to the item in focus.
-        """
-        movie_title = item_in_focus[Slots.TITLE.value]
-        results = wikipedia.search(
-            f"I need a film similar to {movie_title}", 20
-        )
-        results = [r.split("(")[0].strip() for r in results]
-        for result in deepcopy(results):
-            if result not in self.slot_values[Slots.TITLE.value]:
-                results.remove(result)
-        if len(results) > 0:
-            return [
-                ItemConstraint(Slots.TITLE.value, Operator.EQ, str(results))
-            ]
-        else:
-            results = wikipedia.search(
-                f"I need a movie similar to {movie_title}", 20
-            )
-            results = [r.split("(")[0].strip() for r in results]
-            for result in deepcopy(results):
-                if result not in self.slot_values[Slots.TITLE.value]:
-                    results.remove(result)
-            if len(results) > 0:
-                return [
-                    ItemConstraint(Slots.TITLE.value, Operator.EQ, str(results))
-                ]
 
     def _filter_dact(  # noqa: C901
         self, dact: DialogueAct, raw_utterance: str

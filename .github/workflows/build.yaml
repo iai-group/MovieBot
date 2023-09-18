@@ -15,7 +15,7 @@ jobs:
   pre-commit:
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
         with:
@@ -43,7 +43,7 @@ jobs:
     name: "Build and Test Python 3.9"
     runs-on: ubuntu-latest
     if: always()
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v3
