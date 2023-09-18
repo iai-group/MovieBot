@@ -106,8 +106,10 @@ class JointBERTDataset(Dataset):
             labels = labels + ([_IGNORE_INDEX] * padding_length)
             self.examples.append((input_ids, attention_mask, intent, labels))
 
-    def _num_word_tokens(self, word: str) -> int:
-        """Returns the number of word tokens in the input word.
+    def _num_inside_word_tokens(self, word: str) -> int:
+        """Returns the number of inside word tokens in the input word.
+
+        I.e The number of non-starting tokens in the word.
 
         Args:
             word: The input word.
@@ -115,10 +117,10 @@ class JointBERTDataset(Dataset):
         Returns:
             The number of word tokens in the input word.
         """
-        return len(self.tokenizer.tokenize(word))
+        return len(self.tokenizer.tokenize(word)) - 1
 
     def _tokenize_and_label(
-        self, intent: str, text: str, slot_annotations: Tuple(str, str)
+        self, intent: str, text: str, slot_annotations: Tuple[str, str]
     ) -> Tuple[int, List[str], List[int]]:
         """Tokenizes the text and assigns labels based on slot annotations.
 
@@ -153,20 +155,26 @@ class JointBERTDataset(Dataset):
             index = text.find(slot_text)
             for word in text[start_idx:index].split():
                 labels.append(JointBERTSlot.to_index("OUT"))
-                labels.extend([_IGNORE_INDEX] * self._num_word_tokens(word) - 1)
+                labels.extend(
+                    [_IGNORE_INDEX] * self._num_inside_word_tokens(word)
+                )
 
             for i, word in enumerate(slot_text.split()):
-                labels.append(
-                    JointBERTSlot.to_index(
-                        ("B_" if i == 0 else "I_") + slot_label.upper()
-                    )
+                slot = (
+                    ("B" if i == 0 else "I")
+                    + ("_INQUIRE_" if intent == "INQUIRE" else "_PREFERENCE_")
+                    + slot_label.upper()
                 )
-                labels.extend([_IGNORE_INDEX] * self._num_word_tokens(word) - 1)
+
+                labels.append(JointBERTSlot.to_index(slot))
+                labels.extend(
+                    [_IGNORE_INDEX] * self._num_inside_word_tokens(word)
+                )
             start_idx = index + len(slot_text)
 
         for word in text[start_idx:].split():
             labels.append(JointBERTSlot.to_index("OUT"))
-            labels.extend([_IGNORE_INDEX] * self._num_word_tokens(word) - 1)
+            labels.extend([_IGNORE_INDEX] * self._num_inside_word_tokens(word))
         assert len(tokens) == len(labels)
         return JointBERTIntent.to_index(intent.upper()), tokens, labels
 

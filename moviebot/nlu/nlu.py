@@ -28,7 +28,8 @@ class NLU(ABC):
             config: Paths to domain, database and tag words for slots in NLU.
         """
         self.config = config
-        self.intents_checker = UserIntentsChecker(config)
+        if config:
+            self.intents_checker = UserIntentsChecker(config)
 
     @abstractmethod
     def generate_dacts(
