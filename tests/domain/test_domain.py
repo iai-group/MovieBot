@@ -1,4 +1,4 @@
-"""Tests ofr MovieDomain class."""
+"""Tests for MovieDomain class."""
 
 from moviebot.domain.movie_domain import MovieDomain
 
