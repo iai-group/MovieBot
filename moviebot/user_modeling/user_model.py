@@ -77,6 +77,62 @@ class UserModel:
             raise FileNotFoundError(f"JSON file {json_path} not found.")
         return user_model
 
+    def _utterance_to_dict(
+        self, utterance: AnnotatedUtterance
+    ) -> Dict[str, str]:
+        """Converts an utterance to a dictionary.
+
+        TODO: Move this method to DialgueKit AnnotatedUtterance class.
+
+        Args:
+            utterance: Utterance.
+
+        Returns:
+            Dictionary with utterance information.
+        """
+        return {
+            "participant": utterance.participant.name,
+            "utterance": utterance.text,
+            "intent": utterance.intent.label,
+            "slot_values": [
+                [annotation.slot, annotation.value]
+                for annotation in utterance.annotations
+            ]
+            if utterance.annotations
+            else [],
+        }
+
+    def save(self, json_path: str) -> None:
+        """Saves the user model to a JSON file.
+
+        Args:
+            json_path: Path to the JSON file.
+        """
+        data = {
+            "slot_preferences": self.slot_preferences,
+            "item_preferences": self.item_preferences,
+        }
+
+        slot_preferences_utterances = {}
+        for slot, utterances in self.slot_preferences_nl.items():
+            slot_preferences_utterances[slot] = [
+                self._utterance_to_dict(utterance) for utterance in utterances
+            ]
+
+        item_preferences_utterances = {}
+        for item, utterances in self.item_preferences_nl.items():
+            item_preferences_utterances[item] = [
+                self._utterance_to_dict(utterance) for utterance in utterances
+            ]
+
+        data.update(
+            {
+                "slot_preferences_nl": slot_preferences_utterances,
+                "item_preferences_nl": item_preferences_utterances,
+            }
+        )
+        json.dump(data, open(json_path, "w"), indent=4)
+
     def _convert_choice_to_preference(self, choice: str) -> float:
         """Converts a choice to a preference within the range [-1,1].
 
