@@ -8,7 +8,6 @@ from typing import List
 
 from dialoguekit.core import Utterance
 from dialoguekit.participant import DialogueParticipant
-
 from moviebot.nlu.text_processing import Token, Tokenizer
 
 

@@ -25,12 +25,12 @@ class RuleBasedNLU(NLU):
         Implementation of this NLU is designed to work for Slot-Filling
         applications. The purpose of this class is to provide a quick way of
         running Conversational Agents, sanity checks, and to aid debugging.
-        Loads the ontology and database, and preprocess the database so that
+        Loads the domain and database, and preprocess the database so that
         we avoid some computations at runtime. Also create patterns to
         understand natural language.
 
         Args:
-            config: Paths to ontology, database and tag words for slots in NLU.
+            config: Paths to domain, database and tag words for slots in NLU.
         """
         super().__init__(config)
 

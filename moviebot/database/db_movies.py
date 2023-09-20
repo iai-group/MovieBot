@@ -10,9 +10,9 @@ from copy import deepcopy
 from typing import Any, Dict, List, Union
 
 from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
-from moviebot.ontology.ontology import Ontology
 
 
 class DataBase:
@@ -39,13 +39,13 @@ class DataBase:
         self.db_table_name = self._get_table_name()
 
     def get_sql_condition(
-        self, dialogue_state: DialogueState, ontology: Ontology
+        self, dialogue_state: DialogueState, domain: MovieDomain
     ) -> Union[str, None]:
         """Returns the condition for a SQL query based on dialogue state.
 
         Args:
             dialogue_state: Dialogue state.
-            ontology: Ontology to check specific parameters.
+            domain: Domain to check specific parameters.
 
         Returns:
             SQL condition if there is any.
@@ -59,7 +59,7 @@ class DataBase:
 
         args = []
         for slot, values in dialogue_state.frame_CIN.items():
-            if slot not in ontology.multiple_values_CIN:
+            if slot not in domain.multiple_values_CIN:
                 values = [values]
 
             args.extend(
@@ -73,13 +73,13 @@ class DataBase:
         return " AND ".join(args) if len(args) > 0 else None
 
     def database_lookup(
-        self, dialogue_state: DialogueState, ontology: Ontology
+        self, dialogue_state: DialogueState, domain: MovieDomain
     ) -> List[Dict[str, Any]]:
         """Performs an SQL query to answer a user requirement.
 
         Args:
             dialogue_state: The current dialogue state.
-            ontology: Ontology to check specific parameters.
+            domain: Domain to check specific parameters.
 
         Returns:
             The results of the SQL query.
@@ -92,7 +92,7 @@ class DataBase:
 
         sql_cursor = self.sql_connection.cursor()
         sql_command = f"SELECT * FROM {self.db_table_name}"
-        condition = self.get_sql_condition(dialogue_state, ontology)
+        condition = self.get_sql_condition(dialogue_state, domain)
 
         if dialogue_state.agent_should_offer_similar and condition is None:
             return []

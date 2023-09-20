@@ -28,7 +28,7 @@ class NeuralNLU(NLU):
         """The NeuralNLU class.
 
         Args:
-            config: Paths to ontology, database and tag words for slots in NLU.
+            config: Paths to domain, database and tag words for slots in NLU.
             path: Path to the model. Defaults to _DEFAULT_MODEL_PATH.
         """
         super().__init__(config)

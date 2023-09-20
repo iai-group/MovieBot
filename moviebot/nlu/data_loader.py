@@ -7,8 +7,8 @@ import os
 from typing import Any, Callable, Dict
 
 from moviebot.database.db_movies import DataBase
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.slots import Slots
-from moviebot.ontology.ontology import Ontology
 
 DEFAULT_SLOT_VALUE_PATH = "data/slot_values.json"
 
@@ -30,7 +30,7 @@ class DataLoader:
             config: Dictionary containing configuration.
             lemmatize_value: Function for lemmatization.
         """
-        self.ontology: Ontology = config["ontology"]
+        self.domain: MovieDomain = config["domain"]
         self.database: DataBase = config["database"]
         self.slot_values_path = (
             config["slot_values_path"] or DEFAULT_SLOT_VALUE_PATH
@@ -81,7 +81,7 @@ class DataLoader:
         """
         cursor = self.database.sql_connection.cursor()
         db_table_name = self.database.db_table_name
-        columns = ",".join(self.ontology.slots_annotation)
+        columns = ",".join(self.domain.slots_annotation)
         all_data = cursor.execute(
             f"Select {columns} from {db_table_name};"
         ).fetchall()
@@ -89,7 +89,7 @@ class DataLoader:
         print_count = int(total_count / 4)
         slot_values = {
             slot: {} if slot != Slots.YEAR.value else []
-            for slot in self.ontology.slots_annotation
+            for slot in self.domain.slots_annotation
         }
         multi_slots = {
             x.value
@@ -103,7 +103,7 @@ class DataLoader:
 
         logger.info("Loading the database......")
         for count, row in enumerate(all_data):
-            for slot, value in zip(self.ontology.slots_annotation, row):
+            for slot, value in zip(self.domain.slots_annotation, row):
                 if slot in multi_slots:
                     temp_result = [x.strip() for x in value.split(",")]
                     if slot == Slots.GENRES.value:

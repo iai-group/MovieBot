@@ -8,27 +8,25 @@ from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
-from moviebot.ontology.ontology import Ontology
 
 
 class DialogueStateTracker:
     def __init__(self, config: Dict[str, Any], isBot: bool) -> None:
-        """Loads the database and ontology and creates an initial dialogue
-        state.
+        """Loads the database and domain knowledge and creates an initial
+        dialogue state.
 
         Args:
             config: The set of parameters to initialize the state tracker.
             isBot: If the conversation is via bot or not.
         """
-        self.ontology: Ontology = config.get("ontology")
+        self.domain: MovieDomain = config.get("domain")
         self.slots: List[str] = config.get("slots", [])
         self.isBot = isBot
-        self.dialogue_state = DialogueState(
-            self.ontology, self.slots, self.isBot
-        )
+        self.dialogue_state = DialogueState(self.domain, self.slots, self.isBot)
 
     def initialize(self) -> None:
         """Initializes the dialogue state tracker."""
@@ -95,7 +93,7 @@ class DialogueStateTracker:
             # removed the information needs if mentioned by the user
             if user_dact.intent == UserIntents.REMOVE_PREFERENCE:
                 for param in user_dact.params:
-                    if param.slot in self.ontology.multiple_values_CIN:
+                    if param.slot in self.domain.multiple_values_CIN:
                         self.dialogue_state.frame_CIN[param.slot].remove(
                             param.value
                         )
@@ -106,7 +104,7 @@ class DialogueStateTracker:
                 # fills in the current information needs
                 for param in user_dact.params:
                     if param.slot in self.dialogue_state.frame_CIN:
-                        if param.slot in self.ontology.multiple_values_CIN:
+                        if param.slot in self.domain.multiple_values_CIN:
                             if param.op == Operator.NE:
                                 if (
                                     param.value
@@ -295,7 +293,7 @@ class DialogueStateTracker:
                 self.dialogue_state.agent_should_make_offer = False
                 self.dialogue_state.agent_made_offer = True
                 self.dialogue_state.user_requestable = deepcopy(
-                    self.ontology.user_requestable
+                    self.domain.user_requestable
                 )
 
     def update_state_db(

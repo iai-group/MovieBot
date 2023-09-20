@@ -5,20 +5,17 @@ from typing import Any, Dict, List
 
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
-from moviebot.ontology.ontology import Ontology
 
 
 class RecommenderModel(ABC):
-    def __init__(self, db: DataBase, ontology: Ontology) -> None:
+    def __init__(self, db: DataBase) -> None:
         """Instantiates a recommender model.
 
         Args:
             db: Database with available items.
-            ontology: Ontology.
         """
         super().__init__()
         self._db = db
-        self._ontology = ontology
 
     @abstractmethod
     def recommend_items(

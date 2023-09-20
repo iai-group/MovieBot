@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING, Any, DefaultDict, Dict, Type
 
 from dialoguekit.participant import User
 from dialoguekit.platforms import Platform as DialogueKitPlatform
-
 from moviebot.connector.dialogue_connector import MovieBotDialogueConnector
 from moviebot.core.utterance.utterance import UserUtterance
 

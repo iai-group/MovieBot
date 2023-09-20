@@ -11,28 +11,28 @@ from copy import deepcopy
 from typing import Any, Dict, List
 
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.ontology.ontology import Ontology
+from moviebot.domain.movie_domain import MovieDomain
 
 
 class DialogueState:
     def __init__(
-        self, ontology: Ontology, slots: List[str], isBot: bool
+        self, domain: MovieDomain, slots: List[str], isBot: bool
     ) -> None:
         """Initializes the SlotFilling dialogue state structures.
 
         Args:
-            ontology: The ontology of the domain.
+            domain: Domain knowledge.
             slots: The slots to find information needs.
             isBot: If the conversation is via bot or not.
         """
         self.isBot = isBot
-        self.ontology = ontology
+        self.domain = domain
         # the recommended movie and all it's attributes from the database
         self.item_in_focus = None
         # user requestable attributes of item_in_focus and system answers
         # self.requestable_slots_filled = {}
-        self.agent_requestable = deepcopy(self.ontology.agent_requestable)
-        self.user_requestable = deepcopy(self.ontology.user_requestable)
+        self.agent_requestable = deepcopy(self.domain.agent_requestable)
+        self.user_requestable = deepcopy(self.domain.user_requestable)
         self.frame_CIN = dict.fromkeys(slots)  # user requirements before
         # making a recommendation. CIN stands for current information needs
         self.frame_PIN = (
@@ -96,7 +96,7 @@ class DialogueState:
         """Initializes the state if the dialogue starts again."""
         # set the structure of CIN based of their value count
         for slot in self.frame_CIN:
-            if slot in self.ontology.multiple_values_CIN:
+            if slot in self.domain.multiple_values_CIN:
                 self.frame_CIN[slot] = []
             else:
                 self.frame_CIN[slot] = None
@@ -105,8 +105,8 @@ class DialogueState:
         self.items_in_context = False
         self.movies_recommended = {}
 
-        self.agent_requestable = deepcopy(self.ontology.agent_requestable)
-        self.user_requestable = deepcopy(self.ontology.user_requestable)
+        self.agent_requestable = deepcopy(self.domain.agent_requestable)
+        self.user_requestable = deepcopy(self.domain.user_requestable)
         self.agent_req_filled = (
             False  # flag if the necessary information needs are filled
         )
