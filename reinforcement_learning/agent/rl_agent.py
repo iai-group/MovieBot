@@ -71,9 +71,7 @@ class MovieBotAgentRL(MovieBotAgent):
 
         if not self.isBot:
             logger.debug(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
-                )
+                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
 
             utterance = AnnotatedUtterance(
