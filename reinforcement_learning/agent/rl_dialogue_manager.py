@@ -101,6 +101,13 @@ class DialogueManagerRL(DialogueManager):
     ) -> List[DialogueAct]:
         """Returns the dialogue acts with filled placeholders.
 
+        For example, if the agent replies with a dialogue act with the intent
+        RECOMMEND, the title will be added as a constraint to the dialogue act:
+        DialogueAct(
+            AgentIntents.RECOMMEND,
+            [ItemConstraint("title", Operator.EQ,"The Matrix")]
+        )
+
         Args:
             dialogue_acts: Dialogue acts.
 
@@ -114,7 +121,8 @@ class DialogueManagerRL(DialogueManager):
 
         recommendation = (
             self.recommend()
-            if AgentIntents.RECOMMEND in [dact.intent for dact in dialogue_acts]
+            if AgentIntents.RECOMMEND
+            in [dact.intent for dact in dialogue_acts]
             else self.get_state().item_in_focus
         )
 

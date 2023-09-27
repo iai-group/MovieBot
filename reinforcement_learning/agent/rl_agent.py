@@ -1,6 +1,6 @@
 """MovieBot agent for reinforcement learning of dialogue policy."""
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from dialoguekit.core import AnnotatedUtterance, Intent
 from dialoguekit.participant import DialogueParticipant
@@ -43,7 +43,7 @@ class MovieBotAgentRL(MovieBotAgent):
         options: DialogueOptions = {},
         user_fname: str = None,
         recommended_item: Dict[str, Any] = None,
-    ):
+    ) -> Tuple[AnnotatedUtterance, DialogueOptions]:
         """Generates an utterance object based on agent dialogue acts.
 
         Args:
@@ -71,7 +71,9 @@ class MovieBotAgentRL(MovieBotAgent):
 
         if not self.isBot:
             logger.debug(
-                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
+                str(
+                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
+                )
             )
 
             utterance = AnnotatedUtterance(
@@ -114,20 +116,6 @@ class MovieBotAgentRL(MovieBotAgent):
             utterance_options,
             self.dialogue_manager.get_state(),
         )
-
-    def update_placeholder_dialogue_act(
-        self, agent_dacts: List[DialogueAct]
-    ) -> List[DialogueAct]:
-        """Updates the placeholders in dialogue act predicted by the dialogue
-        policy.
-
-        Args:
-            agent_dacts: Agent dialogue acts.
-
-        Returns:
-            Updated dialogue acts.
-        """
-        return self.dialogue_manager.get_filled_dialogue_acts(agent_dacts)
 
     def welcome(self, user_fname: str = None) -> None:
         """Sends a welcome message to the user.
