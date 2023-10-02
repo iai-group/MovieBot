@@ -2,7 +2,7 @@
 
 The user model stores the user's preferences, in terms of slots and items in a
 structured (dictionary) and unstructured manner (utterances). These preferences
-serves to main purposes:
+serve two main purposes:
 1. Input for the recommender system.
 2. Input for the explainability component to generate an explainable user model.
 """
