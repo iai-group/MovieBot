@@ -193,7 +193,12 @@ def test_check_reveal_voluntary_intent_empty(
                         "reason",
                         Operator.EQ,
                         "dont_like",
-                    )
+                    ),
+                    ItemConstraint(
+                        "preference",
+                        Operator.EQ,
+                        -1.0,
+                    ),
                 ],
             ),
         ),
@@ -206,7 +211,12 @@ def test_check_reveal_voluntary_intent_empty(
                         "reason",
                         Operator.EQ,
                         "watched",
-                    )
+                    ),
+                    ItemConstraint(
+                        "preference",
+                        Operator.EQ,
+                        0.0,
+                    ),
                 ],
             ),
         ),

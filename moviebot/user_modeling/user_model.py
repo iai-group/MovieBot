@@ -138,15 +138,6 @@ class UserModel:
         )
         json.dump(data, open(json_path, "w"), indent=4)
 
-    def update_item_preference(self, item: str, preference: float) -> None:
-        """Updates the preference for a given item.
-
-        Args:
-            item: Item.
-            preference: Preference.
-        """
-        self.item_preferences[item] = preference
-
     def get_utterances_with_item_preferences(
         self, item: Optional[str] = None
     ) -> List[AnnotatedUtterance]:
@@ -195,8 +186,8 @@ class UserModel:
         return self.item_preferences.get(item, None)
 
     def get_utterances_with_slot_preferences(
-        self, slot: Optional[str] = None
-    ) -> List[AnnotatedUtterance]:
+        self, slot: Optional[str] = None, value: Optional[str] = None
+    ) -> Union[Dict[str, List[AnnotatedUtterance]], List[AnnotatedUtterance]]:
         """Returns the utterances with slot preference.
 
         If no slot is provided, then all the utterances with slot preference
@@ -205,6 +196,7 @@ class UserModel:
 
         Args:
             slot: Slot. Defaults to None.
+            value: Value. Defaults to None.
 
         Returns:
             Utterances with slot preference.
@@ -218,11 +210,19 @@ class UserModel:
 
         if slot not in self.slot_preferences_nl:
             logging.warning(f"Slot {slot} not found in user model.")
+
+        if value is not None:
+            if value not in self.slot_preferences_nl.get(slot, {}):
+                logging.warning(
+                    f"Value {value} not found for slot {slot} in user model."
+                )
+            return self.slot_preferences_nl.get(slot, {}).get(value, [])
+
         return self.slot_preferences_nl.get(slot, [])
 
     def get_slot_preferences(
         self, slot: Optional[str] = None
-    ) -> Dict[str, float]:
+    ) -> Union[Dict[str, Dict[str, float]], Dict[str, float]]:
         """Returns the slot preferences.
 
         If no slot is provided, then all the slot preferences are returned.
