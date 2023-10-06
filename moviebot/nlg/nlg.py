@@ -14,6 +14,10 @@ from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
+from moviebot.nlu.user_intents_checker import (
+    RecommendationChoices,
+    convert_choice_to_preference,
+)
 
 ButtonOptions = Dict[DialogueAct, List[str]]
 CINType = Dict[str, Union[str, List[str]]]
@@ -141,7 +145,9 @@ class NLG:
 
         self.slot_not_found = {
             Slots.GENRES.value: ["I could not find the genres __replace__."],
-            Slots.KEYWORDS.value: ["I couldn't find the keywords __replace__."],
+            Slots.KEYWORDS.value: [
+                "I couldn't find the keywords __replace__."
+            ],
             Slots.DIRECTORS.value: [
                 "I could not find the the director name __replace__."
             ],
@@ -514,7 +520,9 @@ class NLG:
                     )
                 else:
                     response = (
-                        response + " named similar to " + CIN[Slots.TITLE.value]
+                        response
+                        + " named similar to "
+                        + CIN[Slots.TITLE.value]
                     )
         if (
             CIN[Slots.DIRECTORS.value]
@@ -572,7 +580,9 @@ class NLG:
                 DialogueAct(UserIntents.RESTART, []): [
                     "I want to restart for a new movie."
                 ],
-                DialogueAct(UserIntents.BYE, []): ["I would like to quit now."],
+                DialogueAct(UserIntents.BYE, []): [
+                    "I would like to quit now."
+                ],
             }
             return options
 
@@ -585,19 +595,46 @@ class NLG:
         options = {
             DialogueAct(
                 UserIntents.REJECT,
-                [ItemConstraint("reason", Operator.EQ, "watched")],
+                [
+                    ItemConstraint("reason", Operator.EQ, "watched"),
+                    ItemConstraint(
+                        "preference",
+                        Operator.EQ,
+                        convert_choice_to_preference(
+                            RecommendationChoices.WATCHED
+                        ),
+                    ),
+                ],
             ): ["I have already watched it."],
             # [random.choice(['I have already watched it.',
             #                 'I have seen this already.'])],
             DialogueAct(
                 UserIntents.REJECT,
-                [ItemConstraint("reason", Operator.EQ, "dont_like")],
+                [
+                    ItemConstraint("reason", Operator.EQ, "dont_like"),
+                    ItemConstraint(
+                        "preference",
+                        Operator.EQ,
+                        convert_choice_to_preference(
+                            RecommendationChoices.DONT_LIKE
+                        ),
+                    ),
+                ],
             ): ["Recommend me something else please."],
             # [random.choice(['I don\'t like this recommendation.',
             #                 'Recommend me something else please.'])],
-            DialogueAct(UserIntents.ACCEPT, []): [
-                "I like this recommendation."
-            ],
+            DialogueAct(
+                UserIntents.ACCEPT,
+                [
+                    ItemConstraint(
+                        "preference",
+                        Operator.EQ,
+                        convert_choice_to_preference(
+                            RecommendationChoices.ACCEPT
+                        ),
+                    ),
+                ],
+            ): ["I like this recommendation."],
             DialogueAct(
                 UserIntents.INQUIRE,
                 [ItemConstraint(Slots.MORE_INFO.value, Operator.EQ, "")],

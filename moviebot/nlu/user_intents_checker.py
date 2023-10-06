@@ -18,6 +18,10 @@ from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
 from moviebot.nlu.data_loader import DataLoader
+from moviebot.nlu.recommendation_decision_processing import (
+    RecommendationChoices,
+    convert_choice_to_preference,
+)
 from moviebot.ontology.ontology import Ontology
 
 PATTERN_BASIC = {
@@ -334,7 +338,13 @@ class UserIntentsChecker:
             ]
         ):
             dact.intent = UserIntents.REJECT
-            dact.params = [ItemConstraint("reason", Operator.EQ, "dont_like")]
+            preference = convert_choice_to_preference(
+                RecommendationChoices.DONT_LIKE
+            )
+            dact.params = [
+                ItemConstraint("reason", Operator.EQ, "dont_like"),
+                ItemConstraint("preference", Operator.EQ, preference),
+            ]
         elif any(
             [
                 re.search(r"\b{0}\b".format(pattern), utterance)
@@ -342,7 +352,13 @@ class UserIntentsChecker:
             ]
         ):
             dact.intent = UserIntents.REJECT
-            dact.params = [ItemConstraint("reason", Operator.EQ, "watched")]
+            preference = convert_choice_to_preference(
+                RecommendationChoices.WATCHED
+            )
+            dact.params = [
+                ItemConstraint("reason", Operator.EQ, "watched"),
+                ItemConstraint("preference", Operator.EQ, preference),
+            ]
         if dact.intent != UserIntents.UNK:
             user_dacts.append(dact)
         return user_dacts

@@ -18,25 +18,29 @@ from typing import Dict, List, Optional, Union
 from dialoguekit.core import AnnotatedUtterance
 from dialoguekit.utils.dialogue_reader import json_to_annotated_utterance
 
+_KEY_SLOT_PREFERENCES = "slot_preferences"
+_KEY_SLOT_PREFERENCES_NL = "slot_preferences_nl"
+_KEY_ITEM_PREFERENCES = "item_preferences"
+_KEY_ITEM_PREFERENCES_NL = "item_preferences_nl"
+
 
 class UserModel:
     def __init__(self) -> None:
         """Initializes the user model."""
         # Structured and unstructured slot preferences
-        self.slot_preferences: Dict[Dict[str, float]] = defaultdict(
+        self.slot_preferences: Dict[str, Dict[str, float]] = defaultdict(
             lambda: defaultdict(float)
         )
         self.slot_preferences_nl: Dict[
-            Dict[str, AnnotatedUtterance]
+            str, Dict[str, AnnotatedUtterance]
         ] = defaultdict(lambda: defaultdict(list))
 
         # Structured and unstructured item preferences
-        self.item_preferences: Dict[Dict[str, float]] = defaultdict(
-            lambda: defaultdict(float)
-        )
+        self.item_preferences: Dict[str, float] = defaultdict(float)
+
         self.item_preferences_nl: Dict[
-            Dict[str, AnnotatedUtterance]
-        ] = defaultdict(lambda: defaultdict(list))
+            str, List[AnnotatedUtterance]
+        ] = defaultdict(list)
 
     @classmethod
     def from_json(cls, json_path: str) -> UserModel:
@@ -52,29 +56,29 @@ class UserModel:
             User model.
         """
         user_model = cls()
-        if os.path.exists(json_path):
-            user_model_json = json.load(open(json_path, "r"))
-            user_model.slot_preferences.update(
-                user_model_json["slot_preferences"]
-            )
-            for slot, utterance in user_model_json[
-                "slot_preferences_nl"
-            ].items():
-                user_model.slot_preferences_nl[slot].append(
-                    json_to_annotated_utterance(utterance)
-                )
-
-            user_model.item_preferences.update(
-                user_model_json["item_preferences"]
-            )
-            for item, utterance in user_model_json[
-                "item_preferences_nl"
-            ].items():
-                user_model.item_preferences_nl[item].append(
-                    json_to_annotated_utterance(utterance)
-                )
-        else:
+        if not os.path.exists(json_path):
             raise FileNotFoundError(f"JSON file {json_path} not found.")
+
+        user_model_json = json.load(open(json_path, "r"))
+        user_model.slot_preferences.update(
+            user_model_json[_KEY_SLOT_PREFERENCES]
+        )
+        for slot, utterance in user_model_json[
+            _KEY_SLOT_PREFERENCES_NL
+        ].items():
+            user_model.slot_preferences_nl[slot].append(
+                json_to_annotated_utterance(utterance)
+            )
+
+        user_model.item_preferences.update(
+            user_model_json[_KEY_ITEM_PREFERENCES]
+        )
+        for item, utterance in user_model_json[
+            _KEY_ITEM_PREFERENCES_NL
+        ].items():
+            user_model.item_preferences_nl[item].append(
+                json_to_annotated_utterance(utterance)
+            )
         return user_model
 
     def _utterance_to_dict(
@@ -83,6 +87,7 @@ class UserModel:
         """Converts an utterance to a dictionary.
 
         TODO: Move this method to DialogueKit AnnotatedUtterance class.
+        See: https://github.com/iai-group/DialogueKit/issues/248
 
         Args:
             utterance: Utterance.
@@ -102,15 +107,15 @@ class UserModel:
             else [],
         }
 
-    def save(self, json_path: str) -> None:
+    def save_as_json_file(self, json_path: str) -> None:
         """Saves the user model to a JSON file.
 
         Args:
             json_path: Path to the JSON file.
         """
         data = {
-            "slot_preferences": self.slot_preferences,
-            "item_preferences": self.item_preferences,
+            _KEY_SLOT_PREFERENCES: self.slot_preferences,
+            _KEY_ITEM_PREFERENCES: self.item_preferences,
         }
 
         slot_preferences_utterances = {}
@@ -127,43 +132,20 @@ class UserModel:
 
         data.update(
             {
-                "slot_preferences_nl": slot_preferences_utterances,
-                "item_preferences_nl": item_preferences_utterances,
+                _KEY_SLOT_PREFERENCES_NL: slot_preferences_utterances,
+                _KEY_ITEM_PREFERENCES_NL: item_preferences_utterances,
             }
         )
         json.dump(data, open(json_path, "w"), indent=4)
 
-    def _convert_choice_to_preference(self, choice: str) -> float:
-        """Converts a choice to a preference within the range [-1,1].
-
-        Dislike is represented by a preference below 0, while like is
-        represented by a preference above 0. If the choice does not express a
-        preference (i.e., inquire), then the preference is neutral, i.e., 0.
-        Possible choices are: accept, reject, dont_like, inquire, and watched.
-
-        Args:
-            choice: Choice (i.e., accept, reject).
-
-        Returns:
-            Preference within the range [-1,1].
-        """
-        if choice == "accept":
-            return 1.0
-        elif choice in ["reject", "dont_like"]:
-            return -1.0
-
-        return 0.0
-
-    def update_item_preference(self, item: str, choice: str) -> None:
+    def update_item_preference(self, item: str, preference: float) -> None:
         """Updates the preference for a given item.
 
         Args:
             item: Item.
-            choice: Choice (i.e., accept, reject, don't like).
+            preference: Preference.
         """
-        self.item_preferences[item][
-            choice
-        ] = self._convert_choice_to_preference(choice)
+        self.item_preferences[item] = preference
 
     def get_utterances_with_item_preferences(
         self, item: Optional[str] = None
@@ -240,7 +222,7 @@ class UserModel:
 
     def get_slot_preferences(
         self, slot: Optional[str] = None
-    ) -> Union[Dict[str, float], float]:
+    ) -> Dict[str, float]:
         """Returns the slot preferences.
 
         If no slot is provided, then all the slot preferences are returned.
