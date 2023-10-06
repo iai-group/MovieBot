@@ -25,7 +25,7 @@ class NLU(ABC):
         """The abstract NLU class.
 
         Args:
-            config: Paths to ontology, database and tag words for slots in NLU.
+            config: Paths to domain, database and tag words for slots in NLU.
         """
         self.config = config
         if config:

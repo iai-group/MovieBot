@@ -10,7 +10,7 @@ IAI MovieBot is a conversational recommender system for movies.  It follows a st
 
 ## Demo
 
-IAI MovieBot can be tried on the Telegram channel [@IAI_MovieBot](https://t.me/IAI_MovieBot).
+IAI MovieBot can be tried on the Telegram channel [@iai_moviebot_bot](https://t.me/iai_moviebot_bot).
 
 ## Installation and documentation
 

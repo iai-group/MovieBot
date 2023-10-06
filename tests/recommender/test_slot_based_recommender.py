@@ -5,14 +5,13 @@ import pytest
 
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.recommender.slot_based_recommender_model import (
     SlotBasedRecommenderModel,
 )
-from tests.mocks.mock_ontology import MockOntology
 
 
 @pytest.fixture
-@mock.patch("moviebot.ontology.ontology.Ontology", new=MockOntology)
 def mock_dialogue_state() -> DialogueState:
     """Creates a mock representing agent_should_make_offer dialogue state."""
 
@@ -20,18 +19,21 @@ def mock_dialogue_state() -> DialogueState:
         def _agent_offer_state(self) -> str:
             return str(["agent_should_make_offer"])
 
-    dialogue_state = MockDialogueState(MockOntology(), [], isBot=False)
+    dialogue_state = MockDialogueState(
+        MovieDomain("tests/data/test_domain.yaml"), [], isBot=False
+    )
     dialogue_state.initialize()
     return dialogue_state
 
 
 @pytest.fixture
 @mock.patch.object(DataBase, "_initialize_sql")
-@mock.patch("moviebot.ontology.ontology.Ontology", new=MockOntology)
 def slot_base_recommender(
     mock___initialize_sql: mock.MagicMock,
 ) -> SlotBasedRecommenderModel:
-    return SlotBasedRecommenderModel(DataBase(None), MockOntology())
+    return SlotBasedRecommenderModel(
+        DataBase(None), MovieDomain("tests/data/test_domain.yaml")
+    )
 
 
 @mock.patch.object(

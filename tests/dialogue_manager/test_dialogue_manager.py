@@ -11,7 +11,7 @@ from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.dialogue_manager.dialogue_state_tracker import (
     DialogueStateTracker,
 )
-from moviebot.ontology.ontology import Ontology
+from moviebot.domain.movie_domain import MovieDomain
 
 
 @pytest.fixture
@@ -23,10 +23,11 @@ def config() -> Dict[str, Any]:
         "SlotBasedRecommenderModel"
     ) as MockRecommender:
         yield {
-            "ontology": Ontology(),
+            "domain": MovieDomain("tests/data/test_domain.yaml"),
             "database": MockDatabase("tests/database/database.json"),
             "recommender": MockRecommender(
-                MockDatabase("tests/database/database.json"), Ontology()
+                MockDatabase("tests/database/database.json"),
+                MovieDomain("tests/data/test_domain.yaml"),
             ),
         }
 

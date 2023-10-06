@@ -12,6 +12,7 @@ from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.rule_based_annotator import RBAnnotator
@@ -22,7 +23,6 @@ from moviebot.nlu.recommendation_decision_processing import (
     RecommendationChoices,
     convert_choice_to_preference,
 )
-from moviebot.ontology.ontology import Ontology
 
 PATTERN_BASIC = {
     UserIntents.ACKNOWLEDGE: ["yes", "okay", "fine", "sure"],
@@ -96,9 +96,9 @@ class UserIntentsChecker:
         refers to.
 
         Args:
-            config: Dictionary with ontology and database.
+            config: Dictionary with domain knowledge and database.
         """
-        self.ontology: Ontology = config["ontology"]
+        self.domain: MovieDomain = config["domain"]
         self.database: DataBase = config["database"]
         # Load the preprocessing elements and the Database as slot-values
         self._punctuation_remover()
@@ -249,7 +249,7 @@ class UserIntentsChecker:
         user_dacts = []
         dact = DialogueAct(UserIntents.UNK, [])
         person_name_checks = False
-        for slot in self.ontology.slots_annotation:
+        for slot in self.domain.slots_annotation:
             if slot in [x.value for x in [Slots.ACTORS, Slots.DIRECTORS]]:
                 if person_name_checks:
                     continue

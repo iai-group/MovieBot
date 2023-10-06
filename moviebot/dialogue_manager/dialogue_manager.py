@@ -2,7 +2,7 @@
 of the IAI MovieBot agent.
 
 The agent can access the state, context and actions via the dialogue
-manager. Dialogue manager also access the database and ontology to carry
+manager. Dialogue manager also access the database and domain to carry
 on the conversation.
 """
 

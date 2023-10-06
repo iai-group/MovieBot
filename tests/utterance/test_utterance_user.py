@@ -1,8 +1,8 @@
 from typing import List
 
 import pytest
-from dialoguekit.core import Utterance
 
+from dialoguekit.core import Utterance
 from moviebot.core.utterance.utterance import AgentUtterance, UserUtterance
 from moviebot.nlu.text_processing import Token
 

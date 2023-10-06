@@ -6,7 +6,7 @@ CONVERSATION_LOGS: # implementation: save conversational logs for debugging
     path: reports/conversations/
 
 DATA:
-  ontology_path: data/movies_ontology.json
+  domain_path: data/movies_domain.yaml
   db_path: data/movies_dbase.db
   slot_values_path: data/slot_values.json
 

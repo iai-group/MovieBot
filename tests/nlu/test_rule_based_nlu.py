@@ -55,7 +55,7 @@ class MockIntentChecker(MagicMock):
 @patch("moviebot.nlu.user_intents_checker.DataLoader", new=MockDataLoader)
 def nlu():
     config = {
-        "ontology": "",
+        "domain": "",
         "database": "",
         "slot_values_path": "",
         "tag_words_slots_path": "",

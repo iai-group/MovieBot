@@ -1,0 +1,19 @@
+name: "Test domain"
+
+slot_names:
+  genres: 
+    - system_requestable
+    - user_requestable
+    - multiple_values
+  keywords: 
+    - system_requestable
+  duration:
+    - user_requestable
+  actors:
+    - user_requestable
+    - slots_annotation
+  directors:
+    - user_requestable
+    - slots_annotation
+  year:
+    - user_requestable
