@@ -28,6 +28,9 @@ class UserModel:
     def __init__(self) -> None:
         """Initializes the user model."""
         # Structured and unstructured slot preferences
+        # For slots, the first key is the slot name, and the second key is the
+        # slot value, e.g., {"genre": {"drama": 1.0, "action": -.5}}. For
+        # unstructured, the value is a list of annotated utterances.
         self.slot_preferences: Dict[str, Dict[str, float]] = defaultdict(
             lambda: defaultdict(float)
         )
@@ -36,6 +39,8 @@ class UserModel:
         ] = defaultdict(lambda: defaultdict(list))
 
         # Structured and unstructured item preferences
+        # The key is the item id and the value is either a number or a list of
+        # annotated utterances.
         self.item_preferences: Dict[str, float] = defaultdict(float)
 
         self.item_preferences_nl: Dict[
@@ -63,22 +68,25 @@ class UserModel:
         user_model.slot_preferences.update(
             user_model_json[_KEY_SLOT_PREFERENCES]
         )
-        for slot, utterance in user_model_json[
+        for slot, value_utterances in user_model_json[
             _KEY_SLOT_PREFERENCES_NL
         ].items():
-            user_model.slot_preferences_nl[slot].append(
-                json_to_annotated_utterance(utterance)
-            )
+            for value, utterances in value_utterances.items():
+                for utterance in utterances:
+                    user_model.slot_preferences_nl[slot][value].append(
+                        json_to_annotated_utterance(utterance)
+                    )
 
         user_model.item_preferences.update(
             user_model_json[_KEY_ITEM_PREFERENCES]
         )
-        for item, utterance in user_model_json[
+        for item, utterances in user_model_json[
             _KEY_ITEM_PREFERENCES_NL
         ].items():
-            user_model.item_preferences_nl[item].append(
-                json_to_annotated_utterance(utterance)
-            )
+            for utterance in utterances:
+                user_model.item_preferences_nl[item].append(
+                    json_to_annotated_utterance(utterance)
+                )
         return user_model
 
     def _utterance_to_dict(
@@ -118,13 +126,15 @@ class UserModel:
             _KEY_ITEM_PREFERENCES: self.item_preferences,
         }
 
-        slot_preferences_utterances = {}
-        for slot, utterances in self.slot_preferences_nl.items():
-            slot_preferences_utterances[slot] = [
-                self._utterance_to_dict(utterance) for utterance in utterances
-            ]
+        slot_preferences_utterances = defaultdict(lambda: defaultdict(list))
+        for slot, value_utterances in self.slot_preferences_nl.items():
+            for value, utterances in value_utterances.items():
+                slot_preferences_utterances[slot][value] = [
+                    self._utterance_to_dict(utterance)
+                    for utterance in utterances
+                ]
 
-        item_preferences_utterances = {}
+        item_preferences_utterances = defaultdict(list)
         for item, utterances in self.item_preferences_nl.items():
             item_preferences_utterances[item] = [
                 self._utterance_to_dict(utterance) for utterance in utterances

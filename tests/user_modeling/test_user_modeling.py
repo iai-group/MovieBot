@@ -1,5 +1,7 @@
 """Tests for user modeling."""
 
+import os
+
 import pytest
 
 from dialoguekit.core.annotated_utterance import AnnotatedUtterance
@@ -12,9 +14,14 @@ from moviebot.nlu.recommendation_decision_processing import (
 from moviebot.user_modeling.user_model import UserModel
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def user_model() -> UserModel:
     return UserModel()
+
+
+@pytest.fixture
+def filepath() -> str:
+    return "tests/data/test_user_model.json"
 
 
 def test_get_item_preferences(user_model: UserModel) -> None:
@@ -110,3 +117,37 @@ def test_get_utterances_with_slot_preferences(user_model: UserModel) -> None:
             intent=UserIntents.ACCEPT.value,
         ),
     ]
+
+
+def test_save_as_json_file(user_model: UserModel, filepath: str) -> None:
+    """Tests save_as_json_file."""
+    user_model.save_as_json_file(filepath)
+
+    assert os.path.exists(filepath)
+
+
+def test_user_model_from_json(filepath: str) -> None:
+    """Tests class method from_json."""
+    user_model = UserModel.from_json(filepath)
+
+    assert user_model.get_item_preferences() == {
+        "movie1": 1.0,
+        "movie2": -1.0,
+    }
+
+    assert user_model.get_utterances_with_slot_preferences() == {
+        "genre": {
+            "action": [
+                AnnotatedUtterance(
+                    "I don't like action",
+                    DialogueParticipant.USER,
+                    intent=UserIntents.REVEAL.value,
+                ),
+                AnnotatedUtterance(
+                    "I don't want to watch an action movie",
+                    DialogueParticipant.USER,
+                    intent=UserIntents.ACCEPT.value,
+                ),
+            ]
+        }
+    }

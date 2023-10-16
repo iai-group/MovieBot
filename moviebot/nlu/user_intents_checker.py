@@ -341,6 +341,8 @@ class UserIntentsChecker:
             preference = convert_choice_to_preference(
                 RecommendationChoices.DONT_LIKE
             )
+            # TODO: Use enum for constraints' slot.
+            # See: https://github.com/iai-group/MovieBot/issues/225
             dact.params = [
                 ItemConstraint("reason", Operator.EQ, "dont_like"),
                 ItemConstraint("preference", Operator.EQ, preference),
