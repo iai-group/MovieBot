@@ -140,12 +140,12 @@ def test_user_model_from_json(filepath: str) -> None:
             "action": [
                 AnnotatedUtterance(
                     "I don't like action",
-                    DialogueParticipant.USER,
+                    DialogueParticipant.USER.name,
                     intent=UserIntents.REVEAL.value,
                 ),
                 AnnotatedUtterance(
                     "I don't want to watch an action movie",
-                    DialogueParticipant.USER,
+                    DialogueParticipant.USER.name,
                     intent=UserIntents.ACCEPT.value,
                 ),
             ]

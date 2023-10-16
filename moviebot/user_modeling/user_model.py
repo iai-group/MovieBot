@@ -212,11 +212,7 @@ class UserModel:
             Utterances with slot preference.
         """
         if slot is None:
-            return [
-                utterance
-                for utterances in self.slot_preferences_nl.values()
-                for utterance in utterances
-            ]
+            return self.slot_preferences_nl
 
         if slot not in self.slot_preferences_nl:
             logging.warning(f"Slot {slot} not found in user model.")

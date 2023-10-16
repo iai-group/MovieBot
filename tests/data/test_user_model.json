@@ -1,0 +1,47 @@
+{
+    "slot_preferences": {
+        "genre": {
+            "comedy": 1.0,
+            "action": -1.0,
+            "drama": -1.0
+        }
+    },
+    "item_preferences": {
+        "movie1": 1.0,
+        "movie2": -1.0
+    },
+    "slot_preferences_nl": {
+        "genre": {
+            "action": [
+                {
+                    "participant": "USER",
+                    "utterance": "I don't like action",
+                    "intent": "reveal",
+                    "slot_values": []
+                },
+                {
+                    "participant": "USER",
+                    "utterance": "I don't want to watch an action movie",
+                    "intent": "accept",
+                    "slot_values": []
+                }
+            ]
+        }
+    },
+    "item_preferences_nl": {
+        "movie1": [
+            {
+                "participant": "USER",
+                "utterance": "I like movie1",
+                "intent": "accept",
+                "slot_values": []
+            },
+            {
+                "participant": "USER",
+                "utterance": "Sounds good",
+                "intent": "accept",
+                "slot_values": []
+            }
+        ]
+    }
+}
