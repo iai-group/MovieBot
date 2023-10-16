@@ -100,8 +100,7 @@ def test_get_utterances_with_slot_preferences(user_model: UserModel) -> None:
 
     assert user_model.get_utterances_with_slot_preferences("actors") == []
     assert (
-        user_model.get_utterances_with_slot_preferences("genre", "comedy")
-        == []
+        user_model.get_utterances_with_slot_preferences("genre", "comedy") == []
     )
     assert user_model.get_utterances_with_slot_preferences(
         "genre", "action"
