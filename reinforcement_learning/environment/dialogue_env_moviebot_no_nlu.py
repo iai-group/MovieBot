@@ -8,12 +8,15 @@ this environment."""
 import json
 import logging
 import os
+from pprint import pprint
 from typing import Any, Dict, List, Optional, Tuple
 
 import confuse
 import gymnasium as gym
 import numpy as np
 import torch
+from nltk.stem import WordNetLemmatizer
+
 from dialoguekit.connector.dialogue_connector import (
     _DIALOGUE_EXPORT_PATH,
     DialogueConnector,
@@ -21,20 +24,18 @@ from dialoguekit.connector.dialogue_connector import (
 from dialoguekit.core.annotated_utterance import AnnotatedUtterance
 from dialoguekit.core.dialogue import Dialogue
 from dialoguekit.participant.participant import DialogueParticipant
-from nltk.stem import WordNetLemmatizer
-from reinforcement_learning.agent.rl_agent import MovieBotAgentRL
-from rl.utils import build_agenda_based_simulator
-from usersimcrs.simulator.user_simulator import UserSimulator
-
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.core.utterance.utterance import UserUtterance
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.neural_dialogue_policy import (
+from moviebot.dialogue_manager.dialogue_policy.neural_dialogue_policy import (
     NeuralDialoguePolicy,
 )
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
+from reinforcement_learning.agent.rl_agent import MovieBotAgentRL
+from reinforcement_learning.utils import build_agenda_based_simulator
+from usersimcrs.simulator.user_simulator import UserSimulator
 
 WNL = WordNetLemmatizer()
 
@@ -90,7 +91,8 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
     def render(self) -> None:
         """Renders the environment."""
         state = self.agent.dialogue_manager.dialogue_state_tracker.get_state()
-        print(f"Dialogue state:\n{state.to_dict()}")
+        print("Dialogue state:")
+        pprint(state.to_dict())
 
     def reset(
         self, **kwargs: Optional[Dict[str, Any]]
@@ -179,9 +181,8 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
 
             # 2. Perform the action in the environment (i.e., update state
             # tracker)
-            self.agent.dialogue_manager.dialogue_state_tracker.update_state_agent(  # noqa: E501
-                agent_dacts
-            )
+            dst = self.agent.dialogue_manager.dialogue_state_tracker
+            dst.update_state_agent(agent_dacts)
 
             self.dialogue_history.add_utterance(agent_utterance)
         except Exception as e:
@@ -238,9 +239,8 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
                     user_intents = [da.intent for da in user_dacts]
 
                 # 4. Update the dialogue state tracker
-                self.agent.dialogue_manager.dialogue_state_tracker.update_state_user(  # noqa: E501
-                    user_dacts
-                )
+                dst = self.agent.dialogue_manager.dialogue_state_tracker
+                dst.update_state_user(user_dacts)
             except Exception as e:
                 logging.error(e, exc_info=True)
                 truncated = True
@@ -423,9 +423,10 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
         return None
 
 
-gym.register(
-    id="DialogueEnvMovieBotNoNLU-v0",
-    entry_point=(
-        "rl.rl_env.dialogue_env_moviebot_no_nlu:DialogueEnvMovieBotNoNLU"
-    ),
-)
+if __name__ == "__main__":
+    gym.register(
+        id="DialogueEnvMovieBotNoNLU-v0",
+        entry_point=(
+            "rl.rl_env.dialogue_env_moviebot_no_nlu:DialogueEnvMovieBotNoNLU"
+        ),
+    )

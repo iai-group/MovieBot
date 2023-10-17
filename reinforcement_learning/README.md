@@ -16,5 +16,5 @@ python -m reinforcement_learning.environment.dialogue_env_moviebot
 Note that to use the environments you will need to import them from the `reinforcement_learning.environment` package, for example:
 
 ```python
-from reinforcement_learning.environment import DialogueEnvMovieBot
+from reinforcement_learning.environment.dialogue_env_moviebot import DialogueEnvMovieBot
 ```
