@@ -1,9 +1,10 @@
-"""This module contains the ExplainableUserModelTagBased class.
+"""Class for creating a tag-based user model explanations.
 
 The class generates explanations for user preferences in the movie domain based
 on templates loaded from a YAML file.
 """
 
+import os
 import random
 import re
 
@@ -16,27 +17,35 @@ from moviebot.explainability.explainable_user_model import (
     UserPreferences,
 )
 
-_DEFAULT_TEMPLATE_FILE = "moviebot/explainability/explanation_templates.yaml"
+_DEFAULT_TEMPLATE_FILE = "data/explainability/explanation_templates.yaml"
 
 
 class ExplainableUserModelTagBased(ExplainableUserModel):
     def __init__(self, template_file: str = _DEFAULT_TEMPLATE_FILE):
-        """Initialize the ExplainableUserModelTagBased class.
+        """Initializes the ExplainableUserModelTagBased class.
 
         Args:
             template_file: Path to the YAML file containing explanation
-            templates. Defaults to _DEFAULT_TEMPLATE_FILE.
+                templates. Defaults to _DEFAULT_TEMPLATE_FILE.
+
+        Raises:
+            FileNotFoundError: The template file could not be found.
         """
+        if not os.isfile(template_file):
+            raise FileNotFoundError(
+                f"Could not find template file {template_file}."
+            )
+
         with open(template_file, "r") as f:
             self.templates = yaml.safe_load(f)
 
     def generate_explanation(
         self, user_preferences: UserPreferences
     ) -> AnnotatedUtterance:
-        """Generate an explanation based on the provided user preferences.
+        """Generates an explanation based on the provided user preferences.
 
         Args:
-            user_preferences: Nested dictionary of user preferences.
+            user_preferences: User preferences.
 
         Returns:
             The generated explanation.
@@ -68,7 +77,7 @@ class ExplainableUserModelTagBased(ExplainableUserModel):
 
         Args:
             template: Template containing negative keyword.
-            remove: If True, remove the negative keyword.
+            remove: If True, remove the negative keyword. Defaults to True.
 
         Returns:
             Template with negative keyword removed or replaced.

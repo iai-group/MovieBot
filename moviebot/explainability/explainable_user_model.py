@@ -13,14 +13,14 @@ class ExplainableUserModel(ABC):
     def generate_explanation(
         self, user_preferences: UserPreferences
     ) -> AnnotatedUtterance:
-        """Generate an explanation based on the provided input data.
+        """Generates an explanation based on the provided input data.
 
         Args:
             input_data: The input data for which an explanation is to be
             generated.
 
         Returns:
-            The generated explanation.
+            A system utterance containing an explanation.
 
         Raises:
             NotImplementedError: This method must be implemented by a subclass.

@@ -6,10 +6,8 @@ from moviebot.explainability.explainable_user_model_tag_based import (
 
 
 @pytest.fixture
-def explainable_model():
-    return ExplainableUserModelTagBased(
-        "moviebot/explainability/explanation_templates.yaml"
-    )
+def explainable_model() -> ExplainableUserModelTagBased:
+    return ExplainableUserModelTagBased()
 
 
 def test_generate_explanation_positive(explainable_model):
