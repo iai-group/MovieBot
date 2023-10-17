@@ -70,9 +70,7 @@ class MovieBotAgentRL(MovieBotAgent):
 
         if not self.isBot:
             logger.debug(
-                str(
-                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
-                )
+                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
             )
         else:
             record_data = self.dialogue_manager.get_state().to_dict()
