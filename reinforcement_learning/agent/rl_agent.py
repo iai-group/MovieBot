@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Tuple
 
 from dialoguekit.core import AnnotatedUtterance, Intent
 from dialoguekit.participant import DialogueParticipant
-
 from moviebot.agent.agent import MovieBotAgent
 from moviebot.core.core_types import DialogueOptions
 from moviebot.core.utterance.utterance import UserUtterance
@@ -71,26 +70,21 @@ class MovieBotAgentRL(MovieBotAgent):
 
         if not self.isBot:
             logger.debug(
-                str(self.dialogue_manager.dialogue_state_tracker.dialogue_state)
-            )
-
-            utterance = AnnotatedUtterance(
-                intent=agent_intent,
-                text=agent_response,
-                participant=DialogueParticipant.AGENT,
-                annotations=[],
-                metadata=metadata,
+                str(
+                    self.dialogue_manager.dialogue_state_tracker.dialogue_state
+                )
             )
         else:
             record_data = self.dialogue_manager.get_state().to_dict()
             metadata.update({"record_data": record_data})
-            utterance = AnnotatedUtterance(
-                intent=agent_intent,
-                text=agent_response,
-                participant=DialogueParticipant.AGENT,
-                annotations=[],
-                metadata=metadata,
-            )
+
+        utterance = AnnotatedUtterance(
+            intent=agent_intent,
+            text=agent_response,
+            participant=DialogueParticipant.AGENT,
+            annotations=[],
+            metadata=metadata,
+        )
 
         return utterance, options
 
