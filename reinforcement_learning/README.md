@@ -22,36 +22,74 @@ from reinforcement_learning.environment import DialogueEnvMovieBot
 
 ## Training scripts
 
-Currently, there are two reinforcement learning algorithms supported: deep q-learning and advantage actor-critic.
-Each algorithm has its own training script, which can be found in the `reinforcement_learning.training` package:
+Currently, there are two reinforcement learning algorithms supported:
 
-  * `train_dqn.py`: Deep Q-Learning
-  * `train_a2c.py`: Advantage Actor-Critic
+  * Deep Q-Learning
+  * Advantage Actor-Critic
+
+Each algorithm has its own trainer, which can be found in the `reinforcement_learning.training` package.
+
+Before training a dialogue policy, you need to prepare a configuration file.
+A default configuration for each supported algorithm is provided in the `config/rl` folder.
+
+A dialogue policy is trained by executing the following command:
+
+```bash
+python -m reinforcement_learning.train_dialogue_policy -c <training_configuration>
+```
 
 The training logs are stored in Weight and Biases.
 
-### Deep Q-Learning
+### Training Configuration
 
-To train a dialogue policy using deep q-learning, you need to execute the `train_dqn.py` script.
+<!-- TODO: Add base configuration -->
 
-```bash
+The training configuration is used to specify paths to participants configuration files, model's parameters, training hyperparameters, and other options related to training. Below is an empty configuration file with main options:
+
+```yaml
+# Participants' configuration
+usersim_config: <path to user simulator configuration>
+agent_config: <path to IAI MovieBot configuration>
+
+# Model's parameters
+model:
+  algorithm: <dqn OR a2c>
+  policy_input_size: 
+  hidden_size: 
+  model_path: <path to saved model>
+
+# Training hyperparameters
+hyperparams:
+  hyperparam_name: hyperparam_value
+  ...
+
+use_intents: 
+turn_penalty: 
+no_nlu: 
+
+debug: False
 ```
 
-### Advantage Actor-Critic
+**Participants' configuration**: The participants' configuration files are used to specify the parameters of the user simulator and the agent.
 
-To train a dialogue policy using advantage actor-critic, you need to execute the `train_a2c.py` script.
+**Model's parameters**: The model's parameters are used to specify the parameters of the dialogue policy model. The `algorithm` parameter is used to specify the type of the algorithm used, which can be either `dqn` or `a2c`. The `policy_input_size` parameter is used to specify the size of the input of the policy network. The `hidden_size` parameter is used to specify the size of the hidden layers of the policy network. The `model_path` parameter is used to specify the path to the saved model.
 
-```bash
-```
+**Hyperparameters**: This section is reserved for training hyperparameters such as learning_rate, discount factor, etc. The hyperparameters are algorithm-specific and can be loaded easily in a dictionary.
 
-Note that this algorithm does not support GPU training.
+**use_intents**: Specifies whether the markovian state should include intents.
+
+**turn_penalty**: Specifies the turn penalty value that is included in the reward computation.
+
+**no_nlu**: Specifies whether the user simulator's responses are processed by the agent's NLU module or not. If not, the agent takes the structured representation of the user simulator's responses as input.
+
+## User Simulator
+
+The user simulator is built on top of [UserSimCRS](https://github.com/iai-group/UserSimCRS/tree/main).
+It is an agenda-based user simulator adapted for reinforcement learning.
+In our case, the user simulator needs to send its response directly to the agent instead of letting the dialogue connector handle it.
+
+We note that its architecture is the same as the one used in the UserSimCRS.
 
 ## Try dialogue policy
 
-To try a dialogue policy, you need to execute the `run_policy.py` script.
-
-```bash
-```
-
-This script allows to run a dialogue policy in a Gymnasium environment with a human user.
-The user interact with the dialogue policy via the terminal.
+A dialogue policy can be tested with a human user via the terminal. Instead of interacting with the user simulator, the dialogue policy will interact with the user.
