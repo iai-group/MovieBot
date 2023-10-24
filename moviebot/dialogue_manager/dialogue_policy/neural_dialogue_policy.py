@@ -111,11 +111,16 @@ class NeuralDialoguePolicy(torch.nn.Module):
     ) -> torch.Tensor:
         """Builds the input vector from the dialogue state.
 
+        The markovian state representation is built from booleans in the
+        dialogue state (e.g., a recommendation was made, the agent should make
+        an offer, we are at the beginning of the conversation). It can be seen
+        as a one-hot encoding of the state.
+
         Args:
             dialogue_state: The dialogue state.
 
         Returns:
-            The input vector.
+            Input vector for the policy (i.e., markovian state representation).
         """
         dialogue_state_tensor = torch.tensor(
             [
@@ -131,6 +136,32 @@ class NeuralDialoguePolicy(torch.nn.Module):
             dtype=torch.float,
         )
         return dialogue_state_tensor
+
+    @classmethod
+    def _encode_intents(
+        cls, intents: List[Any], label_encoder
+    ) -> torch.Tensor:
+        """Encodes the intents.
+
+        Args:
+            intents: Intents to encode.
+            label_encoder: Label encoder to use.
+
+        Returns:
+            Encoded intents.
+        """
+        if len(intents) == 0:
+            intents_tensor = torch.zeros(
+                len(label_encoder.classes_), dtype=torch.float
+            )
+        else:
+            intents_tensor = torch.tensor(
+                label_encoder.transform(
+                    [list(map(lambda x: x.value.label, intents))]
+                )[0],
+                dtype=torch.float,
+            )
+        return intents_tensor
 
     @classmethod
     def build_input_from_dialogue_state_and_intents(
@@ -154,29 +185,12 @@ class NeuralDialoguePolicy(torch.nn.Module):
             dialogue_state
         )
 
-        if len(user_intents) == 0:
-            user_intents_tensor = torch.zeros(
-                len(cls.user_label_encoder.classes_), dtype=torch.float
-            )
-        else:
-            user_intents_tensor = torch.tensor(
-                cls.user_label_encoder.transform(
-                    [list(map(lambda x: x.value.label, user_intents))]
-                )[0],
-                dtype=torch.float,
-            )
-
-        if len(agent_intents) == 0:
-            agent_intents_tensor = torch.zeros(
-                len(cls.agent_label_encoder.classes_), dtype=torch.float
-            )
-        else:
-            agent_intents_tensor = torch.tensor(
-                cls.agent_label_encoder.transform(
-                    [list(map(lambda x: x.value.label, agent_intents))]
-                )[0],
-                dtype=torch.float,
-            )
+        user_intents_tensor = cls._encode_intents(
+            user_intents, cls.user_label_encoder
+        )
+        agent_intents_tensor = cls._encode_intents(
+            agent_intents, cls.agent_label_encoder
+        )
 
         return torch.cat(
             [dialogue_state_tensor, user_intents_tensor, agent_intents_tensor],

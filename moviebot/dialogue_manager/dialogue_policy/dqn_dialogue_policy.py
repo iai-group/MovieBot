@@ -27,7 +27,9 @@ class DQNDialoguePolicy(NeuralDialoguePolicy):
             output_size: The size of the output vector.
             possible_actions: The list of possible actions.
         """
-        super().__init__(input_size, hidden_size, output_size, possible_actions)
+        super().__init__(
+            input_size, hidden_size, output_size, possible_actions
+        )
 
         self.model = torch.nn.Sequential(
             torch.nn.Linear(input_size, hidden_size),
@@ -60,7 +62,7 @@ class DQNDialoguePolicy(NeuralDialoguePolicy):
         with torch.no_grad():
             action = self.model(state).max(1)[1].view(1, 1)
 
-        return action, self.possible_actions[action.item()]
+        return action.item(), self.possible_actions[action.item()]
 
     def save_policy(self, path: str) -> None:
         """Saves the policy to a file.
