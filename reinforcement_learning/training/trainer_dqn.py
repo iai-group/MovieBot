@@ -54,8 +54,8 @@ class TrainerDQN(Trainer):
 
     def initialize_policy(self) -> None:
         """Initializes the policy and target networks."""
-        policy_input_size = self.config["policy_input_size"].get()
-        hidden_size = self.config["hidden_size"].get()
+        policy_input_size = self.config["model"]["policy_input_size"].get()
+        hidden_size = self.config["model"]["hidden_size"].get()
         output_size = len(self.agent_possible_actions)
 
         self.policy = DQNDialoguePolicy(

@@ -4,12 +4,28 @@ from typing import List
 
 import confuse
 
+from dialoguekit.nlg.nlg_conditional import ConditionalNLG
+from dialoguekit.nlg.template_from_training_data import (
+    extract_utterance_template,
+)
+from dialoguekit.utils.dialogue_reader import json_to_dialogues
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
 from moviebot.nlu.annotation.operator import Operator
+from usersimcrs.domain.simulation_domain import SimulationDomain
+from usersimcrs.items.item_collection import ItemCollection
+from usersimcrs.items.ratings import Ratings
+from usersimcrs.simulator.agenda_based.interaction_model import (
+    InteractionModel,
+)
+from usersimcrs.simulator.moviebot.moviebot_rl_sim import UserSimulatorMovieBot
 from usersimcrs.simulator.user_simulator import UserSimulator
+from usersimcrs.user_modeling.simple_preference_model import (
+    SimplePreferenceModel,
+)
+from usersimcrs.utils.simulator_building import get_NLU
 
 
 def build_agenda_based_simulator(
@@ -23,7 +39,66 @@ def build_agenda_based_simulator(
     Returns:
         Agenda based user simulator.
     """
-    pass
+    domain = SimulationDomain(config["domain"].get())
+
+    item_collection = ItemCollection()
+    item_collection.load_items_csv(
+        config["items"].get(),
+        domain=domain,
+        domain_mapping=config["domain_mapping"].get(),
+        id_col=config["id_col"].get(),
+    )
+
+    ratings = Ratings(item_collection)
+    ratings.load_ratings_csv(file_path=config["ratings"].get())
+    historical_ratings, ground_truth_ratings = ratings.create_split(
+        config["historical_ratings_ratio"].get(0.8)
+    )
+
+    preference_model = SimplePreferenceModel(
+        domain,
+        item_collection,
+        historical_ratings,
+        historical_user_id="13",
+    )
+
+    # Loads dialogue sample
+    annotated_dialogues_file = config["dialogues"].get()
+    annotated_conversations = json_to_dialogues(
+        annotated_dialogues_file,
+    )
+
+    # Loads interaction model
+    interaction_model = InteractionModel(
+        config_file=config["intents"].get(),
+        annotated_conversations=annotated_conversations,
+    )
+
+    # NLU
+    nlu = get_NLU(config)
+
+    # NLG
+    template = extract_utterance_template(
+        annotated_dialogue_file=annotated_dialogues_file,
+    )
+    for i, v in template.items():
+        for utterance in v:
+            if utterance.text == "Do you have something more recent?":
+                v.remove(utterance)
+        template[i] = v
+
+    nlg = ConditionalNLG(template)
+
+    return UserSimulatorMovieBot(
+        config["simulator_id"].get(),
+        preference_model,
+        interaction_model,
+        nlu,
+        nlg,
+        domain,
+        item_collection,
+        ratings,
+    )
 
 
 def define_possible_actions(domain: MovieDomain) -> List[DialogueAct]:
