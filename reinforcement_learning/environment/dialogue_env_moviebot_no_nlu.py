@@ -143,7 +143,7 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
 
     def step(
         self, action: int
-    ) -> Tuple[torch.Tensor, float, bool, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
         """Performs a step in the environment.
 
         Args:

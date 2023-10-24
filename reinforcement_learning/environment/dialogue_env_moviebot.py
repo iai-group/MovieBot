@@ -88,7 +88,7 @@ class DialogueEnvMovieBot(gym.Env):
 
     def reset(
         self, **kwargs: Optional[Dict[str, Any]]
-    ) -> Tuple[torch.Tensor, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """Resets the environment.
 
         Returns:
@@ -134,7 +134,7 @@ class DialogueEnvMovieBot(gym.Env):
 
     def step(
         self, action: int
-    ) -> Tuple[torch.Tensor, float, bool, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
         """Performs a step in the environment.
 
         Args:
@@ -279,6 +279,7 @@ class DialogueEnvMovieBot(gym.Env):
             user_intents=user_intents,
             agent_intents=agent_intents,
         )
+        observation = observation.numpy()
 
         # 9. Additional information
         info.update(
