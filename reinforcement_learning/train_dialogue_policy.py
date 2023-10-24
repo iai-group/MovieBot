@@ -68,7 +68,7 @@ def parse_args(args: str = None) -> argparse.Namespace:
     run_options_group.add_argument(
         "--use_intents",
         action="store_true",
-        help="Whether or not to nclude intents in the state representation.",
+        help="Whether or not to include intents in the state representation.",
     )
     run_options_group.add_argument(
         "--no_nlu",
@@ -201,7 +201,11 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.DEBUG)
 
     # Create trainer
-    trainer = TrainerDQN(config)
-
+    if config["model"]["algorithm"].get() == "dqn":
+        trainer = TrainerDQN(config)
+    else:
+        raise ValueError(
+            f"Algorithm {config['model']['algorithm'].get()} is not supported."
+        )
     # Train policy
     trainer.train_policy()

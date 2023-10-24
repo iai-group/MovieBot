@@ -45,7 +45,7 @@ class Trainer:
         )
 
         self.initialize_policy()
-        self.policy_path = self.config["model"]["policy_path"].get()
+        self.policy_path = self.config["model"]["model_path"].get()
 
     def create_environment(
         self, b_vectorized: bool
@@ -59,7 +59,7 @@ class Trainer:
             Environment.
         """
         env_args = {
-            "input_size": self.config["policy_input_size"].get(),
+            "input_size": self.config["model"]["policy_input_size"].get(),
             "user_simulator_config": self.usersim_config,
             "agent_config": self.agent_config,
             "agent_possible_actions": self.agent_possible_actions,

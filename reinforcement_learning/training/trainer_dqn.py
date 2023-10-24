@@ -89,7 +89,7 @@ class TrainerDQN(Trainer):
             The id of selected action.
         """
         sample = random.random()
-        eps_start = self.hyperparameters("esp_start")
+        eps_start = self.hyperparameters.get("esp_start")
         eps_decay = self.hyperparameters.get("eps_decay")
         eps_end = self.hyperparameters.get("eps_end")
 
@@ -255,7 +255,7 @@ class TrainerDQN(Trainer):
         # Initialize optimizer
         self.optimizer = torch.optim.AdamW(
             self.policy.parameters(),
-            lr=self.hyperparameters["lr"],
+            lr=self.hyperparameters["learning_rate"],
             amsgrad=True,
         )
 
