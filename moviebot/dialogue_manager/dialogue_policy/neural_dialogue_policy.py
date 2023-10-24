@@ -138,9 +138,7 @@ class NeuralDialoguePolicy(torch.nn.Module):
         return dialogue_state_tensor
 
     @classmethod
-    def _encode_intents(
-        cls, intents: List[Any], label_encoder
-    ) -> torch.Tensor:
+    def _encode_intents(cls, intents: List[Any], label_encoder) -> torch.Tensor:
         """Encodes the intents.
 
         Args:
