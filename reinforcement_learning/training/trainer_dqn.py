@@ -89,13 +89,13 @@ class TrainerDQN(Trainer):
             The id of selected action.
         """
         sample = random.random()
-        eps_start = self.hyperparameters.get("esp_start")
+        eps_start = self.hyperparameters.get("eps_start")
         eps_decay = self.hyperparameters.get("eps_decay")
         eps_end = self.hyperparameters.get("eps_end")
 
-        eps_threshold = self.hyperparameters.get("eps_end") + (
-            eps_start - eps_end
-        ) * torch.exp(torch.tensor(-1.0 * self.steps_done / eps_decay))
+        eps_threshold = eps_end + (eps_start - eps_end) * torch.exp(
+            torch.tensor(-1.0 * self.steps_done / eps_decay)
+        )
         if sample > eps_threshold:
             with torch.no_grad():
                 return self.policy.select_action(state)[0]
