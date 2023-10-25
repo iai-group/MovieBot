@@ -1,6 +1,5 @@
 """Agenda-based user simulator from [Zhang and Balog, KDD'20]."""
 
-import logging
 import random
 from typing import List, Tuple
 
@@ -19,7 +18,7 @@ from usersimcrs.simulator.agenda_based.interaction_model import (
     InteractionModel,
 )
 from usersimcrs.simulator.user_simulator import UserSimulator
-from usersimcrs.user_modeling.simple_preference_model import PreferenceModel
+from usersimcrs.user_modeling.preference_model import PreferenceModel
 
 _LEMMATIZER = WordNetLemmatizer()
 
@@ -101,22 +100,19 @@ class AgendaBasedSimulator(UserSimulator):
         elicited_slot = (
             slot
             if slot
-            else random.choice(
-                self._preference_model._domain.get_slot_names_elicitation()
-            )
+            else random.choice(self._preference_model._domain.get_slot_names())
         )
         # During training of the slot annotator, a slot's name and value can be
         # the almost the same, e.g., (GENRE, genres). In that case, value does
         # not represent an entity.
+        # TODO: Revise annotator to avoid this behavior.
+        # See: https://github.com/iai-group/DialogueKit/issues/234
         elicited_value = (
             None
-            if value
-            and _LEMMATIZER.lemmatize(value).lower()
+            if _LEMMATIZER.lemmatize(value).lower()
             == _LEMMATIZER.lemmatize(elicited_slot).lower()
             else value
         )
-        logging.debug(f"Elicited slot: {elicited_slot}")
-        logging.debug(f"Elicited value: {elicited_value}")
 
         # Agent is asking about a particular slot-value pair, e.g.,
         # "Do you like action movies?"
@@ -135,20 +131,17 @@ class AgendaBasedSimulator(UserSimulator):
                 preference,
             ) = self._preference_model.get_slot_preference(elicited_slot)
 
-            logging.debug(f"Response value: {response_value}")
-            logging.debug(f"Preference: {preference}")
-
             if response_value:
-                response_intent = self._interaction_model.INTENT_DISCLOSE  # type: ignore[attr-defined] # noqa
-                response_slot_values = [
-                    Annotation(slot=elicited_slot, value=response_value)
-                ]
-                return response_intent, response_slot_values
+                return (
+                    self._interaction_model.INTENT_DISCLOSE,  # type: ignore[attr-defined] # noqa
+                    [Annotation(slot=elicited_slot, value=response_value)],
+                )
 
-        response_intent = self._interaction_model.INTENT_DONT_KNOW  # type: ignore[attr-defined] # noqa
-        return response_intent, None
+        return self._interaction_model.INTENT_DONT_KNOW, None  # type: ignore[attr-defined] # noqa
 
-    def _generate_item_preference_response_intent(self, item_id: str) -> Intent:
+    def _generate_item_preference_response_intent(
+        self, item_id: str
+    ) -> Intent:
         """Generates response preference intent for a given item id.
 
         Args:
@@ -159,10 +152,7 @@ class AgendaBasedSimulator(UserSimulator):
         """
         if item_id is None:
             # The recommended item was not found in the item collection.
-            # return self._interaction_model.INTENT_DONT_KNOW  # type: ignore[attr-defined] # noqa
-            return random.choice([self._interaction_model.INTENT_LIKE, self._interaction_model.INTENT_DISLIKE])  # type: ignore[attr-defined] # noqa
-
-        logging.debug(f"Item id: {item_id}")
+            return self._interaction_model.INTENT_DONT_KNOW  # type: ignore[attr-defined] # noqa
 
         # Check if the user has already consumed the item.
         if self._preference_model.is_item_consumed(item_id):
@@ -177,56 +167,7 @@ class AgendaBasedSimulator(UserSimulator):
         # could ask questions about the item before deciding (this
         # should be based on the agenda).
         preference = self._preference_model.get_item_preference(item_id)
-        if preference > self._preference_model.PREFERENCE_THRESHOLD:
-            response_intent = self._interaction_model.INTENT_LIKE  # type: ignore[attr-defined] # noqa
-        elif preference < -self._preference_model.PREFERENCE_THRESHOLD:
-            response_intent = self._interaction_model.INTENT_DISLIKE  # type: ignore[attr-defined] # noqa
-        else:
-            response_intent = self._interaction_model.INTENT_NEUTRAL  # type: ignore[attr-defined] # noqa
-
-        return response_intent
-
-    def _retrieve_last_slot_value_pair(self) -> Annotation:
-        """Retrieves the last slot value pair from simulator's previous
-        utterances.
-
-        If not slot value pair is found, select a random one.
-
-        Returns:
-            Slot value pair.
-        """
-        dialogue_history = self._dialogue_connector.dialogue_history
-        for utterance in reversed(dialogue_history.utterances):
-            if (
-                isinstance(utterance, AnnotatedUtterance)
-                and utterance.participant == self._user_type
-            ):
-                annotations = utterance.get_annotations()
-                for annotation in reversed(annotations):
-                    if (
-                        annotation.slot
-                        in self._domain.get_slot_names_elicitation()
-                    ):
-                        return annotation
-
-        # No slot value pair found, select a random one.
-        slot = random.choice(
-            self._preference_model._domain.get_slot_names_elicitation()
-        )
-        value = random.choice(
-            list(self._item_collection.get_possible_property_values(slot))
-        )
-        return Annotation(slot=slot, value=value)
-
-    def _generate_inquire_annotations(self) -> List[Annotation]:
-        """Generates response annotations for the inquired slot value.
-
-        Returns:
-            Response  annotations.
-        """
-        response_slot = None
-        response_slot = random.choice(self._domain.get_slot_names_inquiry())
-        return [Annotation(slot=response_slot, value="")]
+        return self._get_preference_intent(preference)
 
     def generate_response(
         self, agent_utterance: Utterance
@@ -243,26 +184,13 @@ class AgendaBasedSimulator(UserSimulator):
         agent_annotations = self._nlu.annotate_slot_values(agent_utterance)
         agent_intent = self._nlu.classify_intent(agent_utterance)
 
-        logging.debug(f"Agent intent: {agent_intent}")
-        logging.debug(f"Agent annotations: {agent_annotations}")
-
         # Test for the agent's stopping intent. Note that this would normally
         # handled by the dialogue connector. However, since intent annotations
         # for the agent's utterance are not available when the response is
         # received by the dialogue connector, an extra check is needed here.
-        if (
-            agent_intent.label.lower()
-            == self._dialogue_connector._agent.stop_intent.label.lower()
-        ):
-            # self._dialogue_connector.close()
-            # quit()
-            response_intent = self._interaction_model.INTENT_STOP  # type: ignore[attr-defined] # noqa
-            response_slot_values = None
-            response = self._nlg.generate_utterance_text(
-                response_intent, response_slot_values
-            )
-            response._participant = self._user_type
-            return response
+        if agent_intent == self._dialogue_connector._agent.stop_intent:
+            self._dialogue_connector.close()
+            quit()
 
         # Response generation (intent and slot-values).
         response_intent = None
@@ -276,6 +204,8 @@ class AgendaBasedSimulator(UserSimulator):
             # Extract the first slot, value pair from agent response on
             # which preferences are elicited. For now, we just focus on a
             # single slot.
+            # TODO: Handle multiple slots.
+            # See: https://github.com/iai-group/UserSimCRS/issues/141
             slot, value = (
                 (agent_annotations[0].slot, agent_annotations[0].value)
                 if agent_annotations
@@ -294,33 +224,23 @@ class AgendaBasedSimulator(UserSimulator):
             agent_intent
         ):
             possible_items = (
-                self._item_collection.get_items_by_properties(agent_annotations)
+                self._item_collection.get_items_by_properties(
+                    agent_annotations
+                )
                 if agent_annotations
                 else []
             )
             # The first identified item is considered the recommended item.
+            # TODO: Handle multiple possible items.
+            # See: https://github.com/iai-group/UserSimCRS/issues/138
             item_id = possible_items[0].id if possible_items else None
             response_intent = self._generate_item_preference_response_intent(
                 item_id
             )
 
-        # Simulator is asking for information.
-        elif self._interaction_model.is_user_intent_inquire(response_intent):
-            response_slot_values = self._generate_inquire_annotations()
-
-        # User is revising their preferences.
-        if self._interaction_model.is_user_intent_remove_preference(
-            response_intent
-        ):
-            # Remove the last slot pair value from the current information need.
-            response_slot_values = [self._retrieve_last_slot_value_pair()]
-
         # Generating natural language response through NLG.
-        logging.debug(f"Response intent: {response_intent}")
-        logging.debug(f"Response slot values: {response_slot_values}")
         response = self._nlg.generate_utterance_text(
             response_intent, response_slot_values
         )
-        response._participant = self._user_type
 
         return response
