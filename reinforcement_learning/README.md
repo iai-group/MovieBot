@@ -42,8 +42,6 @@ The training logs are stored in Weight and Biases.
 
 ### Training Configuration
 
-<!-- TODO: Add base configuration -->
-
 The training configuration is used to specify paths to participants configuration files, model's parameters, training hyperparameters, and other options related to training. Below is an empty configuration file with main options:
 
 ```yaml
