@@ -164,8 +164,6 @@ class UserSimulatorMovieBot(UserSimulator):
             == _LEMMATIZER.lemmatize(elicited_slot).lower()
             else value
         )
-        # logging.debug(f"Elicited slot: {elicited_slot}")
-        # logging.debug(f"Elicited value: {elicited_value}")
 
         # Agent is asking about a particular slot-value pair, e.g.,
         # "Do you like action movies?"
@@ -195,9 +193,6 @@ class UserSimulatorMovieBot(UserSimulator):
                     preference,
                 ) = self._preference_model.get_slot_preference(elicited_slot)
 
-            # logging.debug(f"Response value: {response_value}")
-            # logging.debug(f"Preference: {preference}")
-
             if response_value:
                 response_intent = self._interaction_model.INTENT_DISCLOSE  # type: ignore[attr-defined] # noqa
                 response_slot_values = [
@@ -208,7 +203,9 @@ class UserSimulatorMovieBot(UserSimulator):
         response_intent = self._interaction_model.INTENT_DONT_KNOW  # type: ignore[attr-defined] # noqa
         return response_intent, None
 
-    def _generate_item_preference_response_intent(self, item_id: str) -> Intent:
+    def _generate_item_preference_response_intent(
+        self, item_id: str
+    ) -> Intent:
         """Generates response preference intent for a given item id.
 
         Args:
@@ -329,9 +326,6 @@ class UserSimulatorMovieBot(UserSimulator):
         agent_annotations = self._nlu.annotate_slot_values(agent_utterance)
         agent_intent = self._nlu.classify_intent(agent_utterance)
 
-        # logging.debug(f"Agent intent: {agent_intent}")
-        # logging.debug(f"Agent annotations: {agent_annotations}")
-
         # Test for the agent's stopping intent. Note that this would normally
         # handled by the dialogue connector. However, since intent annotations
         # for the agent's utterance are not available when the response is
@@ -340,8 +334,6 @@ class UserSimulatorMovieBot(UserSimulator):
             agent_intent.label.lower()
             == self._dialogue_connector._agent.stop_intent.label.lower()
         ):
-            # self._dialogue_connector.close()
-            # quit()
             response_intent = self._interaction_model.INTENT_STOP  # type: ignore[attr-defined] # noqa
             response = self._nlg.generate_utterance_text(response_intent)
             response.participant = self._user_type
@@ -380,7 +372,9 @@ class UserSimulatorMovieBot(UserSimulator):
             agent_intent
         ):
             possible_items = (
-                self._item_collection.get_items_by_properties(agent_annotations)
+                self._item_collection.get_items_by_properties(
+                    agent_annotations
+                )
                 if agent_annotations
                 else []
             )
@@ -414,11 +408,6 @@ class UserSimulatorMovieBot(UserSimulator):
             self.update_goal(response_slot_values[0])
 
         # Generating natural language response through NLG.
-        logging.debug(
-            f"Agent intent: {agent_intent}\n"
-            f"Response intent: {response_intent}\n"
-            f"Response slot values: {response_slot_values}"
-        )
         response = self._nlg.generate_utterance_text(
             response_intent, response_slot_values
         )
