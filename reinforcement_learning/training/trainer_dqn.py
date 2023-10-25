@@ -234,7 +234,7 @@ class TrainerDQN(Trainer):
                 wandb.log(
                     {
                         "episode_duration": timestep + 1,
-                        "episode_success": int(info["success"] == True),
+                        "episode_success": int(info["success"]),
                         "episode_reward": info["reward"],
                     }
                 )
@@ -321,7 +321,8 @@ class TrainerDQN(Trainer):
         # Add data to wandb summary
         wandb.summary.update(
             {
-                "Proportion of truncation": self.num_truncations / num_episodes,
+                "Proportion of truncation": self.num_truncations
+                / num_episodes,
                 "Success rate": self.episodes_success.count(True)
                 / len(self.episodes_success)
                 if self.episodes_success
