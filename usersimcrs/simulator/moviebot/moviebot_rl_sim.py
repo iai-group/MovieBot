@@ -203,9 +203,7 @@ class UserSimulatorMovieBot(UserSimulator):
         response_intent = self._interaction_model.INTENT_DONT_KNOW  # type: ignore[attr-defined] # noqa
         return response_intent, None
 
-    def _generate_item_preference_response_intent(
-        self, item_id: str
-    ) -> Intent:
+    def _generate_item_preference_response_intent(self, item_id: str) -> Intent:
         """Generates response preference intent for a given item id.
 
         Args:
@@ -372,9 +370,7 @@ class UserSimulatorMovieBot(UserSimulator):
             agent_intent
         ):
             possible_items = (
-                self._item_collection.get_items_by_properties(
-                    agent_annotations
-                )
+                self._item_collection.get_items_by_properties(agent_annotations)
                 if agent_annotations
                 else []
             )
