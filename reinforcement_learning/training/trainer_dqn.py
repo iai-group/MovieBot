@@ -321,8 +321,7 @@ class TrainerDQN(Trainer):
         # Add data to wandb summary
         wandb.summary.update(
             {
-                "Proportion of truncation": self.num_truncations
-                / num_episodes,
+                "Proportion of truncation": self.num_truncations / num_episodes,
                 "Success rate": self.episodes_success.count(True)
                 / len(self.episodes_success)
                 if self.episodes_success

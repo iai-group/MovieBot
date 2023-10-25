@@ -40,9 +40,7 @@ class Trainer:
         ).get()
         domain_path = self.agent_config.get("DATA", {}).get("domain_path")
         self.agent_domain = MovieDomain(domain_path) if domain_path else None
-        self.agent_possible_actions = define_possible_actions(
-            self.agent_domain
-        )
+        self.agent_possible_actions = define_possible_actions(self.agent_domain)
 
         self.initialize_policy()
         self.policy_path = self.config["model"]["model_path"].get()
