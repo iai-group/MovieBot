@@ -6,7 +6,9 @@ import pytest
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
-from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
+from moviebot.dialogue_manager.dialogue_policy.rb_dialogue_policy import (
+    RuleBasedDialoguePolicy,
+)
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.dialogue_manager.dialogue_state_tracker import (
     DialogueStateTracker,
@@ -77,7 +79,7 @@ def test_generate_output(dialogue_manager: DialogueManager):
 
 
 @mock.patch.object(
-    DialoguePolicy,
+    RuleBasedDialoguePolicy,
     "next_action",
     return_value=[DialogueAct(AgentIntents.ACKNOWLEDGE)],
 )
@@ -110,7 +112,7 @@ def test_generate_output_with_lookup(
 
 
 @mock.patch.object(
-    DialoguePolicy,
+    RuleBasedDialoguePolicy,
     "next_action",
 )
 @mock.patch.object(DialogueStateTracker, "update_state_agent")
