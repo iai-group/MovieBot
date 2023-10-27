@@ -1,7 +1,8 @@
 """Class for creating a tag-based user model explanations.
 
 The class generates explanations for user preferences in the movie domain.
-Currently, the explanations are based on the explicit movie tags/attributes.
+Currently, the explanations are based on movie tags/attributes that were
+explicitly mentioned by the user in the conversation.
 Future versions of the class will also support implicit tags/attributes, which
 are inferred from the movie recommendation feedback. Explanations are based on
 the templates loaded from a YAML file.
