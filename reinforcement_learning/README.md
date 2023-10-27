@@ -7,17 +7,15 @@ This package contains all the resources to train a dialogue policy using reinfor
 
 ## Gymnasium environments
 
-To use the environments, you first need to register them with Gymnasium, to do so you need to execute their attached script.
-For example, to register the `DialogueEnvMovieBot-v0` environment, you need to execute the following command:
+Two environment are provided:
 
-```bash
-python -m reinforcement_learning.environment.dialogue_env_moviebot
-```
+  * `DialogueEnvMovieBotNoNLU-v0`: during training the NLU component of the agent is not user. That is, the dialogue policy receives the structured representation of the user simulator's responses as input.
+  * `DialogueEnvMovieBot-v0`: during training the NLU component of the agent is used. That is, the dialogue policy receives the output of the NLU component as input.
 
 Note that to use the environments you will need to import them from the `reinforcement_learning.environment` package, for example:
 
 ```python
-from reinforcement_learning.environment.dialogue_env_moviebot import DialogueEnvMovieBot
+from reinforcement_learning.environment import DialogueEnvMovieBot
 ```
 
 ## Training scripts
@@ -30,7 +28,7 @@ Currently, there are two reinforcement learning algorithms supported:
 Each algorithm has its own trainer, which can be found in the `reinforcement_learning.training` package.
 
 Before training a dialogue policy, you need to prepare a configuration file.
-A default configuration for each supported algorithm is provided in the `config/rl` folder.
+A default configuration for each supported algorithm is provided in the `reinforcement_learning/config` folder.
 
 A dialogue policy is trained by executing the following command:
 
@@ -38,7 +36,7 @@ A dialogue policy is trained by executing the following command:
 python -m reinforcement_learning.train_dialogue_policy -c <training_configuration>
 ```
 
-The training logs are stored in Weight and Biases.
+The training logs are stored in Weight and Biases. It implies that you have an account on Weight and Biases and your are logged in. More information can be found [here](https://docs.wandb.ai/quickstart).
 
 ### Training Configuration
 
@@ -76,7 +74,7 @@ debug: False
 
 **use_intents**: Specifies whether the markovian state should include intents.
 
-**turn_penalty**: Specifies the turn penalty value that is included in the reward computation.
+**turn_penalty**: Specifies the turn penalty value that is included in the reward computation. In this context, a turn includes one utterance from each participant. The turn penalty concerns the current turn, i.e., the turn during which the reward is computed.
 
 **no_nlu**: Specifies whether the user simulator's responses are processed by the agent's NLU module or not. If not, the agent takes the structured representation of the user simulator's responses as input.
 
@@ -91,3 +89,9 @@ We note that its architecture is the same as the one used in the UserSimCRS.
 ## Try dialogue policy
 
 A dialogue policy can be tested with a human user via the terminal. Instead of interacting with the user simulator, the dialogue policy will interact with the user.
+
+Execute the following command to test a dialogue policy:
+
+```bash
+python -m reinforcement_learning.run_dialogue_policy --agent_config <path to IAI MovieBot configuration> --artifact_path <W&B artifact name> --model_path <path to saved model in W&B>
+```
