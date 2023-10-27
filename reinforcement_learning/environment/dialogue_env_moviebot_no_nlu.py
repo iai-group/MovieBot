@@ -143,7 +143,7 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
 
     def step(
         self, action: int
-    ) -> Tuple[torch.Tensor, float, bool, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
         """Performs a step in the environment.
 
         Args:
@@ -163,7 +163,7 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
         # truncated
         initial_agent_dacts = [self.agent_possible_actions[action]]
         try:
-            agent_dacts = self.agent.update_placeholder_dialogue_act(
+            agent_dacts = self.agent.dialogue_manager.get_filled_dialogue_acts(
                 initial_agent_dacts
             )
             if self.b_use_intents:
@@ -421,12 +421,3 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
             if WNL.lemmatize(moviebot_slot.value.lower()) == slot:
                 return moviebot_slot.value
         return None
-
-
-if __name__ == "__main__":
-    gym.register(
-        id="DialogueEnvMovieBotNoNLU-v0",
-        entry_point=(
-            "rl.rl_env.dialogue_env_moviebot_no_nlu:DialogueEnvMovieBotNoNLU"
-        ),
-    )
