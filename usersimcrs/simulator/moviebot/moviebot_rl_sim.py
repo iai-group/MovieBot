@@ -9,7 +9,6 @@ from nltk.stem import WordNetLemmatizer
 
 from dialoguekit.core.annotated_utterance import AnnotatedUtterance
 from dialoguekit.core.annotation import Annotation
-from dialoguekit.core.domain import Domain
 from dialoguekit.core.intent import Intent
 from dialoguekit.core.utterance import Utterance
 from dialoguekit.nlg import ConditionalNLG

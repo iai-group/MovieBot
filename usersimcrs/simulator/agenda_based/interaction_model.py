@@ -12,7 +12,6 @@ import yaml
 from dialoguekit.core.annotated_utterance import AnnotatedUtterance
 from dialoguekit.core.dialogue import Dialogue
 from dialoguekit.core.intent import Intent
-from dialoguekit.participant import DialogueParticipant
 
 IntentDistribution = DefaultDict[Intent, DefaultDict[Intent, Any]]
 logger = logging.getLogger(__name__)
