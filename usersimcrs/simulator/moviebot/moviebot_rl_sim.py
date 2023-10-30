@@ -1,5 +1,14 @@
-"""User simulator to interact with MovieBot agent during reinforcement
-learning."""
+"""Agenda-based user simulator to interact with MovieBot agent during
+reinforcement learning.
+
+The user simulator has a goal which is to find an item that matches its
+information need. The information need is generated based on slots available
+for elicitation and a preference model. The goal also contains a probability for
+accepting the recommended item.
+The agenda followed by the user simulator is based on the interaction model and 
+a sample of annotated dialogues. After each turn, the agenda is updated by
+either popping the next intent or creating a new agenda to adjust to unexpected
+behavior of the agent."""
 
 import logging
 import random
@@ -62,8 +71,14 @@ class UserSimulatorMovieBot(UserSimulator):
     def _get_information_need(self) -> Dict[str, str]:
         """Gets the information need for the goal.
 
+        The information is built based on the available slots for elicitation.
+        A random number of slots is selected, for each slot a value is assigned
+        based on the user's preference model.
+        For a user that loves comedies, an example of an information need is:
+        {"genre": "comedy"}.
+
         Returns:
-            Information need as a dictionary of slot value pairs.
+            Information need as a dictionary of slot-value pairs.
         """
         information_need = dict()
         nb_slots = random.randint(
@@ -89,7 +104,7 @@ class UserSimulatorMovieBot(UserSimulator):
         """
         self._goal = dict()
         self._goal["acceptance_probability"] = random.random()
-        # Define slot value pairs for the goal.
+        # Define slot-value pairs for the goal.
         self._goal["information_need"] = self._get_information_need()
         logging.info(f"User goal: {self._goal}")
 
@@ -138,7 +153,7 @@ class UserSimulatorMovieBot(UserSimulator):
     def _generate_elicit_response_intent_and_annotations(
         self, slot: str = None, value: str = None
     ) -> Tuple[Intent, List[Annotation]]:
-        """Generates response intent and annotations for the elicited slot value
+        """Generates response intent and annotations for the elicited slot-value
         pair.
 
         Args:
@@ -154,8 +169,8 @@ class UserSimulatorMovieBot(UserSimulator):
             else random.choice(self._domain.get_slot_names_elicitation())
         )
         # During training of the slot annotator, a slot's name and value can be
-        # the almost the same, e.g., (GENRE, genres). In that case, value does
-        # not represent an entity.
+        # almost the same, e.g., (GENRE, genres). In that case, value does not
+        # represent an entity.
         elicited_value = (
             None
             if value
@@ -267,7 +282,7 @@ class UserSimulatorMovieBot(UserSimulator):
         return response_intent
 
     def _generate_inquire_annotations(self) -> List[Annotation]:
-        """Generates response annotations for the inquired slot value.
+        """Generates response annotations for the inquired slot-value.
 
         Returns:
             Response  annotations.
@@ -277,13 +292,13 @@ class UserSimulatorMovieBot(UserSimulator):
         return [Annotation(slot=response_slot, value="")]
 
     def _retrieve_last_slot_value_pair(self) -> Annotation:
-        """Retrieves the last slot value pair from simulator's previous
+        """Retrieves the last slot-value pair from simulator's previous
         utterances.
 
-        If not slot value pair is found, select a random one.
+        If no slot-value pair is found, select a random one.
 
         Returns:
-            Slot value pair.
+            Slot-value pair.
         """
         dialogue_history = self._dialogue_connector.dialogue_history
         for utterance in reversed(dialogue_history.utterances):
@@ -299,7 +314,7 @@ class UserSimulatorMovieBot(UserSimulator):
                     ):
                         return annotation
 
-        # No slot value pair found, select a random one.
+        # No slot-value pair found, select a random one.
         slot = random.choice(
             self._preference_model._domain.get_slot_names_elicitation()
         )

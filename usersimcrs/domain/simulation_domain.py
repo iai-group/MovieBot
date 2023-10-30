@@ -1,4 +1,23 @@
-"""Domain knowledge for the simulation."""
+"""Domain knowledge for the simulation.
+
+The domain specifies the slots used for elicitation of preferences and for
+inquiries. 
+
+In the example below, there are 6 slots in total, with 2 slots for elicitation
+and 3 slots for inquiries. 
+```yaml
+name: "MovieDomain"
+slot_names:
+  title: ["no_elicitation"]
+  genre:
+  keywords:
+
+inquire_slots:
+  - plot
+  - year
+  - actors
+```
+"""
 
 from typing import List
 
@@ -25,7 +44,7 @@ class SimulationDomain(Domain):
         return list(self._config.get("slot_names").keys())
 
     def get_slot_names_elicitation(self) -> List[str]:
-        """Returns the list of slot names.
+        """Returns the list of slot names for elicitation.
 
         Returns:
             List of slot names.

@@ -343,8 +343,8 @@ class InteractionModel:
             self._current_intent = self.INTENT_STOP  # type: ignore[attr-defined] # noqa
             return
 
-        # If agent replies in an expected intent, then pop the next intent from
-        # agenda.
+        # If agent replies with an expected intent, then pop the next intent
+        # from the agenda.
         if agent_intent.label in expected_agent_intents:
             self._current_intent = self._agenda.pop()
         else:  # Find a replacement based on last agent intent
