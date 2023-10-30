@@ -8,6 +8,7 @@ import logging
 
 import confuse
 
+from reinforcement_learning.training.trainer_a2c import TrainerA2C
 from reinforcement_learning.training.trainer_dqn import TrainerDQN
 from reinforcement_learning.utils import get_config
 
@@ -80,7 +81,9 @@ def parse_args(args: str = None) -> argparse.Namespace:
         type=float,
         help="Penalty for each turn.",
     )
-    dqn_hyperparameters_group = parser.add_argument_group("DQN Hyperparameters")
+    dqn_hyperparameters_group = parser.add_argument_group(
+        "DQN Hyperparameters"
+    )
     dqn_hyperparameters_group.add_argument(
         "--batch_size",
         type=int,
@@ -135,7 +138,9 @@ def parse_args(args: str = None) -> argparse.Namespace:
         help="Replay memory size.",
         dest="hyperparams.replay_memory_size",
     )
-    a2c_hyperparameters_group = parser.add_argument_group("A2C Hyperparameters")
+    a2c_hyperparameters_group = parser.add_argument_group(
+        "A2C Hyperparameters"
+    )
     a2c_hyperparameters_group.add_argument(
         "--n_envs",
         type=int,
@@ -197,11 +202,12 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.DEBUG)
 
     # Create trainer
-    if config["model"]["algorithm"].get() == "dqn":
+    algorithm = config["model"]["algorithm"].get()
+    if algorithm == "dqn":
         trainer = TrainerDQN(config)
+    elif algorithm == "a2c":
+        trainer = TrainerA2C(config)
     else:
-        raise ValueError(
-            f"Algorithm {config['model']['algorithm'].get()} is not supported."
-        )
+        raise ValueError(f"Algorithm {algorithm} is not supported.")
     # Train policy
     trainer.train_policy()
