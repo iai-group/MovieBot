@@ -1,10 +1,10 @@
 """Domain knowledge for the simulation.
 
 The domain specifies the slots used for elicitation of preferences and for
-inquiries. 
+inquiries.
 
 In the example below, there are 6 slots in total, with 2 slots for elicitation
-and 3 slots for inquiries. 
+and 3 slots for inquiries.
 ```yaml
 name: "MovieDomain"
 slot_names:

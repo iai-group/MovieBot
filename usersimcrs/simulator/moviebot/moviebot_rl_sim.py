@@ -5,7 +5,7 @@ The user simulator has a goal which is to find an item that matches its
 information need. The information need is generated based on slots available
 for elicitation and a preference model. The goal also contains a probability for
 accepting the recommended item.
-The agenda followed by the user simulator is based on the interaction model and 
+The agenda followed by the user simulator is based on the interaction model and
 a sample of annotated dialogues. After each turn, the agenda is updated by
 either popping the next intent or creating a new agenda to adjust to unexpected
 behavior of the agent."""
