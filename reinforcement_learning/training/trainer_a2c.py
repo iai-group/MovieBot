@@ -63,7 +63,9 @@ class TrainerA2C(Trainer):
         # Reset lists that collect experiences of an episode
         episode_value_preds = torch.zeros(n_steps_per_episode, self.n_envs)
         episode_rewards = torch.zeros(n_steps_per_episode, self.n_envs)
-        episode_action_log_probs = torch.zeros(n_steps_per_episode, self.n_envs)
+        episode_action_log_probs = torch.zeros(
+            n_steps_per_episode, self.n_envs
+        )
         masks = torch.ones(n_steps_per_episode, self.n_envs)
 
         # Reset the environments (only for the first episode)
@@ -81,7 +83,7 @@ class TrainerA2C(Trainer):
                 entropy,
             ) = self.policy.select_action(states)
 
-            # Perform actions in the environment to get next state and reward
+            # Perform actions in the environment to get next states and rewards
             (
                 states,
                 rewards,
@@ -90,7 +92,7 @@ class TrainerA2C(Trainer):
                 infos,
             ) = self.envs_wrapper.step(actions.cpu().numpy())
 
-            # Check if the episode is truncated
+            # Count the number of truncations
             self.num_truncations += truncated.sum().item()
 
             # Store experiences
@@ -129,7 +131,7 @@ class TrainerA2C(Trainer):
         # Update the policy
         self.policy.update_parameters(critic_loss, actor_loss)
 
-        # Store losses and entropy
+        # Store losses and entropies
         self.critic_losses.append(critic_loss.item())
         self.actor_losses.append(actor_loss.item())
         self.entropies.append(entropy.mean().item())
@@ -179,9 +181,6 @@ class TrainerA2C(Trainer):
                 lambda_gae,
                 entropy_coef,
             )
-
-        # Get training parameters
-        self.hyperparameters = self.config["hyperparams"].get()
 
         # Save policy
         self.save_model()

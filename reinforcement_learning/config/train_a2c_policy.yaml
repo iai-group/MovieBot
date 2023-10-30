@@ -12,8 +12,8 @@ model:
 # Training hyperparameters
 hyperparams:
   n_envs: 10
-  n_updates: 1000
-  n_steps_per_update: 128
+  n_episodes: 1000
+  n_steps_per_episode: 128
   gamma: 0.999
   lambda: 0.95
   ent_coef: 0.01
