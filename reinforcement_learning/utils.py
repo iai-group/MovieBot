@@ -3,17 +3,6 @@ import logging
 from typing import List
 
 import confuse
-
-from dialoguekit.nlg.nlg_conditional import ConditionalNLG
-from dialoguekit.nlg.template_from_training_data import (
-    extract_utterance_template,
-)
-from dialoguekit.utils.dialogue_reader import json_to_dialogues
-from moviebot.core.intents.agent_intents import AgentIntents
-from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.domain.movie_domain import MovieDomain
-from moviebot.nlu.annotation.item_constraint import ItemConstraint
-from moviebot.nlu.annotation.operator import Operator
 from usersimcrs.domain.simulation_domain import SimulationDomain
 from usersimcrs.items.item_collection import ItemCollection
 from usersimcrs.items.ratings import Ratings
@@ -26,6 +15,17 @@ from usersimcrs.user_modeling.simple_preference_model import (
     SimplePreferenceModel,
 )
 from usersimcrs.utils.simulator_building import get_NLU
+
+from dialoguekit.nlg.nlg_conditional import ConditionalNLG
+from dialoguekit.nlg.template_from_training_data import (
+    extract_utterance_template,
+)
+from dialoguekit.utils.dialogue_reader import json_to_dialogues
+from moviebot.core.intents.agent_intents import AgentIntents
+from moviebot.dialogue_manager.dialogue_act import DialogueAct
+from moviebot.domain.movie_domain import MovieDomain
+from moviebot.nlu.annotation.item_constraint import ItemConstraint
+from moviebot.nlu.annotation.operator import Operator
 
 
 def build_agenda_based_simulator(
@@ -109,41 +109,30 @@ def define_possible_actions(domain: MovieDomain) -> List[DialogueAct]:
     Returns:
         List of possible actions as dialogue acts.
     """
-    actions = []
-    actions += [
-        DialogueAct(
-            AgentIntents.ELICIT, [ItemConstraint(slot, Operator.EQ, "")]
-        )
-        for slot in domain.agent_requestable
-    ]
-    actions += [
-        DialogueAct(
-            AgentIntents.RECOMMEND,
-        ),
-        DialogueAct(
-            AgentIntents.CONTINUE_RECOMMENDATION,
-        ),
-    ]
-    actions.append(DialogueAct(AgentIntents.INFORM))
-    actions.append(DialogueAct(AgentIntents.NO_RESULTS))
-    actions.append(
-        DialogueAct(
-            AgentIntents.COUNT_RESULTS,
-        )
-    )
-    actions.append(
+    actions = [
+        DialogueAct(AgentIntents.RECOMMEND),
+        DialogueAct(AgentIntents.CONTINUE_RECOMMENDATION),
+        DialogueAct(AgentIntents.INFORM),
+        DialogueAct(AgentIntents.NO_RESULTS),
+        DialogueAct(AgentIntents.COUNT_RESULTS),
         DialogueAct(
             AgentIntents.WELCOME,
             [
                 ItemConstraint("new_user", Operator.EQ, "Placeholder"),
                 ItemConstraint("is_bot", Operator.EQ, "Placeholder"),
             ],
+        ),
+        DialogueAct(AgentIntents.WELCOME),
+        DialogueAct(AgentIntents.RESTART),
+        DialogueAct(AgentIntents.CANT_HELP),
+        DialogueAct(AgentIntents.BYE),
+    ]
+    actions += [
+        DialogueAct(
+            AgentIntents.ELICIT, [ItemConstraint(slot, Operator.EQ, "")]
         )
-    )
-    actions.append(DialogueAct(AgentIntents.WELCOME))
-    actions.append(DialogueAct(AgentIntents.RESTART))
-    actions.append(DialogueAct(AgentIntents.CANT_HELP))
-    actions.append(DialogueAct(AgentIntents.BYE))
+        for slot in domain.agent_requestable
+    ]
     return actions
 
 

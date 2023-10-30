@@ -4,7 +4,7 @@ agent_config: data/config/moviebot_config_rb_nlu.yaml
 
 # Model's parameters
 model:
-  model_type: a2c
+  algorithm: a2c
   policy_input_size: 8
   hidden_size: 128
   model_path: models/policy/a2c_policy.pt

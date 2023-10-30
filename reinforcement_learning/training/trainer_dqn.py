@@ -25,6 +25,7 @@ Transition = namedtuple(
 class ReplayMemory(object):
     def __init__(self, capacity: int) -> None:
         """Create Replay memory.
+
         Args:
             capacity: The max number of experiences that the memory can store.
         """
@@ -268,7 +269,7 @@ class TrainerDQN(Trainer):
         self.episodes_rewards = []
         self.num_truncations = 0
 
-        num_episodes = self.hyperparameters["num_episodes"]
+        num_episodes = self.hyperparameters["n_episodes"]
         for episode in range(num_episodes):
             self.train_episode(
                 episode, batch_size, policy_input_size, gamma, tau
@@ -282,7 +283,11 @@ class TrainerDQN(Trainer):
         wandb.finish()
 
     def report_to_wandb(self, num_episodes: int) -> None:
-        """Add training plots and data to wandb summary."""
+        """Adds training plots and data to wandb summary.
+
+        Args:
+            num_episodes: Number of episodes.
+        """
         _, axs = plt.subplots(2, 1, figsize=(12, 15))
         # Plot average episode durations
         # Average over 100 episodes

@@ -112,15 +112,15 @@ def parse_args(args: str = None) -> argparse.Namespace:
         dest="hyperparams.eps_decay",
     )
     dqn_hyperparameters_group.add_argument(
-        "--num_episodes",
+        "--n_episodes",
         type=int,
         help="Number of episodes.",
-        dest="hyperparams.num_episodes",
+        dest="hyperparams.n_episodes",
     )
     dqn_hyperparameters_group.add_argument(
         "--tau",
         type=float,
-        help="Tau.",
+        help="Soft update factor tau.",
         dest="hyperparams.tau",
     )
     dqn_hyperparameters_group.add_argument(
@@ -163,7 +163,7 @@ def parse_args(args: str = None) -> argparse.Namespace:
     a2c_hyperparameters_group.add_argument(
         "--lambda",
         type=float,
-        help="Lambda.",
+        help="Lambda for generalized advantage estimation.",
         dest="hyperparams.lambda",
     )
     a2c_hyperparameters_group.add_argument(
