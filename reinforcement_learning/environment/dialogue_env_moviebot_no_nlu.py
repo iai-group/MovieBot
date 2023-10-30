@@ -14,8 +14,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import confuse
 import gymnasium as gym
 import numpy as np
-import torch
 from nltk.stem import WordNetLemmatizer
+from usersimcrs.simulator.user_simulator import UserSimulator
 
 from dialoguekit.connector.dialogue_connector import (
     _DIALOGUE_EXPORT_PATH,
@@ -35,7 +35,6 @@ from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from reinforcement_learning.agent.rl_agent import MovieBotAgentRL
 from reinforcement_learning.utils import build_agenda_based_simulator
-from usersimcrs.simulator.user_simulator import UserSimulator
 
 WNL = WordNetLemmatizer()
 
@@ -143,7 +142,7 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
 
     def step(
         self, action: int
-    ) -> Tuple[torch.Tensor, float, bool, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
         """Performs a step in the environment.
 
         Args:
@@ -163,7 +162,7 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
         # truncated
         initial_agent_dacts = [self.agent_possible_actions[action]]
         try:
-            agent_dacts = self.agent.update_placeholder_dialogue_act(
+            agent_dacts = self.agent.dialogue_manager.get_filled_dialogue_acts(
                 initial_agent_dacts
             )
             if self.b_use_intents:
@@ -421,12 +420,3 @@ class DialogueEnvMovieBotNoNLU(gym.Env):
             if WNL.lemmatize(moviebot_slot.value.lower()) == slot:
                 return moviebot_slot.value
         return None
-
-
-if __name__ == "__main__":
-    gym.register(
-        id="DialogueEnvMovieBotNoNLU-v0",
-        entry_point=(
-            "rl.rl_env.dialogue_env_moviebot_no_nlu:DialogueEnvMovieBotNoNLU"
-        ),
-    )

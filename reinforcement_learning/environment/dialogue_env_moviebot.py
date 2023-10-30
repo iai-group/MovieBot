@@ -88,7 +88,7 @@ class DialogueEnvMovieBot(gym.Env):
 
     def reset(
         self, **kwargs: Optional[Dict[str, Any]]
-    ) -> Tuple[torch.Tensor, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """Resets the environment.
 
         Returns:
@@ -134,7 +134,7 @@ class DialogueEnvMovieBot(gym.Env):
 
     def step(
         self, action: int
-    ) -> Tuple[torch.Tensor, float, bool, Dict[str, Any]]:
+    ) -> Tuple[np.ndarray, float, bool, Dict[str, Any]]:
         """Performs a step in the environment.
 
         Args:
@@ -154,7 +154,7 @@ class DialogueEnvMovieBot(gym.Env):
         # truncated
         initial_agent_dacts = [self.agent_possible_actions[action]]
         try:
-            agent_dacts = self.agent.update_placeholder_dialogue_act(
+            agent_dacts = self.agent.dialogue_manager.get_filled_dialogue_acts(
                 initial_agent_dacts
             )
             if self.b_use_intents:
@@ -279,6 +279,7 @@ class DialogueEnvMovieBot(gym.Env):
             user_intents=user_intents,
             agent_intents=agent_intents,
         )
+        observation = observation.numpy()
 
         # 9. Additional information
         info.update(
@@ -354,10 +355,3 @@ class DialogueEnvMovieBot(gym.Env):
 
         with open(file_name, "w", encoding="utf-8") as outfile:
             json.dump(json_file, outfile, indent=4)
-
-
-if __name__ == "__main__":
-    gym.register(
-        id="DialogueEnvMovieBot-v0",
-        entry_point="rl.rl_env.dialogue_env_moviebot:DialogueEnvMovieBot",
-    )

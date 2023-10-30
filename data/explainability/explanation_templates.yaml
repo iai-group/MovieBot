@@ -1,0 +1,24 @@
+genres: 
+  - "You [don't ]like {}."
+  - "You [don't ]watch {} movies."
+  - "You [don't ]enjoy {} films."
+
+actors: 
+  - "You [don't ]like movies with {}."
+  - "You [don't ]watch films if {} are in them."
+  - "You [don't ]care for {} in movies."
+
+directors: 
+  - "You [don't ]like {}' movies."
+  - "You [don't ]watch films by {}."
+  - "You [don't ]enjoy movies made by {}."
+
+keywords: 
+  - "You [don't ]like movies about {}."
+  - "You [don't ]watch films with {}."
+  - "You [don't ]care for {} in movies."
+
+year: 
+  - "You [don't ]like movies from {}."
+  - "You [don't ]watch films made in {}."
+  - "You [don't ]enjoy movies from {}."
