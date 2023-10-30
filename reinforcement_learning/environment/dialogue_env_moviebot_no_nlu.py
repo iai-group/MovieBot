@@ -14,8 +14,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import confuse
 import gymnasium as gym
 import numpy as np
-import torch
 from nltk.stem import WordNetLemmatizer
+from usersimcrs.simulator.user_simulator import UserSimulator
 
 from dialoguekit.connector.dialogue_connector import (
     _DIALOGUE_EXPORT_PATH,
@@ -35,7 +35,6 @@ from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from reinforcement_learning.agent.rl_agent import MovieBotAgentRL
 from reinforcement_learning.utils import build_agenda_based_simulator
-from usersimcrs.simulator.user_simulator import UserSimulator
 
 WNL = WordNetLemmatizer()
 
