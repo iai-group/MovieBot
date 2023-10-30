@@ -13,9 +13,9 @@ import random
 import re
 
 import yaml
+
 from dialoguekit.core import AnnotatedUtterance
 from dialoguekit.participant import DialogueParticipant
-
 from moviebot.explainability.explainable_user_model import (
     ExplainableUserModel,
     UserPreferences,
@@ -35,7 +35,7 @@ class ExplainableUserModelTagBased(ExplainableUserModel):
         Raises:
             FileNotFoundError: The template file could not be found.
         """
-        if not os.isfile(template_file):
+        if not os.path.isfile(template_file):
             raise FileNotFoundError(
                 f"Could not find template file {template_file}."
             )
