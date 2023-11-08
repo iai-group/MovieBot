@@ -24,3 +24,4 @@ data/users.db
 
 # local experimentation
 local/
+.vscode/

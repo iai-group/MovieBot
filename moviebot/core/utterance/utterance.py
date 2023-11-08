@@ -3,7 +3,9 @@
 
 Classes that contain basic information about the utterance.
 """
-from dataclasses import dataclass
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass
 from typing import List
 
 from dialoguekit.core import Utterance
@@ -29,6 +31,19 @@ class UserUtterance(Utterance):
             self._tokens = Tokenizer().process_text(self.text)
 
         return self._tokens
+
+    @classmethod
+    def from_utterance(cls, utterance: Utterance) -> UserUtterance:
+        """Creates a new user utterance from an existing utterance.
+
+        Args:
+            utterance: Utterance.
+
+        Returns:
+            UserUtterance: User utterance.
+        """
+        args = asdict(utterance)
+        return cls(**args)
 
 
 @dataclass(eq=True, unsafe_hash=True)

@@ -15,7 +15,7 @@ from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 
 
-class DialoguePolicy:
+class RuleBasedDialoguePolicy:
     def __init__(self, isBot: bool, new_user: bool) -> None:
         """Loads all necessary parameters for the policy.
 
