@@ -63,9 +63,7 @@ class TrainerA2C(Trainer):
         # Reset lists that collect experiences of an episode
         episode_value_preds = torch.zeros(n_steps_per_episode, self.n_envs)
         episode_rewards = torch.zeros(n_steps_per_episode, self.n_envs)
-        episode_action_log_probs = torch.zeros(
-            n_steps_per_episode, self.n_envs
-        )
+        episode_action_log_probs = torch.zeros(n_steps_per_episode, self.n_envs)
         masks = torch.ones(n_steps_per_episode, self.n_envs)
 
         # Reset the environments (only for the first episode)
