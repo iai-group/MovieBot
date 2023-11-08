@@ -270,6 +270,7 @@ class DialogueStateTracker:
             agent_dacts: List of dialogue acts which is the output of dialogue
               policy.
         """
+        self.dialogue_state.is_beginning = False
         # re-filtering the dacts
         agent_dacts_copy = deepcopy(agent_dacts)
         agent_dacts = []

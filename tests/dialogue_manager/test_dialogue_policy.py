@@ -6,7 +6,9 @@ import pytest
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
 from moviebot.dialogue_manager.dialogue_act import DialogueAct
-from moviebot.dialogue_manager.dialogue_policy import DialoguePolicy
+from moviebot.dialogue_manager.dialogue_policy.rb_dialogue_policy import (
+    RuleBasedDialoguePolicy,
+)
 from moviebot.dialogue_manager.dialogue_state import DialogueState
 from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.item_constraint import ItemConstraint
@@ -42,8 +44,8 @@ def state(domain, database_results, slots) -> DialogueState:
 
 
 @pytest.fixture
-def policy() -> DialoguePolicy:
-    yield DialoguePolicy(isBot=False, new_user=True)
+def policy() -> RuleBasedDialoguePolicy:
+    yield RuleBasedDialoguePolicy(isBot=False, new_user=True)
 
 
 @pytest.mark.parametrize(
@@ -69,7 +71,7 @@ def policy() -> DialoguePolicy:
     ],
 )
 def test_next_action_basic(
-    policy: DialoguePolicy,
+    policy: RuleBasedDialoguePolicy,
     state: DialogueState,
     last_agent_dacts,
     last_user_dacts,
@@ -82,7 +84,9 @@ def test_next_action_basic(
     assert agent_dacts[0].intent == expected
 
 
-def test_next_action_restart(policy: DialoguePolicy, state: DialogueState):
+def test_next_action_restart(
+    policy: RuleBasedDialoguePolicy, state: DialogueState
+):
     agent_dacts = policy.next_action(state, restart=True)
     assert len(agent_dacts) == 2
     assert agent_dacts[0].intent == AgentIntents.RESTART
@@ -90,7 +94,7 @@ def test_next_action_restart(policy: DialoguePolicy, state: DialogueState):
 
 
 def test_next_action_made_partial_offer(
-    policy: DialoguePolicy, state: DialogueState
+    policy: RuleBasedDialoguePolicy, state: DialogueState
 ):
     state.agent_made_partial_offer = True
 
@@ -105,7 +109,7 @@ def test_next_action_made_partial_offer(
 
 
 def test_next_action_made_partial_offer_all_slots_filled(
-    policy: DialoguePolicy, state: DialogueState
+    policy: RuleBasedDialoguePolicy, state: DialogueState
 ):
     state.agent_made_partial_offer = True
     state.slot_left_unasked = 10
@@ -119,7 +123,7 @@ def test_next_action_made_partial_offer_all_slots_filled(
 
 
 def test_next_action_should_make_offer(
-    policy: DialoguePolicy, state: DialogueState, database_results
+    policy: RuleBasedDialoguePolicy, state: DialogueState, database_results
 ):
     state.agent_should_make_offer = True
     state.item_in_focus = database_results[1]
@@ -134,7 +138,7 @@ def test_next_action_should_make_offer(
 
 
 def test_next_action_inquire_empty(
-    policy: DialoguePolicy, state: DialogueState, database_results
+    policy: RuleBasedDialoguePolicy, state: DialogueState, database_results
 ):
     state.agent_made_offer = True
     state.item_in_focus = database_results[2]
@@ -150,7 +154,7 @@ def test_next_action_inquire_empty(
 
 
 def test_next_action_inquire(
-    policy: DialoguePolicy, state: DialogueState, database_results
+    policy: RuleBasedDialoguePolicy, state: DialogueState, database_results
 ):
     state.agent_made_offer = True
     state.item_in_focus = database_results[2]
@@ -170,7 +174,7 @@ def test_next_action_inquire(
 
 
 def test_next_action_accept_recommendation(
-    policy: DialoguePolicy, state: DialogueState, database_results
+    policy: RuleBasedDialoguePolicy, state: DialogueState, database_results
 ):
     state.agent_made_offer = True
     state.item_in_focus = database_results[1]
@@ -206,9 +210,12 @@ def test_next_action_accept_recommendation(
     ],
 )
 @mock.patch(
-    "moviebot.dialogue_manager.dialogue_policy.set", mock.MagicMock(wraps=list)
+    "moviebot.dialogue_manager.dialogue_policy.rb_dialogue_policy.set",
+    mock.MagicMock(wraps=list),
 )
-def test__generate_examples(policy: DialoguePolicy, results, slot, expected):
+def test__generate_examples(
+    policy: RuleBasedDialoguePolicy, results, slot, expected
+):
     random.seed(42)
     examples = policy._generate_examples(results, slot)
     assert examples == expected

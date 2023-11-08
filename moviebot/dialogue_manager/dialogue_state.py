@@ -39,13 +39,14 @@ class DialogueState:
             {}
         )  # previous information needs of the user in case user want to go back
         self.prev_agent_dacts: List[DialogueAct] = []  # list of agent dacts
-        self.last_agent_dacts: DialogueAct = (
-            None  # the current agent dact (singular, must be updated carefully)
-        )
+        # the current agent dact (singular, must be updated carefully)
+        self.last_agent_dacts: DialogueAct = None
         self.last_user_dacts: List[DialogueAct] = None  # the current user act
 
         # Keep track of the recommended movies
         self.movies_recommended = {}
+
+        self.is_beginning = True
 
     def _agent_offer_state(self) -> str:
         """Returns string representation of the agent's offer state."""
@@ -142,3 +143,5 @@ class DialogueState:
             3  # number of CIN slots which remain empty before agent must make
         )
         # an offer
+
+        self.is_beginning = True
