@@ -93,5 +93,5 @@ A dialogue policy can be tested with a human user via the terminal. Instead of i
 Execute the following command to test a dialogue policy:
 
 ```bash
-python -m reinforcement_learning.run_dialogue_policy --agent_config <path to IAI MovieBot configuration> --artifact_path <W&B artifact name> --model_path <path to saved model in W&B>
+python -m reinforcement_learning.run_dialogue_policy --agent-config <path to IAI MovieBot configuration> --artifact-name <W&B artifact name> --model-path <path to saved model in W&B>
 ```
