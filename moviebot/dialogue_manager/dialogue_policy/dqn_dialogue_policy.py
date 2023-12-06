@@ -29,9 +29,7 @@ class DQNDialoguePolicy(NeuralDialoguePolicy):
             output_size: The size of the output vector.
             possible_actions: The list of possible actions.
         """
-        super().__init__(
-            input_size, hidden_size, output_size, possible_actions
-        )
+        super().__init__(input_size, hidden_size, output_size, possible_actions)
 
         self.model = torch.nn.Sequential(
             torch.nn.Linear(input_size, hidden_size),
