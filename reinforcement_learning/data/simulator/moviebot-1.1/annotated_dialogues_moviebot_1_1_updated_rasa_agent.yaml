@@ -1,0 +1,292 @@
+nlu:
+- examples: |
+    - How may I help you?
+    - How can I assist you today?
+    - Shall we start?
+    - Hi there. I am IAI MovieBot, your movie recommending buddy. I can recommend you movies based on your preferences. I will ask you a few questions and based on your answers, I will try to find a movie for you. INSTRUCTIONS To start the conversation say Hi or Hello, or simply enter you preferences ("I want a horror movie from the 90s"). To restart the recommendation process, issue "/restart". To end the conversation, issue "/exit" or say Bye/Goodbye. To see these instructions again, issue: "/help".
+  intent: WELCOME
+- examples: |
+    - Do you have any specific [genres](GENRE) in mind?
+    - Which [genres](GENRE) do you prefer?
+  intent: ELICIT
+- examples: |
+    - What are you looking for in a movie? Some keywords would be good. For example, ['crime family' or 'organized crime'](KEYWORD).
+    - I could not find the genres you mentioned.  Please answer a few questions to help me find a good movie.  What are you looking for in a movie? Some keywords would be good. For example, ['tv special' or 'crown jewels'](KEYWORD).
+    - Can you give me a few keywords? For example, ['professional wrestling' or 'slapstick comedy'](KEYWORD).
+    - I have found almost 11000 comedy films. Please answer a few more questions to help me find a good movie.  What are you looking for in a movie? Some keywords would be good. For example, ['hindu mythological' or 'vintage cars'](KEYWORD).
+    - I have found almost 20200 drama films. Please answer a few more questions to help me find a good movie.  What are you looking for in a movie? Some keywords would be good. For example, ['organized crime' or 'crime family'](KEYWORD).
+    - I have found almost 20200 drama films. Can you guide me more to narrow down the search space?  Can you give me a few keywords? For example, ['wrongful imprisonment' or 'organized crime'](KEYWORD).
+    - Can you give me a few keywords? For example, ['vintage cars' or 'hindu mythological'](KEYWORD).
+    - Please answer a few questions to help me find a good movie.  Do you have any specific genres in mind? For example, ['Sci-Fi' or 'Horror'](GENRE).
+    - There are almost 700 friends films. Can you guide me more to narrow down the search space?  Which genres do you prefer? For example, ['Comedy' or 'War'](GENRE).
+    - I have found almost 20200 drama films. Can you guide me more to narrow down the search space?  What are you looking for in a movie? Some keywords would be good. For example, ['wrongful imprisonment' or 'crown jewels'](KEYWORD).
+    - I have found almost 11000 comedy films. Can you guide me more to narrow down the search space?  Can you give me a few keywords? For example, ['tv special' or 'cult film'](KEYWORD).
+    - There are almost 11000 comedy films. Can you guide me more to narrow down the search space?  Can you give me a few keywords? For example, ['vintage cars' or 'hindu mythological'](KEYWORD).
+    - Can you guide me to narrow down the search space?  Which genres do you prefer? For example, ['Sci-Fi' or 'Animation'](GENRE).
+    - There are almost 1100 animation films. Please answer a few more questions to help me find a good movie.  Can you give me a few keywords? For example, ['studio ghibli' or 'unnecessary guilt'](KEYWORD).
+    - I have found almost 1100 animation films. Please answer a few more questions to help me find a good movie.  What are you looking for in a movie? Some keywords would be good. For example, ['unnecessary guilt' or 'spirit world'](KEYWORD).
+    - I have found almost 11000 comedy films. Can you guide me more to narrow down the search space?  What are you looking for in a movie? Some keywords would be good. For example, ['hindu mythological' or 'professional wrestling'](KEYWORD).
+    - There are almost 2100 sci-fi films. Can you guide me more to narrow down the search space?  Can you give me a few keywords? For example, ['surprise ending' or 'famous twist'](KEYWORD).
+    - I have found almost 20200 drama films. Please answer a few more questions to help me find a good movie.  Can you give me a few keywords? For example, ['organized crime' or 'crime family'](KEYWORD).
+    - There are almost 2800 horror films. Please answer a few more questions to help me find a good movie.  What are you looking for in a movie? Some keywords would be good. For example, ['outer space' or 'female protagonist'](KEYWORD).
+  intent: COUNT_RESULTS+ELICIT
+- examples: "- I would like to recommend you a  film similar to \"What We Do in the\
+    \ Shadows\"  named **\"[[The Matrix](TITLE)](https://www.imdb.com/title/tt0133093/)\"\
+    **. Have you watched it?\n- There is a drama, daily life film named **\"[[Pionery-geroi](TITLE)](https://www.imdb.com/title/tt4384398/)\"\
+    **. Have you seen this one?\n- I would like to recommend you an animation, studio\
+    \ ghibli film named **\"[[My Neighbor Totoro](TITLE)](https://www.imdb.com/title/tt0096283/)\"\
+    **. Have you watched it?\n- There is a sci-fi, space film named **\"[[Alien](TITLE)](https://www.imdb.com/title/tt0078748/)\"\
+    **. Have you seen this one?\n- There is a  film similar to \"Shackles\"  named\
+    \ **\"[[Django Unchained](TITLE)](https://www.imdb.com/title/tt1853728/)\"**.\
+    \ Have you seen this one?\n- There is a comedy, Tom Hanks film named **\"[[Joe\
+    \ Versus the Volcano](TITLE)](https://www.imdb.com/title/tt0099892/)\"**. Have\
+    \ you seen this one?\n- There is an animation, studio ghibli film named **\"[[Spirited\
+    \ Away](TITLE)](https://www.imdb.com/title/tt0245429/)\"**. Have you seen this\
+    \ one?\n- I would like to recommend you a wrongful imprisonment film named **\"\
+    [[The Shawshank Redemption](TITLE)](https://www.imdb.com/title/tt0111161/)\"**.\
+    \ Have you watched it?\n- I would like to recommend you a documentary, historical\
+    \ film named **\"[[Lightning in a Bottle](TITLE)](https://www.imdb.com/title/tt0396705/)\"\
+    **. Have you watched it?\n- I couldn't find the keywords With Julia Roberts. \
+    \ I would like to recommend you a drama film starring Julia Roberts named **\"\
+    [[Wonder](TITLE)](https://www.imdb.com/title/tt2543472/)\"**. Have you watched\
+    \ it?\n- There is a horror, zombie film named **\"[[Shaun of the Dead](TITLE)](https://www.imdb.com/title/tt0365748/)\"\
+    **. Have you seen this one?\n- I would like to recommend you a  film similar to\
+    \ \"Nightwatch\"  named **\"[[Rembrandt](TITLE)](https://www.imdb.com/title/tt0028167/)\"\
+    **. Have you watched it?\n- I would like to recommend you a film named similar\
+    \ to a family named **\"[[Elizabeth at 90: A Family Tribute](TITLE)](https://www.imdb.com/title/tt5656876/)\"\
+    **. Have you watched it?\n- I couldn't find the keywords romatic.  I would like\
+    \ to recommend you a drama film named **\"[[The Reichenbach Fall](TITLE)](https://www.imdb.com/title/tt1942614/)\"\
+    **. Have you watched it?\n- There is a wrongful imprisonment film named **\"[[Shackles](TITLE)](https://www.imdb.com/title/tt0070947/)\"\
+    **. Have you seen this one?\n- I would like to recommend you a horror, watch film\
+    \ named **\"[[Two Heads Are Better Than None](TITLE)](https://www.imdb.com/title/tt0235512/)\"\
+    **. Have you watched it?\n- I would like to recommend you a comedy, friends film\
+    \ named **\"[[City Lights](TITLE)](https://www.imdb.com/title/tt0021749/)\"**.\
+    \ Have you watched it?\n- There is a drama, Sounds film named **\"[[Man, Woman\
+    \ & the Wall](TITLE)](https://www.imdb.com/title/tt1236242/)\"**. Have you seen\
+    \ this one?\n- I would like to recommend you a keep film named **\"[[Parasite](TITLE)](https://www.imdb.com/title/tt6751668/)\"\
+    **. Have you watched it?\n- I would like to recommend you a comedy, female protagonist\
+    \ film named **\"[[Am\xE9lie](TITLE)](https://www.imdb.com/title/tt0211915/)\"\
+    **. Have you watched it?\n- I would like to recommend you a drama, romantic film\
+    \ named **\"[[Never Look Away](TITLE)](https://www.imdb.com/title/tt5311542/)\"\
+    **. Have you watched it?\n- I would like to recommend you an animation, spirit\
+    \ world film named **\"[[Big Fish & Begonia](TITLE)](https://www.imdb.com/title/tt1920885/)\"\
+    **. Have you watched it?\n- I would like to recommend you a comedy, hindu mythological\
+    \ film named **\"[[Maya Bazaar](TITLE)](https://www.imdb.com/title/tt0249795/)\"\
+    **. Have you watched it?\n- There is a horror, zombie film named **\"[[Night of\
+    \ the Living Dead](TITLE)](https://www.imdb.com/title/tt0063350/)\"**. Have you\
+    \ seen this one?\n- I would like to recommend you a  film similar to \"Elizabeth\
+    \ at 90: A Family Tribute\"  named **\"[[Love & Mercy](TITLE)](https://www.imdb.com/title/tt0903657/)\"\
+    **. Have you watched it?\n- There is a drama, wrongful imprisonment film named\
+    \ **\"[[The Shawshank Redemption](TITLE)](https://www.imdb.com/title/tt0111161/)\"\
+    **. Have you seen this one?\n- There is an animation, studio ghibli film named\
+    \ **\"[[The Tale of The Princess Kaguya](TITLE)](https://www.imdb.com/title/tt2576852/)\"\
+    **. Have you seen this one?\n- There is a horror, zombie film named **\"[[What\
+    \ We Do in the Shadows](TITLE)](https://www.imdb.com/title/tt3416742/)\"**. Have\
+    \ you seen this one?\n- I would like to recommend you a  film similar to \"Elizabeth\
+    \ at 90: A Family Tribute\"  named **\"[[The Princess Diaries](TITLE)](https://www.imdb.com/title/tt0247638/)\"\
+    **. Have you watched it?\n- There is an animation, studio ghibli film named **\"\
+    [[Castle in the Sky](TITLE)](https://www.imdb.com/title/tt0092067/)\"**. Have\
+    \ you seen this one?\n- I would like to recommend you a comedy, vintage cars film\
+    \ named **\"[[Avec l'amour](TITLE)](https://www.imdb.com/title/tt5759506/)\"**.\
+    \ Have you watched it?\n- I would like to recommend you a romance and comedy film\
+    \ starring Julia Roberts named **\"[[Steel Magnolias](TITLE)](https://www.imdb.com/title/tt0098384/)\"\
+    **. Have you watched it?\n- I would like to recommend you a romance and comedy\
+    \ film starring Julia Roberts named **\"[[Notting Hill](TITLE)](https://www.imdb.com/title/tt0125439/)\"\
+    **. Have you watched it?\n- I would like to recommend you a Sounds film named\
+    \ **\"[[Man, Woman & the Wall](TITLE)](https://www.imdb.com/title/tt1236242/)\"\
+    **. Have you watched it?\n- There is a sci-fi, space film named **\"[[Star Wars:\
+    \ Episode IV - A New Hope](TITLE)](https://www.imdb.com/title/tt0076759/)\"**.\
+    \ Have you seen this one?\n- I would like to recommend you a horror, watch film\
+    \ named **\"[[Nightwatch](TITLE)](https://www.imdb.com/title/tt0110631/)\"**.\
+    \ Have you watched it?\n- There is a  film similar to \"Elizabeth at 90: A Family\
+    \ Tribute\"  named **\"[[The Perks of Being a Wallflower](TITLE)](https://www.imdb.com/title/tt1659337/)\"\
+    **. Have you seen this one?\n- I would like to recommend you a horror, zombie\
+    \ film named **\"[[Dawn of the Dead](TITLE)](https://www.imdb.com/title/tt0077402/)\"\
+    **. Have you watched it?\n- I would like to recommend you an animation, studio\
+    \ ghibli film named **\"[[Howl's Moving Castle](TITLE)](https://www.imdb.com/title/tt0347149/)\"\
+    **. Have you watched it?\n- There is a wrongful imprisonment film named **\"[[Mumia:\
+    \ Long Distance Revolutionary](TITLE)](https://www.imdb.com/title/tt2005276/)\"\
+    **. Have you seen this one?\n- I would like to recommend you a drama, wrongful\
+    \ imprisonment film named **\"[[Shackles](TITLE)](https://www.imdb.com/title/tt0070947/)\"\
+    **. Have you watched it?\n- There is an animation, spirit world film named **\"\
+    [[Spirited Away](TITLE)](https://www.imdb.com/title/tt0245429/)\"**. Have you\
+    \ seen this one?\n- I would like to recommend you a drama, family drama film named\
+    \ **\"[[Kumbalangi Nights](TITLE)](https://www.imdb.com/title/tt8413338/)\"**.\
+    \ Have you watched it?\n- [Avengers: Endgame](TITLE) [8.4](imbd_rating) [181 min](duration)\n- [The Man Who Shot Liberty Valance](TITLE) [8.1](imdb_rating) [123 min](duration)\n- Do you like: [Broken Lance](TITLE) [6.9](imdb_rating) [96 min](duration)\n- [The Incredibles](TITLE) [8.0](imdb_rating) [115 min](duration)\n- [Spider-Man: Into the Spider-Verse](TITLE) [8.4](imdb_rating) [117 min](duration)\n- [The Forty-First](TITLE) [7.6](imdb_rating) [88 min](duration)\n- [Man, Woman & the Wall](TITLE) [6.4](imdb_rating) [84 min](duration)\n- [The Avengers](TITLE) [8.0](imdb_rating) [143 min](duration)"
+  intent: RECOMMEND
+- examples: |
+    - Sorry, I don't have any other [comedy](GENRE), [vintage cars](KEYWORD) films. Please select from the list of options to continue.
+    - Sorry, I couldn't find any [sci-fi](GENRE), [galaxies](KEYWORD) films named similar to the search. Please select from the list of options to continue.
+    - Sorry, I couldn't find any other [comedy](GENRE), [vintage cars](KEYWORD) films. Please select from the list of options to continue.
+    - Sorry, I don't have any other [comedy](GENRE), [hindu mythological](KEYWORD) films. Please select from the list of options to continue.
+    - Sorry, I don't have any other [hindu mythological](KEYWORD) films. Please select from the list of options to continue.
+    - Sorry, I couldn't find any [sci-fi](GENRE), [space](KEYWORD) films named similar to the search. Please select from the list of options to continue.
+    - Sorry, I couldn't find any other Tom Hanks films. Please select from the list of options to continue.
+    - Sorry, I couldn't find any [comedy](GENRE), [family crisis](KEYWORD) films. Please select from the list of options to continue.
+    - Sorry, I couldn't find any comedy, Sounds films. Please select from the list of options to continue.
+    - Sorry, I don't have any comedy, students films. Please select from the list of options to continue.
+    - Sorry, I don't have any other [documentary](GENRE), [historical](KEYWORD) films named similar to [Lightning in a Bottle](TITLE). Please select from the list of options to continue.
+    - Sorry, I couldn't find any [comedy](GENRE), released films from the year  [2015](year) starring [Kevin Hart](ACTOR). Please select from the list of options to continue.
+    - Sorry, I don't have any comedy, sounds films. Please select from the list of options to continue.
+    - Sorry, I don't have any [comedy](GENRE), released films starring [Kevin Hart](ACTOR). Please select from the list of options to continue.
+    - Sorry, I don't have any drama, daily life films named similar to thank you. Please select from the list of options to continue.
+    - Sorry, I don't have any other comedy, Tom Hanks films. Please select from the list of options to continue.
+    - Sorry, I don't have any other drama, daily life films. Please select from the list of options to continue.
+  intent: NO_RESULTS
+- examples: |
+    - I hope you had a good experience. Bye.
+    - Hope to see you soon. Bye.
+  intent: BYE
+- examples: "- The rating of this movie on IMDb is [8.3](imdb_rating).\n- What would\
+    \ you like to know about \"[Dawn of the Dead](TITLE)\"?\n- The rating of this\
+    \ movie on IMDb is [7.8](imdb_rating).\n- Its rating on IMDb is [6.0](imdb_rating).\n\
+    - [Olga, Katya, and Andrey have known each other since childhood. They moved to\
+    \ Moscow many years ago and have become successful. Olga is an actress, Katya\
+    \ works for a large-scale PR agency, and Andrey is a political analyst. They buy\
+    \ cars, take mortgages, build country houses. Just like everybody else. But their\
+    \ lives bring them neither happiness nor content. The feeling of \"something's\
+    \ not right but I can't put my finger on it\" underpins the lives of today's thirty-year-olds.\
+    \ Their childhood took place during the Soviet era, when kids dreamed of becoming\
+    \ heroes, believed in spy stories and a bright future. Yet nobody expected that\
+    \ the dream of becoming a hero would be replaced by the dream of stable and predictable\
+    \ existence. People have stopped dreaming of truly grand things. They just play\
+    \ their roles.](plot)\n- [Brian Wilson is the creative soul of the Beach Boys,\
+    \ but he paid a heavy price for his talent. That especially shows during his peak\
+    \ artistic years in the 1960s, as his inner demons and obsessions trying to please\
+    \ his abusive father drive him to a mental breakdown that would plague him for\
+    \ years. In the 1980s, with Brian barely functional under the domination of the\
+    \ unscrupulous Dr. Landy, Brian meets and falls in love with Melinda Ledbetter.\
+    \ As their relationship grows, she observes Brian's crippling subservience to\
+    \ the abusive psychotherapist with growing alarm. Ultimately, she must take action\
+    \ with a love willing to stand up to oppression she cannot ignore.](plot)\n- Actors\
+    \ [Julia Roberts, Hugh Grant, Richard McCabe, Rhys Ifans, James Dreyfus, Dylan\
+    \ Moran](ACTOR) have played prominent roles in this movie.\n- [Follow the lives\
+    \ of Viago (Taika Waititi), Deacon (Jonathan Brugh), and Vladislav (Jemaine Clement)\
+    \ - three flatmates who are just trying to get by and overcome life's obstacles-like\
+    \ being immortal vampires who must feast on human blood. Hundreds of years old,\
+    \ the vampires are finding that beyond sunlight catastrophes, hitting the main\
+    \ artery, and not being able to get a sense of their wardrobe without a reflection-modern\
+    \ society has them struggling with the mundane like paying rent, keeping up with\
+    \ the chore wheel, trying to get into nightclubs, and overcoming flatmate conflicts.](plot)\n\
+    - This movie is [70](duration) minutes long.\n- [Mia Thermopolis (Anne Hathaway)\
+    \ is the average teenager - sweet, a little geeky, and pretty much invisible to\
+    \ everyone with the exception of her mother, best friend Lilly (Heather Matarazzo)\
+    \ and Lilly's older brother Michael (Robert Schwartzman). Making it through high\
+    \ school without throwing up is a challenge in itself for Mia, so it doesn't come\
+    \ as welcome news when her estranged grandmother, Queen Clarisse Renaldi (Dame\
+    \ Julie Andrews), shows up out of the blue and calmly informs her that she is\
+    \ in fact the heir to the throne of a European country called Genovia. Suddenly\
+    \ Mia's life is thrown into complete overload. She's being taught about scarves,\
+    \ waves, and pears in order to become a perfect Princess, she gets a makeover\
+    \ and a tough looking, yet sweet bodyguard and limo driver called Joe (Hector\
+    \ Elizondo). Things get out of hand when the media gets a hold of the story and\
+    \ suddenly Mia is thrust into the spotlight in the newspapers and in school. On\
+    \ top of all of that, Mia has a choice to make. She must decide by Genovia's Independence\
+    \ Day Ball whether she longs to relinquish her claim on the throne or to become\
+    \ the Princess and heir to the throne her father, Philippe Renaldi (Rene Auberjonois),\
+    \ and grandmother want her to be.](plot)\n- What would you like to know about\
+    \ \"[Rembrandt](more_info)\"?\n- What would you like to know about \"[Notting\
+    \ Hill](TITLE)\"?\n- Actors [Audrey Tautou, Mathieu Kassovitz, Rufus, Lorella\
+    \ Cravotta, Serge Merlin, Jamel Debbouze](actors) have played prominent roles\
+    \ in this movie.\n- Its rating on IMDb is [7.7](imdb_rating).\n- [In 1858, a bounty\
+    \ hunter named Schultz seeks out a slave named Django and buys him because he\
+    \ needs him to find some men he is looking for. After finding them, Django wants\
+    \ to find his wife, Broomhilda, who along with him were sold separately by his\
+    \ former owner for trying to escape. Schultz offers to help him if he chooses\
+    \ to stay with him and be his partner. Eventually they learn that she was sold\
+    \ to a plantation in Mississippi. Knowing they can't just go in and say they want\
+    \ her, they come up with a plan so that the owner will welcome them into his home\
+    \ and they can find a way.](plot)\n- Its duration is [135](duration) minutes.\
+    \  Its rating on IMDb is [8.6](imdb_rating).\n- Its rating on IMDb is [8.0](imdb_rating).\
+    \  [Based on the New York Times bestseller, WONDER tells the incredibly inspiring\
+    \ and heartwarming story of August Pullman. Born with facial differences that,\
+    \ up until now, have prevented him from going to a mainstream school, Auggie becomes\
+    \ the most unlikely of heroes when he enters the local fifth grade. As his family,\
+    \ his new classmates, and the larger community all struggle to discover their\
+    \ compassion and acceptance, Auggie's extraordinary journey will unite them all\
+    \ and prove you can't blend in when you were born to stand out.](plot)\n- [It\
+    \ is a world within our world, yet unseen by any human, and the beings here control\
+    \ time and tide and the changing of the seasons. On the day Chun turns sixteen,\
+    \ she is transformed into a dolphin to explore the human world. She is rescued\
+    \ from a vortex by a human boy at the cost of his own life. Chun is so moved by\
+    \ the boy's kindness and courage that she decides to give him life again. But\
+    \ to do this, she must protect the boy's soul, a tiny fish, and nurture it to\
+    \ grow. Through adventure and sacrifice, love grows, yet now she must release\
+    \ him back to the sea, back to life in the human world.](plot)\n- What would you\
+    \ like to know about \"[Elizabeth at 90: A Family Tribute](more_info)\"?\n- What\
+    \ would you like to know about \"[Mumia: Long Distance Revolutionary](TITLE)\"\
+    ?\n- The movie was released in [2004](year).\n- The rating of this movie on IMDb\
+    \ is [7.2](imdb_rating).  [In order to finance his law studies, Martin starts\
+    \ as a night watchman in a mortuary. When the victims of a serial killer of prostitutes\
+    \ are deposited there, scary things begin to happen. Therefore and because of\
+    \ a strange bet with his fellow student Jens, the police begins to think he is\
+    \ the murderer. Police detective Wormer wants to help him but Martin is more and\
+    \ more suspected.](plot)\n- [A unique celebration of the Queen's ninety years\
+    \ as she reaches her landmark birthday in April. Film-maker John Bridcut has been\
+    \ granted special access to the complete collection of Her Majesty's personal\
+    \ cin\xE9 films, shot by the Duke of Edinburgh and the Queen herself, as well\
+    \ as by King George VI and Queen Elizabeth The Queen Mother. Much of it has never\
+    \ been seen publicly before. Various members of the Royal Family are filmed watching\
+    \ this private footage and contributing their own personal insights and their\
+    \ memories of the woman they know both as a member of their own close family and\
+    \ as queen. Among those taking part are the Prince of Wales, the Duke of Cambridge,\
+    \ Prince Harry, the Princess Royal, the Duke of Kent and his sister Princess Alexandra,\
+    \ who has never before given an interview.](plot)\n- This movie is 2 hours and\
+    \ 16 minutes long.\n- Some of the famous actors in this movie are [Cornel West,\
+    \ Alice Walker, Angela Davis, Rubin 'Hurricane' Carter, Giancarlo Esposito, Ruby\
+    \ Dee](ACTOR).\n- The director of this movie is [George A. Romero](DIRECTOR).\n\
+    - What would you like to know about \"[Love & Mercy](more_info)\"?\n- What would\
+    \ you like to know about \"[The Matrix](more_info)\"?\n- [Following the events\
+    \ of Night of the Living Dead (1968), we follow the exploits of four survivors\
+    \ of the expanding zombie apocalypse as they take refuge in an abandoned shopping\
+    \ mall following a horrific SWAT evacuation of an apartment complex. Taking stock\
+    \ of their surroundings, they arm themselves, lock down the mall, and destroy\
+    \ the zombies inside so they can eke out a living--at least for a while. Tensions\
+    \ begin to build as months go on, and they come to realize that they've fallen\
+    \ prey to consumerism. Soon afterward, they have even heavier problems to worry\
+    \ about, as a large gang of bikers discovers the mall and invades it, ruining\
+    \ the survivors' best-laid plans and forcing them to fight off both lethal bandits\
+    \ and flesh-eating zombies.](plot)\n- What would you like to know about \"[Nightwatch](more_info)\"\
+    ?\n- What would you like to know about \"[The Princess Diaries](more_info)\"?\n\
+    - [Unlike any other film, book, or article produced about Mumia Abu-Jamal, \"\
+    Mumia: Long Distance Revolutionary\" focuses on his career as a prolific author\
+    \ and broadcaster from Pennsylvania's Death Row. In fact, the film does not deal\
+    \ with Abu-Jamal's case, but rather chronicles his life and work as a journalist\
+    \ and revolutionary - both prior and post incarceration. After Abu-Jamal is convicted\
+    \ for the murder of of Philadelphia patrolman Daniel Faulkner, the story then\
+    \ exposes Abu-Jamal's battles with the American court system to continue his work\
+    \ from prison- a battle he continues to wage to this very day.](plot)\n- It was\
+    \ released in the year [2001](year).\n- What would you like to know about \"[Am\xE9\
+    lie](more_info)\"?\n- The rating of this movie on IMDb is [6.0](imdb_rating).\n\
+    - What would you like to know about \"[Pionery-geroi](more_info)\"?\n- What would\
+    \ you like to know about \"[Wonder](more_info)\"?\n- The movie was released in\
+    \ [2012](year).\n- What would you like to know about \"[Never Look Away](more_info)\"\
+    ?\n- Its rating on IMDb is [8.7](imdb_rating).\n- What would you like to know\
+    \ about \"[Kumbalangi Nights](TITLE)\"?\n- [The film revolves around four brothers\
+    \ who share a love-hate relationship with each other. Franky's elder brothers,\
+    \ Saji, Bobby and Bony lead a messed up life with their downright arrogance, differences,\
+    \ and disagreements with each other. Each one deals with the struggle of his own.\
+    \ Their relationship progresses to another level when Saji, Boney, and Franky\
+    \ decide to help Bobby stand by his love. Franky's wish for a beautiful home cuddles\
+    \ hope.](plot)\n- What would you like to know about \"[Shackles](TITLE)\"?\n-\
+    \ [This character study joins the painter at the height of his fame in 1642, when\
+    \ his adored wife suddenly dies and his work takes a dark, sardonic turn that\
+    \ offends his patrons. By 1656, he is bankrupt but consoles himself with the company\
+    \ of pretty maid Hendrickje, whom he's unable to marry. Their relationship brings\
+    \ ostracism but also some measure of happiness. The final scenes find him in his\
+    \ last year, 1669, physically enfeebled but his spirit undimmed.](plot)\n- What\
+    \ would you like to know about \"[Django Unchained](TITLE)\"?\n- Its rating on\
+    \ IMDb is [7.1](imdb_rating).\n"
+  intent: INFORM
+- examples: |
+    - We are starting again.  Do you have any specific [genres](GENRE) in mind?
+    - Let's restart.  Which [genres](GENRE) do you prefer?
+  intent: RESTART+ELICIT
+- examples: |
+    - Please choose your next step:
+  intent: CONTINUE_RECOMMENDATION
+- examples: |
+    - I believe I am stuck. I can't help you here.
+    - Sorry I can't help you with that.
+  intent: CANT_HELP
+version: '3.0'

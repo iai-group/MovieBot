@@ -1,0 +1,35 @@
+simulator_type: "agenda_based"
+simulator_id: "usersim_moviebot_neural_nlu"
+
+agent_id: "IAI MovieBot"
+output_name: "moviebot"
+# By default, the agent has an HTTP API.
+agent_uri: "http://127.0.0.1:5001"
+
+domain: reinforcement_learning/data/simulator/movies_domain.yaml
+intents: reinforcement_learning/data/simulator/moviebot_interaction_model.yaml
+
+items: reinforcement_learning/data/movielens-25m-sample/movies_w_keywords.csv
+id_col: movieId
+domain_mapping:
+  title:
+    slot: TITLE
+  genres:
+    slot: GENRE
+    multi-valued: True
+    delimiter: "|"
+  keywords:
+    slot: KEYWORD
+    multi-valued: True
+    delimiter: "|"
+ratings: reinforcement_learning/data/movielens-25m-sample/ratings.csv
+historical_ratings_ratio: 0.8
+
+dialogues: reinforcement_learning/data/simulator/moviebot-1.1/annotated_dialogues_moviebot_1_1_updated.json
+intent_classifier: "diet"
+# If using the DIET classifier the following file needs to be provided.
+rasa_dialogues: reinforcement_learning/data/simulator/moviebot-1.1/annotated_dialogues_moviebot_1_1_updated_rasa_agent.yaml
+
+nlg: conditional
+
+debug: True

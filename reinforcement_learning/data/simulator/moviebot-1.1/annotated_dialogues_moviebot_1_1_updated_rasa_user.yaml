@@ -1,0 +1,132 @@
+nlu:
+- examples: |
+    - Sure
+    - ok. thank you
+    - ok we can start
+    - yes
+  intent: ACKNOWLEDGE
+- examples: |
+    - [comedy](GENRE)
+    - [zombie](KEYWORD)
+    - [studio ghibli](KEYWORD)
+    - I am looking for an [horror](GENRE) movie
+    - With [Tom Hanks](KEYWORD)
+    - [Animation](GENRE)
+    - [Drama](GENRE) with [Julia Roberts](ACTOR)
+    - I am looking for a [family](GENRE) movie
+    - what about "[galaxies](KEYWORD)"
+    - I like [drama](GENRE)
+    - [wrongful imprisonment](KEYWORD)
+    - [spirit world](KEYWORD)
+    - [vintage cars](KEYWORD)
+    - I want a romantic [romance](GENRE) with [Julia Roberts](ACTOR)
+    - I want a [comedy](GENRE) starring [Kevin Hart](ACTOR) that was released after [2015](year)
+    - [family drama](KEYWORD) in the [early 2000s](year)
+    - [family crisis](KEYWORD)
+    - [hindu mythological](KEYWORD)
+    - lets say something with [space exploring](KEYWORD)
+    - I am looking for an [historical](KEYWORD) [documentary](GENRE)
+    - ok lets narrow the search to movies with [sleep hibernation](KEYWORD)
+    - Recommend me more [horror](GENRE) movies
+    - can you suggest a movie with a higher rating
+    - Something about [students](KEYWORD)
+    - I want a [comedy](GENRE) from [2000](YEAR)
+    - [romantic](KEYWORD)
+    - With [Julia Roberts](actors)
+    - I want [comedy](GENRE)
+    - Hi, I'm looking for movies for a [night](KEYWORD) with my [friends](KEYWORD)
+    - I am looking for a [drama](GENRE) movie
+    - I would like one with higher rating
+    - [female protagonist](KEYWORD)
+    - [animation](GENRE)
+    - [daily life](KEYWORD)
+    - I am thinking of [sci-fi](GENRE)
+    - [romatic](KEYWORD)
+    - Give me an independant movie
+    - Do you have something more recent?
+    - I would like to watch a [horror](GENRE) today
+    - I like [comedies](GENRE)
+    - [drama](GENRE)
+  intent: REVEAL
+- examples: |
+    - I don't like this recommendation.
+    - yes
+    - yes what else?
+    - I will keep the previous recommendation thanks
+    - I have already [watched](reason) it.
+    - Recommend me something else please.
+    - I don't like it
+  intent: REJECT
+- examples: |
+    - I have changed my mind and would like to restart for a [comedy](GENRE)
+    - I would like to restart for a drama
+  intent: RESTART+REVEAL
+- examples: |
+    - Don't need movies based on "[vintage cars](KEYWORD)".
+    - Don't need movies based on "[students](KEYWORD)".
+    - No need of a "[hindu mythological](KEYWORD)" film.
+    - Don't need a movie from the "year  [2015](year)".
+    - No need of a "[Tom Hanks](KEYWORD)" film.
+    - Won't prefer a "[comedy](GENRE)" film.
+    - No movies named like "[thank you](TITLE)".
+    - I don't need [drama](GENRE) anymore
+    - Don't need movies based on "[Sounds](KEYWORD)".
+    - No need of a "[daily life](KEYWORD)" film.
+    - Don't want a "[comedy](GENRE)" movie.
+  intent: REMOVE_PREFERENCE
+- examples: |
+    - bye
+    - I would like to quit now.
+    - quit
+    - thanks, that's all I needed. Bye!
+    - Ok it is fine, bye
+    - Forget it bye
+  intent: BYE
+- examples: |
+    - [](plot)[](imdb_rating)movie plot and rating
+    - [](year)No when was it released?
+    - [](plot)cool, what's the story?
+    - [](imdb_rating)rating
+    - [](year)release year
+    - [](ACTOR)list of actors
+    - [](DIRECTOR)Who was the director?
+    - [](plot)No what is the plot
+    - [](duration)duration
+    - [](ACTOR)[](imdb_rating)rating and actors
+    - [](plot)movie plot
+    - [](imdb_rating)cool what about the rating
+    - [](more_info)Tell me something about it.
+    - [](more_info)Tell me more about it.
+    - [](plot)what's the plot
+    - [](duration)[](imdb_rating)Tell me about the rating and duration
+    - [](plot)[](imdb_rating)rating and movie plot
+    - [](plot)what's the plot?
+    - [](ACTOR)What about actors
+    - [](plot)plot
+  intent: INQUIRE
+- examples: |
+    - I want to restart for a new movie.
+  intent: RESTART
+- examples: |
+    - Ok I like this recommendation
+    - I like this recommendation.
+    - Sounds good I like it
+    - Sounds good
+    - Sounds interesting
+    - Uuu sounds interesting
+  intent: ACCEPT
+- examples: |
+    - No
+    - no
+  intent: DENY
+- examples: |
+    - Give me more recommendation similar to [Lightning in a Bottle](TITLE)
+    - I would like a similar recommendation.
+    - I would like other recommendations
+    - Give me more recommendation
+  intent: CONTINUE_RECOMMENDATION
+- examples: |
+    - where can i find this movie?
+    - I liked the previous recommendation
+  intent: UNK
+version: '3.0'
