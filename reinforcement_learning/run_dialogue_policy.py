@@ -6,7 +6,10 @@ import gymnasium as gym
 import torch
 
 import wandb
-from moviebot.dialogue_manager.dialogue_policy import DQNDialoguePolicy
+from moviebot.dialogue_manager.dialogue_policy import (
+    A2CDialoguePolicy,
+    DQNDialoguePolicy,
+)
 from moviebot.domain.movie_domain import MovieDomain
 from reinforcement_learning.environment import DialogueEnvMovieBot
 from reinforcement_learning.utils import define_possible_actions, get_config
@@ -26,15 +29,23 @@ def parse_args(args: str = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="run_dialogue_policy.py")
     parser.add_argument(
         "--agent-config",
+        required=True,
         help="Path to the agent configuration file.",
     )
     parser.add_argument(
         "--artifact-name",
+        required=True,
         help="W&B artifact name.",
     )
     parser.add_argument(
         "--model-path",
+        required=True,
         help="Path to the model file in W&B.",
+    )
+    parser.add_argument(
+        "--policy-type",
+        required=True,
+        help="Type of the policy, either 'dqn' or 'a2c'.",
     )
     return parser.parse_args(args)
 
@@ -57,7 +68,16 @@ if __name__ == "__main__":
     artifact = run.use_artifact(args.artifact_name, type="model")
     policy_artifact_filepath = artifact.get_path(args.model_path)
     policy_artifact_file = policy_artifact_filepath.download()
-    policy = DQNDialoguePolicy.load_policy(policy_artifact_file)
+
+    if args.policy_type == "dqn":
+        policy = DQNDialoguePolicy.load_policy(policy_artifact_file)
+    elif args.policy_type == "a2c":
+        policy = A2CDialoguePolicy.load_policy(policy_artifact_file)
+    else:
+        raise ValueError(
+            f"Unknown policy type '{args.policy_type}'. "
+            "Supported types are 'dqn' and 'a2c'."
+        )
 
     # Create the environment
     env: DialogueEnvMovieBot = gym.make(

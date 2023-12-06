@@ -9,6 +9,8 @@ from moviebot.dialogue_manager.dialogue_policy.neural_dialogue_policy import (
     NeuralDialoguePolicy,
 )
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class A2CDialoguePolicy(NeuralDialoguePolicy):
     def __init__(
@@ -30,7 +32,9 @@ class A2CDialoguePolicy(NeuralDialoguePolicy):
             num_timesteps: The number of timesteps. Defaults to None.
             n_envs: The number of environments. Defaults to 1.
         """
-        super().__init__(input_size, hidden_size, output_size, possible_actions)
+        super().__init__(
+            input_size, hidden_size, output_size, possible_actions
+        )
 
         self.n_envs = n_envs
 
@@ -63,7 +67,9 @@ class A2CDialoguePolicy(NeuralDialoguePolicy):
                 self.critic_optimizer, total_iters=num_timesteps
             )
 
-    def forward(self, state: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self, state: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Forward pass.
 
         Args:
@@ -194,7 +200,7 @@ class A2CDialoguePolicy(NeuralDialoguePolicy):
         Returns:
             The loaded policy.
         """
-        state_dict = torch.load(path)
+        state_dict = torch.load(path, map_location=DEVICE)
         policy = cls(
             state_dict["input_size"],
             state_dict["hidden_size"],
