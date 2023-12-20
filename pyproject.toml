@@ -3,4 +3,4 @@ line-length = 80
 target-version = ['py39']
 
 [tool.coverage.run]
-omit = ["usersimcrs/*", "tests/*"]
+omit = ["usersimcrs/*", "tests/*", "reinforcement_learning/*"]

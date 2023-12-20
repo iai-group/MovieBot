@@ -8,6 +8,7 @@ import logging
 
 import confuse
 
+from reinforcement_learning.training.trainer_a2c import TrainerA2C
 from reinforcement_learning.training.trainer_dqn import TrainerDQN
 from reinforcement_learning.utils import get_config
 
@@ -197,11 +198,13 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.DEBUG)
 
     # Create trainer
-    if config["model"]["algorithm"].get() == "dqn":
+    algorithm = config["model"]["algorithm"].get()
+    if algorithm == "dqn":
         trainer = TrainerDQN(config)
+    elif algorithm == "a2c":
+        trainer = TrainerA2C(config)
     else:
-        raise ValueError(
-            f"Algorithm {config['model']['algorithm'].get()} is not supported."
-        )
+        raise ValueError(f"Algorithm {algorithm} is not supported.")
+
     # Train policy
     trainer.train_policy()
