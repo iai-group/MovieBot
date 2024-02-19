@@ -36,4 +36,4 @@ Two neural dialogue policies are supported:
 - :py:class:`DQNDialoguePolicy <moviebot.dialogue_manager.dialogue_policy.dqn_dialogue_policy>`: multi-layer perceptron trained to learn optimal action-value functions that maximize the expected cumulative reward.
 - :py:class:`A2CDialoguePolicy <moviebot.dialogue_manager.dialogue_policy.a2c_dialogue_policy>`: actor and critic models trained simultaneously to learn an optimal policy and value function respectively.
 
-The neural dialogue policy can be trained using reinforcement learning as described :doc:`here <reinforcement_learning>`.
+The neural dialogue policies can be trained using reinforcement learning as described :doc:`here <reinforcement_learning>`.
