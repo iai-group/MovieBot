@@ -73,20 +73,28 @@ Contributions are welcome. Changes to IAI MovieBot should conform to the [IAI Py
 
 ## Citation
 
-<!-- TODO: For the most recent version (v2.0) of IAI MovieBot, please cite: -->
+For the most recent version (v2.0) of IAI MovieBot, please cite:
+
+```bibtex
+@inproceedings{Bernard:2024:WSDM,
+    author = {Bernard, Nolwenn and Kostric, Ivica and Balog, Krisztian},
+    title = {IAI MovieBot 2.0: An Enhanced Research Platform with Trainable Neural Components and Transparent User Modeling},
+    year = {2024},
+    doi = {10.1145/3616855.3635699},
+    booktitle = {Proceedings of the 17th ACM International Conference on Web Search and Data Mining},
+    series = {WSDM '24}
+}
+```
 
 For the v1.0 version of IAI MovieBot, please cite:
 
-```
+```bibtex
 @inproceedings{Habib:2020:CIKM,
     author = {Habib, Javeria and Zhang, Shuo and Balog, Krisztian},
     title = {IAI {MovieBot}: {A} Conversational Movie Recommender System},
     year = {2020},
     booktitle = {Proceedings of the 29th ACM International Conference on Information and Knowledge Management},
-    publisher = {Association for Computing Machinery},
-    address = {New York, NY, USA},
     pages = {3405--3408},
-    url = {https://doi.org/10.1145/3340531.3417433},
     doi = {10.1145/3340531.3417433},
     series = {CIKM '20}
 }
