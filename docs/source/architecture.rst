@@ -17,11 +17,8 @@ The :py:class:`NLU <moviebot.nlu.nlu>` component converts the natural language :
 Dialogue Manager
 ----------------
 
-The :py:class:`DialogueManager <moviebot.dialogue_manager.dialogue_manager>` tracks the dialogue state and decides what action the system should take.  It consists of two sub-components:
-
-- :py:class:`DialogueStateTracker <moviebot.dialogue_manager.dialogue_state_tracker>`, which updates the :py:class:`DialogueState <moviebot.dialogue_manager.dialogue_state>` and :py:class:`DialogueContext <moviebot.dialogue_manager.dialogue_context>` based on the dialogue acts by both the agent and the user.
-- :py:class:`DialoguePolicy <moviebot.dialogue_manager.dialogue_policy>`, which generates a dialogue act by the agent based on the current dialogue state. It defines the flow of the conversation, i.e., what steps an agent must take at every stage.
-
+This component keeps track of the dialogue state and context, in addition to deciding the next action the system should take.
+Please refer to the :doc:`dialogue manager <dialogue_manager>` section for a detailed description.
 
 Natural Language Generation
 ---------------------------
