@@ -27,7 +27,7 @@ Installation and usage instructions are available in the [documentation](https:/
 
 ## Components
 
-Below is the overview of IAI MovieBot 2.0 architecture. Blue components are inhereted from IAI MovieBot 1.0 and the green ones are new additions. Training utilities are available for components marked with a star (*).
+Below is the overview of IAI MovieBot 2.0 architecture. Blue components are inherited from IAI MovieBot 1.0 and the green ones are new additions. Training utilities are available for components marked with a star (*).
 
 ![MovieBot v2 architecture](docs/source/_static/Blueprint_MovieBot_v2.png)
 
