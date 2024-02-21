@@ -4,12 +4,12 @@ Dialogue Manager
 The :py:class:`DialogueManager <moviebot.dialogue_manager.dialogue_manager>` tracks the dialogue state and decides what action the system should take.
 It comprises a dialogue state tracker and a dialogue policy.
 
-
 Dialogue State Tracker
 ----------------------
 
-This component is responsible for keeping track of the dialogue state and dialogue context based on the dialogue acts of the agent and the user.
-In the current implementation, :py:class:`DialogueStateTracker <moviebot.dialogue_manager.dialogue_state_tracker>` is rule-based.
+This component is responsible for keeping track of the dialogue state and dialogue context based on the dialogue acts of the agent and the user. It also records the items recommended to the user with their feedback (where possible values include "accepted," "rejected/don't like," and "inquire").
+The dialogue state includes the recent dialogue acts for both the user and the agent, the information need and its matching results, the current recommendation by the agent, and the agent's state that defines its next step. The agent state is represented as a set of boolean flags, e.g., whether the agent can or should make a recommendation, whether the agent should ask for more information, etc.
+
 
 Dialogue Policy
 ---------------
@@ -21,7 +21,7 @@ MovieBot supports two types of dialogue policies: rule-based and neural-based.
 Rule-based Dialogue Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Based on a set of pre-defined rules and the current dialogue state, this policy decides the next action of the system.
+The next system action is determined based on a set of pre-defined rules, given the current dialogue state.
 The rule-based dialogue policy is implemented in the :py:class:`RuleBasedDialoguePolicy <moviebot.dialogue_manager.rb_dialogue_policy>` class.
 
 Neural-based Dialogue Policy
