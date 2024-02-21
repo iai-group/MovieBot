@@ -41,7 +41,7 @@ Below is the overview of IAI MovieBot 2.0 architecture. Blue components are inhe
   * Natural Language Understanding (NLU)
     - Rule-based
     - JointBERT
-  * Dialogue management
+  * Dialogue management [[doc](https://iai-moviebot.readthedocs.io/en/latest/dialogue_manager.html)]
     - Dialogue policy
       + Rule-based
       + Deep Q-Network (DQN)
