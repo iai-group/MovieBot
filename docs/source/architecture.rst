@@ -3,16 +3,15 @@ System Architecture
 
 This page provides a high-level overview of the architecture of our system.  At this level of abstraction, our system constitutes a domain-independent framework for facilitating conversational item recommendation.  Thus, even though we will be using movie-related examples for illustration, it is straightforward to adapt the system to other domains.
 
-The system architecture is shown in the figure below, illustrating the core process for each dialogue turn.
+The overview of the system architecture is shown in the figure below.
 
-.. image:: _static/Blueprint_MovieBot.png
+.. image:: _static/Blueprint_MovieBot_v2.png
 
+The main components of the system are:
 
-Natural Language Understanding
-------------------------------
-
-The :py:class:`NLU <moviebot.nlu.nlu>` component converts the natural language :py:class:`UserUtterance <moviebot.core.utterance.utterance.UserUtterance>` into a :py:class:`DialogueAct <moviebot.dialogue_manager.dialogue_act>`. This process, comprising of *intent detection* and *slot filling*, is performed based on the current dialogue state.
-
+- :doc:`Natural Language Understanding <nlu>`
+- Dialogue Manager
+- Natural Language Generation
 
 Dialogue Manager
 ----------------
