@@ -2,7 +2,7 @@ Natural Language Understanding
 ------------------------------
 
 The natural language understanding (NLU) component converts incoming user utterances into dialogue acts.
-A dialogue act is a structured representation comprising an intent and parameters. A parameter is a triplet including a slot, operator, and value. Note that the user intents and slots, that are domain specific, are pre-defined and can easily be modified to fit a new domain.
+A dialogue act is a structured representation comprising an intent and parameters. A parameter is a triplet including a slot, an operator, and a value. Note that the user intents and slots, that are domain specific, are pre-defined and can easily be modified to fit a new domain.
 The NLU process is divided into two steps: intent classification and slot filling.
 
 Two types of NLU component are available:
