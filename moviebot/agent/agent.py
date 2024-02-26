@@ -79,7 +79,7 @@ class MovieBotAgent(Agent):
             )
 
         self.user_model = UserModel()
-        self.explanation_model = ExplainableUserModelTagBased()
+        self.explanation_model = ExplainableUserModelTagBased(self.user_model)
 
         _recommender = self._get_recommender(
             self.config.get("RECOMMENDER", "slot_based")
