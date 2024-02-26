@@ -384,6 +384,9 @@ class DialogueStateTracker:
 
         def add_to_user_model(value: str):
             """Helper function to assign value to the user model."""
+            if not isinstance(value, str):
+                return
+
             is_negative = value.startswith(".NOT.")
             if is_negative:
                 value = value[5:]
