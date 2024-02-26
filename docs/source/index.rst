@@ -13,7 +13,6 @@ The distinctive features of IAI MovieBot include a task-specific dialogue flow, 
    architecture
    dialogue
    reinforcement_learning
-   contact
 
 
 Indices and tables

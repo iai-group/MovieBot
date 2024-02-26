@@ -16,31 +16,7 @@ User intents
 
 :py:class:`UserIntents <moviebot.intents.user_intents>`
 
-+------------------------+------------+
-| Intent   | Description   |
-+========================+============+
-| Reveal   | The user wants to reveal a preference.   | 
-+------------------------+------------+
-| Inquire  | Once the agent has recommended an item, the user can ask further details about it.        | 
-+------------------------+------------+
-| Remove preference  | The user wants to remove any previously stated preference.        | 
-+------------------------+------------+
-| Reject  | The user either has already seen/consumed the recommended item or does not like it.        | 
-+------------------------+------------+
-| Accept  | The user accepts (likes) the recommendation. This will determine the success of the system as being able to find a recommendation the user liked.        | 
-+------------------------+------------+
-| Continue recommendation  | If the user likes a recommendation, they can either restart, quit or continue the process to get a similar recommendation.        | 
-+------------------------+------------+
-| Restart  | The user wants to restart the recommendation process.        | 
-+------------------------+------------+
-| Acknowledge  | Acknowledge the agent's question where required.        | 
-+------------------------+------------+
-| Deny  | Negate the agent's question where required.        | 
-+------------------------+------------+
-| Hi  | When the user initiates the conversation, they start with a formal hi/hello or reveal preferences.        | 
-+------------------------+------------+
-| Bye  | End the conversation by sending a bye message or an exit command.        | 
-+------------------------+------------+
+A detailed description is provided :doc:`here <nlu>`.
 
 Agent intents
 """""""""""""
