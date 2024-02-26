@@ -1,21 +1,27 @@
 """Types of conversational agents are available here."""
+
 import logging
 import os
 from typing import Any, Dict
 
 from dialoguekit.core import AnnotatedUtterance, Intent, Utterance
 from dialoguekit.participant import Agent, DialogueParticipant
+
 from moviebot.core.core_types import DialogueOptions
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_manager import DialogueManager
 from moviebot.domain.movie_domain import MovieDomain
+from moviebot.explainability.explainable_user_model_tag_based import (
+    ExplainableUserModelTagBased,
+)
 from moviebot.nlg.nlg import NLG
 from moviebot.nlu.rule_based_nlu import RuleBasedNLU as NLU
 from moviebot.recommender.recommender_model import RecommenderModel
 from moviebot.recommender.slot_based_recommender_model import (
     SlotBasedRecommenderModel,
 )
+from moviebot.user_modeling.user_model import UserModel
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +78,9 @@ class MovieBotAgent(Agent):
                 " utterance"
             )
 
+        self.user_model = UserModel()
+        self.explanation_model = ExplainableUserModelTagBased()
+
         _recommender = self._get_recommender(
             self.config.get("RECOMMENDER", "slot_based")
         )
@@ -79,6 +88,7 @@ class MovieBotAgent(Agent):
         self.data_config = dict(
             domain=self.domain,
             database=self.database,
+            user_model=self.user_model,
             recommender=_recommender,
             slot_values_path=self.slot_values_path,
             tag_words_slots_path=nlu_tag_words_slots_path,
@@ -136,7 +146,10 @@ class MovieBotAgent(Agent):
         Returns:
             An annotated utterance.
         """
-        metadata = {"options": options}
+        metadata = {
+            "options": options,
+        }
+
         if recommend_item:
             metadata.update({"recommended_item": recommend_item})
 
@@ -230,9 +243,11 @@ class MovieBotAgent(Agent):
             agent_response,
             agent_intents,
             options,
-            self.dialogue_manager.get_state().item_in_focus
-            if recommend_flag
-            else None,
+            (
+                self.dialogue_manager.get_state().item_in_focus
+                if recommend_flag
+                else None
+            ),
         )
 
         self._dialogue_connector.register_agent_utterance(utterance)

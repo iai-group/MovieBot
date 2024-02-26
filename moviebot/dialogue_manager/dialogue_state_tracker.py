@@ -1,7 +1,7 @@
 """Dialogue state tracker updates the current dialogue state."""
 
 from copy import deepcopy
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from moviebot.core.intents.agent_intents import AgentIntents
 from moviebot.core.intents.user_intents import UserIntents
@@ -23,7 +23,7 @@ class DialogueStateTracker:
             config: The set of parameters to initialize the state tracker.
             isBot: If the conversation is via bot or not.
         """
-        self.user_model = UserModel()
+        self.user_model: Optional[UserModel] = config.get("user_model")
         self.domain: MovieDomain = config.get("domain")
         self.slots: List[str] = config.get("slots", [])
         self.isBot = isBot
@@ -263,7 +263,8 @@ class DialogueStateTracker:
                     self.dialogue_state.agent_can_lookup = True
                     break
 
-        self.update_user_model(self.dialogue_state.frame_CIN)
+        if self.user_model:
+            self.update_user_model(self.dialogue_state.frame_CIN)
 
     def update_state_agent(self, agent_dacts: List[DialogueAct]) -> None:
         """Updates the current dialogue state and context based on agent
