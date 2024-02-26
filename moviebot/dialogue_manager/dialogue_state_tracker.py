@@ -1,6 +1,5 @@
 """Dialogue state tracker updates the current dialogue state."""
 
-
 from copy import deepcopy
 from typing import Any, Dict, List
 
@@ -12,6 +11,7 @@ from moviebot.domain.movie_domain import MovieDomain
 from moviebot.nlu.annotation.operator import Operator
 from moviebot.nlu.annotation.slots import Slots
 from moviebot.nlu.annotation.values import Values
+from moviebot.user_modeling.user_model import UserModel
 
 
 class DialogueStateTracker:
@@ -23,6 +23,7 @@ class DialogueStateTracker:
             config: The set of parameters to initialize the state tracker.
             isBot: If the conversation is via bot or not.
         """
+        self.user_model = UserModel()
         self.domain: MovieDomain = config.get("domain")
         self.slots: List[str] = config.get("slots", [])
         self.isBot = isBot
@@ -158,9 +159,9 @@ class DialogueStateTracker:
                                         param.slot
                                     ] = param.value
                             else:
-                                self.dialogue_state.frame_CIN[
-                                    param.slot
-                                ] = param.value
+                                self.dialogue_state.frame_CIN[param.slot] = (
+                                    param.value
+                                )
 
                 # checks if two parameters have the same value:
                 self.dialogue_state.agent_must_clarify = False
@@ -261,6 +262,8 @@ class DialogueStateTracker:
                 elif value and value not in Values.__dict__.values():
                     self.dialogue_state.agent_can_lookup = True
                     break
+
+        self.update_user_model(self.dialogue_state.frame_CIN)
 
     def update_state_agent(self, agent_dacts: List[DialogueAct]) -> None:
         """Updates the current dialogue state and context based on agent
@@ -370,6 +373,33 @@ class DialogueStateTracker:
             self.dialogue_state.agent_offer_no_results = True
             self.dialogue_state.agent_should_make_offer = False
             self.dialogue_state.agent_made_offer = False
+
+    def update_user_model(self, frame_CIN: Dict[str, Any]) -> None:
+        """Updates the user model based on the current dialogue state.
+
+        Args:
+            frame_CIN: Current information needs of the user.
+        """
+
+        def add_to_user_model(value: str):
+            """Helper function to assign value to the user model."""
+            is_negative = value.startswith(".NOT.")
+            if is_negative:
+                value = value[5:]
+            self.user_model.slot_preferences[slot][value] = (
+                -1 if is_negative else 1
+            )
+
+        for slot, value in frame_CIN.items():
+            if not value:
+                continue
+
+            if slot in self.domain.multiple_values_CIN:
+                for val in value:
+                    add_to_user_model(val)
+
+            else:
+                add_to_user_model(value)
 
     def get_state(self) -> DialogueState:
         """Returns the current dialogue state.
