@@ -57,7 +57,7 @@ User Intents
 Slots
 -----
 
-The slots are defined in the enumeration :py:class:`Slots <moviebot.nlu.annotation.slots.Slots>`. Note that some of these slots cannot be filled by the user, such as `imdb_link` and `cover_image`. 
+The slots are defined in the enumeration :py:class:`Slots <moviebot.nlu.annotation.slots.Slots>`. Note that some of these slots cannot be filled upon the reception of a user utterance, such as `imdb_link` and `cover_image`. 
 
 **References**
 
