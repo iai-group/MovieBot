@@ -61,7 +61,7 @@ Training utilities:
 
 IAI MovieBot v2.0 can be tried [here](https://iai-group.github.io/MovieBot/).
 
-<!-- TODO add screenshot -->
+![MovieBot v2.0](data/assets/moviebot_v2_w_user_model.png)
 
 IAI MovieBot v1.0 can be tried on the Telegram channel [@iai_moviebot_bot](https://t.me/iai_moviebot_bot).
 
