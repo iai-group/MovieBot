@@ -65,11 +65,13 @@ class ExplainableUserModelTagBased(ExplainableUserModel):
                     concatenated_tags
                 )
 
-                explanation += self._clean_negative_keyword(
+                explanation += " " + self._clean_negative_keyword(
                     template, remove=i == 0
                 )
 
-        return AnnotatedUtterance(explanation, DialogueParticipant.AGENT)
+        return AnnotatedUtterance(
+            explanation.strip(), DialogueParticipant.AGENT
+        )
 
     def _clean_negative_keyword(
         self, template: str, remove: bool = True
