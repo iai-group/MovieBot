@@ -1,10 +1,12 @@
 """This file contains methods to format data for HTTP requests."""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Tuple
 
 from dialoguekit.core import AnnotatedUtterance, Utterance
+
 from moviebot.core.core_types import DialogueOptions
 
 HTTP_OBJECT_MESSAGE = Dict[str, Dict[str, str]]
@@ -71,6 +73,12 @@ class Message:
                     utterance.metadata.get("recommended_item")
                 )
                 message.attachments.append(movie_attachments)
+            if "explanation" in utterance.metadata:
+                message.attachments.append(
+                    get_explanation_attachment(
+                        utterance.metadata.get("explanation")
+                    )
+                )
         return message
 
 
@@ -108,6 +116,28 @@ def get_buttons_attachment(user_options: DialogueOptions) -> Attachment:
             )
             options.append(asdict(button))
     return Attachment(type="buttons", payload={"buttons": options})
+
+
+def get_explanation_attachment(
+    explanation_utterance: AnnotatedUtterance,
+) -> Attachment:
+    """Creates an explanation attachment.
+
+    Args:
+        explanation_utterance: Utterance containing explanation as natural
+            language and raw key-value pairs stored as annotations.
+
+    Returns:
+        Explanation attachment.
+    """
+    raw_user_model = "\n".join(
+        f"{annotation.key}:\t{annotation.value}"
+        for annotation in explanation_utterance.annotations
+    )
+    return Attachment(
+        type="explanation",
+        payload={"text": explanation_utterance.text, "raw": raw_user_model},
+    )
 
 
 def get_movie_message_data(info: Dict[str, Any]) -> Tuple[str, Attachment]:

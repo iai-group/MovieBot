@@ -1,32 +1,39 @@
+"""Tests for the tag-based explainability class."""
+
 import pytest
 
 from moviebot.explainability.explainable_user_model_tag_based import (
     ExplainableUserModelTagBased,
 )
+from moviebot.user_modeling.user_model import UserModel
 
 
 @pytest.fixture
 def explainable_model() -> ExplainableUserModelTagBased:
-    return ExplainableUserModelTagBased()
+    user_model = UserModel()
+    return ExplainableUserModelTagBased(user_model)
 
 
 def test_generate_explanation_positive(explainable_model):
     user_prefs = {"genres": {"action": 1, "comedy": 1}}
-    explanation = explainable_model.generate_explanation(user_prefs)
+    explainable_model._user_model.slot_preferences = user_prefs
+    explanation = explainable_model.generate_explanation()
     assert "action" in explanation.text
     assert "comedy" in explanation.text
 
 
 def test_generate_explanation_negative(explainable_model):
     user_prefs = {"actors": {"Tom Hanks": -1, "Adam": -1}}
-    explanation = explainable_model.generate_explanation(user_prefs)
+    explainable_model._user_model.slot_preferences = user_prefs
+    explanation = explainable_model.generate_explanation()
     assert "Tom Hanks" in explanation.text
     assert "Adam" in explanation.text
 
 
 def test_generate_explanation_mixed(explainable_model):
     user_prefs = {"keywords": {"war theme": 1, "comic": -1}}
-    explanation = explainable_model.generate_explanation(user_prefs)
+    explainable_model._user_model.slot_preferences = user_prefs
+    explanation = explainable_model.generate_explanation()
     assert "war theme" in explanation.text
     assert "comic" in explanation.text
 
