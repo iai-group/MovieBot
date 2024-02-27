@@ -5,14 +5,14 @@ import logging
 from dataclasses import asdict
 from typing import Any, Dict, Type
 
-from flask import request, session
-from flask_socketio import emit
-
 from dialoguekit.core import Utterance
 from dialoguekit.platforms.flask_socket_platform import (
     ChatNamespace as DKChatNamespace,
 )
 from dialoguekit.platforms.flask_socket_platform import FlaskSocketPlatform
+from flask import request, session
+from flask_socketio import emit
+
 from moviebot.agent.agent import MovieBotAgent
 from moviebot.controller.controller import Controller
 from moviebot.controller.http_data_formatter import Message, Response
@@ -37,7 +37,7 @@ class ControllerFlaskSocket(Controller, FlaskSocketPlatform):
         """
         super().__init__(agent_class, agent_args)
 
-    def start(self, host: str = "127.0.0.1", port: str = "5000") -> None:
+    def start(self, host: str = "127.0.0.1", port: int = 5000) -> None:
         """Starts the platform.
 
         Args:
@@ -109,9 +109,9 @@ class ChatNamespace(DKChatNamespace):
             )
 
         if authentication_success:
-            self._platform._active_users[
-                request.sid
-            ] = self.user_db.get_user_id(username)
+            self._platform._active_users[request.sid] = (
+                self.user_db.get_user_id(username)
+            )
             emit(
                 event_name,
                 {"success": True},
@@ -121,9 +121,11 @@ class ChatNamespace(DKChatNamespace):
                 event_name,
                 {
                     "success": False,
-                    "error": "Username already taken"
-                    if is_registering
-                    else "Incorrect login credentials",
+                    "error": (
+                        "Username already taken"
+                        if is_registering
+                        else "Incorrect login credentials"
+                    ),
                 },
             )
 

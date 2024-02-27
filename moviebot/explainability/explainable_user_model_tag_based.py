@@ -57,7 +57,11 @@ class ExplainableUserModelTagBased(ExplainableUserModel):
                     continue
 
                 concatenated_tags = ", ".join(tags)
-                template = random.choice(self.templates[category]).format(
+                template_group = self.templates.get(category)
+                if not template_group:
+                    continue
+
+                template = random.choice(template_group).format(
                     concatenated_tags
                 )
 

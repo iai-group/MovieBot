@@ -79,6 +79,9 @@ class Message:
                         utterance.metadata.get("explanation")
                     )
                 )
+        import pprint
+
+        pprint.pprint(message.attachments)
         return message
 
 
@@ -131,7 +134,7 @@ def get_explanation_attachment(
         Explanation attachment.
     """
     raw_user_model = "\n".join(
-        f"{annotation.key}:\t{annotation.value}"
+        f"{annotation.slot}:\t\t{annotation.value}"
         for annotation in explanation_utterance.annotations
     )
     return Attachment(

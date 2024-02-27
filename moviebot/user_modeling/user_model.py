@@ -47,6 +47,13 @@ class UserModel:
             defaultdict(list)
         )
 
+    def reset_user_model(self) -> None:
+        """Resets the user model."""
+        self.slot_preferences = defaultdict(lambda: defaultdict(float))
+        self.slot_preferences_nl = defaultdict(lambda: defaultdict(list))
+        self.item_preferences = defaultdict(float)
+        self.item_preferences_nl = defaultdict(list)
+
     @classmethod
     def from_json(cls, json_path: str) -> UserModel:
         """Loads a user model from a JSON file.

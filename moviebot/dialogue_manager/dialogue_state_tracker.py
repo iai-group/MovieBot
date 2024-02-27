@@ -32,6 +32,8 @@ class DialogueStateTracker:
     def initialize(self) -> None:
         """Initializes the dialogue state tracker."""
         self.dialogue_state.initialize()
+        if self.user_model:
+            self.update_user_model(self.dialogue_state.frame_CIN)
 
     def update_state_user(  # noqa: C901
         self, user_dacts: List[DialogueAct]
@@ -381,6 +383,8 @@ class DialogueStateTracker:
         Args:
             frame_CIN: Current information needs of the user.
         """
+
+        self.user_model.reset_user_model()
 
         def add_to_user_model(value: str) -> None:
             """Helper function to assign preference value to the user model."""

@@ -146,7 +146,10 @@ class MovieBotAgent(Agent):
         Returns:
             An annotated utterance.
         """
-        metadata: Dict[str, Any] = {"options": options}
+        metadata: Dict[str, Any] = {
+            "options": options,
+            "explanation": self.explanation_model.generate_explanation(),
+        }
 
         if recommend_item:
             metadata.update({"recommended_item": recommend_item})
