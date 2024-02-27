@@ -133,14 +133,37 @@ def get_explanation_attachment(
     Returns:
         Explanation attachment.
     """
-    raw_user_model = "\n".join(
-        f"{annotation.slot}:\t\t{annotation.value}"
-        for annotation in explanation_utterance.annotations
+    if not explanation_utterance.annotations:
+        return Attachment(type="explanation", payload={"text": "", "raw": ""})
+
+    max_annotation_len = max(
+        len(annotation.slot) for annotation in explanation_utterance.annotations
     )
+
+    raw_user_model = ""
+    for annotation in explanation_utterance.annotations:
+        tabs = "\t" * calculate_tabs(
+            len(annotation.slot) + 1, max_annotation_len
+        )
+        raw_user_model += "\n{slot}:{tabs}{value}".format(
+            slot=annotation.slot,
+            tabs=tabs,
+            value=annotation.value,
+        )
+
     return Attachment(
         type="explanation",
-        payload={"text": explanation_utterance.text, "raw": raw_user_model},
+        payload={
+            "text": explanation_utterance.text,
+            "raw": raw_user_model.strip(),
+        },
     )
+
+
+def calculate_tabs(text_length, max_length, tab_size=8):
+    spaces_needed = max_length - text_length
+    tabs_needed = -(-spaces_needed // tab_size)
+    return tabs_needed + 1
 
 
 def get_movie_message_data(info: Dict[str, Any]) -> Tuple[str, Attachment]:
