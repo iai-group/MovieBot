@@ -6,7 +6,6 @@ recommendation agent makes and previous states of the agent. State will
 be updated using the dialogue state tracker.
 """
 
-
 from copy import deepcopy
 from typing import Any, Dict, List
 
@@ -33,6 +32,8 @@ class DialogueState:
         # self.requestable_slots_filled = {}
         self.agent_requestable = deepcopy(self.domain.agent_requestable)
         self.user_requestable = deepcopy(self.domain.user_requestable)
+
+        self.user_utterance = None  # Current user utterance
         self.frame_CIN = dict.fromkeys(slots)  # user requirements before
         # making a recommendation. CIN stands for current information needs
         self.frame_PIN = (

@@ -382,8 +382,8 @@ class DialogueStateTracker:
             frame_CIN: Current information needs of the user.
         """
 
-        def add_to_user_model(value: str):
-            """Helper function to assign value to the user model."""
+        def add_to_user_model(value: str) -> None:
+            """Helper function to assign preference value to the user model."""
             if not isinstance(value, str):
                 return
 

@@ -2,7 +2,7 @@
 
 import logging
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from dialoguekit.core import AnnotatedUtterance, Intent, Utterance
 from dialoguekit.participant import Agent, DialogueParticipant
@@ -42,7 +42,7 @@ def _get_db(db_path: str) -> DataBase:
 
 
 class MovieBotAgent(Agent):
-    def __init__(self, config: Dict[str, Any] = None) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """MovieBotAgent controls all the components of the basic architecture
         of IAI MovieBot.
 
@@ -133,7 +133,7 @@ class MovieBotAgent(Agent):
         agent_response: str,
         agent_intent: Intent,
         options: DialogueOptions,
-        recommend_item: Dict[str, Any] = None,
+        recommend_item: Optional[Dict[str, Any]] = None,
     ):
         """Generates an utterance object based on response and options.
 
@@ -146,9 +146,7 @@ class MovieBotAgent(Agent):
         Returns:
             An annotated utterance.
         """
-        metadata = {
-            "options": options,
-        }
+        metadata: Dict[str, Any] = {"options": options}
 
         if recommend_item:
             metadata.update({"recommended_item": recommend_item})
@@ -178,7 +176,7 @@ class MovieBotAgent(Agent):
 
         return utterance
 
-    def welcome(self, user_fname: str = None) -> None:
+    def welcome(self, user_fname: Optional[str] = None) -> None:
         """Sends a welcome message to the user.
 
         Args:
