@@ -100,5 +100,11 @@ Execute the following command to test a dialogue policy:
 
 .. code-block:: bash
 
-    python -m reinforcement_learning.run_dialogue_policy --agent_config <path to IAI MovieBot configuration> --artifact_path <W&B artifact name> --model_path <path to saved model in W&B>
+    python -m reinforcement_learning.run_dialogue_policy --agent-config <path to IAI MovieBot configuration> --artifact-name <W&B artifact name> --model-path <path to saved model in W&B> --policy-type <dqn OR a2c>
+
+For more information about the arguments, execute the following command:
+
+.. code-block:: bash
+
+    python -m reinforcement_learning.run_dialogue_policy -h
 

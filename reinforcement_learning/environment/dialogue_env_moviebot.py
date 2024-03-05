@@ -28,6 +28,7 @@ from moviebot.dialogue_manager.dialogue_policy.neural_dialogue_policy import (
     NeuralDialoguePolicy,
 )
 from reinforcement_learning.agent.rl_agent import MovieBotAgentRL
+from reinforcement_learning.user.human_user import HumanUser
 from reinforcement_learning.utils import build_agenda_based_simulator
 from usersimcrs.simulator.user_simulator import UserSimulator
 
@@ -55,9 +56,13 @@ class DialogueEnvMovieBot(gym.Env):
         """
         super(DialogueEnvMovieBot, self).__init__()
 
-        self.user_simulator: UserSimulator = build_agenda_based_simulator(
-            user_simulator_config
-        )
+        if user_simulator_config is None:
+            self.user_simulator: UserSimulator = HumanUser()
+        else:
+            self.user_simulator: UserSimulator = build_agenda_based_simulator(
+                user_simulator_config
+            )
+
         self.agent = MovieBotAgentRL(agent_config)
         self.agent_possible_actions = agent_possible_actions
 

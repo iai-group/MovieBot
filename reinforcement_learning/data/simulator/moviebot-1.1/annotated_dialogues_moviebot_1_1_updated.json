@@ -1,0 +1,4845 @@
+[
+    {
+        "conversation ID": "20230622130013",
+        "conversation": [
+            {
+                "utterance": "Shall we start?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "Sure",
+                "participant": "USER",
+                "intents": [
+                    "ACKNOWLEDGE"
+                ],
+                "slot_values": [],
+                "intent": "ACKNOWLEDGE"
+            },
+            {
+                "utterance": "Which genres do you prefer?",
+                "participant": "AGENT",
+                "intents": [
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "ELICIT"
+            },
+            {
+                "utterance": "I like comedies",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedies"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There are almost 11000 comedy films. Can you guide me more to narrow down the search space?\n\nCan you give me a few keywords? For example, 'vintage cars' or 'hindu mythological'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "10985"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'vintage cars' or 'hindu mythological'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "vintage cars",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "vintage cars"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a comedy, vintage cars film named **\"[Avec l'amour](https://www.imdb.com/title/tt5759506/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Avec l'amour"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Recommend me something else please.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "dont_like"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any other comedy, vintage cars films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "KEYWORD",
+                        "vintage cars"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "I would like to restart for a drama",
+                "participant": "USER",
+                "intents": [
+                    "RESTART",
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "drama"
+                    ]
+                ],
+                "intent": "RESTART+REVEAL"
+            },
+            {
+                "utterance": "Sorry, I don't have any other comedy, vintage cars films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "KEYWORD",
+                        "vintage cars"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Don't need movies based on \"vintage cars\".",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "vintage cars"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Can you give me a few keywords? For example, 'vintage cars' or 'hindu mythological'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "10985"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'vintage cars' or 'hindu mythological'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "family crisis",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "family crisis"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any comedy, family crisis films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "KEYWORD",
+                        "family crisis"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "quit",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230622111258",
+        "conversation": [
+            {
+                "utterance": "How can I assist you today?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I am looking for a drama movie",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "drama"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 20200 drama films. Can you guide me more to narrow down the search space?\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'wrongful imprisonment' or 'crown jewels'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "20211"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'wrongful imprisonment' or 'crown jewels'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "wrongful imprisonment",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "wrongful imprisonment"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is a drama, wrongful imprisonment film named **\"[The Shawshank Redemption](https://www.imdb.com/title/tt0111161/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Shawshank Redemption"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a drama, wrongful imprisonment film named **\"[Shackles](https://www.imdb.com/title/tt0070947/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Shackles"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I don't need drama anymore",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "drama"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "There is a wrongful imprisonment film named **\"[Mumia: Long Distance Revolutionary](https://www.imdb.com/title/tt2005276/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Mumia: Long Distance Revolutionary"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Mumia: Long Distance Revolutionary\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Mumia: Long Distance Revolutionary"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Unlike any other film, book, or article produced about Mumia Abu-Jamal, \"Mumia: Long Distance Revolutionary\" focuses on his career as a prolific author and broadcaster from Pennsylvania's Death Row. In fact, the film does not deal with Abu-Jamal's case, but rather chronicles his life and work as a journalist and revolutionary - both prior and post incarceration. After Abu-Jamal is convicted for the murder of of Philadelphia patrolman Daniel Faulkner, the story then exposes Abu-Jamal's battles with the American court system to continue his work from prison- a battle he continues to wage to this very day.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "Unlike any other film, book, or article produced about Mumia Abu-Jamal, \"Mumia: Long Distance Revolutionary\" focuses on his career as a prolific author and broadcaster from Pennsylvania's Death Row. In fact, the film does not deal with Abu-Jamal's case, but rather chronicles his life and work as a journalist and revolutionary - both prior and post incarceration. After Abu-Jamal is convicted for the murder of of Philadelphia patrolman Daniel Faulkner, the story then exposes Abu-Jamal's battles with the American court system to continue his work from prison- a battle he continues to wage to this very day."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I have changed my mind and would like to restart for a comedy",
+                "participant": "USER",
+                "intents": [
+                    "RESTART",
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ]
+                ],
+                "intent": "RESTART+REVEAL"
+            },
+            {
+                "utterance": "Some of the famous actors in this movie are Cornel West, Alice Walker, Angela Davis, Rubin 'Hurricane' Carter, Giancarlo Esposito, Ruby Dee.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "ACTOR",
+                        "Cornel West, Alice Walker, Angela Davis, Rubin 'Hurricane' Carter, Giancarlo Esposito, Ruby Dee"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I want to restart for a new movie.",
+                "participant": "USER",
+                "intents": [
+                    "RESTART"
+                ],
+                "slot_values": [],
+                "intent": "RESTART"
+            },
+            {
+                "utterance": "We are starting again.\n\nDo you have any specific genres in mind?",
+                "participant": "AGENT",
+                "intents": [
+                    "RESTART",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "RESTART+ELICIT"
+            },
+            {
+                "utterance": "I want a comedy from 2000",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "YEAR",
+                        "2000"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 11000 comedy films. Please answer a few more questions to help me find a good movie.\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'hindu mythological' or 'vintage cars'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "10985"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'hindu mythological' or 'vintage cars'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "hindu mythological",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "hindu mythological"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a comedy, hindu mythological film named **\"[Maya Bazaar](https://www.imdb.com/title/tt0249795/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Maya Bazaar"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Recommend me something else please.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "dont_like"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "Sorry, I don't have any other comedy, hindu mythological films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "KEYWORD",
+                        "hindu mythological"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Don't want a \"comedy\" movie.",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Sorry, I don't have any other hindu mythological films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "hindu mythological"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "No need of a \"hindu mythological\" film.",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "hindu mythological"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Can you guide me to narrow down the search space?\n\nWhich genres do you prefer? For example, 'Sci-Fi' or 'Animation'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "34207"
+                    ],
+                    [
+                        "GENRE",
+                        "'Sci-Fi' or 'Animation'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "Animation",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "Animation"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 1100 animation films. Please answer a few more questions to help me find a good movie.\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'unnecessary guilt' or 'spirit world'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "1109"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'unnecessary guilt' or 'spirit world'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "spirit world",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "spirit world"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is an animation, spirit world film named **\"[Spirited Away](https://www.imdb.com/title/tt0245429/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Spirited Away"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you an animation, spirit world film named **\"[Big Fish & Begonia](https://www.imdb.com/title/tt1920885/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Big Fish & Begonia"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "what's the plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "It is a world within our world, yet unseen by any human, and the beings here control time and tide and the changing of the seasons. On the day Chun turns sixteen, she is transformed into a dolphin to explore the human world. She is rescued from a vortex by a human boy at the cost of his own life. Chun is so moved by the boy's kindness and courage that she decides to give him life again. But to do this, she must protect the boy's soul, a tiny fish, and nurture it to grow. Through adventure and sacrifice, love grows, yet now she must release him back to the sea, back to life in the human world.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "It is a world within our world, yet unseen by any human, and the beings here control time and tide and the changing of the seasons. On the day Chun turns sixteen, she is transformed into a dolphin to explore the human world. She is rescued from a vortex by a human boy at the cost of his own life. Chun is so moved by the boy's kindness and courage that she decides to give him life again. But to do this, she must protect the boy's soul, a tiny fish, and nurture it to grow. Through adventure and sacrifice, love grows, yet now she must release him back to the sea, back to life in the human world."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230613140011",
+        "conversation": [
+            {
+                "utterance": "How can I assist you today?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I want a romantic comedy with Julia Roberts",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "ACTOR",
+                        "Julia Roberts"
+                    ],
+                    [
+                        "GENRE",
+                        "romance"
+                    ],
+                    [
+                        "GENRE",
+                        "comedy"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a romance and comedy film starring Julia Roberts named **\"[Steel Magnolias](https://www.imdb.com/title/tt0098384/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Steel Magnolias"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "yes",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a romance and comedy film starring Julia Roberts named **\"[Notting Hill](https://www.imdb.com/title/tt0125439/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Notting Hill"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "no",
+                "participant": "USER",
+                "intents": [
+                    "DENY"
+                ],
+                "slot_values": [],
+                "intent": "DENY"
+            },
+            {
+                "utterance": "What would you like to know about \"Notting Hill\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Notting Hill"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "list of actors",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "ACTOR",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Actors Julia Roberts, Hugh Grant, Richard McCabe, Rhys Ifans, James Dreyfus, Dylan Moran have played prominent roles in this movie.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "ACTOR",
+                        "Julia Roberts, Hugh Grant, Richard McCabe, Rhys Ifans, James Dreyfus, Dylan Moran"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "cool what about the rating",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Its rating on IMDb is 7.1.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "7.1"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Notting Hill"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I want to restart for a new movie.",
+                "participant": "USER",
+                "intents": [
+                    "RESTART"
+                ],
+                "slot_values": [],
+                "intent": "RESTART"
+            },
+            {
+                "utterance": "Let's restart.\n\nWhich genres do you prefer?",
+                "participant": "AGENT",
+                "intents": [
+                    "RESTART",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "RESTART+ELICIT"
+            },
+            {
+                "utterance": "Give me an independant movie",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "not_found"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I could not find the genres you mentioned.\n\nPlease answer a few questions to help me find a good movie.\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'tv special' or 'crown jewels'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "34207"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'tv special' or 'crown jewels'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "wrongful imprisonment",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "wrongful imprisonment"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a wrongful imprisonment film named **\"[The Shawshank Redemption](https://www.imdb.com/title/tt0111161/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Shawshank Redemption"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I don't like it",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "dont_like"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "There is a wrongful imprisonment film named **\"[Shackles](https://www.imdb.com/title/tt0070947/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Shackles"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "no",
+                "participant": "USER",
+                "intents": [
+                    "DENY"
+                ],
+                "slot_values": [],
+                "intent": "DENY"
+            },
+            {
+                "utterance": "What would you like to know about \"Shackles\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Shackles"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I would like a similar recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "['Zanjeer', 'Into the Blue', 'Amistad', '2001: A Space Odyssey', 'Highway', 'I Am a Fugitive from a Chain Gang', 'Cocktail', 'Django Unchained', 'The Shawshank Redemption', 'Bride of the Monster', 'Home', 'Baahubali 2: The Conclusion']"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "There is a  film similar to \"Shackles\"  named **\"[Django Unchained](https://www.imdb.com/title/tt1853728/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Django Unchained"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "no",
+                "participant": "USER",
+                "intents": [
+                    "DENY"
+                ],
+                "slot_values": [],
+                "intent": "DENY"
+            },
+            {
+                "utterance": "What would you like to know about \"Django Unchained\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Django Unchained"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "release year",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The movie was released in 2012.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        "2012"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "In 1858, a bounty hunter named Schultz seeks out a slave named Django and buys him because he needs him to find some men he is looking for. After finding them, Django wants to find his wife, Broomhilda, who along with him were sold separately by his former owner for trying to escape. Schultz offers to help him if he chooses to stay with him and be his partner. Eventually they learn that she was sold to a plantation in Mississippi. Knowing they can't just go in and say they want her, they come up with a plan so that the owner will welcome them into his home and they can find a way.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "In 1858, a bounty hunter named Schultz seeks out a slave named Django and buys him because he needs him to find some men he is looking for. After finding them, Django wants to find his wife, Broomhilda, who along with him were sold separately by his former owner for trying to escape. Schultz offers to help him if he chooses to stay with him and be his partner. Eventually they learn that she was sold to a plantation in Mississippi. Knowing they can't just go in and say they want her, they come up with a plan so that the owner will welcome them into his home and they can find a way."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Sounds good I like it",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "I would like to recommend you a Sounds film named **\"[Man, Woman & the Wall](https://www.imdb.com/title/tt1236242/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Man, Woman & the Wall"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I will keep the previous recommendation thanks",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a keep film named **\"[Parasite](https://www.imdb.com/title/tt6751668/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Parasite"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "bye",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230613122016",
+        "conversation": [
+            {
+                "utterance": "Shall we start?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        false
+                    ],
+                    [
+                        "is_bot",
+                        false
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "ok we can start",
+                "participant": "USER",
+                "intents": [
+                    "ACKNOWLEDGE"
+                ],
+                "slot_values": [],
+                "intent": "ACKNOWLEDGE"
+            },
+            {
+                "utterance": "Do you have any specific genres in mind?",
+                "participant": "AGENT",
+                "intents": [
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "ELICIT"
+            },
+            {
+                "utterance": "I am thinking of sci-fi",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "sci-fi"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There are almost 2100 sci-fi films. Can you guide me more to narrow down the search space?\n\nCan you give me a few keywords? For example, 'surprise ending' or 'famous twist'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        2066
+                    ],
+                    [
+                        "KEYWORD",
+                        "'surprise ending' or 'famous twist'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "lets say something with space exploring",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "space exploring"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is a sci-fi, space film named **\"[Star Wars: Episode IV - A New Hope](https://www.imdb.com/title/tt0076759/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Star Wars: Episode IV - A New Hope"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "yes what else?",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "There is a sci-fi, space film named **\"[Alien](https://www.imdb.com/title/tt0078748/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Alien"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "ok lets narrow the search to movies with sleep hibernation",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "sleep hibernation"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any sci-fi, space films named similar to the search. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "sci-fi"
+                    ],
+                    [
+                        "KEYWORD",
+                        "space"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "what about \"galaxies\"",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "galaxies"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any sci-fi, galaxies films named similar to the search. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "sci-fi"
+                    ],
+                    [
+                        "KEYWORD",
+                        "galaxies"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "quit",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230613115541",
+        "conversation": [
+            {
+                "utterance": "How may I help you?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        false
+                    ],
+                    [
+                        "is_bot",
+                        false
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I am looking for an historical documentary",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "documentary"
+                    ],
+                    [
+                        "KEYWORD",
+                        "historical"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a documentary, historical film named **\"[Lightning in a Bottle](https://www.imdb.com/title/tt0396705/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Lightning in a Bottle"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "No when was it released?",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The movie was released in 2004.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        2004
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Do you have something more recent?",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Sorry I can't help you with that.",
+                "participant": "AGENT",
+                "intents": [
+                    "CANT_HELP"
+                ],
+                "slot_values": [],
+                "intent": "CANT_HELP"
+            },
+            {
+                "utterance": "I would like other recommendations",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I believe I am stuck. I can't help you here.",
+                "participant": "AGENT",
+                "intents": [
+                    "CANT_HELP"
+                ],
+                "slot_values": [],
+                "intent": "CANT_HELP"
+            },
+            {
+                "utterance": "Give me more recommendation similar to Lightning in a Bottle",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Lightning in a Bottle"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "Sorry, I don't have any other documentary, historical films named similar to Lightning in a Bottle. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "documentary"
+                    ],
+                    [
+                        "KEYWORD",
+                        "historical"
+                    ],
+                    [
+                        "TITLE",
+                        "Lightning in a Bottle"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Forget it bye",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230613114332",
+        "conversation": [
+            {
+                "utterance": "How can I assist you today?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        false
+                    ],
+                    [
+                        "is_bot",
+                        false
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I am looking for an horror movie",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "horror"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There are almost 2800 horror films. Please answer a few more questions to help me find a good movie.\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'outer space' or 'female protagonist'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        2846
+                    ],
+                    [
+                        "KEYWORD",
+                        "'outer space' or 'female protagonist'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "zombie",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "zombie"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is a horror, zombie film named **\"[Night of the Living Dead](https://www.imdb.com/title/tt0063350/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Night of the Living Dead"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a horror, zombie film named **\"[Dawn of the Dead](https://www.imdb.com/title/tt0077402/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Dawn of the Dead"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "No",
+                "participant": "USER",
+                "intents": [
+                    "DENY"
+                ],
+                "slot_values": [],
+                "intent": "DENY"
+            },
+            {
+                "utterance": "What would you like to know about \"Dawn of the Dead\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Dawn of the Dead"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "what's the plot?",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Following the events of Night of the Living Dead (1968), we follow the exploits of four survivors of the expanding zombie apocalypse as they take refuge in an abandoned shopping mall following a horrific SWAT evacuation of an apartment complex. Taking stock of their surroundings, they arm themselves, lock down the mall, and destroy the zombies inside so they can eke out a living--at least for a while. Tensions begin to build as months go on, and they come to realize that they've fallen prey to consumerism. Soon afterward, they have even heavier problems to worry about, as a large gang of bikers discovers the mall and invades it, ruining the survivors' best-laid plans and forcing them to fight off both lethal bandits and flesh-eating zombies.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "Following the events of Night of the Living Dead (1968), we follow the exploits of four survivors of the expanding zombie apocalypse as they take refuge in an abandoned shopping mall following a horrific SWAT evacuation of an apartment complex. Taking stock of their surroundings, they arm themselves, lock down the mall, and destroy the zombies inside so they can eke out a living--at least for a while. Tensions begin to build as months go on, and they come to realize that they've fallen prey to consumerism. Soon afterward, they have even heavier problems to worry about, as a large gang of bikers discovers the mall and invades it, ruining the survivors' best-laid plans and forcing them to fight off both lethal bandits and flesh-eating zombies."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Who was the director?",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "DIRECTOR",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The director of this movie is George A. Romero.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "DIRECTOR",
+                        "George A. Romero"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Ok I like this recommendation",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "I believe I am stuck. I can't help you here.",
+                "participant": "AGENT",
+                "intents": [
+                    "CANT_HELP"
+                ],
+                "slot_values": [],
+                "intent": "CANT_HELP"
+            },
+            {
+                "utterance": "Give me more recommendation",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I believe I am stuck. I can't help you here.",
+                "participant": "AGENT",
+                "intents": [
+                    "CANT_HELP"
+                ],
+                "slot_values": [],
+                "intent": "CANT_HELP"
+            },
+            {
+                "utterance": "Recommend me more horror movies",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "horror"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is a horror, zombie film named **\"[Shaun of the Dead](https://www.imdb.com/title/tt0365748/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Shaun of the Dead"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Recommend me something else please.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "dont_like"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "There is a horror, zombie film named **\"[What We Do in the Shadows](https://www.imdb.com/title/tt3416742/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "What We Do in the Shadows"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "No what is the plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Follow the lives of Viago (Taika Waititi), Deacon (Jonathan Brugh), and Vladislav (Jemaine Clement) - three flatmates who are just trying to get by and overcome life's obstacles-like being immortal vampires who must feast on human blood. Hundreds of years old, the vampires are finding that beyond sunlight catastrophes, hitting the main artery, and not being able to get a sense of their wardrobe without a reflection-modern society has them struggling with the mundane like paying rent, keeping up with the chore wheel, trying to get into nightclubs, and overcoming flatmate conflicts.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "Follow the lives of Viago (Taika Waititi), Deacon (Jonathan Brugh), and Vladislav (Jemaine Clement) - three flatmates who are just trying to get by and overcome life's obstacles-like being immortal vampires who must feast on human blood. Hundreds of years old, the vampires are finding that beyond sunlight catastrophes, hitting the main artery, and not being able to get a sense of their wardrobe without a reflection-modern society has them struggling with the mundane like paying rent, keeping up with the chore wheel, trying to get into nightclubs, and overcoming flatmate conflicts."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "What We Do in the Shadows"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like a similar recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "['What We Do in the Shadows', 'The Matrix', 'The Avengers', 'Blair Witch', 'Streets of Fire', 'Cars', 'The Shadow', 'Stalker', 'Frozen', 'It', '2001: A Space Odyssey', 'Cloud Atlas', 'The Amazing Spider-Man', 'Candyman', \"Bram Stoker's Dracula\", 'A Walk to Remember']"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to recommend you a  film similar to \"What We Do in the Shadows\"  named **\"[The Matrix](https://www.imdb.com/title/tt0133093/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Matrix"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"The Matrix\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "The Matrix"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "rating",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Its rating on IMDb is 8.7.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        8.7
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "duration",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "duration",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "This movie is 2 hours and 16 minutes long.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "duration",
+                        136
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Matrix"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230613113422",
+        "conversation": [
+            {
+                "utterance": "How may I help you?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        false
+                    ],
+                    [
+                        "is_bot",
+                        false
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I want a comedy starring Kevin Hart that was released after 2015",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "ACTOR",
+                        "Kevin Hart"
+                    ],
+                    [
+                        "year",
+                        "2015"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any comedy, released films from the year  2015 starring Kevin Hart. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        "2015"
+                    ],
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "ACTOR",
+                        "Kevin Hart"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Don't need a movie from the \"year  2015\".",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        "2015"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Sorry, I don't have any comedy, released films starring Kevin Hart. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ],
+                    [
+                        "ACTOR",
+                        "Kevin Hart"
+                    ]
+                ],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "quit",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230613111923",
+        "conversation": [
+            {
+                "utterance": "Shall we start?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        false
+                    ],
+                    [
+                        "is_bot",
+                        false
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "yes",
+                "participant": "USER",
+                "intents": [
+                    "ACKNOWLEDGE"
+                ],
+                "slot_values": [],
+                "intent": "ACKNOWLEDGE"
+            },
+            {
+                "utterance": "Which genres do you prefer?",
+                "participant": "AGENT",
+                "intents": [
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "ELICIT"
+            },
+            {
+                "utterance": "I like drama",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "drama"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 20200 drama films. Please answer a few more questions to help me find a good movie.\n\nCan you give me a few keywords? For example, 'organized crime' or 'crime family'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        20211
+                    ],
+                    [
+                        "KEYWORD",
+                        "'organized crime' or 'crime family'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "family drama in the early 2000s",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "family drama"
+                    ],
+                    [
+                        "year",
+                        "early 2000s"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a drama, family drama film named **\"[Kumbalangi Nights](https://www.imdb.com/title/tt8413338/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Kumbalangi Nights"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "no",
+                "participant": "USER",
+                "intents": [
+                    "DENY"
+                ],
+                "slot_values": [],
+                "intent": "DENY"
+            },
+            {
+                "utterance": "What would you like to know about \"Kumbalangi Nights\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Kumbalangi Nights"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Tell me about the rating and duration",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ],
+                    [
+                        "duration",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Its duration is 135 minutes.\n\nIts rating on IMDb is 8.6.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "duration",
+                        135
+                    ],
+                    [
+                        "imdb_rating",
+                        8.6
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "cool, what's the story?",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The film revolves around four brothers who share a love-hate relationship with each other. Franky's elder brothers, Saji, Bobby and Bony lead a messed up life with their downright arrogance, differences, and disagreements with each other. Each one deals with the struggle of his own. Their relationship progresses to another level when Saji, Boney, and Franky decide to help Bobby stand by his love. Franky's wish for a beautiful home cuddles hope.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "The film revolves around four brothers who share a love-hate relationship with each other. Franky's elder brothers, Saji, Bobby and Bony lead a messed up life with their downright arrogance, differences, and disagreements with each other. Each one deals with the struggle of his own. Their relationship progresses to another level when Saji, Boney, and Franky decide to help Bobby stand by his love. Franky's wish for a beautiful home cuddles hope."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Sounds good",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "There is a drama, Sounds film named **\"[Man, Woman & the Wall](https://www.imdb.com/title/tt1236242/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Man, Woman & the Wall"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I liked the previous recommendation",
+                "participant": "USER",
+                "intents": [
+                    "UNK"
+                ],
+                "slot_values": [],
+                "intent": "UNK"
+            },
+            {
+                "utterance": "I believe I am stuck. I can't help you here.",
+                "participant": "AGENT",
+                "intents": [
+                    "CANT_HELP"
+                ],
+                "slot_values": [],
+                "intent": "CANT_HELP"
+            },
+            {
+                "utterance": "Ok it is fine, bye",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "NB"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230629095108",
+        "conversation": [
+            {
+                "utterance": "How can I assist you today?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I would like to watch a horror today",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "horror"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a horror, watch film named **\"[Two Heads Are Better Than None](https://www.imdb.com/title/tt0235512/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Two Heads Are Better Than None"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Recommend me something else please.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "dont_like"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a horror, watch film named **\"[Nightwatch](https://www.imdb.com/title/tt0110631/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Nightwatch"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Nightwatch\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Nightwatch"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "rating and movie plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ],
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The rating of this movie on IMDb is 7.2.\n\nIn order to finance his law studies, Martin starts as a night watchman in a mortuary. When the victims of a serial killer of prostitutes are deposited there, scary things begin to happen. Therefore and because of a strange bet with his fellow student Jens, the police begins to think he is the murderer. Police detective Wormer wants to help him but Martin is more and more suspected.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "7.2"
+                    ],
+                    [
+                        "plot",
+                        "In order to finance his law studies, Martin starts as a night watchman in a mortuary. When the victims of a serial killer of prostitutes are deposited there, scary things begin to happen. Therefore and because of a strange bet with his fellow student Jens, the police begins to think he is the murderer. Police detective Wormer wants to help him but Martin is more and more suspected."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Nightwatch"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like a similar recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "['Rembrandt', 'Mosaic', 'Cloak and Dagger']"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to recommend you a  film similar to \"Nightwatch\"  named **\"[Rembrandt](https://www.imdb.com/title/tt0028167/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Rembrandt"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Rembrandt\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Rembrandt"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "movie plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "This character study joins the painter at the height of his fame in 1642, when his adored wife suddenly dies and his work takes a dark, sardonic turn that offends his patrons. By 1656, he is bankrupt but consoles himself with the company of pretty maid Hendrickje, whom he's unable to marry. Their relationship brings ostracism but also some measure of happiness. The final scenes find him in his last year, 1669, physically enfeebled but his spirit undimmed.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "This character study joins the painter at the height of his fame in 1642, when his adored wife suddenly dies and his work takes a dark, sardonic turn that offends his patrons. By 1656, he is bankrupt but consoles himself with the company of pretty maid Hendrickje, whom he's unable to marry. Their relationship brings ostracism but also some measure of happiness. The final scenes find him in his last year, 1669, physically enfeebled but his spirit undimmed."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Rembrandt"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "WL"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230629094840",
+        "conversation": [
+            {
+                "utterance": "How may I help you?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I want comedy",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 11000 comedy films. Can you guide me more to narrow down the search space?\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'hindu mythological' or 'professional wrestling'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "10985"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'hindu mythological' or 'professional wrestling'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "With Tom Hanks",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "Tom Hanks"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is a comedy, Tom Hanks film named **\"[Joe Versus the Volcano](https://www.imdb.com/title/tt0099892/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Joe Versus the Volcano"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "Sorry, I don't have any other comedy, Tom Hanks films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Won't prefer a \"comedy\" film.",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any other Tom Hanks films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "No need of a \"Tom Hanks\" film.",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "Tom Hanks"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Please answer a few questions to help me find a good movie.\n\nDo you have any specific genres in mind? For example, 'Sci-Fi' or 'Horror'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "34207"
+                    ],
+                    [
+                        "GENRE",
+                        "'Sci-Fi' or 'Horror'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "Drama with Julia Roberts",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "Drama"
+                    ],
+                    [
+                        "ACTOR",
+                        "Julia Roberts"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 20200 drama films. Can you guide me more to narrow down the search space?\n\nCan you give me a few keywords? For example, 'wrongful imprisonment' or 'organized crime'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "20211"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'wrongful imprisonment' or 'organized crime'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "With Julia Roberts",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "actors",
+                        "Julia Roberts"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I couldn't find the keywords With Julia Roberts.\n\nI would like to recommend you a drama film starring Julia Roberts named **\"[Wonder](https://www.imdb.com/title/tt2543472/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Wonder"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Wonder\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Wonder"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "movie plot and rating",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ],
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Its rating on IMDb is 8.0.\n\nBased on the New York Times bestseller, WONDER tells the incredibly inspiring and heartwarming story of August Pullman. Born with facial differences that, up until now, have prevented him from going to a mainstream school, Auggie becomes the most unlikely of heroes when he enters the local fifth grade. As his family, his new classmates, and the larger community all struggle to discover their compassion and acceptance, Auggie's extraordinary journey will unite them all and prove you can't blend in when you were born to stand out.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "8.0"
+                    ],
+                    [
+                        "plot",
+                        "Based on the New York Times bestseller, WONDER tells the incredibly inspiring and heartwarming story of August Pullman. Born with facial differences that, up until now, have prevented him from going to a mainstream school, Auggie becomes the most unlikely of heroes when he enters the local fifth grade. As his family, his new classmates, and the larger community all struggle to discover their compassion and acceptance, Auggie's extraordinary journey will unite them all and prove you can't blend in when you were born to stand out."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Wonder"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "WL"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230629094539",
+        "conversation": [
+            {
+                "utterance": "How can I assist you today?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "Hi, I'm looking for movies for a night with my friends",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "night"
+                    ],
+                    [
+                        "KEYWORD",
+                        "friends"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There are almost 700 friends films. Can you guide me more to narrow down the search space?\n\nWhich genres do you prefer? For example, 'Comedy' or 'War'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "748"
+                    ],
+                    [
+                        "GENRE",
+                        "'Comedy' or 'War'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "comedy",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "comedy"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a comedy, friends film named **\"[City Lights](https://www.imdb.com/title/tt0021749/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "City Lights"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Sounds interesting",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any comedy, Sounds films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Tell me something about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Sorry, I couldn't find any comedy, Sounds films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Don't need movies based on \"Sounds\".",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "Sounds"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "I have found almost 11000 comedy films. Can you guide me more to narrow down the search space?\n\nCan you give me a few keywords? For example, 'tv special' or 'cult film'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "10985"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'tv special' or 'cult film'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "Something about students",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "students"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Sorry, I don't have any comedy, students films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "Don't need movies based on \"students\".",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "students"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Can you give me a few keywords? For example, 'professional wrestling' or 'slapstick comedy'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "10985"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'professional wrestling' or 'slapstick comedy'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "female protagonist",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "female protagonist"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a comedy, female protagonist film named **\"[Am\u00e9lie](https://www.imdb.com/title/tt0211915/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Am\u00e9lie"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Am\u00e9lie\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Am\u00e9lie"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "rating and actors",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ],
+                    [
+                        "ACTOR",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The rating of this movie on IMDb is 8.3.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "8.3"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "What about actors",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "ACTOR",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Actors Audrey Tautou, Mathieu Kassovitz, Rufus, Lorella Cravotta, Serge Merlin, Jamel Debbouze have played prominent roles in this movie.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "actors",
+                        "Audrey Tautou, Mathieu Kassovitz, Rufus, Lorella Cravotta, Serge Merlin, Jamel Debbouze"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "Uuu sounds interesting",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Sorry, I don't have any comedy, sounds films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "thanks, that's all I needed. Bye!",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "WL"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230629111142",
+        "conversation": [
+            {
+                "utterance": "How may I help you?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "I am looking for a family movie",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "family"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a film named similar to a family named **\"[Elizabeth at 90: A Family Tribute](https://www.imdb.com/title/tt5656876/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Elizabeth at 90: A Family Tribute"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me something about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Elizabeth at 90: A Family Tribute\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Elizabeth at 90: A Family Tribute"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "duration",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "duration",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "This movie is 70 minutes long.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "duration",
+                        "70"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "movie plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "A unique celebration of the Queen's ninety years as she reaches her landmark birthday in April. Film-maker John Bridcut has been granted special access to the complete collection of Her Majesty's personal cin\u00e9 films, shot by the Duke of Edinburgh and the Queen herself, as well as by King George VI and Queen Elizabeth The Queen Mother. Much of it has never been seen publicly before. Various members of the Royal Family are filmed watching this private footage and contributing their own personal insights and their memories of the woman they know both as a member of their own close family and as queen. Among those taking part are the Prince of Wales, the Duke of Cambridge, Prince Harry, the Princess Royal, the Duke of Kent and his sister Princess Alexandra, who has never before given an interview.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "A unique celebration of the Queen's ninety years as she reaches her landmark birthday in April. Film-maker John Bridcut has been granted special access to the complete collection of Her Majesty's personal cin\u00e9 films, shot by the Duke of Edinburgh and the Queen herself, as well as by King George VI and Queen Elizabeth The Queen Mother. Much of it has never been seen publicly before. Various members of the Royal Family are filmed watching this private footage and contributing their own personal insights and their memories of the woman they know both as a member of their own close family and as queen. Among those taking part are the Prince of Wales, the Duke of Cambridge, Prince Harry, the Princess Royal, the Duke of Kent and his sister Princess Alexandra, who has never before given an interview."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "rating",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "The rating of this movie on IMDb is 7.8.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "7.8"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Elizabeth at 90: A Family Tribute"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like a similar recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "['Leatherface', 'Love & Mercy', 'The Perks of Being a Wallflower', 'The Princess Diaries']"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "There is a  film similar to \"Elizabeth at 90: A Family Tribute\"  named **\"[The Perks of Being a Wallflower](https://www.imdb.com/title/tt1659337/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Perks of Being a Wallflower"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a  film similar to \"Elizabeth at 90: A Family Tribute\"  named **\"[Love & Mercy](https://www.imdb.com/title/tt0903657/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Love & Mercy"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me something about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Love & Mercy\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Love & Mercy"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "movie plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Brian Wilson is the creative soul of the Beach Boys, but he paid a heavy price for his talent. That especially shows during his peak artistic years in the 1960s, as his inner demons and obsessions trying to please his abusive father drive him to a mental breakdown that would plague him for years. In the 1980s, with Brian barely functional under the domination of the unscrupulous Dr. Landy, Brian meets and falls in love with Melinda Ledbetter. As their relationship grows, she observes Brian's crippling subservience to the abusive psychotherapist with growing alarm. Ultimately, she must take action with a love willing to stand up to oppression she cannot ignore.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "Brian Wilson is the creative soul of the Beach Boys, but he paid a heavy price for his talent. That especially shows during his peak artistic years in the 1960s, as his inner demons and obsessions trying to please his abusive father drive him to a mental breakdown that would plague him for years. In the 1980s, with Brian barely functional under the domination of the unscrupulous Dr. Landy, Brian meets and falls in love with Melinda Ledbetter. As their relationship grows, she observes Brian's crippling subservience to the abusive psychotherapist with growing alarm. Ultimately, she must take action with a love willing to stand up to oppression she cannot ignore."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I don't like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "dont_like"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you a  film similar to \"Elizabeth at 90: A Family Tribute\"  named **\"[The Princess Diaries](https://www.imdb.com/title/tt0247638/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Princess Diaries"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"The Princess Diaries\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "The Princess Diaries"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "movie plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Mia Thermopolis (Anne Hathaway) is the average teenager - sweet, a little geeky, and pretty much invisible to everyone with the exception of her mother, best friend Lilly (Heather Matarazzo) and Lilly's older brother Michael (Robert Schwartzman). Making it through high school without throwing up is a challenge in itself for Mia, so it doesn't come as welcome news when her estranged grandmother, Queen Clarisse Renaldi (Dame Julie Andrews), shows up out of the blue and calmly informs her that she is in fact the heir to the throne of a European country called Genovia. Suddenly Mia's life is thrown into complete overload. She's being taught about scarves, waves, and pears in order to become a perfect Princess, she gets a makeover and a tough looking, yet sweet bodyguard and limo driver called Joe (Hector Elizondo). Things get out of hand when the media gets a hold of the story and suddenly Mia is thrust into the spotlight in the newspapers and in school. On top of all of that, Mia has a choice to make. She must decide by Genovia's Independence Day Ball whether she longs to relinquish her claim on the throne or to become the Princess and heir to the throne her father, Philippe Renaldi (Rene Auberjonois), and grandmother want her to be.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "Mia Thermopolis (Anne Hathaway) is the average teenager - sweet, a little geeky, and pretty much invisible to everyone with the exception of her mother, best friend Lilly (Heather Matarazzo) and Lilly's older brother Michael (Robert Schwartzman). Making it through high school without throwing up is a challenge in itself for Mia, so it doesn't come as welcome news when her estranged grandmother, Queen Clarisse Renaldi (Dame Julie Andrews), shows up out of the blue and calmly informs her that she is in fact the heir to the throne of a European country called Genovia. Suddenly Mia's life is thrown into complete overload. She's being taught about scarves, waves, and pears in order to become a perfect Princess, she gets a makeover and a tough looking, yet sweet bodyguard and limo driver called Joe (Hector Elizondo). Things get out of hand when the media gets a hold of the story and suddenly Mia is thrust into the spotlight in the newspapers and in school. On top of all of that, Mia has a choice to make. She must decide by Genovia's Independence Day Ball whether she longs to relinquish her claim on the throne or to become the Princess and heir to the throne her father, Philippe Renaldi (Rene Auberjonois), and grandmother want her to be."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "release year",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "It was released in the year 2001.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "year",
+                        "2001"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Princess Diaries"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "IK"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230629110649",
+        "conversation": [
+            {
+                "utterance": "Shall we start?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "yes",
+                "participant": "USER",
+                "intents": [
+                    "ACKNOWLEDGE"
+                ],
+                "slot_values": [],
+                "intent": "ACKNOWLEDGE"
+            },
+            {
+                "utterance": "Which genres do you prefer?",
+                "participant": "AGENT",
+                "intents": [
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "ELICIT"
+            },
+            {
+                "utterance": "animation",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "animation"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There are almost 1100 animation films. Please answer a few more questions to help me find a good movie.\n\nCan you give me a few keywords? For example, 'studio ghibli' or 'unnecessary guilt'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "1109"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'studio ghibli' or 'unnecessary guilt'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "studio ghibli",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "studio ghibli"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is an animation, studio ghibli film named **\"[Spirited Away](https://www.imdb.com/title/tt0245429/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Spirited Away"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you an animation, studio ghibli film named **\"[My Neighbor Totoro](https://www.imdb.com/title/tt0096283/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "My Neighbor Totoro"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "I would like to recommend you an animation, studio ghibli film named **\"[Howl's Moving Castle](https://www.imdb.com/title/tt0347149/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Howl's Moving Castle"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "There is an animation, studio ghibli film named **\"[Castle in the Sky](https://www.imdb.com/title/tt0092067/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Castle in the Sky"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I have already watched it.",
+                "participant": "USER",
+                "intents": [
+                    "REJECT"
+                ],
+                "slot_values": [
+                    [
+                        "reason",
+                        "watched"
+                    ]
+                ],
+                "intent": "REJECT"
+            },
+            {
+                "utterance": "There is an animation, studio ghibli film named **\"[The Tale of The Princess Kaguya](https://www.imdb.com/title/tt2576852/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Tale of The Princess Kaguya"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Tale of The Princess Kaguya"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "Hope to see you soon. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "IK"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    },
+    {
+        "conversation ID": "20230629110128",
+        "conversation": [
+            {
+                "utterance": "Shall we start?",
+                "participant": "AGENT",
+                "intents": [
+                    "WELCOME"
+                ],
+                "slot_values": [
+                    [
+                        "new_user",
+                        "False"
+                    ],
+                    [
+                        "is_bot",
+                        "False"
+                    ]
+                ],
+                "intent": "WELCOME"
+            },
+            {
+                "utterance": "yes",
+                "participant": "USER",
+                "intents": [
+                    "ACKNOWLEDGE"
+                ],
+                "slot_values": [],
+                "intent": "ACKNOWLEDGE"
+            },
+            {
+                "utterance": "Which genres do you prefer?",
+                "participant": "AGENT",
+                "intents": [
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "genres"
+                    ]
+                ],
+                "intent": "ELICIT"
+            },
+            {
+                "utterance": "drama",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "GENRE",
+                        "drama"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I have found almost 20200 drama films. Please answer a few more questions to help me find a good movie.\n\nWhat are you looking for in a movie? Some keywords would be good. For example, 'organized crime' or 'crime family'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "20211"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'organized crime' or 'crime family'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "daily life",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "daily life"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "There is a drama, daily life film named **\"[Pionery-geroi](https://www.imdb.com/title/tt4384398/)\"**. Have you seen this one?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Pionery-geroi"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Pionery-geroi\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Pionery-geroi"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "movie plot",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Olga, Katya, and Andrey have known each other since childhood. They moved to Moscow many years ago and have become successful. Olga is an actress, Katya works for a large-scale PR agency, and Andrey is a political analyst. They buy cars, take mortgages, build country houses. Just like everybody else. But their lives bring them neither happiness nor content. The feeling of \"something's not right but I can't put my finger on it\" underpins the lives of today's thirty-year-olds. Their childhood took place during the Soviet era, when kids dreamed of becoming heroes, believed in spy stories and a bright future. Yet nobody expected that the dream of becoming a hero would be replaced by the dream of stable and predictable existence. People have stopped dreaming of truly grand things. They just play their roles.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "plot",
+                        "Olga, Katya, and Andrey have known each other since childhood. They moved to Moscow many years ago and have become successful. Olga is an actress, Katya works for a large-scale PR agency, and Andrey is a political analyst. They buy cars, take mortgages, build country houses. Just like everybody else. But their lives bring them neither happiness nor content. The feeling of \"something's not right but I can't put my finger on it\" underpins the lives of today's thirty-year-olds. Their childhood took place during the Soviet era, when kids dreamed of becoming heroes, believed in spy stories and a bright future. Yet nobody expected that the dream of becoming a hero would be replaced by the dream of stable and predictable existence. People have stopped dreaming of truly grand things. They just play their roles."
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "rating",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Its rating on IMDb is 6.0.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "6.0"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I would like one with higher rating",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ">6.0"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "The rating of this movie on IMDb is 6.0.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "6.0"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "can you suggest a movie with a higher rating",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ">6.0"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "Its rating on IMDb is 6.0.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "6.0"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "where can i find this movie?",
+                "participant": "USER",
+                "intents": [
+                    "UNK"
+                ],
+                "slot_values": [],
+                "intent": "UNK"
+            },
+            {
+                "utterance": "I believe I am stuck. I can't help you here.",
+                "participant": "AGENT",
+                "intents": [
+                    "CANT_HELP"
+                ],
+                "slot_values": [],
+                "intent": "CANT_HELP"
+            },
+            {
+                "utterance": "ok. thank you",
+                "participant": "USER",
+                "intents": [
+                    "ACKNOWLEDGE"
+                ],
+                "slot_values": [],
+                "intent": "ACKNOWLEDGE"
+            },
+            {
+                "utterance": "Sorry, I don't have any drama, daily life films named similar to thank you. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "No movies named like \"thank you\".",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "thank you"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "Sorry, I don't have any other drama, daily life films. Please select from the list of options to continue.",
+                "participant": "AGENT",
+                "intents": [
+                    "NO_RESULTS"
+                ],
+                "slot_values": [],
+                "intent": "NO_RESULTS"
+            },
+            {
+                "utterance": "No need of a \"daily life\" film.",
+                "participant": "USER",
+                "intents": [
+                    "REMOVE_PREFERENCE"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "daily life"
+                    ]
+                ],
+                "intent": "REMOVE_PREFERENCE"
+            },
+            {
+                "utterance": "What are you looking for in a movie? Some keywords would be good. For example, 'crime family' or 'organized crime'.",
+                "participant": "AGENT",
+                "intents": [
+                    "COUNT_RESULTS",
+                    "ELICIT"
+                ],
+                "slot_values": [
+                    [
+                        "count",
+                        "20211"
+                    ],
+                    [
+                        "KEYWORD",
+                        "'crime family' or 'organized crime'"
+                    ]
+                ],
+                "intent": "COUNT_RESULTS+ELICIT"
+            },
+            {
+                "utterance": "romatic",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "romatic"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I couldn't find the keywords romatic.\n\nI would like to recommend you a drama film named **\"[The Reichenbach Fall](https://www.imdb.com/title/tt1942614/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "The Reichenbach Fall"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "romantic",
+                "participant": "USER",
+                "intents": [
+                    "REVEAL"
+                ],
+                "slot_values": [
+                    [
+                        "KEYWORD",
+                        "romantic"
+                    ]
+                ],
+                "intent": "REVEAL"
+            },
+            {
+                "utterance": "I would like to recommend you a drama, romantic film named **\"[Never Look Away](https://www.imdb.com/title/tt5311542/)\"**. Have you watched it?",
+                "participant": "AGENT",
+                "intents": [
+                    "RECOMMEND"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Never Look Away"
+                    ]
+                ],
+                "intent": "RECOMMEND"
+            },
+            {
+                "utterance": "Tell me more about it.",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "What would you like to know about \"Never Look Away\"?",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "more_info",
+                        "Never Look Away"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "rating",
+                "participant": "USER",
+                "intents": [
+                    "INQUIRE"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        ""
+                    ]
+                ],
+                "intent": "INQUIRE"
+            },
+            {
+                "utterance": "Its rating on IMDb is 7.7.",
+                "participant": "AGENT",
+                "intents": [
+                    "INFORM"
+                ],
+                "slot_values": [
+                    [
+                        "imdb_rating",
+                        "7.7"
+                    ]
+                ],
+                "intent": "INFORM"
+            },
+            {
+                "utterance": "I like this recommendation.",
+                "participant": "USER",
+                "intents": [
+                    "ACCEPT"
+                ],
+                "slot_values": [],
+                "intent": "ACCEPT"
+            },
+            {
+                "utterance": "Please choose your next step:",
+                "participant": "AGENT",
+                "intents": [
+                    "CONTINUE_RECOMMENDATION"
+                ],
+                "slot_values": [
+                    [
+                        "TITLE",
+                        "Never Look Away"
+                    ]
+                ],
+                "intent": "CONTINUE_RECOMMENDATION"
+            },
+            {
+                "utterance": "I would like to quit now.",
+                "participant": "USER",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            },
+            {
+                "utterance": "I hope you had a good experience. Bye.",
+                "participant": "AGENT",
+                "intents": [
+                    "BYE"
+                ],
+                "slot_values": [],
+                "intent": "BYE"
+            }
+        ],
+        "user": {
+            "id": "IK"
+        },
+        "agent": {
+            "id": "IAI MovieBot"
+        }
+    }
+]

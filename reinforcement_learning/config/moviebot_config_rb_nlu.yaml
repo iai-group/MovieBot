@@ -1,0 +1,29 @@
+---
+CONVERSATION_LOGS: # implementation: save conversational logs for debugging
+  save: False
+  nlp: True
+  path: reports/conversations/
+
+DATA:
+  domain_path: data/movies_domain.yaml
+  db_path: data/movies_dbase.db
+  slot_values_path: data/slot_values.json
+
+NLU:
+  tag_words_slots: config/tag_words_slots.json
+
+RECOMMENDER: "slot_based"
+
+TELEGRAM: False # execute the code on Telegram
+
+POLLING: False # True when using Telegram without server
+
+FLASK: False
+
+BOT_TOKEN_PATH: config/bot_token.yaml
+
+BOT_HISTORY: # save the conversational logs for Telegram users
+  save: True
+  path: conversation_history/
+
+DEBUG: False

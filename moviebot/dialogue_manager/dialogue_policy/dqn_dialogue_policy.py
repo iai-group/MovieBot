@@ -10,6 +10,8 @@ from moviebot.dialogue_manager.dialogue_policy.neural_dialogue_policy import (
     NeuralDialoguePolicy,
 )
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class DQNDialoguePolicy(NeuralDialoguePolicy):
     def __init__(
@@ -87,7 +89,7 @@ class DQNDialoguePolicy(NeuralDialoguePolicy):
         Returns:
             The loaded policy.
         """
-        state_dict = torch.load(path)
+        state_dict = torch.load(path, map_location=DEVICE)
         policy = cls(
             state_dict["input_size"],
             state_dict["hidden_size"],

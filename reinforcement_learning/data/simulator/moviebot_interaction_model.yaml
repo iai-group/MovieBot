@@ -1,0 +1,96 @@
+name: MovieBot_interaction_model
+description: Interaction model for MovieBot
+
+# Minimum intents required
+required_intents:
+  INTENT_START: REVEAL
+  INTENT_STOP: BYE
+  INTENT_ITEM_CONSUMED: DENY
+  INTENT_LIKE: ACCEPT
+  INTENT_DISLIKE: REJECT
+  INTENT_NEUTRAL: NEUTRAL
+  INTENT_DISCLOSE: REVEAL
+  INTENT_DONT_KNOW: UNK
+
+# Possible user intents with optional description.
+user_intents:
+  REVEAL:
+    expected_agent_intents:
+      - ELICIT
+      - RECOMMEND
+      - COUNT_RESULTS
+      - NO_RESULTS
+      - COUNT_RESULTS+ELICIT
+      - RESTART+ELICIT
+      - WELCOME
+  UNK:
+    expected_agent_intents:
+      - CANT_HELP
+      - UNK
+  HI:
+    expected_agent_intents:
+      - ELICIT
+      - WELCOME
+  REMOVE_PREFERENCE:
+    expected_agent_intents:
+      - RECOMMEND
+      - ELICIT
+      - NO_RESULTS
+      - COUNT_RESULTS
+    remove_user_preference: true
+  CONTINUE_RECOMMENDATION:
+    expected_agent_intents:
+      - RECOMMEND
+      - ELICIT
+  REJECT:
+    expected_agent_intents:
+      - CONTINUE_RECOMMENDATION
+      - RECOMMEND
+  DENY:
+    expected_agent_intents:
+      - RECOMMEND
+    preference_contingent: CONSUMED
+  INQUIRE:
+    expected_agent_intents:
+      - INFORM
+    inquiry: true
+  ACCEPT:
+    expected_agent_intents:
+      - CONTINUE_RECOMMENDATION
+  RESTART:
+    expected_agent_intents:
+      - RESTART
+      - RESTART+ELICIT
+  RESTART+REVEAL:
+    expected_agent_intents:
+      - ELICIT
+      - RECOMMEND
+      - COUNT_RESULTS
+      - NO_RESULTS
+      - COUNT_RESULTS+ELICIT
+  BYE:
+    expected_agent_intents:
+      - BYE
+  ACKNOWLEDGE:
+    expected_agent_intents:
+      - ELICIT
+      - INFORM
+
+# List of agent intents (including sub-intents) that elicit preferences.
+agent_elicit_intents:
+  - ELICIT
+  - COUNT_RESULTS+ELICIT
+  - RESTART+ELICIT
+  - WELCOME
+
+# List of agent intents (including sub-intents) that are for set retrieval.
+agent_set_retrieval:
+  - RECOMMEND
+
+# Reward settings
+REWARD:
+  full_set_points: 20
+  intents:
+    INQUIRE: 4
+  repeat_penalty: 1
+  cost: 1

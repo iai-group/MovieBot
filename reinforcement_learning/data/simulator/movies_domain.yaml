@@ -1,0 +1,14 @@
+name: MovieBot_domain
+slot_names:
+  TITLE: ["no_elicitation"]
+  GENRE:
+  KEYWORD:
+
+inquire_slots:
+  - plot
+  - imdb_rating
+  - year
+  - duration
+  - more_info
+  - DIRECTOR
+  - ACTOR
