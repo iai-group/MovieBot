@@ -79,8 +79,9 @@ For the most recent version (v2.0) of IAI MovieBot, please cite:
     author = {Bernard, Nolwenn and Kostric, Ivica and Balog, Krisztian},
     title = {IAI MovieBot 2.0: An Enhanced Research Platform with Trainable Neural Components and Transparent User Modeling},
     year = {2024},
-    doi = {10.1145/3616855.3635699},
     booktitle = {Proceedings of the 17th ACM International Conference on Web Search and Data Mining},
+    pages = {1042--1045},
+    doi = {10.1145/3616855.3635699},
     series = {WSDM '24}
 }
 ```
