@@ -1,6 +1,6 @@
 # Participants' configuration
-usersim_config: data/config/usersim_agenda_config.yaml
-agent_config: data/config/moviebot_config_rb_nlu.yaml
+usersim_config: reinforcement_learning/config/usersim_agenda_config.yaml
+agent_config: reinforcement_learning/config/moviebot_config_rb_nlu.yaml
 
 # Model's parameters
 model:
