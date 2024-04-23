@@ -11,7 +11,7 @@ The system architecture is shown in the figure below, illustrating the core proc
 Natural Language Understanding
 ------------------------------
 
-The :py:class:`NLU <moviebot.nlu.nlu>` component converts the natural language :py:class:`UserUtterance <moviebot.core.utterance.utterance.UserUtterance>` into a :py:class:`DialogueAct <moviebot.dialogue_manager.dialogue_act>`. This process, comprising of *intent detection* and *slot filling*, is performed based on the current dialogue state. The component offers two distinct modules: Rule-Based and Neural using JointBERT.
+The :py:class:`NLU <moviebot.nlu.nlu>` component converts the natural language :py:class:`UserUtterance <moviebot.core.utterance.utterance.UserUtterance>` into a :py:class:`DialogueAct <moviebot.dialogue_manager.dialogue_act>`. This process, comprising of *intent detection* and *slot filling*, is performed based on the current dialogue state. The component offers two distinct solutions as modules: Rule-Based and Neural using JointBERT.
 
 Rule-Based NLU
 ^^^^^^^^^^^^^^
@@ -21,12 +21,12 @@ The rule-based NLU module utilizes a combination of keyword extraction and heuri
 Neural NLU with JointBERT
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Neural NLU module employs JointBERT, a neural model trained specifically for intent detection and slot filling tasks. JointBERT predicts both the intent of the user's utterance and the corresponding slot-value pairs using a trained model.
+The Neural NLU module employs JointBERT, a neural model trained for predicting both the intent of the user's utterance and the corresponding slot-value pairs.
 
 Training the JointBERT Model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To train the JointBERT model, the provided training script (`/Users/2920807/Repos/moviebot/moviebot/nlu/annotation/joint_bert/joint_bert_train.py`) can be utilized. This script fine-tunes the pre-trained BERT model on a dataset annotated with intents and slot-value pairs. Below is an overview of the training process:
+To train the JointBERT model, the provided training script (`moviebot/nlu/annotation/joint_bert/joint_bert_train.py`) can be utilized. This script fine-tunes the pre-trained BERT model on a dataset annotated with intents and slot-value pairs. Below is an overview of the training process:
 
 1. **Data Preparation**: Ensure the dataset is properly formatted with annotations for intents and slot-value pairs. The data path should be specified using the `--data_path` argument in the training script.
 
@@ -39,9 +39,9 @@ REVEAL:
   - text: "[Space adventures](keywords) [always intrigue me](modifier)."
 ```
 
-2. **Model Initialization**: The model is initialized with the number of intent labels and slot labels based on the dataset. Additionally, you can configure hyperparameters such as learning rate, weight decay, and maximum epochs.
+2. **Model Initialization**: The model is initialized with the number of intent labels and slot labels based on the dataset. Additionally, hyperparameters such as learning rate, weight decay, and maximum epochs may be configured.
 
-3. **Training**: The training script supports logging with Wandb for easy monitoring of training progress.
+3. **Training**: The training script supports logging with [Wandb](https://wandb.ai/site) for easy monitoring of training progress.
 
 4. **Model Saving**: After training, the trained model weights are saved to the specified output path (`--model_output_path`). Additionally, metadata including intent and slot names is saved in a JSON file for reference.
 
