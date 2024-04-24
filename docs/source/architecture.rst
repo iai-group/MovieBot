@@ -26,7 +26,7 @@ The Neural NLU module employs JointBERT, a neural model trained for predicting b
 Training the JointBERT Model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To train the JointBERT model, the provided training script (`moviebot/nlu/annotation/joint_bert/joint_bert_train.py`) can be utilized. This script fine-tunes the pre-trained BERT model on a dataset annotated with intents and slot-value pairs. Below is an overview of the training process:
+To train the JointBERT model, the provided training script (`moviebot/nlu/annotation/joint_bert/joint_bert_train.py`) can be utilized. This script downloads a pre-trained BERT model (`bert-base-uncased`) and fine-tunes it on a dataset annotated with intents and slot-value pairs. Below is an overview of the training process:
 
 1. **Data Preparation**: Ensure the dataset is properly formatted with annotations for intents and slot-value pairs. The data path should be specified using the `--data_path` argument in the training script.
 
