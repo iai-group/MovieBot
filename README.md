@@ -37,7 +37,7 @@ Below is the overview of IAI MovieBot 2.0 architecture. Blue components are inhe
     - Telegram
     - Flask REST
     - Flask socket.io
-  * Natural Language Understanding (NLU)
+  * Natural Language Understanding (NLU) [[doc](https://iai-moviebot.readthedocs.io/en/latest/architecture.html#natural-language-understanding)]
     - Rule-based
     - JointBERT
   * Dialogue management
