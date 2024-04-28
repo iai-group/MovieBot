@@ -499,7 +499,19 @@ REVEAL:
   - "[I almost never watch](modifier) films directed by [Claude Chabrol](directors)."
   - "[I often find solace with](modifier) films from the [late 2050s](year)."
   - "[Adventure drama](genres) films [always take me on an emotional journey](modifier)."
-
+  - "[I love](modifier) watching movies on a [rainy night](time)."
+  - "[I dislike with a passion](modifier) to watch a movie on [mondays](time)."
+  - "[I do enjoy](modifier) a nice movie with [my wife](companion)."
+  - "[My granddaughters](companion) and [I always watch](modifier) [Micheal Douglas](actors) movies together."
+  - "[I absolutely adore](modifier) watching [Tom Hanks](actors) movies on [late evenings](time) with my [best friend](companion)."
+  - "[I can't resist](modifier) watching [Meryl Streep](actors) movies on [weekend afternoons](time) with my [boyfriend](companion)."
+  - "[I find it relaxing](modifier) to watch [Leonardo DiCaprio](actors) movies on [Sunday mornings](time) with my [significant other](companion)."
+  - "[I'm not too keen](modifier) on watching [Emma Stone](actors) movies on [early mornings](time) with my [siblings](companion)."
+  - "[I always look forward](modifier) to watching [Denzel Washington](actors) movies on [Friday nights](time) with my [parents](companion)."
+  - "[I'm hooked on](modifier) watching movies with my [roommate](companion) on [weekend nights](time) on [HBO](location)."
+  - "[I enjoy](modifier) watching [Tom Cruise](actors) movies on [Sunday afternoons](time) on [television](location)."
+  - "[I savor](modifier) watching [Sacha Baron Cohen](actors) movies on [Thursday evenings](time) with my [friends](companion) on my [laptop](location)."
+  
 INQUIRE:
   - "What [genre](genres) does this movie fall under?"
   - "Is this a [comedy](genres) or [drama](genres)?"
