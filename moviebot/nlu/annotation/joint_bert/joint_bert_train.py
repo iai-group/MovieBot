@@ -178,12 +178,13 @@ class JointBERTTrain(JointBERT, pl.LightningModule):
 def parse_arguments():
     """Parses the command line arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--max_epochs", type=int, default=5)
-    parser.add_argument("--learning_rate", type=float, default=5e-5)
-    parser.add_argument("--weight_decay", type=float, default=0.0)
     parser.add_argument(
         "--model_output_path", type=str, default=_MODEL_OUTPUT_PATH
     )
+    parser.add_argument("--data_path", type=str, default=_DATA_PATH)
+    parser.add_argument("--max_epochs", type=int, default=5)
+    parser.add_argument("--learning_rate", type=float, default=5e-5)
+    parser.add_argument("--weight_decay", type=float, default=0.0)
     args = parser.parse_args()
     return args
 
@@ -192,7 +193,7 @@ if __name__ == "__main__":
     args = parse_arguments()
     wandb_logger = WandbLogger(project="JointBERT")
 
-    dataset = JointBERTDataset(_DATA_PATH)
+    dataset = JointBERTDataset(args.data_path)
     dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=4)
 
     model = JointBERTTrain(

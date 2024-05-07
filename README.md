@@ -9,8 +9,7 @@
 IAI MovieBot is a conversational recommender system for movies. It follows a standard task-oriented dialogue system architecture, comprising natural language understanding (NLU), dialogue manager (DM), and natural language generation (NLG) components. Additionally, it includes a user model and a recommendation engine. Some modules may use different models, which can be trained using the provided training utilities. It also comes with different deployment platforms (such as Telegram and Flask REST).
 The distinctive features of IAI MovieBot include a task-specific dialogue flow, a multi-modal chat interface, and an effective way to deal with dynamically changing user preferences. While our current focus is limited to movies, the system aims to be a reusable and extensible development framework that can support users in accomplishing recommendation-related goals via multi-turn conversations.
 
-The v1.0 version of IAI MovieBot has been presented as a demonstration paper at CIKM'20 [[PDF](https://arxiv.org/pdf/2009.03668.pdf)], while the v2.0 version is to appear at WSDM'24.
-<!-- TODO: Add link to arXiv for v2 -->
+The v1.0 version of IAI MovieBot has been presented as a demonstration paper at CIKM'20 [[PDF](https://arxiv.org/pdf/2009.03668.pdf)], while the v2.0 version was presented at WSDM'24 [[PDF](https://arxiv.org/pdf/2403.00520.pdf)].
 
 ## Versions
 
@@ -54,14 +53,14 @@ Below is the overview of IAI MovieBot 2.0 architecture. Blue components are inhe
 
 Training utilities:
 
-  * NLU training (JointBERT)
+  * NLU training (JointBERT) [[doc](https://iai-moviebot.readthedocs.io/en/latest/nlu.html#training-the-jointbert-model)]
   * Reinforcement learning training (DQN and A2C) using a user simulator [[doc](https://iai-moviebot.readthedocs.io/en/latest/reinforcement_learning.html)]
 
 ## Demos
 
-IAI MovieBot v2.0 can be tried [here](https://iai-group.github.io/MovieBot/).
+IAI MovieBot v2.0 can be tried [here](https://gustav1.ux.uis.no/moviebotv2/).
 
-<!-- TODO add screenshot -->
+![MovieBot v2.0](docs/source/_static/moviebot_v2_w_user_model.png)
 
 IAI MovieBot v1.0 can be tried on the Telegram channel [@iai_moviebot_bot](https://t.me/iai_moviebot_bot).
 
@@ -80,8 +79,9 @@ For the most recent version (v2.0) of IAI MovieBot, please cite:
     author = {Bernard, Nolwenn and Kostric, Ivica and Balog, Krisztian},
     title = {IAI MovieBot 2.0: An Enhanced Research Platform with Trainable Neural Components and Transparent User Modeling},
     year = {2024},
-    doi = {10.1145/3616855.3635699},
     booktitle = {Proceedings of the 17th ACM International Conference on Web Search and Data Mining},
+    pages = {1042--1045},
+    doi = {10.1145/3616855.3635699},
     series = {WSDM '24}
 }
 ```
