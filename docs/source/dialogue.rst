@@ -72,18 +72,6 @@ Information needs are represented as slot-value pairs, and get their values assi
 Note that some slots can be multi-valued (this is defined by a domain-specific ontology).
 Further, it may be that the system attempts to elicit preference for a slot that the user does not care about. Those responses are also registered, but they will not narrow the set of matching items.
 
-If the number of items matching the information need exceed a predefined threshold, the agent will attempt to elicit additional preferences (i.e., slot values for the IN). For example, if the user states a preference for *action* movies, the agent will follow this up with the following request: *"There are almost 4700 action films. Please answer a few more questions to help me find a good movie...''*
+If the number of items matching the information need exceeds a predefined threshold, the agent will attempt to elicit additional preferences (i.e., slot values for the IN). For example, if the user states a preference for *action* movies, the agent will follow this up with the following request: *"There are almost 4700 action films. Please answer a few more questions to help me find a good movie...''*
 
 Restarting a conversation will erase the current IN as well as the history of recommended items.
-
-
-Dialogue State
---------------
-
-The :py:class:`DialogueState <moviebot.dialogue_manager.dialogue_state>` includes the recent dialogue acts for both the user and the agent, the information need, the matching results with respect to the information need, the current recommendation by the agent, and the agent's state that defines its next step.
-
-
-Dialogue Context
-----------------
-
-The :py:class:`DialogueContext <moviebot.dialogue_manager.dialogue_context>` keeps track of the items recommended to the user with their feedback (where possible values include "accepted," "rejected/don't like," and "inquire").
