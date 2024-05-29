@@ -60,7 +60,7 @@ class NeuralNLU(NLU):
         if selected_option:
             return selected_option
 
-        intent, slots = self.annotate_utterance(user_utterance)
+        intent, slots, contents = self.annotate_utterance(user_utterance)
         intent = UserIntents[intent]
 
         constraints = []
@@ -90,7 +90,7 @@ class NeuralNLU(NLU):
 
     def annotate_utterance(
         self, user_utterance: UserUtterance
-    ) -> Tuple[str, list]:
+    ) -> Tuple[str, list, list]:
         """Annotates the utterance with intent and slot information.
 
         Args:
@@ -99,6 +99,7 @@ class NeuralNLU(NLU):
         Returns:
             A tuple of the intent and slot information.
         """
+        available_contexts = ["PREFERENCE_COMPANION","PREFERENCE_TIME","PREFERENECE_LOCATION"]
         mask = [
             not token.startswith("##")
             for token in self._tokenizer.tokenize(user_utterance.text)
@@ -125,6 +126,7 @@ class NeuralNLU(NLU):
 
         # For each starting point, find the end point (i.e., all 'I_' labels)
         slots_info = []
+        context_info = []
         for start in start_indices:
             end = start
             while (
@@ -136,16 +138,27 @@ class NeuralNLU(NLU):
             char_start = offset_mapping[start][0]
             char_end = offset_mapping[end][1]
             slot_value = user_utterance.text[char_start:char_end]
-            slots_info.append(
-                {
-                    "slot": JointBERTSlot.from_index(slot_idxs[start]).name[2:],
-                    "value": slot_value,
-                    "start": char_start,
-                    "end": char_end,
-                }
-            )
+            if JointBERTSlot.from_index(slot_idxs[start]).name[2:] in available_contexts:
+                context_info.append(
+                    {
+                        "context": JointBERTSlot.from_index(slot_idxs[start]).name[2:],
+                        "value": slot_value,
+                        "start": char_start,
+                        "end": char_end,   
+                    }
+                 
+                )            
+            else:    
+                slots_info.append(
+                    {
+                        "slot": JointBERTSlot.from_index(slot_idxs[start]).name[2:],
+                        "value": slot_value,
+                        "start": char_start,
+                        "end": char_end,
+                    }
+                )
 
-        return intent, slots_info
+        return intent, slots_info, context_info
 
     def get_constraint_operator(self, text: str) -> Operator:
         """Gets the operator based on the text. Only supports negation for now.
@@ -163,6 +176,9 @@ class NeuralNLU(NLU):
 if __name__ == "__main__":
     nlu = NeuralNLU(None)
 
+    user_utterance = UserUtterance("I like space movies") 
+    intent, slots_info, context_info = nlu.annotate_utterance(user_utterance)
+    """
     class DS:
         item_in_focus = None
 
@@ -173,3 +189,4 @@ if __name__ == "__main__":
         )
 
         print([str(da) for da in da])
+    """

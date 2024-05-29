@@ -26,7 +26,10 @@
         "actors",
         "directors",
         "year",
-        "title"
+        "title",
+        "time",
+        "companion",
+        "location"
     ],
     "multiple_values": [
         "genres"
