@@ -13,28 +13,26 @@ import random
 import re
 
 import yaml
-
 from dialoguekit.core import AnnotatedUtterance
 from dialoguekit.participant import DialogueParticipant
-from moviebot.explainability.explainable_user_model import (
-    ExplainableUserModel,
-    UserPreferences,
-)
+
+from moviebot.explainability.explainable_user_model import ExplainableUserModel
+from moviebot.user_modeling.user_model import UserModel
 
 _DEFAULT_TEMPLATE_FILE = "data/explainability/explanation_templates.yaml"
 
 
 class ExplainableUserModelTagBased(ExplainableUserModel):
-    def __init__(self, template_file: str = _DEFAULT_TEMPLATE_FILE):
+    def __init__(
+        self, user_model: UserModel, template_file: str = _DEFAULT_TEMPLATE_FILE
+    ):
         """Initializes the ExplainableUserModelTagBased class.
 
         Args:
             template_file: Path to the YAML file containing explanation
                 templates. Defaults to _DEFAULT_TEMPLATE_FILE.
-
-        Raises:
-            FileNotFoundError: The template file could not be found.
         """
+        super().__init__(user_model)
         if not os.path.isfile(template_file):
             raise FileNotFoundError(
                 f"Could not find template file {template_file}."
@@ -43,19 +41,14 @@ class ExplainableUserModelTagBased(ExplainableUserModel):
         with open(template_file, "r") as f:
             self.templates = yaml.safe_load(f)
 
-    def generate_explanation(
-        self, user_preferences: UserPreferences
-    ) -> AnnotatedUtterance:
+    def _generate_explanation(self) -> AnnotatedUtterance:
         """Generates an explanation based on the provided user preferences.
-
-        Args:
-            user_preferences: User preferences.
 
         Returns:
             The generated explanation.
         """
         explanation = ""
-        for category, prefs in user_preferences.items():
+        for category, prefs in self._user_model.slot_preferences.items():
             positive_tags = [tag for tag, value in prefs.items() if value == 1]
             negative_tags = [tag for tag, value in prefs.items() if value == -1]
 

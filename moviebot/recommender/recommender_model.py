@@ -1,7 +1,7 @@
 """Interface for recommender model."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
@@ -34,7 +34,7 @@ class RecommenderModel(ABC):
         """
         raise NotImplementedError
 
-    def get_previous_recommend_items(self) -> List[Dict[str, Any]]:
+    def get_previous_recommend_items(self) -> Optional[List[Dict[str, Any]]]:
         """Retrieves the previous recommendations.
 
         Returns:

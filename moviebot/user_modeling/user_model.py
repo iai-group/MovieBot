@@ -34,18 +34,18 @@ class UserModel:
         self.slot_preferences: Dict[str, Dict[str, float]] = defaultdict(
             lambda: defaultdict(float)
         )
-        self.slot_preferences_nl: Dict[
-            str, Dict[str, AnnotatedUtterance]
-        ] = defaultdict(lambda: defaultdict(list))
+        self.slot_preferences_nl: Dict[str, Dict[str, AnnotatedUtterance]] = (
+            defaultdict(lambda: defaultdict(list))
+        )
 
         # Structured and unstructured item preferences
         # The key is the item id and the value is either a number or a list of
         # annotated utterances.
         self.item_preferences: Dict[str, float] = defaultdict(float)
 
-        self.item_preferences_nl: Dict[
-            str, List[AnnotatedUtterance]
-        ] = defaultdict(list)
+        self.item_preferences_nl: Dict[str, List[AnnotatedUtterance]] = (
+            defaultdict(list)
+        )
 
     @classmethod
     def from_json(cls, json_path: str) -> UserModel:
@@ -107,12 +107,14 @@ class UserModel:
             "participant": utterance.participant.name,
             "utterance": utterance.text,
             "intent": utterance.intent.label,
-            "slot_values": [
-                [annotation.slot, annotation.value]
-                for annotation in utterance.annotations
-            ]
-            if utterance.annotations
-            else [],
+            "slot_values": (
+                [
+                    [annotation.slot, annotation.value]
+                    for annotation in utterance.annotations
+                ]
+                if utterance.annotations
+                else []
+            ),
         }
 
     def save_as_json_file(self, json_path: str) -> None:
@@ -246,3 +248,11 @@ class UserModel:
         if slot not in self.slot_preferences:
             logging.warning(f"Slot {slot} not found in user model.")
         return self.slot_preferences.get(slot, None)
+
+    def get_all_slot_preferences(self) -> Dict[str, float]:
+        """Returns all slot preferences as a flat dictionary."""
+        return {
+            key: value
+            for _, prefs in self.slot_preferences.items()
+            for key, value in prefs.items()
+        }

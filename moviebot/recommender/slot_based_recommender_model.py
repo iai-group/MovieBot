@@ -1,6 +1,6 @@
 """Recommender model based on slot value pairs."""
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from moviebot.database.db_movies import DataBase
 from moviebot.dialogue_manager.dialogue_state import DialogueState
@@ -9,7 +9,9 @@ from moviebot.recommender.recommender_model import RecommenderModel
 
 
 class SlotBasedRecommenderModel(RecommenderModel):
-    def __init__(self, db: DataBase, domain: MovieDomain) -> None:
+    def __init__(
+        self, db: Optional[DataBase], domain: Optional[MovieDomain]
+    ) -> None:
         """Instantiates a slot-based recommender model.
 
         Args:
