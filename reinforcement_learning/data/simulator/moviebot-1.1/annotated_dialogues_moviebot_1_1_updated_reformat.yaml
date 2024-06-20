@@ -1,0 +1,3730 @@
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: Shall we start?
+    utterance_annotated: Shall we start?
+  - intent: ACKNOWLEDGE
+    intents:
+    - ACKNOWLEDGE
+    participant: USER
+    slot_values: []
+    utterance: Sure
+  - intent: ELICIT
+    intents:
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: Which genres do you prefer?
+    utterance_annotated: Which [genres](GENRE) do you prefer?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedies
+    utterance: I like comedies
+    utterance_annotated: I like [comedies](GENRE)
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '10985'
+    - - KEYWORD
+      - '''vintage cars'' or ''hindu mythological'''
+    utterance: 'There are almost 11000 comedy films. Can you guide me more to narrow
+      down the search space?
+
+
+      Can you give me a few keywords? For example, ''vintage cars'' or ''hindu mythological''.'
+    utterance_annotated: There are almost 11000 comedy films. Can you guide me more
+      to narrow down the search space?  Can you give me a few keywords? For example,
+      ['vintage cars' or 'hindu mythological'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - vintage cars
+    utterance: vintage cars
+    utterance_annotated: '[vintage cars](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Avec l'amour
+    utterance: I would like to recommend you a comedy, vintage cars film named **"[Avec
+      l'amour](https://www.imdb.com/title/tt5759506/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a comedy, vintage cars film
+      named **"[[Avec l'amour](TITLE)](https://www.imdb.com/title/tt5759506/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - dont_like
+    utterance: Recommend me something else please.
+    utterance_annotated: Recommend me something else please.
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - comedy
+    - - KEYWORD
+      - vintage cars
+    utterance: Sorry, I couldn't find any other comedy, vintage cars films. Please
+      select from the list of options to continue.
+    utterance_annotated: Sorry, I couldn't find any other [comedy](GENRE), [vintage
+      cars](KEYWORD) films. Please select from the list of options to continue.
+  - intent: RESTART+REVEAL
+    intents:
+    - RESTART
+    - REVEAL
+    participant: USER
+    slot_values: []
+    utterance: I would like to restart for a drama
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - comedy
+    - - KEYWORD
+      - vintage cars
+    utterance: Sorry, I don't have any other comedy, vintage cars films. Please select
+      from the list of options to continue.
+    utterance_annotated: Sorry, I don't have any other [comedy](GENRE), [vintage cars](KEYWORD)
+      films. Please select from the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - vintage cars
+    utterance: Don't need movies based on "vintage cars".
+    utterance_annotated: Don't need movies based on "[vintage cars](KEYWORD)".
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '10985'
+    - - KEYWORD
+      - '''vintage cars'' or ''hindu mythological'''
+    utterance: Can you give me a few keywords? For example, 'vintage cars' or 'hindu
+      mythological'.
+    utterance_annotated: Can you give me a few keywords? For example, ['vintage cars'
+      or 'hindu mythological'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - family crisis
+    utterance: family crisis
+    utterance_annotated: '[family crisis](KEYWORD)'
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - comedy
+    - - KEYWORD
+      - family crisis
+    utterance: Sorry, I couldn't find any comedy, family crisis films. Please select
+      from the list of options to continue.
+    utterance_annotated: Sorry, I couldn't find any [comedy](GENRE), [family crisis](KEYWORD)
+      films. Please select from the list of options to continue.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: quit
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230622130013'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: How can I assist you today?
+    utterance_annotated: How can I assist you today?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - drama
+    utterance: I am looking for a drama movie
+    utterance_annotated: I am looking for a [drama](GENRE) movie
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '20211'
+    - - KEYWORD
+      - '''wrongful imprisonment'' or ''crown jewels'''
+    utterance: 'I have found almost 20200 drama films. Can you guide me more to narrow
+      down the search space?
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''wrongful imprisonment'' or ''crown jewels''.'
+    utterance_annotated: I have found almost 20200 drama films. Can you guide me more
+      to narrow down the search space?  What are you looking for in a movie? Some
+      keywords would be good. For example, ['wrongful imprisonment' or 'crown jewels'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - wrongful imprisonment
+    utterance: wrongful imprisonment
+    utterance_annotated: '[wrongful imprisonment](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Shawshank Redemption
+    utterance: There is a drama, wrongful imprisonment film named **"[The Shawshank
+      Redemption](https://www.imdb.com/title/tt0111161/)"**. Have you seen this one?
+    utterance_annotated: There is a drama, wrongful imprisonment film named **"[[The
+      Shawshank Redemption](TITLE)](https://www.imdb.com/title/tt0111161/)"**. Have
+      you seen this one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Shackles
+    utterance: I would like to recommend you a drama, wrongful imprisonment film named
+      **"[Shackles](https://www.imdb.com/title/tt0070947/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a drama, wrongful imprisonment
+      film named **"[[Shackles](TITLE)](https://www.imdb.com/title/tt0070947/)"**.
+      Have you watched it?
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - GENRE
+      - drama
+    utterance: I don't need drama anymore
+    utterance_annotated: I don't need [drama](GENRE) anymore
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - 'Mumia: Long Distance Revolutionary'
+    utterance: 'There is a wrongful imprisonment film named **"[Mumia: Long Distance
+      Revolutionary](https://www.imdb.com/title/tt2005276/)"**. Have you seen this
+      one?'
+    utterance_annotated: 'There is a wrongful imprisonment film named **"[[Mumia:
+      Long Distance Revolutionary](TITLE)](https://www.imdb.com/title/tt2005276/)"**.
+      Have you seen this one?'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - 'Mumia: Long Distance Revolutionary'
+    utterance: 'What would you like to know about "Mumia: Long Distance Revolutionary"?'
+    utterance_annotated: 'What would you like to know about "[Mumia: Long Distance
+      Revolutionary](TITLE)"?'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: plot
+    utterance_annotated: '[](plot)plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - 'Unlike any other film, book, or article produced about Mumia Abu-Jamal, "Mumia:
+        Long Distance Revolutionary" focuses on his career as a prolific author and
+        broadcaster from Pennsylvania''s Death Row. In fact, the film does not deal
+        with Abu-Jamal''s case, but rather chronicles his life and work as a journalist
+        and revolutionary - both prior and post incarceration. After Abu-Jamal is
+        convicted for the murder of of Philadelphia patrolman Daniel Faulkner, the
+        story then exposes Abu-Jamal''s battles with the American court system to
+        continue his work from prison- a battle he continues to wage to this very
+        day.'
+    utterance: 'Unlike any other film, book, or article produced about Mumia Abu-Jamal,
+      "Mumia: Long Distance Revolutionary" focuses on his career as a prolific author
+      and broadcaster from Pennsylvania''s Death Row. In fact, the film does not deal
+      with Abu-Jamal''s case, but rather chronicles his life and work as a journalist
+      and revolutionary - both prior and post incarceration. After Abu-Jamal is convicted
+      for the murder of of Philadelphia patrolman Daniel Faulkner, the story then
+      exposes Abu-Jamal''s battles with the American court system to continue his
+      work from prison- a battle he continues to wage to this very day.'
+    utterance_annotated: '[Unlike any other film, book, or article produced about
+      Mumia Abu-Jamal, "Mumia: Long Distance Revolutionary" focuses on his career
+      as a prolific author and broadcaster from Pennsylvania''s Death Row. In fact,
+      the film does not deal with Abu-Jamal''s case, but rather chronicles his life
+      and work as a journalist and revolutionary - both prior and post incarceration.
+      After Abu-Jamal is convicted for the murder of of Philadelphia patrolman Daniel
+      Faulkner, the story then exposes Abu-Jamal''s battles with the American court
+      system to continue his work from prison- a battle he continues to wage to this
+      very day.](plot)'
+  - intent: RESTART+REVEAL
+    intents:
+    - RESTART
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    utterance: I have changed my mind and would like to restart for a comedy
+    utterance_annotated: I have changed my mind and would like to restart for a [comedy](GENRE)
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - ACTOR
+      - Cornel West, Alice Walker, Angela Davis, Rubin 'Hurricane' Carter, Giancarlo
+        Esposito, Ruby Dee
+    utterance: Some of the famous actors in this movie are Cornel West, Alice Walker,
+      Angela Davis, Rubin 'Hurricane' Carter, Giancarlo Esposito, Ruby Dee.
+    utterance_annotated: Some of the famous actors in this movie are [Cornel West,
+      Alice Walker, Angela Davis, Rubin 'Hurricane' Carter, Giancarlo Esposito, Ruby
+      Dee](ACTOR).
+  - intent: RESTART
+    intents:
+    - RESTART
+    participant: USER
+    slot_values: []
+    utterance: I want to restart for a new movie.
+  - intent: RESTART+ELICIT
+    intents:
+    - RESTART
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: 'We are starting again.
+
+
+      Do you have any specific genres in mind?'
+    utterance_annotated: We are starting again.  Do you have any specific [genres](GENRE)
+      in mind?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    - - YEAR
+      - '2000'
+    utterance: I want a comedy from 2000
+    utterance_annotated: I want a [comedy](GENRE) from [2000](YEAR)
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '10985'
+    - - KEYWORD
+      - '''hindu mythological'' or ''vintage cars'''
+    utterance: 'I have found almost 11000 comedy films. Please answer a few more questions
+      to help me find a good movie.
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''hindu mythological'' or ''vintage cars''.'
+    utterance_annotated: I have found almost 11000 comedy films. Please answer a few
+      more questions to help me find a good movie.  What are you looking for in a
+      movie? Some keywords would be good. For example, ['hindu mythological' or 'vintage
+      cars'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - hindu mythological
+    utterance: hindu mythological
+    utterance_annotated: '[hindu mythological](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Maya Bazaar
+    utterance: I would like to recommend you a comedy, hindu mythological film named
+      **"[Maya Bazaar](https://www.imdb.com/title/tt0249795/)"**. Have you watched
+      it?
+    utterance_annotated: I would like to recommend you a comedy, hindu mythological
+      film named **"[[Maya Bazaar](TITLE)](https://www.imdb.com/title/tt0249795/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - dont_like
+    utterance: Recommend me something else please.
+    utterance_annotated: Recommend me something else please.
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - comedy
+    - - KEYWORD
+      - hindu mythological
+    utterance: Sorry, I don't have any other comedy, hindu mythological films. Please
+      select from the list of options to continue.
+    utterance_annotated: Sorry, I don't have any other [comedy](GENRE), [hindu mythological](KEYWORD)
+      films. Please select from the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    utterance: Don't want a "comedy" movie.
+    utterance_annotated: Don't want a "[comedy](GENRE)" movie.
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - KEYWORD
+      - hindu mythological
+    utterance: Sorry, I don't have any other hindu mythological films. Please select
+      from the list of options to continue.
+    utterance_annotated: Sorry, I don't have any other [hindu mythological](KEYWORD)
+      films. Please select from the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - hindu mythological
+    utterance: No need of a "hindu mythological" film.
+    utterance_annotated: No need of a "[hindu mythological](KEYWORD)" film.
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '34207'
+    - - GENRE
+      - '''Sci-Fi'' or ''Animation'''
+    utterance: 'Can you guide me to narrow down the search space?
+
+
+      Which genres do you prefer? For example, ''Sci-Fi'' or ''Animation''.'
+    utterance_annotated: Can you guide me to narrow down the search space?  Which
+      genres do you prefer? For example, ['Sci-Fi' or 'Animation'](GENRE).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - Animation
+    utterance: Animation
+    utterance_annotated: '[Animation](GENRE)'
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '1109'
+    - - KEYWORD
+      - '''unnecessary guilt'' or ''spirit world'''
+    utterance: 'I have found almost 1100 animation films. Please answer a few more
+      questions to help me find a good movie.
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''unnecessary guilt'' or ''spirit world''.'
+    utterance_annotated: I have found almost 1100 animation films. Please answer a
+      few more questions to help me find a good movie.  What are you looking for in
+      a movie? Some keywords would be good. For example, ['unnecessary guilt' or 'spirit
+      world'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - spirit world
+    utterance: spirit world
+    utterance_annotated: '[spirit world](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Spirited Away
+    utterance: There is an animation, spirit world film named **"[Spirited Away](https://www.imdb.com/title/tt0245429/)"**.
+      Have you seen this one?
+    utterance_annotated: There is an animation, spirit world film named **"[[Spirited
+      Away](TITLE)](https://www.imdb.com/title/tt0245429/)"**. Have you seen this
+      one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Big Fish & Begonia
+    utterance: I would like to recommend you an animation, spirit world film named
+      **"[Big Fish & Begonia](https://www.imdb.com/title/tt1920885/)"**. Have you
+      watched it?
+    utterance_annotated: I would like to recommend you an animation, spirit world
+      film named **"[[Big Fish & Begonia](TITLE)](https://www.imdb.com/title/tt1920885/)"**.
+      Have you watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: what's the plot
+    utterance_annotated: '[](plot)what''s the plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - It is a world within our world, yet unseen by any human, and the beings here
+        control time and tide and the changing of the seasons. On the day Chun turns
+        sixteen, she is transformed into a dolphin to explore the human world. She
+        is rescued from a vortex by a human boy at the cost of his own life. Chun
+        is so moved by the boy's kindness and courage that she decides to give him
+        life again. But to do this, she must protect the boy's soul, a tiny fish,
+        and nurture it to grow. Through adventure and sacrifice, love grows, yet now
+        she must release him back to the sea, back to life in the human world.
+    utterance: It is a world within our world, yet unseen by any human, and the beings
+      here control time and tide and the changing of the seasons. On the day Chun
+      turns sixteen, she is transformed into a dolphin to explore the human world.
+      She is rescued from a vortex by a human boy at the cost of his own life. Chun
+      is so moved by the boy's kindness and courage that she decides to give him life
+      again. But to do this, she must protect the boy's soul, a tiny fish, and nurture
+      it to grow. Through adventure and sacrifice, love grows, yet now she must release
+      him back to the sea, back to life in the human world.
+    utterance_annotated: '[It is a world within our world, yet unseen by any human,
+      and the beings here control time and tide and the changing of the seasons. On
+      the day Chun turns sixteen, she is transformed into a dolphin to explore the
+      human world. She is rescued from a vortex by a human boy at the cost of his
+      own life. Chun is so moved by the boy''s kindness and courage that she decides
+      to give him life again. But to do this, she must protect the boy''s soul, a
+      tiny fish, and nurture it to grow. Through adventure and sacrifice, love grows,
+      yet now she must release him back to the sea, back to life in the human world.](plot)'
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values: []
+    utterance: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230622111258'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: How can I assist you today?
+    utterance_annotated: How can I assist you today?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - ACTOR
+      - Julia Roberts
+    - - GENRE
+      - romance
+    - - GENRE
+      - comedy
+    utterance: I want a romantic comedy with Julia Roberts
+    utterance_annotated: I want a romantic [romance](GENRE) with [Julia Roberts](ACTOR)
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Steel Magnolias
+    utterance: I would like to recommend you a romance and comedy film starring Julia
+      Roberts named **"[Steel Magnolias](https://www.imdb.com/title/tt0098384/)"**.
+      Have you watched it?
+    utterance_annotated: I would like to recommend you a romance and comedy film starring
+      Julia Roberts named **"[[Steel Magnolias](TITLE)](https://www.imdb.com/title/tt0098384/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: 'yes'
+    utterance_annotated: 'yes'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Notting Hill
+    utterance: I would like to recommend you a romance and comedy film starring Julia
+      Roberts named **"[Notting Hill](https://www.imdb.com/title/tt0125439/)"**. Have
+      you watched it?
+    utterance_annotated: I would like to recommend you a romance and comedy film starring
+      Julia Roberts named **"[[Notting Hill](TITLE)](https://www.imdb.com/title/tt0125439/)"**.
+      Have you watched it?
+  - intent: DENY
+    intents:
+    - DENY
+    participant: USER
+    slot_values: []
+    utterance: 'no'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Notting Hill
+    utterance: What would you like to know about "Notting Hill"?
+    utterance_annotated: What would you like to know about "[Notting Hill](TITLE)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - ACTOR
+      - ''
+    utterance: list of actors
+    utterance_annotated: '[](ACTOR)list of actors'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - ACTOR
+      - Julia Roberts, Hugh Grant, Richard McCabe, Rhys Ifans, James Dreyfus, Dylan
+        Moran
+    utterance: Actors Julia Roberts, Hugh Grant, Richard McCabe, Rhys Ifans, James
+      Dreyfus, Dylan Moran have played prominent roles in this movie.
+    utterance_annotated: Actors [Julia Roberts, Hugh Grant, Richard McCabe, Rhys Ifans,
+      James Dreyfus, Dylan Moran](ACTOR) have played prominent roles in this movie.
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    utterance: cool what about the rating
+    utterance_annotated: '[](imdb_rating)cool what about the rating'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '7.1'
+    utterance: Its rating on IMDb is 7.1.
+    utterance_annotated: Its rating on IMDb is [7.1](imdb_rating).
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Notting Hill
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: RESTART
+    intents:
+    - RESTART
+    participant: USER
+    slot_values: []
+    utterance: I want to restart for a new movie.
+  - intent: RESTART+ELICIT
+    intents:
+    - RESTART
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: 'Let''s restart.
+
+
+      Which genres do you prefer?'
+    utterance_annotated: Let's restart.  Which [genres](GENRE) do you prefer?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - not_found
+    utterance: Give me an independant movie
+    utterance_annotated: Give me an independant movie
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '34207'
+    - - KEYWORD
+      - '''tv special'' or ''crown jewels'''
+    utterance: 'I could not find the genres you mentioned.
+
+
+      Please answer a few questions to help me find a good movie.
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''tv special'' or ''crown jewels''.'
+    utterance_annotated: I could not find the genres you mentioned.  Please answer
+      a few questions to help me find a good movie.  What are you looking for in a
+      movie? Some keywords would be good. For example, ['tv special' or 'crown jewels'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - wrongful imprisonment
+    utterance: wrongful imprisonment
+    utterance_annotated: '[wrongful imprisonment](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Shawshank Redemption
+    utterance: I would like to recommend you a wrongful imprisonment film named **"[The
+      Shawshank Redemption](https://www.imdb.com/title/tt0111161/)"**. Have you watched
+      it?
+    utterance_annotated: I would like to recommend you a wrongful imprisonment film
+      named **"[[The Shawshank Redemption](TITLE)](https://www.imdb.com/title/tt0111161/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - dont_like
+    utterance: I don't like it
+    utterance_annotated: I don't like it
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Shackles
+    utterance: There is a wrongful imprisonment film named **"[Shackles](https://www.imdb.com/title/tt0070947/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a wrongful imprisonment film named **"[[Shackles](TITLE)](https://www.imdb.com/title/tt0070947/)"**.
+      Have you seen this one?
+  - intent: DENY
+    intents:
+    - DENY
+    participant: USER
+    slot_values: []
+    utterance: 'no'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Shackles
+    utterance: What would you like to know about "Shackles"?
+    utterance_annotated: What would you like to know about "[Shackles](TITLE)"?
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values:
+    - - TITLE
+      - '[''Zanjeer'', ''Into the Blue'', ''Amistad'', ''2001: A Space Odyssey'',
+        ''Highway'', ''I Am a Fugitive from a Chain Gang'', ''Cocktail'', ''Django
+        Unchained'', ''The Shawshank Redemption'', ''Bride of the Monster'', ''Home'',
+        ''Baahubali 2: The Conclusion'']'
+    utterance: I would like a similar recommendation.
+    utterance_annotated: I would like a similar recommendation.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Django Unchained
+    utterance: There is a  film similar to "Shackles"  named **"[Django Unchained](https://www.imdb.com/title/tt1853728/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a  film similar to "Shackles"  named **"[[Django
+      Unchained](TITLE)](https://www.imdb.com/title/tt1853728/)"**. Have you seen
+      this one?
+  - intent: DENY
+    intents:
+    - DENY
+    participant: USER
+    slot_values: []
+    utterance: 'no'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Django Unchained
+    utterance: What would you like to know about "Django Unchained"?
+    utterance_annotated: What would you like to know about "[Django Unchained](TITLE)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - year
+      - ''
+    utterance: release year
+    utterance_annotated: '[](year)release year'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - year
+      - '2012'
+    utterance: The movie was released in 2012.
+    utterance_annotated: The movie was released in [2012](year).
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: plot
+    utterance_annotated: '[](plot)plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - In 1858, a bounty hunter named Schultz seeks out a slave named Django and
+        buys him because he needs him to find some men he is looking for. After finding
+        them, Django wants to find his wife, Broomhilda, who along with him were sold
+        separately by his former owner for trying to escape. Schultz offers to help
+        him if he chooses to stay with him and be his partner. Eventually they learn
+        that she was sold to a plantation in Mississippi. Knowing they can't just
+        go in and say they want her, they come up with a plan so that the owner will
+        welcome them into his home and they can find a way.
+    utterance: In 1858, a bounty hunter named Schultz seeks out a slave named Django
+      and buys him because he needs him to find some men he is looking for. After
+      finding them, Django wants to find his wife, Broomhilda, who along with him
+      were sold separately by his former owner for trying to escape. Schultz offers
+      to help him if he chooses to stay with him and be his partner. Eventually they
+      learn that she was sold to a plantation in Mississippi. Knowing they can't just
+      go in and say they want her, they come up with a plan so that the owner will
+      welcome them into his home and they can find a way.
+    utterance_annotated: '[In 1858, a bounty hunter named Schultz seeks out a slave
+      named Django and buys him because he needs him to find some men he is looking
+      for. After finding them, Django wants to find his wife, Broomhilda, who along
+      with him were sold separately by his former owner for trying to escape. Schultz
+      offers to help him if he chooses to stay with him and be his partner. Eventually
+      they learn that she was sold to a plantation in Mississippi. Knowing they can''t
+      just go in and say they want her, they come up with a plan so that the owner
+      will welcome them into his home and they can find a way.](plot)'
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: Sounds good I like it
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Man, Woman & the Wall
+    utterance: I would like to recommend you a Sounds film named **"[Man, Woman &
+      the Wall](https://www.imdb.com/title/tt1236242/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a Sounds film named **"[[Man,
+      Woman & the Wall](TITLE)](https://www.imdb.com/title/tt1236242/)"**. Have you
+      watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values: []
+    utterance: I will keep the previous recommendation thanks
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Parasite
+    utterance: I would like to recommend you a keep film named **"[Parasite](https://www.imdb.com/title/tt6751668/)"**.
+      Have you watched it?
+    utterance_annotated: I would like to recommend you a keep film named **"[[Parasite](TITLE)](https://www.imdb.com/title/tt6751668/)"**.
+      Have you watched it?
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: bye
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230613140011'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - false
+    - - is_bot
+      - false
+    utterance: Shall we start?
+    utterance_annotated: Shall we start?
+  - intent: ACKNOWLEDGE
+    intents:
+    - ACKNOWLEDGE
+    participant: USER
+    slot_values: []
+    utterance: ok we can start
+  - intent: ELICIT
+    intents:
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: Do you have any specific genres in mind?
+    utterance_annotated: Do you have any specific [genres](GENRE) in mind?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - sci-fi
+    utterance: I am thinking of sci-fi
+    utterance_annotated: I am thinking of [sci-fi](GENRE)
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - 2066
+    - - KEYWORD
+      - '''surprise ending'' or ''famous twist'''
+    utterance: 'There are almost 2100 sci-fi films. Can you guide me more to narrow
+      down the search space?
+
+
+      Can you give me a few keywords? For example, ''surprise ending'' or ''famous
+      twist''.'
+    utterance_annotated: There are almost 2100 sci-fi films. Can you guide me more
+      to narrow down the search space?  Can you give me a few keywords? For example,
+      ['surprise ending' or 'famous twist'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - space exploring
+    utterance: lets say something with space exploring
+    utterance_annotated: lets say something with [space exploring](KEYWORD)
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - 'Star Wars: Episode IV - A New Hope'
+    utterance: 'There is a sci-fi, space film named **"[Star Wars: Episode IV - A
+      New Hope](https://www.imdb.com/title/tt0076759/)"**. Have you seen this one?'
+    utterance_annotated: 'There is a sci-fi, space film named **"[[Star Wars: Episode
+      IV - A New Hope](TITLE)](https://www.imdb.com/title/tt0076759/)"**. Have you
+      seen this one?'
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: yes what else?
+    utterance_annotated: yes what else?
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Alien
+    utterance: There is a sci-fi, space film named **"[Alien](https://www.imdb.com/title/tt0078748/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a sci-fi, space film named **"[[Alien](TITLE)](https://www.imdb.com/title/tt0078748/)"**.
+      Have you seen this one?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - sleep hibernation
+    utterance: ok lets narrow the search to movies with sleep hibernation
+    utterance_annotated: ok lets narrow the search to movies with [sleep hibernation](KEYWORD)
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - sci-fi
+    - - KEYWORD
+      - space
+    utterance: Sorry, I couldn't find any sci-fi, space films named similar to the
+      search. Please select from the list of options to continue.
+    utterance_annotated: Sorry, I couldn't find any [sci-fi](GENRE), [space](KEYWORD)
+      films named similar to the search. Please select from the list of options to
+      continue.
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - galaxies
+    utterance: what about "galaxies"
+    utterance_annotated: what about "[galaxies](KEYWORD)"
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - sci-fi
+    - - KEYWORD
+      - galaxies
+    utterance: Sorry, I couldn't find any sci-fi, galaxies films named similar to
+      the search. Please select from the list of options to continue.
+    utterance_annotated: Sorry, I couldn't find any [sci-fi](GENRE), [galaxies](KEYWORD)
+      films named similar to the search. Please select from the list of options to
+      continue.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: quit
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230613122016'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - false
+    - - is_bot
+      - false
+    utterance: How may I help you?
+    utterance_annotated: How may I help you?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - documentary
+    - - KEYWORD
+      - historical
+    utterance: I am looking for an historical documentary
+    utterance_annotated: I am looking for an [historical](KEYWORD) [documentary](GENRE)
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Lightning in a Bottle
+    utterance: I would like to recommend you a documentary, historical film named
+      **"[Lightning in a Bottle](https://www.imdb.com/title/tt0396705/)"**. Have you
+      watched it?
+    utterance_annotated: I would like to recommend you a documentary, historical film
+      named **"[[Lightning in a Bottle](TITLE)](https://www.imdb.com/title/tt0396705/)"**.
+      Have you watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - year
+      - ''
+    utterance: No when was it released?
+    utterance_annotated: '[](year)No when was it released?'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - year
+      - 2004
+    utterance: The movie was released in 2004.
+    utterance_annotated: The movie was released in [2004](year).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values: []
+    utterance: Do you have something more recent?
+  - intent: CANT_HELP
+    intents:
+    - CANT_HELP
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry I can't help you with that.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values: []
+    utterance: I would like other recommendations
+  - intent: CANT_HELP
+    intents:
+    - CANT_HELP
+    participant: AGENT
+    slot_values: []
+    utterance: I believe I am stuck. I can't help you here.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values:
+    - - TITLE
+      - Lightning in a Bottle
+    utterance: Give me more recommendation similar to Lightning in a Bottle
+    utterance_annotated: Give me more recommendation similar to [Lightning in a Bottle](TITLE)
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - documentary
+    - - KEYWORD
+      - historical
+    - - TITLE
+      - Lightning in a Bottle
+    utterance: Sorry, I don't have any other documentary, historical films named similar
+      to Lightning in a Bottle. Please select from the list of options to continue.
+    utterance_annotated: Sorry, I don't have any other [documentary](GENRE), [historical](KEYWORD)
+      films named similar to [Lightning in a Bottle](TITLE). Please select from the
+      list of options to continue.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: Forget it bye
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230613115541'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - false
+    - - is_bot
+      - false
+    utterance: How can I assist you today?
+    utterance_annotated: How can I assist you today?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - horror
+    utterance: I am looking for an horror movie
+    utterance_annotated: I am looking for an [horror](GENRE) movie
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - 2846
+    - - KEYWORD
+      - '''outer space'' or ''female protagonist'''
+    utterance: 'There are almost 2800 horror films. Please answer a few more questions
+      to help me find a good movie.
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''outer space'' or ''female protagonist''.'
+    utterance_annotated: There are almost 2800 horror films. Please answer a few more
+      questions to help me find a good movie.  What are you looking for in a movie?
+      Some keywords would be good. For example, ['outer space' or 'female protagonist'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - zombie
+    utterance: zombie
+    utterance_annotated: '[zombie](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Night of the Living Dead
+    utterance: There is a horror, zombie film named **"[Night of the Living Dead](https://www.imdb.com/title/tt0063350/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a horror, zombie film named **"[[Night of the Living
+      Dead](TITLE)](https://www.imdb.com/title/tt0063350/)"**. Have you seen this
+      one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Dawn of the Dead
+    utterance: I would like to recommend you a horror, zombie film named **"[Dawn
+      of the Dead](https://www.imdb.com/title/tt0077402/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a horror, zombie film named
+      **"[[Dawn of the Dead](TITLE)](https://www.imdb.com/title/tt0077402/)"**. Have
+      you watched it?
+  - intent: DENY
+    intents:
+    - DENY
+    participant: USER
+    slot_values: []
+    utterance: 'No'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Dawn of the Dead
+    utterance: What would you like to know about "Dawn of the Dead"?
+    utterance_annotated: What would you like to know about "[Dawn of the Dead](TITLE)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: what's the plot?
+    utterance_annotated: '[](plot)what''s the plot?'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - Following the events of Night of the Living Dead (1968), we follow the exploits
+        of four survivors of the expanding zombie apocalypse as they take refuge in
+        an abandoned shopping mall following a horrific SWAT evacuation of an apartment
+        complex. Taking stock of their surroundings, they arm themselves, lock down
+        the mall, and destroy the zombies inside so they can eke out a living--at
+        least for a while. Tensions begin to build as months go on, and they come
+        to realize that they've fallen prey to consumerism. Soon afterward, they have
+        even heavier problems to worry about, as a large gang of bikers discovers
+        the mall and invades it, ruining the survivors' best-laid plans and forcing
+        them to fight off both lethal bandits and flesh-eating zombies.
+    utterance: Following the events of Night of the Living Dead (1968), we follow
+      the exploits of four survivors of the expanding zombie apocalypse as they take
+      refuge in an abandoned shopping mall following a horrific SWAT evacuation of
+      an apartment complex. Taking stock of their surroundings, they arm themselves,
+      lock down the mall, and destroy the zombies inside so they can eke out a living--at
+      least for a while. Tensions begin to build as months go on, and they come to
+      realize that they've fallen prey to consumerism. Soon afterward, they have even
+      heavier problems to worry about, as a large gang of bikers discovers the mall
+      and invades it, ruining the survivors' best-laid plans and forcing them to fight
+      off both lethal bandits and flesh-eating zombies.
+    utterance_annotated: '[Following the events of Night of the Living Dead (1968),
+      we follow the exploits of four survivors of the expanding zombie apocalypse
+      as they take refuge in an abandoned shopping mall following a horrific SWAT
+      evacuation of an apartment complex. Taking stock of their surroundings, they
+      arm themselves, lock down the mall, and destroy the zombies inside so they can
+      eke out a living--at least for a while. Tensions begin to build as months go
+      on, and they come to realize that they''ve fallen prey to consumerism. Soon
+      afterward, they have even heavier problems to worry about, as a large gang of
+      bikers discovers the mall and invades it, ruining the survivors'' best-laid
+      plans and forcing them to fight off both lethal bandits and flesh-eating zombies.](plot)'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - DIRECTOR
+      - ''
+    utterance: Who was the director?
+    utterance_annotated: '[](DIRECTOR)Who was the director?'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - DIRECTOR
+      - George A. Romero
+    utterance: The director of this movie is George A. Romero.
+    utterance_annotated: The director of this movie is [George A. Romero](DIRECTOR).
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: Ok I like this recommendation
+  - intent: CANT_HELP
+    intents:
+    - CANT_HELP
+    participant: AGENT
+    slot_values: []
+    utterance: I believe I am stuck. I can't help you here.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values: []
+    utterance: Give me more recommendation
+  - intent: CANT_HELP
+    intents:
+    - CANT_HELP
+    participant: AGENT
+    slot_values: []
+    utterance: I believe I am stuck. I can't help you here.
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - horror
+    utterance: Recommend me more horror movies
+    utterance_annotated: Recommend me more [horror](GENRE) movies
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Shaun of the Dead
+    utterance: There is a horror, zombie film named **"[Shaun of the Dead](https://www.imdb.com/title/tt0365748/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a horror, zombie film named **"[[Shaun of the Dead](TITLE)](https://www.imdb.com/title/tt0365748/)"**.
+      Have you seen this one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - dont_like
+    utterance: Recommend me something else please.
+    utterance_annotated: Recommend me something else please.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - What We Do in the Shadows
+    utterance: There is a horror, zombie film named **"[What We Do in the Shadows](https://www.imdb.com/title/tt3416742/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a horror, zombie film named **"[[What We Do in the
+      Shadows](TITLE)](https://www.imdb.com/title/tt3416742/)"**. Have you seen this
+      one?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: No what is the plot
+    utterance_annotated: '[](plot)No what is the plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - Follow the lives of Viago (Taika Waititi), Deacon (Jonathan Brugh), and Vladislav
+        (Jemaine Clement) - three flatmates who are just trying to get by and overcome
+        life's obstacles-like being immortal vampires who must feast on human blood.
+        Hundreds of years old, the vampires are finding that beyond sunlight catastrophes,
+        hitting the main artery, and not being able to get a sense of their wardrobe
+        without a reflection-modern society has them struggling with the mundane like
+        paying rent, keeping up with the chore wheel, trying to get into nightclubs,
+        and overcoming flatmate conflicts.
+    utterance: Follow the lives of Viago (Taika Waititi), Deacon (Jonathan Brugh),
+      and Vladislav (Jemaine Clement) - three flatmates who are just trying to get
+      by and overcome life's obstacles-like being immortal vampires who must feast
+      on human blood. Hundreds of years old, the vampires are finding that beyond
+      sunlight catastrophes, hitting the main artery, and not being able to get a
+      sense of their wardrobe without a reflection-modern society has them struggling
+      with the mundane like paying rent, keeping up with the chore wheel, trying to
+      get into nightclubs, and overcoming flatmate conflicts.
+    utterance_annotated: '[Follow the lives of Viago (Taika Waititi), Deacon (Jonathan
+      Brugh), and Vladislav (Jemaine Clement) - three flatmates who are just trying
+      to get by and overcome life''s obstacles-like being immortal vampires who must
+      feast on human blood. Hundreds of years old, the vampires are finding that beyond
+      sunlight catastrophes, hitting the main artery, and not being able to get a
+      sense of their wardrobe without a reflection-modern society has them struggling
+      with the mundane like paying rent, keeping up with the chore wheel, trying to
+      get into nightclubs, and overcoming flatmate conflicts.](plot)'
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - What We Do in the Shadows
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values:
+    - - TITLE
+      - '[''What We Do in the Shadows'', ''The Matrix'', ''The Avengers'', ''Blair
+        Witch'', ''Streets of Fire'', ''Cars'', ''The Shadow'', ''Stalker'', ''Frozen'',
+        ''It'', ''2001: A Space Odyssey'', ''Cloud Atlas'', ''The Amazing Spider-Man'',
+        ''Candyman'', "Bram Stoker''s Dracula", ''A Walk to Remember'']'
+    utterance: I would like a similar recommendation.
+    utterance_annotated: I would like a similar recommendation.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Matrix
+    utterance: I would like to recommend you a  film similar to "What We Do in the
+      Shadows"  named **"[The Matrix](https://www.imdb.com/title/tt0133093/)"**. Have
+      you watched it?
+    utterance_annotated: I would like to recommend you a  film similar to "What We
+      Do in the Shadows"  named **"[[The Matrix](TITLE)](https://www.imdb.com/title/tt0133093/)"**.
+      Have you watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - The Matrix
+    utterance: What would you like to know about "The Matrix"?
+    utterance_annotated: What would you like to know about "[The Matrix](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    utterance: rating
+    utterance_annotated: '[](imdb_rating)rating'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - 8.7
+    utterance: Its rating on IMDb is 8.7.
+    utterance_annotated: Its rating on IMDb is [8.7](imdb_rating).
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - duration
+      - ''
+    utterance: duration
+    utterance_annotated: '[](duration)duration'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - duration
+      - 136
+    utterance: This movie is 2 hours and 16 minutes long.
+    utterance_annotated: This movie is 2 hours and 16 minutes long.
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Matrix
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230613114332'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - false
+    - - is_bot
+      - false
+    utterance: How may I help you?
+    utterance_annotated: How may I help you?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    - - ACTOR
+      - Kevin Hart
+    - - year
+      - '2015'
+    utterance: I want a comedy starring Kevin Hart that was released after 2015
+    utterance_annotated: I want a [comedy](GENRE) starring [Kevin Hart](ACTOR) that
+      was released after [2015](year)
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - year
+      - '2015'
+    - - GENRE
+      - comedy
+    - - ACTOR
+      - Kevin Hart
+    utterance: Sorry, I couldn't find any comedy, released films from the year  2015
+      starring Kevin Hart. Please select from the list of options to continue.
+    utterance_annotated: Sorry, I couldn't find any [comedy](GENRE), released films
+      from the year  [2015](year) starring [Kevin Hart](ACTOR). Please select from
+      the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - year
+      - '2015'
+    utterance: Don't need a movie from the "year  2015".
+    utterance_annotated: Don't need a movie from the "year  [2015](year)".
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - comedy
+    - - ACTOR
+      - Kevin Hart
+    utterance: Sorry, I don't have any comedy, released films starring Kevin Hart.
+      Please select from the list of options to continue.
+    utterance_annotated: Sorry, I don't have any [comedy](GENRE), released films starring
+      [Kevin Hart](ACTOR). Please select from the list of options to continue.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: quit
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230613113422'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - false
+    - - is_bot
+      - false
+    utterance: Shall we start?
+    utterance_annotated: Shall we start?
+  - intent: ACKNOWLEDGE
+    intents:
+    - ACKNOWLEDGE
+    participant: USER
+    slot_values: []
+    utterance: 'yes'
+  - intent: ELICIT
+    intents:
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: Which genres do you prefer?
+    utterance_annotated: Which [genres](GENRE) do you prefer?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - drama
+    utterance: I like drama
+    utterance_annotated: I like [drama](GENRE)
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - 20211
+    - - KEYWORD
+      - '''organized crime'' or ''crime family'''
+    utterance: 'I have found almost 20200 drama films. Please answer a few more questions
+      to help me find a good movie.
+
+
+      Can you give me a few keywords? For example, ''organized crime'' or ''crime
+      family''.'
+    utterance_annotated: I have found almost 20200 drama films. Please answer a few
+      more questions to help me find a good movie.  Can you give me a few keywords?
+      For example, ['organized crime' or 'crime family'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - family drama
+    - - year
+      - early 2000s
+    utterance: family drama in the early 2000s
+    utterance_annotated: '[family drama](KEYWORD) in the [early 2000s](year)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Kumbalangi Nights
+    utterance: I would like to recommend you a drama, family drama film named **"[Kumbalangi
+      Nights](https://www.imdb.com/title/tt8413338/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a drama, family drama film
+      named **"[[Kumbalangi Nights](TITLE)](https://www.imdb.com/title/tt8413338/)"**.
+      Have you watched it?
+  - intent: DENY
+    intents:
+    - DENY
+    participant: USER
+    slot_values: []
+    utterance: 'no'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Kumbalangi Nights
+    utterance: What would you like to know about "Kumbalangi Nights"?
+    utterance_annotated: What would you like to know about "[Kumbalangi Nights](TITLE)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    - - duration
+      - ''
+    utterance: Tell me about the rating and duration
+    utterance_annotated: '[](duration)[](imdb_rating)Tell me about the rating and
+      duration'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - duration
+      - 135
+    - - imdb_rating
+      - 8.6
+    utterance: 'Its duration is 135 minutes.
+
+
+      Its rating on IMDb is 8.6.'
+    utterance_annotated: Its duration is [135](duration) minutes.  Its rating on IMDb
+      is [8.6](imdb_rating).
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: cool, what's the story?
+    utterance_annotated: '[](plot)cool, what''s the story?'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - The film revolves around four brothers who share a love-hate relationship
+        with each other. Franky's elder brothers, Saji, Bobby and Bony lead a messed
+        up life with their downright arrogance, differences, and disagreements with
+        each other. Each one deals with the struggle of his own. Their relationship
+        progresses to another level when Saji, Boney, and Franky decide to help Bobby
+        stand by his love. Franky's wish for a beautiful home cuddles hope.
+    utterance: The film revolves around four brothers who share a love-hate relationship
+      with each other. Franky's elder brothers, Saji, Bobby and Bony lead a messed
+      up life with their downright arrogance, differences, and disagreements with
+      each other. Each one deals with the struggle of his own. Their relationship
+      progresses to another level when Saji, Boney, and Franky decide to help Bobby
+      stand by his love. Franky's wish for a beautiful home cuddles hope.
+    utterance_annotated: '[The film revolves around four brothers who share a love-hate
+      relationship with each other. Franky''s elder brothers, Saji, Bobby and Bony
+      lead a messed up life with their downright arrogance, differences, and disagreements
+      with each other. Each one deals with the struggle of his own. Their relationship
+      progresses to another level when Saji, Boney, and Franky decide to help Bobby
+      stand by his love. Franky''s wish for a beautiful home cuddles hope.](plot)'
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: Sounds good
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Man, Woman & the Wall
+    utterance: There is a drama, Sounds film named **"[Man, Woman & the Wall](https://www.imdb.com/title/tt1236242/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a drama, Sounds film named **"[[Man, Woman & the
+      Wall](TITLE)](https://www.imdb.com/title/tt1236242/)"**. Have you seen this
+      one?
+  - intent: UNK
+    intents:
+    - UNK
+    participant: USER
+    slot_values: []
+    utterance: I liked the previous recommendation
+  - intent: CANT_HELP
+    intents:
+    - CANT_HELP
+    participant: AGENT
+    slot_values: []
+    utterance: I believe I am stuck. I can't help you here.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: Ok it is fine, bye
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230613111923'
+  user:
+    id: NB
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: How can I assist you today?
+    utterance_annotated: How can I assist you today?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - horror
+    utterance: I would like to watch a horror today
+    utterance_annotated: I would like to watch a [horror](GENRE) today
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Two Heads Are Better Than None
+    utterance: I would like to recommend you a horror, watch film named **"[Two Heads
+      Are Better Than None](https://www.imdb.com/title/tt0235512/)"**. Have you watched
+      it?
+    utterance_annotated: I would like to recommend you a horror, watch film named
+      **"[[Two Heads Are Better Than None](TITLE)](https://www.imdb.com/title/tt0235512/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - dont_like
+    utterance: Recommend me something else please.
+    utterance_annotated: Recommend me something else please.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Nightwatch
+    utterance: I would like to recommend you a horror, watch film named **"[Nightwatch](https://www.imdb.com/title/tt0110631/)"**.
+      Have you watched it?
+    utterance_annotated: I would like to recommend you a horror, watch film named
+      **"[[Nightwatch](TITLE)](https://www.imdb.com/title/tt0110631/)"**. Have you
+      watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - Nightwatch
+    utterance: What would you like to know about "Nightwatch"?
+    utterance_annotated: What would you like to know about "[Nightwatch](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    - - plot
+      - ''
+    utterance: rating and movie plot
+    utterance_annotated: '[](plot)[](imdb_rating)rating and movie plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '7.2'
+    - - plot
+      - In order to finance his law studies, Martin starts as a night watchman in
+        a mortuary. When the victims of a serial killer of prostitutes are deposited
+        there, scary things begin to happen. Therefore and because of a strange bet
+        with his fellow student Jens, the police begins to think he is the murderer.
+        Police detective Wormer wants to help him but Martin is more and more suspected.
+    utterance: 'The rating of this movie on IMDb is 7.2.
+
+
+      In order to finance his law studies, Martin starts as a night watchman in a
+      mortuary. When the victims of a serial killer of prostitutes are deposited there,
+      scary things begin to happen. Therefore and because of a strange bet with his
+      fellow student Jens, the police begins to think he is the murderer. Police detective
+      Wormer wants to help him but Martin is more and more suspected.'
+    utterance_annotated: The rating of this movie on IMDb is [7.2](imdb_rating).  [In
+      order to finance his law studies, Martin starts as a night watchman in a mortuary.
+      When the victims of a serial killer of prostitutes are deposited there, scary
+      things begin to happen. Therefore and because of a strange bet with his fellow
+      student Jens, the police begins to think he is the murderer. Police detective
+      Wormer wants to help him but Martin is more and more suspected.](plot)
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Nightwatch
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values:
+    - - TITLE
+      - '[''Rembrandt'', ''Mosaic'', ''Cloak and Dagger'']'
+    utterance: I would like a similar recommendation.
+    utterance_annotated: I would like a similar recommendation.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Rembrandt
+    utterance: I would like to recommend you a  film similar to "Nightwatch"  named
+      **"[Rembrandt](https://www.imdb.com/title/tt0028167/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a  film similar to "Nightwatch"  named
+      **"[[Rembrandt](TITLE)](https://www.imdb.com/title/tt0028167/)"**. Have you
+      watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - Rembrandt
+    utterance: What would you like to know about "Rembrandt"?
+    utterance_annotated: What would you like to know about "[Rembrandt](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: movie plot
+    utterance_annotated: '[](plot)movie plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - This character study joins the painter at the height of his fame in 1642,
+        when his adored wife suddenly dies and his work takes a dark, sardonic turn
+        that offends his patrons. By 1656, he is bankrupt but consoles himself with
+        the company of pretty maid Hendrickje, whom he's unable to marry. Their relationship
+        brings ostracism but also some measure of happiness. The final scenes find
+        him in his last year, 1669, physically enfeebled but his spirit undimmed.
+    utterance: This character study joins the painter at the height of his fame in
+      1642, when his adored wife suddenly dies and his work takes a dark, sardonic
+      turn that offends his patrons. By 1656, he is bankrupt but consoles himself
+      with the company of pretty maid Hendrickje, whom he's unable to marry. Their
+      relationship brings ostracism but also some measure of happiness. The final
+      scenes find him in his last year, 1669, physically enfeebled but his spirit
+      undimmed.
+    utterance_annotated: '[This character study joins the painter at the height of
+      his fame in 1642, when his adored wife suddenly dies and his work takes a dark,
+      sardonic turn that offends his patrons. By 1656, he is bankrupt but consoles
+      himself with the company of pretty maid Hendrickje, whom he''s unable to marry.
+      Their relationship brings ostracism but also some measure of happiness. The
+      final scenes find him in his last year, 1669, physically enfeebled but his spirit
+      undimmed.](plot)'
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Rembrandt
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230629095108'
+  user:
+    id: WL
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: How may I help you?
+    utterance_annotated: How may I help you?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    utterance: I want comedy
+    utterance_annotated: I want [comedy](GENRE)
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '10985'
+    - - KEYWORD
+      - '''hindu mythological'' or ''professional wrestling'''
+    utterance: 'I have found almost 11000 comedy films. Can you guide me more to narrow
+      down the search space?
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''hindu mythological'' or ''professional wrestling''.'
+    utterance_annotated: I have found almost 11000 comedy films. Can you guide me
+      more to narrow down the search space?  What are you looking for in a movie?
+      Some keywords would be good. For example, ['hindu mythological' or 'professional
+      wrestling'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - Tom Hanks
+    utterance: With Tom Hanks
+    utterance_annotated: With [Tom Hanks](KEYWORD)
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Joe Versus the Volcano
+    utterance: There is a comedy, Tom Hanks film named **"[Joe Versus the Volcano](https://www.imdb.com/title/tt0099892/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a comedy, Tom Hanks film named **"[[Joe Versus the
+      Volcano](TITLE)](https://www.imdb.com/title/tt0099892/)"**. Have you seen this
+      one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I don't have any other comedy, Tom Hanks films. Please select
+      from the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    utterance: Won't prefer a "comedy" film.
+    utterance_annotated: Won't prefer a "[comedy](GENRE)" film.
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I couldn't find any other Tom Hanks films. Please select from
+      the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - Tom Hanks
+    utterance: No need of a "Tom Hanks" film.
+    utterance_annotated: No need of a "[Tom Hanks](KEYWORD)" film.
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '34207'
+    - - GENRE
+      - '''Sci-Fi'' or ''Horror'''
+    utterance: 'Please answer a few questions to help me find a good movie.
+
+
+      Do you have any specific genres in mind? For example, ''Sci-Fi'' or ''Horror''.'
+    utterance_annotated: Please answer a few questions to help me find a good movie.  Do
+      you have any specific genres in mind? For example, ['Sci-Fi' or 'Horror'](GENRE).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - Drama
+    - - ACTOR
+      - Julia Roberts
+    utterance: Drama with Julia Roberts
+    utterance_annotated: '[Drama](GENRE) with [Julia Roberts](ACTOR)'
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '20211'
+    - - KEYWORD
+      - '''wrongful imprisonment'' or ''organized crime'''
+    utterance: 'I have found almost 20200 drama films. Can you guide me more to narrow
+      down the search space?
+
+
+      Can you give me a few keywords? For example, ''wrongful imprisonment'' or ''organized
+      crime''.'
+    utterance_annotated: I have found almost 20200 drama films. Can you guide me more
+      to narrow down the search space?  Can you give me a few keywords? For example,
+      ['wrongful imprisonment' or 'organized crime'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - actors
+      - Julia Roberts
+    utterance: With Julia Roberts
+    utterance_annotated: With [Julia Roberts](actors)
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Wonder
+    utterance: 'I couldn''t find the keywords With Julia Roberts.
+
+
+      I would like to recommend you a drama film starring Julia Roberts named **"[Wonder](https://www.imdb.com/title/tt2543472/)"**.
+      Have you watched it?'
+    utterance_annotated: I couldn't find the keywords With Julia Roberts.  I would
+      like to recommend you a drama film starring Julia Roberts named **"[[Wonder](TITLE)](https://www.imdb.com/title/tt2543472/)"**.
+      Have you watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - Wonder
+    utterance: What would you like to know about "Wonder"?
+    utterance_annotated: What would you like to know about "[Wonder](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    - - plot
+      - ''
+    utterance: movie plot and rating
+    utterance_annotated: '[](plot)[](imdb_rating)movie plot and rating'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '8.0'
+    - - plot
+      - Based on the New York Times bestseller, WONDER tells the incredibly inspiring
+        and heartwarming story of August Pullman. Born with facial differences that,
+        up until now, have prevented him from going to a mainstream school, Auggie
+        becomes the most unlikely of heroes when he enters the local fifth grade.
+        As his family, his new classmates, and the larger community all struggle to
+        discover their compassion and acceptance, Auggie's extraordinary journey will
+        unite them all and prove you can't blend in when you were born to stand out.
+    utterance: 'Its rating on IMDb is 8.0.
+
+
+      Based on the New York Times bestseller, WONDER tells the incredibly inspiring
+      and heartwarming story of August Pullman. Born with facial differences that,
+      up until now, have prevented him from going to a mainstream school, Auggie becomes
+      the most unlikely of heroes when he enters the local fifth grade. As his family,
+      his new classmates, and the larger community all struggle to discover their
+      compassion and acceptance, Auggie''s extraordinary journey will unite them all
+      and prove you can''t blend in when you were born to stand out.'
+    utterance_annotated: Its rating on IMDb is [8.0](imdb_rating).  [Based on the
+      New York Times bestseller, WONDER tells the incredibly inspiring and heartwarming
+      story of August Pullman. Born with facial differences that, up until now, have
+      prevented him from going to a mainstream school, Auggie becomes the most unlikely
+      of heroes when he enters the local fifth grade. As his family, his new classmates,
+      and the larger community all struggle to discover their compassion and acceptance,
+      Auggie's extraordinary journey will unite them all and prove you can't blend
+      in when you were born to stand out.](plot)
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Wonder
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230629094840'
+  user:
+    id: WL
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: How can I assist you today?
+    utterance_annotated: How can I assist you today?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - night
+    - - KEYWORD
+      - friends
+    utterance: Hi, I'm looking for movies for a night with my friends
+    utterance_annotated: Hi, I'm looking for movies for a [night](KEYWORD) with my
+      [friends](KEYWORD)
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '748'
+    - - GENRE
+      - '''Comedy'' or ''War'''
+    utterance: 'There are almost 700 friends films. Can you guide me more to narrow
+      down the search space?
+
+
+      Which genres do you prefer? For example, ''Comedy'' or ''War''.'
+    utterance_annotated: There are almost 700 friends films. Can you guide me more
+      to narrow down the search space?  Which genres do you prefer? For example, ['Comedy'
+      or 'War'](GENRE).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - comedy
+    utterance: comedy
+    utterance_annotated: '[comedy](GENRE)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - City Lights
+    utterance: I would like to recommend you a comedy, friends film named **"[City
+      Lights](https://www.imdb.com/title/tt0021749/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a comedy, friends film named
+      **"[[City Lights](TITLE)](https://www.imdb.com/title/tt0021749/)"**. Have you
+      watched it?
+  - intent: UNK
+    intents:
+    - UNK
+    participant: USER
+    slot_values: []
+    utterance: Sounds interesting
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I couldn't find any comedy, Sounds films. Please select from
+      the list of options to continue.
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me something about it.
+    utterance_annotated: '[](more_info)Tell me something about it.'
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I couldn't find any comedy, Sounds films. Please select from
+      the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - Sounds
+    utterance: Don't need movies based on "Sounds".
+    utterance_annotated: Don't need movies based on "[Sounds](KEYWORD)".
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '10985'
+    - - KEYWORD
+      - '''tv special'' or ''cult film'''
+    utterance: 'I have found almost 11000 comedy films. Can you guide me more to narrow
+      down the search space?
+
+
+      Can you give me a few keywords? For example, ''tv special'' or ''cult film''.'
+    utterance_annotated: I have found almost 11000 comedy films. Can you guide me
+      more to narrow down the search space?  Can you give me a few keywords? For example,
+      ['tv special' or 'cult film'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - students
+    utterance: Something about students
+    utterance_annotated: Something about [students](KEYWORD)
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I don't have any comedy, students films. Please select from
+      the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - students
+    utterance: Don't need movies based on "students".
+    utterance_annotated: Don't need movies based on "[students](KEYWORD)".
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '10985'
+    - - KEYWORD
+      - '''professional wrestling'' or ''slapstick comedy'''
+    utterance: Can you give me a few keywords? For example, 'professional wrestling'
+      or 'slapstick comedy'.
+    utterance_annotated: Can you give me a few keywords? For example, ['professional
+      wrestling' or 'slapstick comedy'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - female protagonist
+    utterance: female protagonist
+    utterance_annotated: '[female protagonist](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - "Am\xE9lie"
+    utterance: "I would like to recommend you a comedy, female protagonist film named\
+      \ **\"[Am\xE9lie](https://www.imdb.com/title/tt0211915/)\"**. Have you watched\
+      \ it?"
+    utterance_annotated: "I would like to recommend you a comedy, female protagonist\
+      \ film named **\"[[Am\xE9lie](TITLE)](https://www.imdb.com/title/tt0211915/)\"\
+      **. Have you watched it?"
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - "Am\xE9lie"
+    utterance: "What would you like to know about \"Am\xE9lie\"?"
+    utterance_annotated: "What would you like to know about \"[Am\xE9lie](more_info)\"\
+      ?"
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    - - ACTOR
+      - ''
+    utterance: rating and actors
+    utterance_annotated: '[](ACTOR)[](imdb_rating)rating and actors'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '8.3'
+    utterance: The rating of this movie on IMDb is 8.3.
+    utterance_annotated: The rating of this movie on IMDb is [8.3](imdb_rating).
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - ACTOR
+      - ''
+    utterance: What about actors
+    utterance_annotated: '[](ACTOR)What about actors'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - actors
+      - Audrey Tautou, Mathieu Kassovitz, Rufus, Lorella Cravotta, Serge Merlin, Jamel
+        Debbouze
+    utterance: Actors Audrey Tautou, Mathieu Kassovitz, Rufus, Lorella Cravotta, Serge
+      Merlin, Jamel Debbouze have played prominent roles in this movie.
+    utterance_annotated: Actors [Audrey Tautou, Mathieu Kassovitz, Rufus, Lorella
+      Cravotta, Serge Merlin, Jamel Debbouze](actors) have played prominent roles
+      in this movie.
+  - intent: UNK
+    intents:
+    - UNK
+    participant: USER
+    slot_values: []
+    utterance: Uuu sounds interesting
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I don't have any comedy, sounds films. Please select from the
+      list of options to continue.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: thanks, that's all I needed. Bye!
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230629094539'
+  user:
+    id: WL
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: How may I help you?
+    utterance_annotated: How may I help you?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - family
+    utterance: I am looking for a family movie
+    utterance_annotated: I am looking for a [family](GENRE) movie
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - 'Elizabeth at 90: A Family Tribute'
+    utterance: 'I would like to recommend you a film named similar to a family named
+      **"[Elizabeth at 90: A Family Tribute](https://www.imdb.com/title/tt5656876/)"**.
+      Have you watched it?'
+    utterance_annotated: 'I would like to recommend you a film named similar to a
+      family named **"[[Elizabeth at 90: A Family Tribute](TITLE)](https://www.imdb.com/title/tt5656876/)"**.
+      Have you watched it?'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me something about it.
+    utterance_annotated: '[](more_info)Tell me something about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - 'Elizabeth at 90: A Family Tribute'
+    utterance: 'What would you like to know about "Elizabeth at 90: A Family Tribute"?'
+    utterance_annotated: 'What would you like to know about "[Elizabeth at 90: A Family
+      Tribute](more_info)"?'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - duration
+      - ''
+    utterance: duration
+    utterance_annotated: '[](duration)duration'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - duration
+      - '70'
+    utterance: This movie is 70 minutes long.
+    utterance_annotated: This movie is [70](duration) minutes long.
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: movie plot
+    utterance_annotated: '[](plot)movie plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - "A unique celebration of the Queen's ninety years as she reaches her landmark\
+        \ birthday in April. Film-maker John Bridcut has been granted special access\
+        \ to the complete collection of Her Majesty's personal cin\xE9 films, shot\
+        \ by the Duke of Edinburgh and the Queen herself, as well as by King George\
+        \ VI and Queen Elizabeth The Queen Mother. Much of it has never been seen\
+        \ publicly before. Various members of the Royal Family are filmed watching\
+        \ this private footage and contributing their own personal insights and their\
+        \ memories of the woman they know both as a member of their own close family\
+        \ and as queen. Among those taking part are the Prince of Wales, the Duke\
+        \ of Cambridge, Prince Harry, the Princess Royal, the Duke of Kent and his\
+        \ sister Princess Alexandra, who has never before given an interview."
+    utterance: "A unique celebration of the Queen's ninety years as she reaches her\
+      \ landmark birthday in April. Film-maker John Bridcut has been granted special\
+      \ access to the complete collection of Her Majesty's personal cin\xE9 films,\
+      \ shot by the Duke of Edinburgh and the Queen herself, as well as by King George\
+      \ VI and Queen Elizabeth The Queen Mother. Much of it has never been seen publicly\
+      \ before. Various members of the Royal Family are filmed watching this private\
+      \ footage and contributing their own personal insights and their memories of\
+      \ the woman they know both as a member of their own close family and as queen.\
+      \ Among those taking part are the Prince of Wales, the Duke of Cambridge, Prince\
+      \ Harry, the Princess Royal, the Duke of Kent and his sister Princess Alexandra,\
+      \ who has never before given an interview."
+    utterance_annotated: "[A unique celebration of the Queen's ninety years as she\
+      \ reaches her landmark birthday in April. Film-maker John Bridcut has been granted\
+      \ special access to the complete collection of Her Majesty's personal cin\xE9\
+      \ films, shot by the Duke of Edinburgh and the Queen herself, as well as by\
+      \ King George VI and Queen Elizabeth The Queen Mother. Much of it has never\
+      \ been seen publicly before. Various members of the Royal Family are filmed\
+      \ watching this private footage and contributing their own personal insights\
+      \ and their memories of the woman they know both as a member of their own close\
+      \ family and as queen. Among those taking part are the Prince of Wales, the\
+      \ Duke of Cambridge, Prince Harry, the Princess Royal, the Duke of Kent and\
+      \ his sister Princess Alexandra, who has never before given an interview.](plot)"
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    utterance: rating
+    utterance_annotated: '[](imdb_rating)rating'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '7.8'
+    utterance: The rating of this movie on IMDb is 7.8.
+    utterance_annotated: The rating of this movie on IMDb is [7.8](imdb_rating).
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - 'Elizabeth at 90: A Family Tribute'
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: USER
+    slot_values:
+    - - TITLE
+      - '[''Leatherface'', ''Love & Mercy'', ''The Perks of Being a Wallflower'',
+        ''The Princess Diaries'']'
+    utterance: I would like a similar recommendation.
+    utterance_annotated: I would like a similar recommendation.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Perks of Being a Wallflower
+    utterance: 'There is a  film similar to "Elizabeth at 90: A Family Tribute"  named
+      **"[The Perks of Being a Wallflower](https://www.imdb.com/title/tt1659337/)"**.
+      Have you seen this one?'
+    utterance_annotated: 'There is a  film similar to "Elizabeth at 90: A Family Tribute"  named
+      **"[[The Perks of Being a Wallflower](TITLE)](https://www.imdb.com/title/tt1659337/)"**.
+      Have you seen this one?'
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Love & Mercy
+    utterance: 'I would like to recommend you a  film similar to "Elizabeth at 90:
+      A Family Tribute"  named **"[Love & Mercy](https://www.imdb.com/title/tt0903657/)"**.
+      Have you watched it?'
+    utterance_annotated: 'I would like to recommend you a  film similar to "Elizabeth
+      at 90: A Family Tribute"  named **"[[Love & Mercy](TITLE)](https://www.imdb.com/title/tt0903657/)"**.
+      Have you watched it?'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me something about it.
+    utterance_annotated: '[](more_info)Tell me something about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - Love & Mercy
+    utterance: What would you like to know about "Love & Mercy"?
+    utterance_annotated: What would you like to know about "[Love & Mercy](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: movie plot
+    utterance_annotated: '[](plot)movie plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - Brian Wilson is the creative soul of the Beach Boys, but he paid a heavy price
+        for his talent. That especially shows during his peak artistic years in the
+        1960s, as his inner demons and obsessions trying to please his abusive father
+        drive him to a mental breakdown that would plague him for years. In the 1980s,
+        with Brian barely functional under the domination of the unscrupulous Dr.
+        Landy, Brian meets and falls in love with Melinda Ledbetter. As their relationship
+        grows, she observes Brian's crippling subservience to the abusive psychotherapist
+        with growing alarm. Ultimately, she must take action with a love willing to
+        stand up to oppression she cannot ignore.
+    utterance: Brian Wilson is the creative soul of the Beach Boys, but he paid a
+      heavy price for his talent. That especially shows during his peak artistic years
+      in the 1960s, as his inner demons and obsessions trying to please his abusive
+      father drive him to a mental breakdown that would plague him for years. In the
+      1980s, with Brian barely functional under the domination of the unscrupulous
+      Dr. Landy, Brian meets and falls in love with Melinda Ledbetter. As their relationship
+      grows, she observes Brian's crippling subservience to the abusive psychotherapist
+      with growing alarm. Ultimately, she must take action with a love willing to
+      stand up to oppression she cannot ignore.
+    utterance_annotated: '[Brian Wilson is the creative soul of the Beach Boys, but
+      he paid a heavy price for his talent. That especially shows during his peak
+      artistic years in the 1960s, as his inner demons and obsessions trying to please
+      his abusive father drive him to a mental breakdown that would plague him for
+      years. In the 1980s, with Brian barely functional under the domination of the
+      unscrupulous Dr. Landy, Brian meets and falls in love with Melinda Ledbetter.
+      As their relationship grows, she observes Brian''s crippling subservience to
+      the abusive psychotherapist with growing alarm. Ultimately, she must take action
+      with a love willing to stand up to oppression she cannot ignore.](plot)'
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - dont_like
+    utterance: I don't like this recommendation.
+    utterance_annotated: I don't like this recommendation.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Princess Diaries
+    utterance: 'I would like to recommend you a  film similar to "Elizabeth at 90:
+      A Family Tribute"  named **"[The Princess Diaries](https://www.imdb.com/title/tt0247638/)"**.
+      Have you watched it?'
+    utterance_annotated: 'I would like to recommend you a  film similar to "Elizabeth
+      at 90: A Family Tribute"  named **"[[The Princess Diaries](TITLE)](https://www.imdb.com/title/tt0247638/)"**.
+      Have you watched it?'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - The Princess Diaries
+    utterance: What would you like to know about "The Princess Diaries"?
+    utterance_annotated: What would you like to know about "[The Princess Diaries](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: movie plot
+    utterance_annotated: '[](plot)movie plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - Mia Thermopolis (Anne Hathaway) is the average teenager - sweet, a little
+        geeky, and pretty much invisible to everyone with the exception of her mother,
+        best friend Lilly (Heather Matarazzo) and Lilly's older brother Michael (Robert
+        Schwartzman). Making it through high school without throwing up is a challenge
+        in itself for Mia, so it doesn't come as welcome news when her estranged grandmother,
+        Queen Clarisse Renaldi (Dame Julie Andrews), shows up out of the blue and
+        calmly informs her that she is in fact the heir to the throne of a European
+        country called Genovia. Suddenly Mia's life is thrown into complete overload.
+        She's being taught about scarves, waves, and pears in order to become a perfect
+        Princess, she gets a makeover and a tough looking, yet sweet bodyguard and
+        limo driver called Joe (Hector Elizondo). Things get out of hand when the
+        media gets a hold of the story and suddenly Mia is thrust into the spotlight
+        in the newspapers and in school. On top of all of that, Mia has a choice to
+        make. She must decide by Genovia's Independence Day Ball whether she longs
+        to relinquish her claim on the throne or to become the Princess and heir to
+        the throne her father, Philippe Renaldi (Rene Auberjonois), and grandmother
+        want her to be.
+    utterance: Mia Thermopolis (Anne Hathaway) is the average teenager - sweet, a
+      little geeky, and pretty much invisible to everyone with the exception of her
+      mother, best friend Lilly (Heather Matarazzo) and Lilly's older brother Michael
+      (Robert Schwartzman). Making it through high school without throwing up is a
+      challenge in itself for Mia, so it doesn't come as welcome news when her estranged
+      grandmother, Queen Clarisse Renaldi (Dame Julie Andrews), shows up out of the
+      blue and calmly informs her that she is in fact the heir to the throne of a
+      European country called Genovia. Suddenly Mia's life is thrown into complete
+      overload. She's being taught about scarves, waves, and pears in order to become
+      a perfect Princess, she gets a makeover and a tough looking, yet sweet bodyguard
+      and limo driver called Joe (Hector Elizondo). Things get out of hand when the
+      media gets a hold of the story and suddenly Mia is thrust into the spotlight
+      in the newspapers and in school. On top of all of that, Mia has a choice to
+      make. She must decide by Genovia's Independence Day Ball whether she longs to
+      relinquish her claim on the throne or to become the Princess and heir to the
+      throne her father, Philippe Renaldi (Rene Auberjonois), and grandmother want
+      her to be.
+    utterance_annotated: '[Mia Thermopolis (Anne Hathaway) is the average teenager
+      - sweet, a little geeky, and pretty much invisible to everyone with the exception
+      of her mother, best friend Lilly (Heather Matarazzo) and Lilly''s older brother
+      Michael (Robert Schwartzman). Making it through high school without throwing
+      up is a challenge in itself for Mia, so it doesn''t come as welcome news when
+      her estranged grandmother, Queen Clarisse Renaldi (Dame Julie Andrews), shows
+      up out of the blue and calmly informs her that she is in fact the heir to the
+      throne of a European country called Genovia. Suddenly Mia''s life is thrown
+      into complete overload. She''s being taught about scarves, waves, and pears
+      in order to become a perfect Princess, she gets a makeover and a tough looking,
+      yet sweet bodyguard and limo driver called Joe (Hector Elizondo). Things get
+      out of hand when the media gets a hold of the story and suddenly Mia is thrust
+      into the spotlight in the newspapers and in school. On top of all of that, Mia
+      has a choice to make. She must decide by Genovia''s Independence Day Ball whether
+      she longs to relinquish her claim on the throne or to become the Princess and
+      heir to the throne her father, Philippe Renaldi (Rene Auberjonois), and grandmother
+      want her to be.](plot)'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - year
+      - ''
+    utterance: release year
+    utterance_annotated: '[](year)release year'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - year
+      - '2001'
+    utterance: It was released in the year 2001.
+    utterance_annotated: It was released in the year [2001](year).
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Princess Diaries
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230629111142'
+  user:
+    id: IK
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: Shall we start?
+    utterance_annotated: Shall we start?
+  - intent: ACKNOWLEDGE
+    intents:
+    - ACKNOWLEDGE
+    participant: USER
+    slot_values: []
+    utterance: 'yes'
+  - intent: ELICIT
+    intents:
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: Which genres do you prefer?
+    utterance_annotated: Which [genres](GENRE) do you prefer?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - animation
+    utterance: animation
+    utterance_annotated: '[animation](GENRE)'
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '1109'
+    - - KEYWORD
+      - '''studio ghibli'' or ''unnecessary guilt'''
+    utterance: 'There are almost 1100 animation films. Please answer a few more questions
+      to help me find a good movie.
+
+
+      Can you give me a few keywords? For example, ''studio ghibli'' or ''unnecessary
+      guilt''.'
+    utterance_annotated: There are almost 1100 animation films. Please answer a few
+      more questions to help me find a good movie.  Can you give me a few keywords?
+      For example, ['studio ghibli' or 'unnecessary guilt'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - studio ghibli
+    utterance: studio ghibli
+    utterance_annotated: '[studio ghibli](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Spirited Away
+    utterance: There is an animation, studio ghibli film named **"[Spirited Away](https://www.imdb.com/title/tt0245429/)"**.
+      Have you seen this one?
+    utterance_annotated: There is an animation, studio ghibli film named **"[[Spirited
+      Away](TITLE)](https://www.imdb.com/title/tt0245429/)"**. Have you seen this
+      one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - My Neighbor Totoro
+    utterance: I would like to recommend you an animation, studio ghibli film named
+      **"[My Neighbor Totoro](https://www.imdb.com/title/tt0096283/)"**. Have you
+      watched it?
+    utterance_annotated: I would like to recommend you an animation, studio ghibli
+      film named **"[[My Neighbor Totoro](TITLE)](https://www.imdb.com/title/tt0096283/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Howl's Moving Castle
+    utterance: I would like to recommend you an animation, studio ghibli film named
+      **"[Howl's Moving Castle](https://www.imdb.com/title/tt0347149/)"**. Have you
+      watched it?
+    utterance_annotated: I would like to recommend you an animation, studio ghibli
+      film named **"[[Howl's Moving Castle](TITLE)](https://www.imdb.com/title/tt0347149/)"**.
+      Have you watched it?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Castle in the Sky
+    utterance: There is an animation, studio ghibli film named **"[Castle in the Sky](https://www.imdb.com/title/tt0092067/)"**.
+      Have you seen this one?
+    utterance_annotated: There is an animation, studio ghibli film named **"[[Castle
+      in the Sky](TITLE)](https://www.imdb.com/title/tt0092067/)"**. Have you seen
+      this one?
+  - intent: REJECT
+    intents:
+    - REJECT
+    participant: USER
+    slot_values:
+    - - reason
+      - watched
+    utterance: I have already watched it.
+    utterance_annotated: I have already [watched](reason) it.
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Tale of The Princess Kaguya
+    utterance: There is an animation, studio ghibli film named **"[The Tale of The
+      Princess Kaguya](https://www.imdb.com/title/tt2576852/)"**. Have you seen this
+      one?
+    utterance_annotated: There is an animation, studio ghibli film named **"[[The
+      Tale of The Princess Kaguya](TITLE)](https://www.imdb.com/title/tt2576852/)"**.
+      Have you seen this one?
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Tale of The Princess Kaguya
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: Hope to see you soon. Bye.
+  conversation ID: '20230629110649'
+  user:
+    id: IK
+- agent:
+    id: IAI MovieBot
+  conversation:
+  - intent: WELCOME
+    intents:
+    - WELCOME
+    participant: AGENT
+    slot_values:
+    - - new_user
+      - 'False'
+    - - is_bot
+      - 'False'
+    utterance: Shall we start?
+    utterance_annotated: Shall we start?
+  - intent: ACKNOWLEDGE
+    intents:
+    - ACKNOWLEDGE
+    participant: USER
+    slot_values: []
+    utterance: 'yes'
+  - intent: ELICIT
+    intents:
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - GENRE
+      - genres
+    utterance: Which genres do you prefer?
+    utterance_annotated: Which [genres](GENRE) do you prefer?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - GENRE
+      - drama
+    utterance: drama
+    utterance_annotated: '[drama](GENRE)'
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '20211'
+    - - KEYWORD
+      - '''organized crime'' or ''crime family'''
+    utterance: 'I have found almost 20200 drama films. Please answer a few more questions
+      to help me find a good movie.
+
+
+      What are you looking for in a movie? Some keywords would be good. For example,
+      ''organized crime'' or ''crime family''.'
+    utterance_annotated: I have found almost 20200 drama films. Please answer a few
+      more questions to help me find a good movie.  What are you looking for in a
+      movie? Some keywords would be good. For example, ['organized crime' or 'crime
+      family'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - daily life
+    utterance: daily life
+    utterance_annotated: '[daily life](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Pionery-geroi
+    utterance: There is a drama, daily life film named **"[Pionery-geroi](https://www.imdb.com/title/tt4384398/)"**.
+      Have you seen this one?
+    utterance_annotated: There is a drama, daily life film named **"[[Pionery-geroi](TITLE)](https://www.imdb.com/title/tt4384398/)"**.
+      Have you seen this one?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - Pionery-geroi
+    utterance: What would you like to know about "Pionery-geroi"?
+    utterance_annotated: What would you like to know about "[Pionery-geroi](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - plot
+      - ''
+    utterance: movie plot
+    utterance_annotated: '[](plot)movie plot'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - plot
+      - Olga, Katya, and Andrey have known each other since childhood. They moved
+        to Moscow many years ago and have become successful. Olga is an actress, Katya
+        works for a large-scale PR agency, and Andrey is a political analyst. They
+        buy cars, take mortgages, build country houses. Just like everybody else.
+        But their lives bring them neither happiness nor content. The feeling of "something's
+        not right but I can't put my finger on it" underpins the lives of today's
+        thirty-year-olds. Their childhood took place during the Soviet era, when kids
+        dreamed of becoming heroes, believed in spy stories and a bright future. Yet
+        nobody expected that the dream of becoming a hero would be replaced by the
+        dream of stable and predictable existence. People have stopped dreaming of
+        truly grand things. They just play their roles.
+    utterance: Olga, Katya, and Andrey have known each other since childhood. They
+      moved to Moscow many years ago and have become successful. Olga is an actress,
+      Katya works for a large-scale PR agency, and Andrey is a political analyst.
+      They buy cars, take mortgages, build country houses. Just like everybody else.
+      But their lives bring them neither happiness nor content. The feeling of "something's
+      not right but I can't put my finger on it" underpins the lives of today's thirty-year-olds.
+      Their childhood took place during the Soviet era, when kids dreamed of becoming
+      heroes, believed in spy stories and a bright future. Yet nobody expected that
+      the dream of becoming a hero would be replaced by the dream of stable and predictable
+      existence. People have stopped dreaming of truly grand things. They just play
+      their roles.
+    utterance_annotated: '[Olga, Katya, and Andrey have known each other since childhood.
+      They moved to Moscow many years ago and have become successful. Olga is an actress,
+      Katya works for a large-scale PR agency, and Andrey is a political analyst.
+      They buy cars, take mortgages, build country houses. Just like everybody else.
+      But their lives bring them neither happiness nor content. The feeling of "something''s
+      not right but I can''t put my finger on it" underpins the lives of today''s
+      thirty-year-olds. Their childhood took place during the Soviet era, when kids
+      dreamed of becoming heroes, believed in spy stories and a bright future. Yet
+      nobody expected that the dream of becoming a hero would be replaced by the dream
+      of stable and predictable existence. People have stopped dreaming of truly grand
+      things. They just play their roles.](plot)'
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    utterance: rating
+    utterance_annotated: '[](imdb_rating)rating'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '6.0'
+    utterance: Its rating on IMDb is 6.0.
+    utterance_annotated: Its rating on IMDb is [6.0](imdb_rating).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - '>6.0'
+    utterance: I would like one with higher rating
+    utterance_annotated: I would like one with higher rating
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '6.0'
+    utterance: The rating of this movie on IMDb is 6.0.
+    utterance_annotated: The rating of this movie on IMDb is [6.0](imdb_rating).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - '>6.0'
+    utterance: can you suggest a movie with a higher rating
+    utterance_annotated: can you suggest a movie with a higher rating
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '6.0'
+    utterance: Its rating on IMDb is 6.0.
+    utterance_annotated: Its rating on IMDb is [6.0](imdb_rating).
+  - intent: UNK
+    intents:
+    - UNK
+    participant: USER
+    slot_values: []
+    utterance: where can i find this movie?
+  - intent: CANT_HELP
+    intents:
+    - CANT_HELP
+    participant: AGENT
+    slot_values: []
+    utterance: I believe I am stuck. I can't help you here.
+  - intent: ACKNOWLEDGE
+    intents:
+    - ACKNOWLEDGE
+    participant: USER
+    slot_values: []
+    utterance: ok. thank you
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I don't have any drama, daily life films named similar to thank
+      you. Please select from the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - TITLE
+      - thank you
+    utterance: No movies named like "thank you".
+    utterance_annotated: No movies named like "[thank you](TITLE)".
+  - intent: NO_RESULTS
+    intents:
+    - NO_RESULTS
+    participant: AGENT
+    slot_values: []
+    utterance: Sorry, I don't have any other drama, daily life films. Please select
+      from the list of options to continue.
+  - intent: REMOVE_PREFERENCE
+    intents:
+    - REMOVE_PREFERENCE
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - daily life
+    utterance: No need of a "daily life" film.
+    utterance_annotated: No need of a "[daily life](KEYWORD)" film.
+  - intent: COUNT_RESULTS+ELICIT
+    intents:
+    - COUNT_RESULTS
+    - ELICIT
+    participant: AGENT
+    slot_values:
+    - - count
+      - '20211'
+    - - KEYWORD
+      - '''crime family'' or ''organized crime'''
+    utterance: What are you looking for in a movie? Some keywords would be good. For
+      example, 'crime family' or 'organized crime'.
+    utterance_annotated: What are you looking for in a movie? Some keywords would
+      be good. For example, ['crime family' or 'organized crime'](KEYWORD).
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - romatic
+    utterance: romatic
+    utterance_annotated: '[romatic](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - The Reichenbach Fall
+    utterance: 'I couldn''t find the keywords romatic.
+
+
+      I would like to recommend you a drama film named **"[The Reichenbach Fall](https://www.imdb.com/title/tt1942614/)"**.
+      Have you watched it?'
+    utterance_annotated: I couldn't find the keywords romatic.  I would like to recommend
+      you a drama film named **"[[The Reichenbach Fall](TITLE)](https://www.imdb.com/title/tt1942614/)"**.
+      Have you watched it?
+  - intent: REVEAL
+    intents:
+    - REVEAL
+    participant: USER
+    slot_values:
+    - - KEYWORD
+      - romantic
+    utterance: romantic
+    utterance_annotated: '[romantic](KEYWORD)'
+  - intent: RECOMMEND
+    intents:
+    - RECOMMEND
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Never Look Away
+    utterance: I would like to recommend you a drama, romantic film named **"[Never
+      Look Away](https://www.imdb.com/title/tt5311542/)"**. Have you watched it?
+    utterance_annotated: I would like to recommend you a drama, romantic film named
+      **"[[Never Look Away](TITLE)](https://www.imdb.com/title/tt5311542/)"**. Have
+      you watched it?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - more_info
+      - ''
+    utterance: Tell me more about it.
+    utterance_annotated: '[](more_info)Tell me more about it.'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - more_info
+      - Never Look Away
+    utterance: What would you like to know about "Never Look Away"?
+    utterance_annotated: What would you like to know about "[Never Look Away](more_info)"?
+  - intent: INQUIRE
+    intents:
+    - INQUIRE
+    participant: USER
+    slot_values:
+    - - imdb_rating
+      - ''
+    utterance: rating
+    utterance_annotated: '[](imdb_rating)rating'
+  - intent: INFORM
+    intents:
+    - INFORM
+    participant: AGENT
+    slot_values:
+    - - imdb_rating
+      - '7.7'
+    utterance: Its rating on IMDb is 7.7.
+    utterance_annotated: Its rating on IMDb is [7.7](imdb_rating).
+  - intent: ACCEPT
+    intents:
+    - ACCEPT
+    participant: USER
+    slot_values: []
+    utterance: I like this recommendation.
+  - intent: CONTINUE_RECOMMENDATION
+    intents:
+    - CONTINUE_RECOMMENDATION
+    participant: AGENT
+    slot_values:
+    - - TITLE
+      - Never Look Away
+    utterance: 'Please choose your next step:'
+    utterance_annotated: 'Please choose your next step:'
+  - intent: BYE
+    intents:
+    - BYE
+    participant: USER
+    slot_values: []
+    utterance: I would like to quit now.
+  - intent: BYE
+    intents:
+    - BYE
+    participant: AGENT
+    slot_values: []
+    utterance: I hope you had a good experience. Bye.
+  conversation ID: '20230629110128'
+  user:
+    id: IK
